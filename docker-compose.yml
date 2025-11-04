@@ -1,0 +1,55 @@
+services:
+  # MariaDB (Database)
+  mariadb:
+    build: ./database
+    container_name: mariadb
+    restart: always
+    env_file: .env
+    ports:
+      - "${MARIADB_PORT:-3306}:3306"
+    volumes:
+      - ./database/data:/var/lib/mysql
+      - ./database/logs:/var/log/mysql
+      - ./database/my.cnf:/etc/mysql/conf.d/my.cnf
+    networks:
+      - app_network
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    depends_on:
+      - mariadb
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      PMA_USER: ${MARIADB_USER}
+      PMA_PASSWORD: ${MARIADB_PASSWORD}
+    ports:
+      - "${PHPMYADMIN_PORT:-8081}:80"
+    networks:
+      - app_network
+
+  # API
+  api:
+    container_name: api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    restart: always
+    env_file: .env
+    depends_on:
+      - mariadb
+    volumes:
+      - ./api:/app # Live code mount
+      - /usr/app/node_modules # Prevent host overwrite
+    command: npx nodemon index.js
+    ports:
+      - "${API_PORT:-9091}:9091" # Expose to host for testing
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge

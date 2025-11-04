@@ -1,0 +1,4 @@
+database/data/
+database/logs/
+
+api/node_modules
