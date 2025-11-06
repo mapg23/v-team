@@ -11,6 +11,7 @@ services:
       - ./database/data:/var/lib/mysql
       - ./database/logs:/var/log/mysql
       - ./database/my.cnf:/etc/mysql/conf.d/my.cnf
+
     networks:
       - app_network
 

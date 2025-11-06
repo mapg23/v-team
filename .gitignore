@@ -1,4 +1,5 @@
 database/data/
 database/logs/
+prototypes/
 
 api/node_modules
