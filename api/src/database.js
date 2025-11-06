@@ -31,23 +31,27 @@ const db = {
             if (conn) await conn.end();
         }
     },
-
+    // Helper function for select.
     select: async function select(table, columns = '*', where = '', params = []) {
-    const sql =
+        const sql =
         `SELECT ${Array.isArray(columns) ? columns.join(', ') : columns} FROM ${table}` +
         (where ? ` WHERE ${where}` : '');
         
         return this.query(sql, params);
     },
-
+    
+    // Helper function for insert.
     insert: async function insert(table, data) {
         const keys = Object.keys(data);
         const values = Object.values(data);
         const placeholders = keys.map(() => '?').join(', ');
+
         const sql = `INSERT INTO ${table} (${keys.join(', ')}) VALUES (${placeholders})`;
+
         return this.query(sql, values);
     },
-
+    
+    // Helper function for update.
     update: async function update(table, data, where, params = []) {
         const setClause = Object.keys(data)
             .map((k) => `${k} = ?`)
@@ -58,8 +62,10 @@ const db = {
         return this.query(sql, [...Object.values(data), ...params]);
     },
 
+    // Helper function for remove.
     remove: async function remove(table, where, params = []) {
         const sql = `DELETE FROM ${table}` + (where ? ` WHERE ${where}` : '');
+
         return this.query(sql, params);
     }
 };
