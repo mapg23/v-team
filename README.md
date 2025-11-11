@@ -19,3 +19,9 @@ docker compose up -d <service_name>
 ```
 docker compose up -d --force-recreate
 ```
+
+## Store into database
+
+```
+docker compose run --rm backup
+```

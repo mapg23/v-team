@@ -16,7 +16,22 @@ services:
       - ./database/logs:/var/log/mysql
       - ./database/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./database/initdb:/docker-entrypoint-initdb.d
+    networks:
+      - app_network
 
+  # External db only used for backing up data
+  backup:
+    image: mariadb:latest
+    container_name: mariadb-backup
+    depends_on:
+      - mariadb
+    env_file: .env
+    entrypoint: >
+      sh -c 'echo "Dumping DB to vteam" &&
+      mariadb-dump -h mariadb -uroot -p"$${MARIADB_ROOT_PASSWORD}" vteam > /backup/vteam.sql &&
+      echo "Backup complete: /backup/vteam.sql"'
+    volumes:
+      - ./database/initdb:/backup
     networks:
       - app_network
 
