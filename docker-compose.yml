@@ -7,10 +7,15 @@ services:
     env_file: .env
     ports:
       - "${MARIADB_PORT:-3306}:3306"
+
+    tmpfs:
+      - /var/lib/mysql
+
     volumes:
-      - ./database/data:/var/lib/mysql
+      # - ./database/data:/var/lib/mysql
       - ./database/logs:/var/log/mysql
       - ./database/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./database/initdb:/docker-entrypoint-initdb.d
 
     networks:
       - app_network

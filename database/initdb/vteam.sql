@@ -39,7 +39,7 @@ CREATE TABLE `Test` (
 INSERT INTO `Test` (`id`, `username`) VALUES
 (123, 'Test'),
 (123, 'Test'),
-(123, 'Test'),
+(123, 'Marcus'),
 (1435, 'New');
 COMMIT;
 
