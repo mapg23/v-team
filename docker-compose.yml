@@ -7,31 +7,12 @@ services:
     env_file: .env
     ports:
       - "${MARIADB_PORT:-3306}:3306"
-
-    tmpfs:
-      - /var/lib/mysql
-
     volumes:
-      # - ./database/data:/var/lib/mysql
+      # Logs and config
       - ./database/logs:/var/log/mysql
       - ./database/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./database/initdb:/docker-entrypoint-initdb.d
-    networks:
-      - app_network
-
-  # External db only used for backing up data
-  backup:
-    image: mariadb:latest
-    container_name: mariadb-backup
-    depends_on:
-      - mariadb
-    env_file: .env
-    entrypoint: >
-      sh -c 'echo "Dumping DB to vteam" &&
-      mariadb-dump -h mariadb -uroot -p"$${MARIADB_ROOT_PASSWORD}" vteam > /backup/vteam.sql &&
-      echo "Backup complete: /backup/vteam.sql"'
-    volumes:
-      - ./database/initdb:/backup
+      # Persistant volumes
+      - ./database/data:/var/lib/mysql
     networks:
       - app_network
 
