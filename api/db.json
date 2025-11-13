@@ -1,0 +1,106 @@
+{
+  "cities": [
+    {
+      "id": 1,
+      "name": "Stockholm",
+      "num_stations": 2
+    },
+    {
+      "id": 2,
+      "name": "Göteborg",
+      "num_stations": 1
+    },
+    {
+      "id": 3,
+      "name": "Malmö",
+      "num_stations": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": 1,
+      "name": "Station A",
+      "cityId": 1,
+      "coordinates": {
+        "lat": 59.3293,
+        "lng": 18.0686
+      },
+      "bikes": 20
+    },
+    {
+      "id": 2,
+      "name": "Station A1",
+      "cityId": 1,
+      "coordinates": {
+        "lat": 59.3667,
+        "lng": 18.1333
+      },
+      "bikes": 10
+    },
+    {
+      "id": 3,
+      "name": "Station B",
+      "cityId": 2,
+      "coordinates": {
+        "lat": 57.7089,
+        "lng": 11.9746
+      },
+      "bikes": 15
+    },
+    {
+      "id": 4,
+      "name": "Station C",
+      "cityId": 3,
+      "coordinates": {
+        "lat": 55.605,
+        "lng": 13.0038
+      },
+      "bikes": 8
+    }
+  ],
+  "users": [
+    {
+      "id": "1cc4",
+      "name": "Test",
+      "email": "test@example.com"
+    }
+  ],
+  "bikes": [
+    {
+      "id": 11,
+      "stationId": 1,
+      "coordinates": null
+    },
+    {
+      "id": 12,
+      "stationId": null,
+      "coordinates": {
+        "lat": 59.3293,
+        "lng": 18.0686
+      }
+    },
+    {
+      "id": 13,
+      "stationId": 2,
+      "coordinates": null
+    },
+    {
+      "id": 14,
+      "stationId": null,
+      "coordinates": {
+        "lat": 57.7089,
+        "lng": 11.9746
+      }
+    }
+  ],
+  "rentals": [
+    {
+      "id": "0873",
+      "userId": "1cc4",
+      "bikeId": "12"
+    }
+  ],
+
+  "payments": [],
+  "zones": []
+}
