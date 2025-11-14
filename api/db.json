@@ -1,24 +1,24 @@
 {
   "cities": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Stockholm",
       "num_stations": 2
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Göteborg",
       "num_stations": 1
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Malmö",
       "num_stations": 1
     }
   ],
   "stations": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Station A",
       "cityId": 1,
       "coordinates": {
@@ -28,7 +28,7 @@
       "bikes": 20
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Station A1",
       "cityId": 1,
       "coordinates": {
@@ -38,7 +38,7 @@
       "bikes": 10
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Station B",
       "cityId": 2,
       "coordinates": {
@@ -48,7 +48,7 @@
       "bikes": 15
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Station C",
       "cityId": 3,
       "coordinates": {
@@ -67,12 +67,12 @@
   ],
   "bikes": [
     {
-      "id": 11,
+      "id": "11",
       "stationId": 1,
       "coordinates": null
     },
     {
-      "id": 12,
+      "id": "12",
       "stationId": null,
       "coordinates": {
         "lat": 59.3293,
@@ -80,12 +80,12 @@
       }
     },
     {
-      "id": 13,
+      "id": "13",
       "stationId": 2,
       "coordinates": null
     },
     {
-      "id": 14,
+      "id": "14",
       "stationId": null,
       "coordinates": {
         "lat": 57.7089,
