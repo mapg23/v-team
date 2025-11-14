@@ -1,7 +1,7 @@
 "use strict";
+import express from 'express';
+import 'dotenv';
 
-const express = require('express');
-const dotenv = require('dotenv');
 const app = express();
 
 const port = process.env.BIKE_PORT || 7071;
