@@ -44,7 +44,6 @@ services:
     depends_on:
       - api
     volumes:
-      - ./bike:/app
       - /usr/app/node_modules
     command: npx nodemon index.js
     ports:
