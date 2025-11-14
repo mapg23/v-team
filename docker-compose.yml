@@ -61,9 +61,6 @@ services:
     env_file: .env
     depends_on:
       - mariadb
-    volumes:
-      - ./api:/app # Live code mount
-      - /usr/app/node_modules # Prevent host overwrite
     command: npx nodemon index.mjs
     ports:
       - "${API_PORT:-9091}:9091" # Expose to host for testing
