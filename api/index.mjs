@@ -1,6 +1,7 @@
 "use strict";
-const express = require('express');
-const dotenv = require('dotenv');
+import express from 'express';
+import 'dotenv';
+
 const app = express();
 const port = process.env.API_PORT || 9091
 

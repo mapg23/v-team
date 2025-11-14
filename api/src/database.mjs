@@ -1,7 +1,7 @@
 "use strict";
 
-const dotenv = require('dotenv');
-const mariadb = require('mariadb');
+import 'dotenv';
+import mariadb from 'mariadb';
 
 const pool = mariadb.createPool({
     host: process.env.MARIADB_HOST,
