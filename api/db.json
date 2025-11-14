@@ -97,10 +97,14 @@
     {
       "id": "0873",
       "userId": "1cc4",
-      "bikeId": "12"
+      "bikeId": 12
+    },
+    {
+      "id": "dfe3",
+      "userId": "1cc4",
+      "bikeId": 5
     }
   ],
-
   "payments": [],
   "zones": []
 }
