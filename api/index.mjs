@@ -4,8 +4,9 @@ import 'dotenv';
 
 const app = express();
 const port = process.env.API_PORT || 9091
+const version = process.env.API_VERSION;
 
-app.get("/", (req, res) => {
+app.get(`/${version}/`, (req, res) => {
     res.json({
         status: "ok",
         msg: "GET / ENDPOINT"
