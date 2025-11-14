@@ -13,6 +13,6 @@ EOF
 
 COPY . .
 
-EXPOSE 9091
+EXPOSE 7071
 
 CMD ["npm", "run", "start"]

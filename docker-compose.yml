@@ -33,6 +33,25 @@ services:
     networks:
       - app_network
 
+  # Bike
+  bike:
+    container_name: bike
+    build:
+      context: ./bike
+      dockerfile: Dockerfile
+    restart: always
+    env_file: .env
+    depends_on:
+      - api
+    volumes:
+      - ./bike:/app
+      - /usr/app/node_modules
+    command: npx nodemon index.js
+    ports:
+      - "${BIKE_PORT:-7071}:7071"
+    networks:
+      - app_network
+
   # API
   api:
     container_name: api
