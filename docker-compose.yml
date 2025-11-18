@@ -71,6 +71,25 @@ services:
     networks:
       - app_network
 
+  # ADMIN CLIENT
+  admin-client:
+    container_name: admin-client
+    build:
+      context: ./admin-client
+      dockerfile: Dockerfile
+    restart: always
+    env_file: .env
+    depends_on:
+       - api
+    # volumes:
+    #   - ./api:/app
+    #   - /app/node_modules
+    # command: npx nodemon index.mjs
+    ports:
+      - "${ADMIN_CLIENT_PORT:-5173}:5173" # Expose to host for testing
+    networks:
+       - app_network
+
 networks:
   app_network:
     driver: bridge
