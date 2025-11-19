@@ -89,20 +89,15 @@ app.get('/move/:id/:x/:y', async (req, res) => {
   let id = req.params.id;
 
   let response = await callWorker('move', { x: x, y: y, id: id});
-  // console.log(response)
 
-  res.send({
-    x: x,
-    y: y,
-    id: id
-  });
+  res.json(response)
 });
 
 app.get('/bike/:id', async (req, res) => {
   let id = req.params.id;
-  let response = await callWorker('get-bike', { id })
+  let response = await callWorker('get-bike', { id: id })
 
-  res.json(response);
+  res.json(response['data'])
 });
 
 

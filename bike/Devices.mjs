@@ -1,5 +1,4 @@
 "use strict";
-import WebSocket from 'ws'
 
 class Device {
     constructor(id, cords, battery = 100, status = 'active', occupied = false) {

@@ -24,9 +24,13 @@ class Simulator {
         return { event: 'Listing all bikes', data : this.bikes};
     }
 
+    /**
+     * Getter for device based on id.
+     * @param {Array} payload 
+     * @returns {Array} - Device
+     */
     getBike(payload) {
-        let id = payload['data'].id;
-        return this.bikes[id];
+        return { event: 'Retriving bike', data : this.bikes[payload.id]}
     }
 
     /**
@@ -38,8 +42,10 @@ class Simulator {
         if (this.bikes.length == 0) {
             this.start();
         }
+        const prevX = this.bikes[bike.id].cords.x;
+        const prevY = this.bikes[bike.id].cords.y;
 
-        const returnMsg = { event: `Changed bike: ${bike.id} from pos: ${this.bikes[bike.id].cords} to: {x: ${bike.x}, y: ${bike.y}} `}
+        const returnMsg = { event: `Changed bike: ${bike.id} from {x:${prevX}, y:${prevY}} to: {x: ${bike.x}, y: ${bike.y}} `}
         
         this.bikes[bike.id].cords = {
             x: Number(bike.x),
