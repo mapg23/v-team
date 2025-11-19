@@ -2,9 +2,9 @@
 import WebSocket from 'ws'
 
 class Device {
-    constructor(id, startCords, battery = 100, status = 'active', occupied = false) {
+    constructor(id, cords, battery = 100, status = 'active', occupied = false) {
         this.id = id;
-        this.startCords = startCords;
+        this.cords = cords;
         this.battery = battery;
         this.status = status;
         this.occupied = occupied;

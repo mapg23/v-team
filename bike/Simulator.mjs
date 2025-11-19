@@ -18,6 +18,19 @@ class Simulator {
     list() {
         return { event: 'Listing all bikes', data : this.bikes};
     }
+
+    move(payload) {
+        if (this.bikes.length == 0) {
+            this.start();
+        }
+
+        console.log(payload)
+        return { event: `Payload: ${cords}`}
+
+        // returnMsg = { event: `Altered Bike: ${id} from location: ${this.bikes[id].cords} to: ${cords} ` }
+        // this.bikes[id].cords = cords;
+        // return returnMsg
+    }
 };
 
 
@@ -37,6 +50,10 @@ parentPort?.on("message", (msg) => {
         break;
         case 'list':
             res = simm.list();
+            parentPort.postMessage({ id, ...res});
+        break;
+        case 'move':
+            res = simm.move(payload);
             parentPort.postMessage({ id, ...res});
         break;
     }

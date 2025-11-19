@@ -87,6 +87,22 @@ app.get('/list', async (req, res) => {
   }
 });
 
+app.get('/move/:id/:x/:y', async (req, res) => {
+  let x = req.params.x
+  let y = req.params.y
+  let id = req.params.id;
+
+  let response = await callWorker('move', {data:{ x: x, y: y, id: id}});
+  console.log(response)
+
+  res.send({
+    x: x,
+    y: y,
+    id: id
+  })
+
+});
+
 
 app.listen(port, function () {
   console.log(`Listening on port: ${port}`);
