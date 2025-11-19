@@ -1,40 +1,43 @@
+import { parentPort } from "worker_threads";
+
+import Device from './Devices.mjs';
+
 class Simulator {
     bikes = [];
-
-    
+    total_bikes = 100;
     start() {
-        console.log("Simulation started");
-        // send confirmation to parent
-        process.send({ event: "started" });
+        for(let i = 0; i < this.total_bikes; i++) {
+            this.bikes.push(new Device(i, {x: 0, y:0}))
+        }
+        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes}
     }
 
     end() {
-        console.log("Simulation terminated");
-        process.send({ event: "terminated" });
+        return { event: 'stopping worker'};
     }
-
-    move(coordinates) {
-        console.log(`MOOOVINT: ${coordinates}`);
-        console.log("Moving to:", coordinates);
-        process.send({ event: "moved", coordinates });
+    list() {
+        return { event: 'Listing all bikes', data : this.bikes};
     }
-}
+};
 
-// Create one persistent instance
+
 const simm = new Simulator();
 
-// Listen for messages from parent
-process.on("message", (msg) => {
-
-    if (msg.cmd === "start-job") {
-        simm.start();
-    }
-
-    if (msg.cmd === "terminate-job") {
-        simm.end();
-    }
-
-    if (msg.cmd === "move-bike") {
-        simm.move(msg.payload.cords);
+parentPort?.on("message", (msg) => {
+    const { id, cmd, payload } = msg;
+    let res;
+    switch(msg.cmd) {
+        case 'start-job':
+            res = simm.start();
+            parentPort.postMessage({ id, ...res})
+        break;
+        case 'end-job':
+            res = simm.end()
+            parentPort.postMessage({ id, ...res})
+        break;
+        case 'list':
+            res = simm.list();
+            parentPort.postMessage({ id, ...res});
+        break;
     }
 });
