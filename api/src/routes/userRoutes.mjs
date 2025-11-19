@@ -34,4 +34,30 @@ route.get(`/users`, async (req, res) => {
     }
 });
 
+route.put(`/users/:id`, async (req, res) => {
+    try {
+        const result = await users.updateUser(req.params.id, req.body);
+        // konverterar id till number
+        const user = { id: Number(req.params.id), ...req.body };
+
+        return res.json(user);
+    } catch (err) {
+        return res.status(500).json({ error: 'Could not update user' });
+    }
+});
+
+route.delete(`/users/:id`, async (req, res) => {
+    try {
+        const user = await users.deleteUser(req.params.id);
+        // No Content
+        res.sendStatus(204);
+
+        return res.json(user);
+    } catch (err) {
+        return res.status(500).json({ error: 'Could not delete user' });
+    }
+});
+
+
+
 export default route;
