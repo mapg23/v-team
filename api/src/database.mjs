@@ -36,10 +36,10 @@ const db = {
         const sql =
         `SELECT ${Array.isArray(columns) ? columns.join(', ') : columns} FROM ${table}` +
         (where ? ` WHERE ${where}` : '');
-        
+
         return this.query(sql, params);
     },
-    
+
     // Helper function for insert.
     insert: async function insert(table, data) {
         const keys = Object.keys(data);
@@ -50,7 +50,7 @@ const db = {
 
         return this.query(sql, values);
     },
-    
+
     // Helper function for update.
     update: async function update(table, data, where, params = []) {
         const setClause = Object.keys(data)
@@ -70,4 +70,4 @@ const db = {
     }
 };
 
-module.exports = db;
+export default db;
