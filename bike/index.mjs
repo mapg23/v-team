@@ -1,13 +1,9 @@
 "use strict";
 import "dotenv/config";
 import express from "express";
-
 import { Worker } from "worker_threads";
-import { randomUUID } from "crypto"; // used for each call
+import { randomUUID } from "crypto";
 
-// worker.on("message", (msg) => { console.log("From worker:", msg); });
-// worker.on("error", (err) => { console.error("Worker error:", err); });
-// worker.on("exit", (code) => { console.log("Worker exited:", code); });
 
 const app = express();
 const port = process.env.BIKE_PORT || 7071;
@@ -18,7 +14,14 @@ const worker = new Worker(
 );
 const pending = new Map();
 
+/**
+ * Base function for making a call to the worker.
+ * @param {command} cmd - Command
+ * @param {*} payload - Data
+ * @returns Promise
+ */
 function callWorker(cmd, payload = {}) {
+  // used for each call to generate a unique call id
   const id = randomUUID();
 
   return new Promise((resolve, reject) => {
@@ -35,7 +38,6 @@ function callWorker(cmd, payload = {}) {
     }, 5000);
   });
 }
-
 
 worker.on('message', (msg) => {
   const { id, event, data} = msg;
