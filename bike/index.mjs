@@ -77,11 +77,7 @@ app.get('/end', async (req, res) => {
 app.get('/list', async (req, res) => {
   try {
     const response = await callWorker('list');
-    res.json({
-      ok: true,
-      msg: 'listing devices',
-      devices: response
-    });
+    res.json(response.data);
   } catch (error) {
     console.error(error)
   }
@@ -92,15 +88,21 @@ app.get('/move/:id/:x/:y', async (req, res) => {
   let y = req.params.y
   let id = req.params.id;
 
-  let response = await callWorker('move', {data:{ x: x, y: y, id: id}});
-  console.log(response)
+  let response = await callWorker('move', { x: x, y: y, id: id});
+  // console.log(response)
 
   res.send({
     x: x,
     y: y,
     id: id
-  })
+  });
+});
 
+app.get('/bike/:id', async (req, res) => {
+  let id = req.params.id;
+  let response = await callWorker('get-bike', { id })
+
+  res.json(response);
 });
 
 
