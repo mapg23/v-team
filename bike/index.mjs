@@ -1,50 +1,88 @@
 "use strict";
-import "dotenv";
+import "dotenv/config";
 import express from "express";
-import { fork } from "child_process";
 
+import { Worker } from "worker_threads";
+import { randomUUID } from "crypto"; // used for each call
+
+// worker.on("message", (msg) => { console.log("From worker:", msg); });
+// worker.on("error", (err) => { console.error("Worker error:", err); });
+// worker.on("exit", (code) => { console.log("Worker exited:", code); });
 
 const app = express();
 const port = process.env.BIKE_PORT || 7071;
 
+const worker = new Worker(
+  new URL('./Simulator.mjs', import.meta.url),
+  { type: "module" }
+);
+const pending = new Map();
 
-// New Thread
-const worker = fork("./Simulator.mjs");
+function callWorker(cmd, payload = {}) {
+  const id = randomUUID();
 
-worker.on('message', msg => {
-  console.log("Worker message:", msg);
+  return new Promise((resolve, reject) => {
+    pending.set(id, { resolve, reject });
+
+    worker.postMessage({ id, cmd, payload });
+
+    // optional timeout
+    setTimeout(() => {
+      if (pending.has(id)) {
+        pending.get(id).reject(new Error("Worker timeout"));
+        pending.delete(id);
+      }
+    }, 5000);
+  });
+}
+
+
+worker.on('message', (msg) => {
+  const { id, event, data} = msg;
+
+  if (pending.has(id)) {
+    pending.get(id).resolve({ event, data });
+    pending.delete(id);
+  }
+})
+
+app.get('/start', async (req, res) => {
+  try {
+    const response = await callWorker('start-job');
+    console.log(response);
+    res.json({
+      ok: true,
+      msg: 'started-job',
+      bikes: response
+    });
+  } catch (error) {
+    console.error(error)
+  }
 });
 
-app.get('/start', (req, res) => {
-  worker.send({ cmd: 'start-job'});
-  res.json({
-    ok: true,
-    msg: 'started-job'
-  });
+app.get('/end', async (req, res) => {
+  try {
+    const response = await callWorker('end-job');
+    res.json({
+      ok: true,
+      msg: 'ending-job'
+    });
+  } catch (error) {
+    console.error(error)
+  }
 });
 
-app.get('/terminate', (req, res) => {
-  worker.send({ cmd: 'terminate-job'});
-  res.json({
-    ok: true,
-    msg: 'terminated-job'
-  });
-});
-
-app.get('/move', (req, res) => {
-  const x = Number(req.query.x);
-  const y = Number(req.query.y);
-  const id = Number(req.query.id);
-
-  worker.send({
-    cmd: 'move-bike',
-    payload: {
-      cords: { x, y },
-      id: id
-    }
-  });
-
-  res.json({ ok: true, x, y });
+app.get('/list', async (req, res) => {
+  try {
+    const response = await callWorker('list');
+    res.json({
+      ok: true,
+      msg: 'listing devices',
+      devices: response
+    });
+  } catch (error) {
+    console.error(error)
+  }
 });
 
 
