@@ -15,20 +15,23 @@ const pool = mariadb.createPool({
 const db = {
     connect: async function connect() {
         const conn = await pool.getConnection();
+
         return conn;
     },
 
     query: async function query(sql, params = []) {
         let conn;
+
         try {
             conn = await this.connect();
             const result = await conn.query(sql, params);
+
             return result;
         } catch (err) {
             console.error(`SQL ERROR: ${err.message}`);
             throw err;
         } finally {
-            if (conn) await conn.end();
+            if (conn) {await conn.end();}
         }
     },
     // Helper function for select.
@@ -36,10 +39,10 @@ const db = {
         const sql =
         `SELECT ${Array.isArray(columns) ? columns.join(', ') : columns} FROM ${table}` +
         (where ? ` WHERE ${where}` : '');
-        
+
         return this.query(sql, params);
     },
-    
+
     // Helper function for insert.
     insert: async function insert(table, data) {
         const keys = Object.keys(data);
@@ -50,7 +53,7 @@ const db = {
 
         return this.query(sql, values);
     },
-    
+
     // Helper function for update.
     update: async function update(table, data, where, params = []) {
         const setClause = Object.keys(data)
@@ -70,4 +73,4 @@ const db = {
     }
 };
 
-module.exports = db;
+export default db;
