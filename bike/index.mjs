@@ -4,10 +4,13 @@ import express from "express";
 import { Worker } from "worker_threads";
 import { randomUUID } from "crypto";
 
-
 const app = express();
 const port = process.env.BIKE_PORT || 7071;
 
+app.use(express.json());       // to support JSON-encoded bodies
+app.use(express.urlencoded()); // to support URL-encoded bodies
+
+// Worker setup
 const worker = new Worker(
   new URL('./Simulator.mjs', import.meta.url),
   { type: "module" }
@@ -48,6 +51,32 @@ worker.on('message', (msg) => {
   }
 })
 
+
+app.get('/heartbeat', async (req, res) => {
+  try {
+    const response = await callWorker('heartbeat')
+
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+
+// cordinates params { bike_id : {...cordinates}, bike_id: {...cordinates}}
+app.post('/setRoute', async (req, res) => {
+  let cordinates = req.body.cordinates;
+  // console.log(req.body);
+  try {
+    const response = await callWorker('setRoute', cordinates)
+    // console.log(response);
+
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 app.get('/start', async (req, res) => {
   try {
     const response = await callWorker('start-job');
@@ -85,7 +114,7 @@ app.get('/move/:id/:x/:y', async (req, res) => {
   let y = req.params.y
   let id = req.params.id;
 
-  let response = await callWorker('move', { x: x, y: y, id: id});
+  let response = await callWorker('move-specific', { x: x, y: y, id: id});
 
   res.json(response)
 });
