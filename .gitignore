@@ -4,3 +4,5 @@ prototypes/
 .DS_STORE
 api/node_modules
 bike/node_modules
+
+bike/mock_api.mjs

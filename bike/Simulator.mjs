@@ -5,7 +5,9 @@ import Device from './Devices.mjs';
 
 class Simulator {
     bikes = [];
-    total_bikes = 100;
+    total_bikes = 2;
+    cordinates = {};
+    heartbeat_count = 0;
     /**
      * Method for start of simulation.
      * @returns {Array} - Event with data.
@@ -30,6 +32,22 @@ class Simulator {
         return { event: 'stopping worker'};
     }
 
+    heartbeat() {
+        for(let i = 0; i < this.bikes.length; i++) {
+            if (!this.cordinates[i]) continue;
+
+            if (this.cordinates[i].length === 0) {
+                this.cordinates[i] = null;
+                return { event: `Bike ${i} has reached it's destination` };
+            }
+
+            const nextCord = this.cordinates[i].shift();
+            this.bikes[i].cords = nextCord;
+        }
+
+        return { event: 'Bikes updated!'};
+    }
+
     /**
      * Method that returns an array containing a list of all bikes.
      * @returns {Array} - Event with data
@@ -47,12 +65,25 @@ class Simulator {
         return { event: 'Retriving bike', data : this.bikes[payload.id]}
     }
 
+
     /**
      * Method that alters a specific bikes cordinates based on bike id.
      * @param {Array} payload 
      * @returns {Array} - Array of result.
      */
-    move(bike) {
+    setRoute(payload) {
+        try {
+            for (let key in payload) {
+                this.cordinates[Number(key)] = payload[key];
+            }
+            return { event: 'Succesfully added routes', data: payload};
+        } catch (error) {
+            console.error('Invalid JSON structure', error.message);
+            return { event: 'Invalid JSON format'};
+        }
+    }
+
+    moveSpecific(bike) {
         if (this.bikes.length == 0) {
             this.start();
         }
@@ -83,8 +114,12 @@ parentPort?.on("message", async (msg) => {
         'start-job': () => simm.start(),
         'end-job': () => simm.end(),
         'list': () => simm.list(),
-        'move': () => simm.move(payload),
+
+        'setRoute': () => simm.setRoute(payload),
+        'move-specific': () => simm.moveSpecific(payload),
+
         'get-bike': () => simm.getBike(payload),
+        'heartbeat': () => simm.heartbeat(),
     };
 
     const callFunction = routers[cmd];
