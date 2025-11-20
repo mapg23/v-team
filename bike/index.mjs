@@ -65,10 +65,7 @@ app.get('/start', async (req, res) => {
 app.get('/end', async (req, res) => {
   try {
     const response = await callWorker('end-job');
-    res.json({
-      ok: true,
-      msg: 'ending-job'
-    });
+    res.json(response);
   } catch (error) {
     console.error(error)
   }
