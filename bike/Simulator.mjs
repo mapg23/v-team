@@ -1,3 +1,4 @@
+"use strict";
 import { parentPort } from "worker_threads";
 
 import Device from './Devices.mjs';
@@ -5,6 +6,10 @@ import Device from './Devices.mjs';
 class Simulator {
     bikes = [];
     total_bikes = 100;
+    /**
+     * Method for start of simulation.
+     * @returns {Array} - Event with data.
+     */
     start() {
         if (this.bikes.length >= this.total_bikes) {
             return { event: `Bikes already at max capacity: ${this.bikes.length}/${this.total_bikes}`};
@@ -16,16 +21,25 @@ class Simulator {
         return { event: `Bikes: ${this.bikes.length}`, data: this.bikes}
     }
 
+    /**
+     * Method that sets bikes to an empty array.
+     * @returns {Array} - Event
+     */
     end() {
         this.bikes = [];
         return { event: 'stopping worker'};
     }
+
+    /**
+     * Method that returns an array containing a list of all bikes.
+     * @returns {Array} - Event with data
+     */
     list() {
         return { event: 'Listing all bikes', data : this.bikes};
     }
 
     /**
-     * Getter for device based on id.
+     * Getter method for device based on id.
      * @param {Array} payload 
      * @returns {Array} - Device
      */
