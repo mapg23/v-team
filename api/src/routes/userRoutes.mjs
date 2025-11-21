@@ -1,9 +1,11 @@
 import express from 'express';
+import validateJsonBody from '../middleware/validateJsonBody.mjs';
 import users from "../models/users.mjs";
+
 
 const route = express.Router();
 
-route.post(`/users`, async (req, res) => {
+route.post(`/users`, validateJsonBody, async (req, res) => {
     try {
         const result = await users.createUser(req.body);
 
@@ -12,7 +14,7 @@ route.post(`/users`, async (req, res) => {
         return res.json(newUser);
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: 'Could create user' });
+        return res.status(500).json({ error: 'Could not create user' });
     }
 });
 
@@ -44,7 +46,7 @@ route.get(`/users`, async (req, res) => {
     }
 });
 
-route.put(`/users/:id`, async (req, res) => {
+route.put(`/users/:id`, validateJsonBody, async (req, res) => {
     try {
         // Uppdaterar användaren
         await users.updateUser(req.params.id, req.body);
@@ -71,7 +73,5 @@ route.delete(`/users/:id`, async (req, res) => {
         return res.status(500).json({ error: 'Could not delete user' });
     }
 });
-
-
 
 export default route;
