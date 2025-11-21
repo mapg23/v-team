@@ -32,22 +32,6 @@ class Simulator {
         return { event: 'stopping worker'};
     }
 
-    // heartbeat() {
-    //     for(let i = 0; i < this.bikes.length; i++) {
-    //         if (!this.cordinates[i]) continue;
-
-    //         if (this.cordinates[i].length === 0) {
-    //             this.cordinates[i] = null;
-    //             return { event: `Bike ${i} has reached it's destination` };
-    //         }
-
-    //         const nextCord = this.cordinates[i].shift();
-    //         this.bikes[i].cords = nextCord;
-    //     }
-
-    //     return { event: 'Bikes updated!'};
-    // }
-
     heartbeat() {
         for(let key in this.cordinates) {
             if (!this.bikes[key]) {
@@ -61,7 +45,7 @@ class Simulator {
                 console.log(`Bike ${key} has updated it's cords`)
             } else {
                 console.log(`Bike: ${key} has no cordinates left ${this.cordinates[key].length}`)
-                this.bikes[key].status = 10;
+                this.bikes[key].status = 40;
                 this.cordinates[key] = [];
             }
 
