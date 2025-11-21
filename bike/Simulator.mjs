@@ -5,7 +5,7 @@ import Device from './Devices.mjs';
 
 class Simulator {
     bikes = [];
-    total_bikes = 1000;
+    total_bikes = 1;
     cordinates = {};
     heartbeat_count = 0;
     /**
@@ -32,39 +32,42 @@ class Simulator {
         return { event: 'stopping worker'};
     }
 
-    heartbeat() {
-        for(let i = 0; i < this.bikes.length; i++) {
-            if (!this.cordinates[i]) continue;
+    // heartbeat() {
+    //     for(let i = 0; i < this.bikes.length; i++) {
+    //         if (!this.cordinates[i]) continue;
 
-            if (this.cordinates[i].length === 0) {
-                this.cordinates[i] = null;
-                return { event: `Bike ${i} has reached it's destination` };
+    //         if (this.cordinates[i].length === 0) {
+    //             this.cordinates[i] = null;
+    //             return { event: `Bike ${i} has reached it's destination` };
+    //         }
+
+    //         const nextCord = this.cordinates[i].shift();
+    //         this.bikes[i].cords = nextCord;
+    //     }
+
+    //     return { event: 'Bikes updated!'};
+    // }
+
+    heartbeat() {
+        for(let key in this.cordinates) {
+            if (!this.bikes[key]) {
+                continue;
             }
 
-            const nextCord = this.cordinates[i].shift();
-            this.bikes[i].cords = nextCord;
+            if (this.cordinates[key].length !== 0) {
+                this.bikes[key].status = 10;
+                const nextCordinate = this.cordinates[key].shift();
+                this.bikes[key].cords = nextCordinate;
+                console.log(`Bike ${key} has updated it's cords`)
+            } else {
+                console.log(`Bike: ${key} has no cordinates left ${this.cordinates[key].length}`)
+                this.bikes[key].status = 10;
+                this.cordinates[key] = [];
+            }
+
         }
-
-        return { event: 'Bikes updated!'};
+        return { event: 'Heartbeat updated' };
     }
-
-    // heartbeat() {
-    //     for(let key in this.cordinates) {
-    //         if (!this.bikes[key]) {
-    //             continue;
-    //         }
-    //         if (this.cordinates[key].length === 0) {
-    //             this.cordinates[key] = null;
-    //             return { event: `Bike ${key} has reached its destination` };
-    //         }
-
-    //         const nextCordinate = this.cordinates[key].shift();
-    //         this.bikes[key].cords = nextCordinate;
-
-    //         return { event: `Bike: ${key} has updated it's cords!`};
-    //     }
-    //     return { event: 'All bikes has reached their destinations!'};
-    // }
 
     /**
      * Method that returns an array containing a list of all bikes.

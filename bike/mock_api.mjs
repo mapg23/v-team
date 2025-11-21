@@ -2,7 +2,7 @@
 
 async function start() {
     let done = false;
-    let heartbeat_timer = 1000;
+    let heartbeat_timer = 5000;
 
     let cordinates = {
       cordinates: {
