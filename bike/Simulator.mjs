@@ -5,7 +5,7 @@ import Device from './Devices.mjs';
 
 class Simulator {
     bikes = [];
-    total_bikes = 2;
+    total_bikes = 1000;
     cordinates = {};
     heartbeat_count = 0;
     /**
@@ -47,6 +47,24 @@ class Simulator {
 
         return { event: 'Bikes updated!'};
     }
+
+    // heartbeat() {
+    //     for(let key in this.cordinates) {
+    //         if (!this.bikes[key]) {
+    //             continue;
+    //         }
+    //         if (this.cordinates[key].length === 0) {
+    //             this.cordinates[key] = null;
+    //             return { event: `Bike ${key} has reached its destination` };
+    //         }
+
+    //         const nextCordinate = this.cordinates[key].shift();
+    //         this.bikes[key].cords = nextCordinate;
+
+    //         return { event: `Bike: ${key} has updated it's cords!`};
+    //     }
+    //     return { event: 'All bikes has reached their destinations!'};
+    // }
 
     /**
      * Method that returns an array containing a list of all bikes.
