@@ -29,6 +29,12 @@ route.get(`/users/:id`, async (req, res) => {
 
 route.get(`/users`, async (req, res) => {
     try {
+        if (req.query.email) {
+            const user = await users.getUserByEmail(req.query.email);
+
+            return res.json(user);
+        }
+
         const userList = await users.getUsers();
 
         return res.json(userList);

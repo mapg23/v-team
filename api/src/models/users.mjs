@@ -39,6 +39,21 @@ const users = {
     },
 
     /**
+     * Fetch a single user by email.
+     *
+     * @param {string} email - The email of the user.
+     * @returns {Promise} User record if found.
+     */
+    getUserByEmail: async function getUserByEmail(email) {
+        return await db.select(
+            'users',
+            ['id', 'username', 'email'],
+            'email = ?',
+            [email]
+        );
+    },
+
+    /**
      * Update a user in the database by ID.
      *
      * @param {number} id - The ID of the user to update.
