@@ -9,7 +9,9 @@ const users = {
      * @returns {Promise} The result from the database insert operation.
      */
     getUsers: async function getUsers() {
-        return await db.select('users');
+        const users = await db.select('users', ['id', 'username', 'email']);
+
+        return users;
     },
     /**
      * Create a new user in the database.
@@ -28,7 +30,12 @@ const users = {
      * @returns {Promise} User record if found.
      */
     getUserById: async function getUserById(id) {
-        return await db.select('users', '*', 'id = ?', [id]);
+        return await db.select(
+            'users',
+            ['id', 'username', 'email'],
+            'id = ?',
+            [id]
+        );
     },
 
     /**

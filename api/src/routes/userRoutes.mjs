@@ -5,12 +5,11 @@ const route = express.Router();
 
 route.post(`/users`, async (req, res) => {
     try {
-        // Returnerar db.insert-resultatet
         const result = await users.createUser(req.body);
-        // Konverterar från BigInt till number
-        const user = { id: Number(result.insertId), ...req.body };
 
-        return res.json(user);
+        const newUser = await users.getUserById(Number(result.insertId));
+
+        return res.json(newUser);
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Could create user' });
@@ -41,11 +40,12 @@ route.get(`/users`, async (req, res) => {
 
 route.put(`/users/:id`, async (req, res) => {
     try {
+        // Uppdaterar användaren
         await users.updateUser(req.params.id, req.body);
-        // konverterar id till number
-        const user = { id: Number(req.params.id), ...req.body };
 
-        return res.json(user);
+        const updatedUser = await users.getUserById(req.params.id);
+
+        return res.json(updatedUser);
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Could not update user' });
