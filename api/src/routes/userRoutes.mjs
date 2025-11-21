@@ -60,6 +60,21 @@ route.put(`/users/:id`, validateJsonBody, async (req, res) => {
     }
 });
 
+// Uppdaterar en del av användarens uppgifter.
+route.patch(`/users/:id`, validateJsonBody, async (req, res) => {
+    try {
+
+        await users.updateUser(req.params.id, req.body);
+
+        const updatedUser = await users.getUserById(req.params.id);
+
+        return res.json(updatedUser);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Could not update user' });
+    }
+});
+
 route.delete(`/users/:id`, async (req, res) => {
     try {
         const user = await users.deleteUser(req.params.id);
