@@ -37,7 +37,7 @@ class Simulator {
             if (!this.bikes[key]) {
                 continue;
             }
-
+            // Updated
             if (this.cordinates[key].length !== 0) {
                 this.bikes[key].status = 10;
                 const nextCordinate = this.cordinates[key].shift();
