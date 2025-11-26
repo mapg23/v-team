@@ -1,0 +1,29 @@
+name: Run Jest tests
+
+on:
+  pull_request:
+    branches: ["*"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        folder: ["bike", "api"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install
+        run: npm install
+        working-directory: ${{ matrix.folder }}
+
+      - name: Run Jest Tests
+        run: npm test -- --ci
+        working-directory: ${{ matrix.folder }}
