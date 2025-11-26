@@ -25,3 +25,26 @@ docker compose up -d --force-recreate
 ```
 docker compose run --rm backup
 ```
+
+## Curl for cordinates on bikes
+
+```
+
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{
+    "cordinates": {
+      "10": [
+        { "x": 0, "y": 0 },
+        { "x": 100, "y": 120 }
+      ],
+      "11": [
+        { "x": 10, "y": 20 },
+        { "x": 15, "y": 23 }
+      ]
+    }
+  }' \
+  http://localhost:7071/move/
+
+
+```
