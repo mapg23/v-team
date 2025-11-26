@@ -41,6 +41,8 @@ class Simulator {
             if (this.cordinates[key].length !== 0) {
                 this.bikes[key].status = 10;
                 const nextCordinate = this.cordinates[key].shift();
+
+                // this.bikes[key].move(nextCordinate);
                 this.bikes[key].cords = nextCordinate;
                 console.log(`Bike ${key} has updated it's cords`)
             } else {
@@ -48,7 +50,6 @@ class Simulator {
                 this.bikes[key].status = 40;
                 this.cordinates[key] = [];
             }
-
         }
         return { event: 'Heartbeat updated' };
     }
