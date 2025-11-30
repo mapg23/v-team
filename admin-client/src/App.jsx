@@ -1,17 +1,16 @@
-import { useState } from 'react'
 import './App.css'
 import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import Login from "./components/Login"
+import Login from "./components/forms/Loginform"
+import HomeView from "./views/home/HomeView"
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/user" element={<Login />} />
+          <Route path="/home" element={<HomeView />} />
         </Routes>
       </Router>
     </>

@@ -1,0 +1,26 @@
+ ul {
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+   width: 200px;
+   /* background-color: #f1f1f1; */
+   border: 1px solid grey;
+ }
+
+ li a {
+   display: block;
+   color: white;
+   padding: 8px 16px;
+   text-decoration: none;
+ }
+
+ /* Change the link and background color on hover */
+ li a:hover {
+   background-color: #555555;
+   color: white;
+ }
+
+.active {
+  background-color: #04AA6D;
+  /* color: blue; */
+} 
