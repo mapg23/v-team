@@ -15,7 +15,6 @@ class Simulator {
         this.cordinates = cordinates;
     }
 
-
     /**
      * Method for start of simulation.
      * @returns {Array} - Event with data.
@@ -115,13 +114,19 @@ class Simulator {
     }
 };
 
+export function createSimulator(options) {
+    return new Simulator(options?.total_bikes ?? 1);
+}
+
+
 // Instance of Simulator, this is active while the main thread is.
-const simm = new Simulator();
+const simm = createSimulator();
 
 /**
  * Routing from the main application into the simulator class.
  */
-parentPort?.on("message", async (msg) => {
+export async function handleWorkerMessage(msg, simm) {
+    // parentPort?.on("message", async (msg) => {
     const { id, cmd, payload } = msg;
 
     const routers = {
@@ -139,15 +144,24 @@ parentPort?.on("message", async (msg) => {
     const callFunction = routers[cmd];
 
     if (!callFunction) {
-        return parentPort.postMessage({id, error: `Unknown call ${cmd}`});
+        return {id, error: `Unknown call ${cmd}`};
+        // return parentPort.postMessage({id, error: `Unknown call ${cmd}`});
     }
 
     try {
         const res = await callFunction();
-        parentPort.postMessage({ id, ...res});
+        // parentPort.postMessage({ id, ...res});
+        return { id, ...res };
     } catch (error) {
-        parentPort.postMessage({id, error: error.message});
+        // parentPort.postMessage({id, error: error.message});
+        return { id, error: error.message };
     }
+};
+
+parentPort?.on("message", async (msg) => {
+    const response = await handleWorkerMessage(msg, simm);
+    parentPort.postMessage(response);
 });
 
-module.exports = Simulator
+
+export default Simulator;
