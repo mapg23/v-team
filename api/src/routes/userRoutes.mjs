@@ -1,7 +1,9 @@
 import express from 'express';
 import validateJsonBody from '../middleware/validateJsonBody.mjs';
 import users from "../models/users.mjs";
-
+import createUsers from "../models/users.mjs";
+//skapar objektet som routern använder
+const users = createUsers();
 
 const route = express.Router();
 
@@ -78,8 +80,8 @@ route.patch(`/users/:id`, validateJsonBody, async (req, res) => {
 route.delete(`/users/:id`, async (req, res) => {
     try {
         const user = await users.deleteUser(req.params.id);
-        // No Content
 
+        // No Content
         res.sendStatus(204);
 
         return res.json(user);
