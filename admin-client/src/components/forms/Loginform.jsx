@@ -4,6 +4,12 @@ import btnstyle from "../button/Button.module.css";
 
 import { useState } from "react";
 
+/**
+ * @param {Object} onFormSubmit function to call when form is submitted
+ * The form only renders the UI - it has nothing to do with the login 
+ * logic 
+ * @returns 
+ */
 export default function LoginForm({ onFormSubmit }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
