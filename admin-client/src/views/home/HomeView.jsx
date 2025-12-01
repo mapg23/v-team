@@ -1,4 +1,4 @@
-import Navigation from "../../components/nav/Nav"
+import styles from "./HomeView.module.css"
 
 /**
  * Home view for admin
@@ -6,7 +6,15 @@ import Navigation from "../../components/nav/Nav"
  * Display Nav and dashboard(?)
  */
 function HomeView() {
-    return <Navigation></Navigation>;
+    return (
+      <>
+        <div className="dataContent">
+          <h2>City name</h2>
+          <div className={styles.table}></div>
+          <div className={styles.map}></div>
+        </div>
+      </>
+    );
 }
 
 export default HomeView;

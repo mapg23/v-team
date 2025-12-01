@@ -1,9 +1,17 @@
-.container {
-  display: flex;
-}
-
-.nav {
+.dataContent {
   display: flex;
   flex-direction: column;
-  
+}
+
+.table {
+  width: 100%;
+  height: 20%;
+  background-color: purple;
+}
+
+.map {
+  padding: 1rem;
+  width: 100%;
+  height: 100%;
+  background-color: green;
 }
