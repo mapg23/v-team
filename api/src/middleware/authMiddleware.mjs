@@ -1,0 +1,44 @@
+import jwt from "jsonwebtoken";
+import "dotenv/config";
+
+const jwtSecret = process.env.JWT_SECRET;
+
+/**
+ * Check validity of token
+ * TBD authorization or x-access-token
+ */
+export default function validateToken(req, res, next) {
+  let token = req.headers["authorization"];
+
+  if (!token) {
+    return res.status(401).json({
+      errors: {
+        status: 401,
+        source: req.path,
+        title: "No token",
+        message: "No token provided in request headers",
+      },
+    });
+  }
+
+  if (token.startsWith("Bearer ")) {
+    token = token.replace("Bearer ", "");
+  }
+
+  jwt.verify(token, jwtSecret, function (err, decoded) {
+    if (err) {
+      return res.status(401).json({
+        error: {
+          status: 401,
+          source: req.path,
+          title: "Failed authentication",
+          message: err.message,
+        },
+      });
+    }
+
+    req.userId = decoded.sub;
+
+    return next();
+  });
+}
