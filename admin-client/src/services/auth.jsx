@@ -12,12 +12,12 @@ const authObject = {
      * @param {string} username
      * @param {string} password
      */
-    Login: async function Login(username, password) {
+    login: async function login({email, password}) {
         const userObject = {
-            username: `${username}`,
-            password: `${password}`,
+          email: `${email}`,
+          password: `${password}`,
         };
-
+    
         try {
             const response = await fetch(`${API}/login`, {
                 body: JSON.stringify(userObject),
@@ -45,7 +45,7 @@ const authObject = {
      * Logout user
      * Return status 200 if success
      */
-    Logout: async function Logout() { },
+    logout: async function logout() { },
 };
 
 export default authObject;
