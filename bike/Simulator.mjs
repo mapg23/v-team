@@ -8,6 +8,14 @@ class Simulator {
     total_bikes = 1;
     cordinates = {};
     heartbeat_count = 0;
+
+    constructor(total_bikes=1, bikes = [], cordinates = {}) {
+        this.total_bikes = total_bikes;
+        this.bikes = bikes;
+        this.cordinates = cordinates;
+    }
+
+
     /**
      * Method for start of simulation.
      * @returns {Array} - Event with data.
@@ -141,3 +149,5 @@ parentPort?.on("message", async (msg) => {
         parentPort.postMessage({id, error: error.message});
     }
 });
+
+module.exports = Simulator
