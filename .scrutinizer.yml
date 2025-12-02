@@ -19,11 +19,3 @@ build:
       # Run Jest with coverage
       - cd bike && npm test -- --ci --coverage
       - cd api && npm test -- --ci --coverage
-
-checks:
-  javascript:
-    code_coverage: true
-
-tools:
-  javascript:
-    eslint: false
