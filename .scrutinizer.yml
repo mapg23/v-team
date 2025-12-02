@@ -1,21 +1,29 @@
 build:
   environment:
-    node: 22.9.0
-
-  cache:
-    # caching to make it faster
-    directories:
-      - bike/node_modules
-      - api/node_modules
+    node: false
 
   dependencies:
     override:
+      # Install NVM
+      - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+      - export NVM_DIR="$HOME/.nvm"
+      - source "$NVM_DIR/nvm.sh"
+
+      # Install the Node version you want
+      - nvm install 22.14.0
+      - nvm use 22.14.0
+      - node -v
+      - npm -v
+
       # Install dependencies
       - cd bike && npm install
-      - cd api && npm install
+      - cd ../api && npm install
 
   tests:
     override:
-      # Run Jest with coverage
+      - export NVM_DIR="$HOME/.nvm"
+      - source "$NVM_DIR/nvm.sh"
+      - nvm use 22.14.0
+
       - cd bike && npm test -- --ci --coverage
-      - cd api && npm test -- --ci --coverage
+      - cd ../api && npm test -- --ci --coverage
