@@ -31,7 +31,7 @@ jobs:
         working-directory: ${{ matrix.folder }}
 
       - name: Generate coverage Badge
-        uses: tj-actions/coverage-badge@v2
+        uses: tj-actions/coverage-badge-js@v2
         with:
           path: ${{ matrix.folder }}/coverage/lcov.info
           output: .github/badges/${{ matrix.folder }}-coverage.svg
