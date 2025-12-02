@@ -22,32 +22,19 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install
+        run: npm install
         working-directory: ${{ matrix.folder }}
 
       - name: Run Jest Tests
         run: npm test -- --ci --coverage
         working-directory: ${{ matrix.folder }}
 
-      - name: Create badges directory
-        run: mkdir -p .github/badges
-
-      #
-      # ⭐ Correct way to run the badge generator:
-      #   - We call it inside a shell
-      #   - Working dir stays at repo root
-      #   - Inputs are passed as env vars
-      #
-      - name: Generate coverage badge
-        run: |
-          npx make-coverage-badge \
-            --input $INPUT_LCOV \
-            --output $OUTPUT_BADGE
-
-        env:
-          INPUT_LCOV: ${{ matrix.folder }}/coverage/lcov.info
-          OUTPUT_BADGE: .github/badges/${{ matrix.folder }}-coverage.svg
+      - name: Generate coverage Badge
+        uses: tj-actions/coverage-badge-js@v2
+        with:
+          path: ${{ matrix.folder }}
+          output_path: ./${{ matrix.folder }}-coverage.svg
 
       - name: Commit badges to repo
         uses: stefanzweifel/git-auto-commit-action@v5
