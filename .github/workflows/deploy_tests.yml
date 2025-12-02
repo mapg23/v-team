@@ -28,17 +28,20 @@ jobs:
         run: npm test -- --ci --coverage
         working-directory: ${{ matrix.folder }}
 
+      - name: Ensure badge output directory exists
+        run: mkdir -p badges
+
       - name: Generate coverage badge
         uses: tj-actions/coverage-badge-js@v2
         with:
           path: ${{ matrix.folder }}
-          output_path: ${{ matrix.folder }}-coverage.svg
+          output_path: ./badges/${{ matrix.folder }}-coverage.svg
 
       - name: Upload badge artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.folder }}-badge
-          path: ${{ matrix.folder }}-coverage.svg
+          path: ./badges/${{ matrix.folder }}-coverage.svg
 
   commit_badges:
     needs: test
