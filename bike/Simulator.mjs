@@ -120,7 +120,7 @@ export function createSimulator(options) {
 
 
 // Instance of Simulator, this is active while the main thread is.
-const simm = createSimulator();
+const simm = createSimulator({ total_bikes: 1000});
 
 /**
  * Routing from the main application into the simulator class.

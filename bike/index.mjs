@@ -51,7 +51,6 @@ worker.on('message', (msg) => {
   }
 })
 
-
 app.get('/heartbeat', async (req, res) => {
   try {
     const response = await callWorker('heartbeat')
@@ -61,7 +60,6 @@ app.get('/heartbeat', async (req, res) => {
     console.error(error);
   }
 });
-
 
 // cordinates params { bike_id : {...cordinates}, bike_id: {...cordinates}}
 app.post('/setRoute', async (req, res) => {
@@ -126,7 +124,6 @@ app.get('/bike/:id', async (req, res) => {
   res.json(response['data'])
 });
 
-
-app.listen(port, function () {
+app.listen(port, function() {
   console.log(`Listening on port: ${port}`);
 });
