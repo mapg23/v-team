@@ -33,8 +33,8 @@ jobs:
       - name: Generate coverage Badge
         uses: tj-actions/coverage-badge-js@v2
         with:
-          path: ${{ matrix.folder }}/coverage/lcov.info
-          output: .github/badges/${{ matrix.folder }}-coverage.svg
+          path: ${{ matrix.folder }}/coverage
+          output_path: .github/badges/${{ matrix.folder }}-coverage.svg
 
       - name: Commit badges to repo
         uses: stefanzweifel/git-auto-commit-action@v5
