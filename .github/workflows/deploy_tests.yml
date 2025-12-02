@@ -31,6 +31,14 @@ jobs:
         run: npm test -- --ci --coverage
         working-directory: ${{ matrix.folder }}
 
+      - name: Debug coverage folder
+        run: |
+          echo "=== Listing coverage directory ==="
+          ls -al ${{ matrix.folder }}/coverage
+
+          echo "=== Print first 50 lines of lcov.info ==="
+          head -n 50 ${{ matrix.folder }}/coverage/lcov.info || echo "lcov.info missing!"
+
       - name: Generate coverage badge
         uses: tj-actions/coverage-badge-js@v2
         with:
