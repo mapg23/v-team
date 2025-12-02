@@ -1,4 +1,4 @@
-name: Run Jest tests and apply coverage badges
+name: Run Jest tests
 
 on:
   pull_request:
@@ -34,9 +34,7 @@ jobs:
       - name: Generate coverage badge
         uses: tj-actions/coverage-badge-js@v2
         with:
-          # point directly at the coverage folder so the action can find coverage-summary.json
-          path: ${{ matrix.folder }}/coverage
-          # write the badge SVG into the project folder so the subsequent upload step can find it
+          path: ${{ matrix.folder }}
           output_path: ${{ matrix.folder }}-coverage.svg
 
       - name: Upload badge artifact
