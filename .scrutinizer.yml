@@ -1,6 +1,6 @@
 build:
   environment:
-    node: 23.11.0
+    node: 22.14.0
 
   cache:
     # caching to make it faster
