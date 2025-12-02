@@ -3,6 +3,8 @@ name: Run Jest tests
 on:
   pull_request:
     branches: ["*"]
+  push:
+    branches: ["main"]
 
 jobs:
   test:
@@ -25,5 +27,17 @@ jobs:
         working-directory: ${{ matrix.folder }}
 
       - name: Run Jest Tests
-        run: npm test -- --ci
+        run: npm test -- --ci --coverage
         working-directory: ${{ matrix.folder }}
+
+      - name: Generate coverage Badge
+        uses: tj-actions/coverage-badge@v2
+        with:
+          path: ${{ matrix.folder }}/coverage/lcov.info
+          output: .github/badges/${{ matrix.folder }}-coverage.svg
+
+      - name: Commit badges to repo
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update ${{ matrix.folder }} coverage badge"
+          file_pattern: ".github/badges/${{ matrix.folder }}-coverage.svg"
