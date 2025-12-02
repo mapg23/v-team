@@ -5,4 +5,8 @@ export default {
     transformIgnorePatterns: [
         "/node_modules/"
     ],
+
+    // Coverage
+    coverageDirectory: "coverage",
+    collectCoverage: true
 };
