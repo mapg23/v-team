@@ -2,7 +2,7 @@
 import express from 'express';
 import cors from 'cors';
 import 'dotenv';
-import userRoutes from './src/routes/userRoutes.mjs';
+import createUserRouter from './src/routes/userRoutes.mjs';
 
 const app = express();
 const port = process.env.API_PORT || 9091;
@@ -14,8 +14,8 @@ app.use(express.json());
 app.disable('x-powered-by');
 app.use(cors());
 
-// Montera routern
-app.use(`/api/${version}`, userRoutes);
+// Monterar routern
+app.use(`/api/${version}`, createUserRouter());
 
 
 app.listen(port, function() {

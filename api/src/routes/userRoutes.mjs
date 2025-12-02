@@ -1,10 +1,9 @@
 import express from 'express';
 import validateJsonBody from '../middleware/validateJsonBody.mjs';
 import createUsers from "../models/users.mjs";
-//skapar objektet som routern använder
-const users = createUsers();
 
-const route = express.Router();
+export default function createUserRouter(users = createUsers()) {
+    const route = express.Router();
 
 route.post(`/users`, validateJsonBody, async (req, res) => {
     try {
@@ -88,5 +87,5 @@ route.delete(`/users/:id`, async (req, res) => {
         return res.status(500).json({ error: 'Could not delete user' });
     }
 });
-
-export default route;
+  return route;
+}
