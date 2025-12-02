@@ -1,6 +1,5 @@
 import express from 'express';
 import validateJsonBody from '../middleware/validateJsonBody.mjs';
-import users from "../models/users.mjs";
 import createUsers from "../models/users.mjs";
 //skapar objektet som routern använder
 const users = createUsers();
@@ -65,7 +64,6 @@ route.put(`/users/:id`, validateJsonBody, async (req, res) => {
 // Uppdaterar en del av användarens uppgifter.
 route.patch(`/users/:id`, validateJsonBody, async (req, res) => {
     try {
-
         await users.updateUser(req.params.id, req.body);
 
         const updatedUser = await users.getUserById(req.params.id);

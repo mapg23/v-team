@@ -1,7 +1,6 @@
 import dbDefault from "../database.mjs";
 
 export default function createUsers(db = dbDefault) {
-
     const users = {
         /**
          * Create a new user in the database.
