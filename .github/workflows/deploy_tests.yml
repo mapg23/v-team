@@ -40,4 +40,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update ${{ matrix.folder }} coverage badge"
-          file_pattern: ".github/badges/${{ matrix.folder }}-coverage.svg"
+          file_pattern: "${{ matrix.folder }}/${{ matrix.folder }}-coverage.svg"
