@@ -34,7 +34,7 @@ jobs:
         uses: tj-actions/coverage-badge-js@v2
         with:
           path: ${{ matrix.folder }}
-          output_path: ./${{ matrix.folder }}-coverage.svg
+          output_path: ${{ matrix.folder }}-coverage.svg
 
       - name: Commit badges to repo
         uses: stefanzweifel/git-auto-commit-action@v5
