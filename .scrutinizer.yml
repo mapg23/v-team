@@ -1,18 +1,20 @@
 build:
-  docker:
-    image: node:22
+  nodes:
+    analysis:
+      container:
+        image: node:22
 
-  cache:
-    directories:
-      - bike/node_modules
-      - api/node_modules
+      cache:
+        directories:
+          - bike/node_modules
+          - api/node_modules
 
-  dependencies:
-    override:
-      - cd bike && npm install
-      - cd api && npm install
+      dependencies:
+        override:
+          - cd bike && npm ci
+          - cd api && npm ci
 
-  tests:
-    override:
-      - cd bike && npm test -- --ci --coverage
-      - cd api && npm test -- --ci --coverage
+      tests:
+        override:
+          - cd bike && npm test -- --ci --coverage
+          - cd api && npm test -- --ci --coverage
