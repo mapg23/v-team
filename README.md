@@ -1,5 +1,9 @@
 # v-team
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mapg23/v-team/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/mapg23/v-team/?branch=main)
+
+[![Code Coverage](https://scrutinizer-ci.com/g/mapg23/v-team/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/mapg23/v-team/?branch=main)
+
 ## Fresh start project
 
 1. Go into /api and do npm install
