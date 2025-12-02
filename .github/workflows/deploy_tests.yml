@@ -30,6 +30,9 @@ jobs:
         run: npm test -- --ci --coverage
         working-directory: ${{ matrix.folder }}
 
+      - name: Create badges directory
+        run: mkdir -p .github/badges
+
       - name: Generate coverage Badge
         uses: tj-actions/coverage-badge-js@v2
         with:
