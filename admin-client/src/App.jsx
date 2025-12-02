@@ -1,33 +1,33 @@
-import './App.css'
-import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginView from "./views/auth/LoginView";
-import HomeView from "./views/home/HomeView"
+import HomeView from "./views/home/HomeView";
 import Navbar from "./components/nav/Nav";
+import { useState } from "react";
 
 function App() {
-
+  const [loggedIn, setLoggedIn] = useState(true);
+  if (!loggedIn) {
+    return (
+      <Router>
+        <Routes>
+          <Route path="/" element={<LoginView />}></Route>
+        </Routes>
+      </Router>
+    );
+  }
   return (
-    <Router>
-      <div className="app-layout">
-        <Navbar />
-        <div className="app-content">
-          <div className="userContainer">
-            <div className="user">
-              {/* usercomponent */}
-            </div>
-          </div>
-
+    <div className="app-layout">
+      <Navbar />
+      <div className="app-content">
+        <Router>
           <Routes>
-            {/* Only view content changes on routes, nav and user is
-            always present */}
-            <Route path="/" element={<LoginView />} />
-            {/* <Route path="/home" element={<HomeView />} /> */}
+            <Route path="/" element={<HomeView />}></Route>
           </Routes>
-        </div>
+        </Router>
       </div>
-    </Router>
+    </div>
   );
 }
 
-export default App
-
+export default App;
