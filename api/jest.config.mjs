@@ -21,7 +21,12 @@ const config = {
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  // collectCoverageFrom: undefined,
+  // Collect coverage from source files even if tests don't import them.
+  collectCoverageFrom: [
+    "**/*.{js,mjs}",
+    "!**/test/**",
+    "!**/node_modules/**"
+  ],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
