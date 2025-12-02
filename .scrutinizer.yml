@@ -1,6 +1,6 @@
 build:
-  environment:
-    node: v20.10.0
+  docker:
+    image: node:22
 
   cache:
     directories:
