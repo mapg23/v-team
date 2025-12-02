@@ -1,16 +1,13 @@
 build:
   nodes:
-    analysis:
+    node22:
       container:
         image: node:22
 
-      cache:
-        directories:
-          - bike/node_modules
-          - api/node_modules
-
       dependencies:
         override:
+          - node -v
+          - npm -v
           - cd bike && npm ci
           - cd api && npm ci
 
