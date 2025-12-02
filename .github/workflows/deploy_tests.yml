@@ -31,13 +31,13 @@ jobs:
         working-directory: ${{ matrix.folder }}
 
       - name: Create badges directory
-        run: mkdir -p .github/badges
+        run: mkdir -p ${{ github.workspace }}/.github/badges
 
       - name: Generate coverage Badge
         uses: tj-actions/coverage-badge-js@v2
         with:
           path: ${{ matrix.folder }}
-          output_path: .github/badges/${{ matrix.folder }}-coverage.svg
+          output_path: ${{ github.workspace }}/.github/badges/${{ matrix.folder }}-coverage.svg
 
       - name: Commit badges to repo
         uses: stefanzweifel/git-auto-commit-action@v5
