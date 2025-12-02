@@ -1,0 +1,29 @@
+build:
+  environment:
+    node: 22
+
+  cache:
+    # caching to make it faster
+    directories:
+      - bike/node_modules
+      - api/node_modules
+
+  dependencies:
+    override:
+      # Install dependencies
+      - cd bike && npm install
+      - cd api && npm install
+
+  tests:
+    override:
+      # Run Jest with coverage
+      - cd bike && npm test -- --ci --coverage
+      - cd api && npm test -- --ci --coverage
+
+checks:
+  javascript:
+    code_coverage: true
+
+tools:
+  javascript:
+    eslint: false
