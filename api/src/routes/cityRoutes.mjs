@@ -32,7 +32,7 @@ export default function createCityRouter(cities = createCities()) {
     route.get(`/cities`, async (req, res) => {
         try {
             if (req.query.name) {
-                const city = await cities.getCityByLocation(req.query.name);
+                const city = await cities.getCityByName(req.query.name);
 
                 return res.status(200).json(city);
             }

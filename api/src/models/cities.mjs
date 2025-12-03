@@ -9,7 +9,7 @@ export default function createCities(db = dbDefault) {
          * @returns {Promise} The result from the database insert operation.
          */
         getCities: async function getCities() {
-            const cities = await db.select('cities', ['id', 'name', 'location']);
+            const cities = await db.select('cities', ['id', 'name', 'latitude', 'longitude']);
 
             return cities;
         },
@@ -32,24 +32,24 @@ export default function createCities(db = dbDefault) {
         getCityById: async function getCityById(id) {
             return await db.select(
                 'cities',
-                ['id', 'name', 'location'],
+                ['id', 'name', 'latitude', 'longitude'],
                 'id = ?',
                 [id]
             );
         },
 
         /**
-         * Fetch a single city by location.
+         * Fetch a single city by name.
          *
-         * @param {string} location - The location of the city.
-         * @returns {Promise} City location if found.
+         * @param {string} name - The name of the city.
+         * @returns {Promise} City information if found.
          */
-        getCityByLocation: async function getCityByLocation(location) {
+        getCityByName: async function getCityByName(name) {
             return await db.select(
                 'cities',
-                ['id', 'name', 'location'],
-                'location = ?',
-                [location]
+                ['id', 'name', 'latitude', 'longitude'],
+                'name = ?',
+                [name]
             );
         },
 
