@@ -1,5 +1,5 @@
 import express from "express";
-import authModel from "../models/authModel.mjs";
+import authService from "../services/authService.mjs";
 import oAuthService from "../services/oauthService.mjs";
 import jwtService from "../services/jwtService.mjs";
 
@@ -18,7 +18,7 @@ router.post(`/register`, async (req, res) => {
   }
 
   try {
-    const user = await authModel.registerUser(email, password, username);
+    const user = await authService.registerUser(email, password, username);
     return res.json(user);
   } catch (err) {
     return res.status(400).json(err);
@@ -32,7 +32,7 @@ router.post(`/login`, async (req, res) => {
   try {
     const { email, password, username } = req.body;
 
-    const token = await authModel.loginUser(email, password, username);
+    const token = await authService.loginUser(email, password, username);
 
     return res.json({ jwt: token });
   } catch (err) {

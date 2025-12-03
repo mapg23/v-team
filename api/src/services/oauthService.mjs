@@ -1,6 +1,6 @@
 // import userModel from "../models/userModel.mjs"
 import jwtService from "./jwtService.mjs";
-import authModel from "../models/authModel.mjs";
+import authService from "../services/authService.mjs";
 
 const oauthService = {
   /**
@@ -78,10 +78,42 @@ const oauthService = {
 
     const accessToken = await this.getAccessToken(code);
     const userEmail = await this.getUserEmail(accessToken);
-    const user = await authModel.findOrCreateOauthUser(userEmail);
+    const user = await this.findOrCreateOauthUser(userEmail);
     const token = await jwtService.createToken(user.id);
 
     return token;
+  },
+
+  /**
+   * Will find a user in our database by email, or create one.
+   * Username: <email>
+   * password: null
+   * email: <email>
+   * oauth: true
+   * @param   {string} email
+   * @returns {object} A user object
+   */
+  findOrCreateOauthUser: async function (email) {
+    console.log("Find or create: ", email);
+    const data = { id: 1, email: email };
+    return data;
+    const result = await userModel.getUserByEmail(email);
+    const user = result[0];
+
+    if (!user) {
+      // Move to userModel createOauthUser needed?
+      const created = userModel.createUser({
+        username: email,
+        email: email,
+        password: null,
+        oauth: true,
+      });
+      if (created.insertId) {
+        user = await userModel.getUserById(created.insertId);
+      }
+    }
+
+    return user;
   },
 };
 
