@@ -1,5 +1,9 @@
 # v-team
 
+[![API Coverage](https://raw.githubusercontent.com/mapg23/v-team/main/coverage-badges/api-badge/api-coverage.svg)](https://github.com/mapg23/v-team/blob/main/coverage-badges/api-badge/api-coverage.svg)
+
+[![Bike Coverage](https://raw.githubusercontent.com/mapg23/v-team/main/coverage-badges/bike-badge/bike-coverage.svg)](https://github.com/mapg23/v-team/blob/main/coverage-badges/bike-badge/bike-coverage.svg)
+
 ## Fresh start project
 
 1. Go into /api and do npm install
