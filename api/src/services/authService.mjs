@@ -1,7 +1,10 @@
 import "dotenv/config";
 import bcrypt from "bcrypt";
 import jwtService from "../services/jwtService.mjs";
-import userModel from "../models/userModel.mjs";
+import createUsers from "../models/users.mjs";
+
+// Export for testing
+export const userModel = createUsers();
 
 /**
  * Module for authentication operations.
@@ -16,7 +19,7 @@ const auth = {
    */
   registerUser: async function (email, password, username = null) {
     const userExists = await userModel.getUserByEmail(email);
-    let user;
+    // let user;
 
     if (userExists) {
       const error = new Error("Email already registred");
@@ -32,7 +35,7 @@ const auth = {
       email: email,
     };
 
-    user = await userModel.createUser(userData);
+    const user = await userModel.createUser(userData);
 
     return user;
   },

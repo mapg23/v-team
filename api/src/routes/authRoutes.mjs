@@ -1,6 +1,6 @@
 import express from "express";
 import authService from "../services/authService.mjs";
-import oAuthService from "../services/oauthService.mjs";
+import oAuthService from "../services/oAuthService.mjs";
 import jwtService from "../services/jwtService.mjs";
 
 const router = express.Router();

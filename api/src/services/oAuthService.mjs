@@ -1,6 +1,7 @@
-// import userModel from "../models/userModel.mjs"
 import jwtService from "./jwtService.mjs";
-import authService from "../services/authService.mjs";
+import createUsers from "../models/users.mjs";
+
+export const userModel = createUsers();
 
 const oauthService = {
   /**
@@ -47,7 +48,7 @@ const oauthService = {
     });
 
     if (!emailsResponse.ok) {
-      throw new Error("Failed to fetch user emails from GitHub. Sorry");
+      throw new Error("Failed to fetch user emails from GitHub");
     }
 
     const userEmails = await emailsResponse.json();
@@ -56,7 +57,7 @@ const oauthService = {
     );
 
     if (!primaryEmailObject) {
-      throw new Error("No verified primary email found on GitHub.");
+      throw new Error("No verified primary email found on GitHub");
     }
 
     return primaryEmailObject.email;
@@ -69,7 +70,7 @@ const oauthService = {
    * @param   {string} code           Code from Oatuh provider
    * @returns {string} token          A JWT to access API
    */
-  oauthLogin: async function (rawState, encryptedState, code) {
+  oAuthLogin: async function (rawState, encryptedState, code) {
     const decryptedState = await jwtService.verifyToken(encryptedState);
 
     if (decryptedState !== rawState) {
@@ -94,22 +95,29 @@ const oauthService = {
    * @returns {object} A user object
    */
   findOrCreateOauthUser: async function (email) {
-    console.log("Find or create: ", email);
-    const data = { id: 1, email: email };
-    return data;
+    if (process.env.NODE_ENV !== "test") {
+      // To see working functionality
+      console.log("Find or create: ", email);
+      const data = { id: 1, email: email };
+      return data;
+    }
+    let user;
+
     const result = await userModel.getUserByEmail(email);
-    const user = result[0];
+    user = result[0];
 
     if (!user) {
-      // Move to userModel createOauthUser needed?
-      const created = userModel.createUser({
+      const created = await userModel.createUser({
         username: email,
         email: email,
         password: null,
         oauth: true,
       });
       if (created.insertId) {
-        user = await userModel.getUserById(created.insertId);
+        const newUser = await userModel.getUserById(created.insertId);
+        user = newUser[0];
+      } else {
+        throw new Error("User did not exist, and could not be created");
       }
     }
 
