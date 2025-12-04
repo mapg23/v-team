@@ -1,0 +1,47 @@
+config:
+  target: "http://localhost:7071"
+  phases:
+    - duration: 2
+      arrivalRate: 20
+      name: Setup
+
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+  ensure:
+    p95: 100
+    maxErrorRate: 1
+
+scenarios:
+  - name: Bike Simulation
+    flow:
+      # Step 1: Start worker
+      - get:
+          url: "/start"
+
+      # Step 2: Send route data
+      - post:
+          url: "/setRoute"
+          json:
+            cordinates:
+              "0":
+                - { x: 1, y: 1 }
+                - { x: 5, y: 5 }
+                - { x: 10, y: 10 }
+                - { x: 100, y: 120 }
+              "1": []
+              "2": []
+
+      # Step 3: Check devices list
+      - get:
+          url: "/list"
+
+      # Step 4: Repeated heartbeat simulation
+      - loop:
+          - get:
+              url: "/heartbeat"
+          - get:
+              url: "/list"
+          - think: 1 # wait 5 seconds like your setInterval
+        count: 20

@@ -31,6 +31,11 @@ jobs:
         run: npm test -- --ci --coverage
         working-directory: ${{ matrix.folder }}
 
+      - name: Run Artillery Tests
+        run: |
+          npm run artillery-test
+        working-directory: bike
+
       - name: Debug coverage folder
         run: |
           echo "=== Listing coverage directory ==="
