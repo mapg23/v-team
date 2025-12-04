@@ -5,6 +5,11 @@ on:
     branches: ["*"]
   pull_request:
     branches: ["*"]
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: write
 
 jobs:
   test:
@@ -14,18 +19,62 @@ jobs:
         folder: ["bike", "api"]
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "22"
 
       - name: Install
-        run: npm install
+        run: npm ci
         working-directory: ${{ matrix.folder }}
 
       - name: Run Jest Tests
+<<<<<<< HEAD
         run: npm run test:ci
+=======
+        run: npm test -- --ci --coverage
+>>>>>>> origin/main
         working-directory: ${{ matrix.folder }}
+
+      - name: Debug coverage folder
+        run: |
+          echo "=== Listing coverage directory ==="
+          ls -al ${{ matrix.folder }}/coverage
+
+          echo "=== Print first 50 lines of lcov.info ==="
+          head -n 50 ${{ matrix.folder }}/coverage/lcov.info || echo "lcov.info missing!"
+
+      - name: Generate coverage badge
+        uses: tj-actions/coverage-badge-js@v2
+        with:
+          path: ${{ matrix.folder }}
+          output_path: ${{ matrix.folder }}-coverage.svg
+
+      - name: Upload badge artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.folder }}-badge
+          path: ${{ matrix.folder }}/${{ matrix.folder }}-coverage.svg
+
+  commit_badges:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: coverage-badges
+
+      - name: Commit badges to repo
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update coverage badges"
+          file_pattern: "coverage-badges/*.svg"

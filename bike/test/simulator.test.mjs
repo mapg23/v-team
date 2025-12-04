@@ -1,4 +1,5 @@
 "use strict"
+<<<<<<< HEAD
 process.env.NODE_ENV = "test";
 
 import Simulator, { handleWorkerMessage, createSimulator } from "../Simulator.mjs";
@@ -89,4 +90,9 @@ describe('testing Simulator', () => {
         expect(result.data).toEqual(bikes);
     });
 
+=======
+
+test('Test', () => {
+    expect(true).toBe(true);
+>>>>>>> origin/main
 });

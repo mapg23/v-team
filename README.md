@@ -1,8 +1,8 @@
 # v-team
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mapg23/v-team/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/mapg23/v-team/?branch=main)
+[![API Coverage](https://raw.githubusercontent.com/mapg23/v-team/main/coverage-badges/api-badge/api-coverage.svg)](https://github.com/mapg23/v-team/blob/main/coverage-badges/api-badge/api-coverage.svg)
 
-[![Code Coverage](https://scrutinizer-ci.com/g/mapg23/v-team/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/mapg23/v-team/?branch=main)
+[![Bike Coverage](https://raw.githubusercontent.com/mapg23/v-team/main/coverage-badges/bike-badge/bike-coverage.svg)](https://github.com/mapg23/v-team/blob/main/coverage-badges/bike-badge/bike-coverage.svg)
 
 ## Fresh start project
 
