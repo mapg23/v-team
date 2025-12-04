@@ -51,6 +51,11 @@ export default function createUserRouter(users = createUsers()) {
     route.get(`/users`, async (req, res) => {
         try {
             if (req.query.email) {
+                const invalidEmail = helpers.validateEmailSearch(req.query.email);
+
+                if (invalidEmail) {
+                    return res.status(400).json({ error: invalidEmail});
+                }
                 const user = await users.getUserByEmail(req.query.email);
 
                 return res.status(200).json(user);
