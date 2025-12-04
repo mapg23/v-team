@@ -39,14 +39,15 @@
   height: 800px;
   align-items: top;
   gap: 1rem;
-  background-color: grey;
+  /* background-color: grey; */
 }
 
 .app-content {
   display: flex;
   flex-direction: column;
-  background-color: red;
+  /* background-color: red; */
   width: 100%;
+  gap: 1rem;
 }
 
 .userContainer {
