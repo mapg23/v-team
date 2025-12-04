@@ -2,7 +2,9 @@ import styles from "./HomeView.module.css";
 import Map from "../../components/map/Map-component"
 import { useEffect, useState } from "react";
 import SelectCity from "../../components/input/SelectCity";
-import getCoordinates from "../../services/nominatim"
+import getCoordinates from "../../services/nominatim";
+import CityService from "../../services/cities";
+import CityTable from "../../components/table/cityTable";
 
 /**
  * Home view for admin
@@ -10,17 +12,31 @@ import getCoordinates from "../../services/nominatim"
  * Display Nav and dashboard(?)
  */
 function HomeView() {
+  // City options for SelectCity component
   const [citys, setCitys] = useState([]);
+
+  // when admin chose a city - the map componentent updates accordingly
   const [cityCoordinates, setCityCoordinates] = useState({
-    lat: null, 
+    lat: null,
     long: null,
   });
 
-  // fetch call to get all available citys
-  // Göteborg, Uppsala etc
+  // City details, including, id, name, stations and bikes
+  const [cityDetails, setCityDetails] = useState({
+    id: null,
+    name: null,
+    stations: null,
+    bikes: null,
+  });
+
+  // Fetch all available cities.
   useEffect(() => {
-    setCitys(["Uppsala", "Göteborg", "Jönköping"]);
-  },[]);
+    async function fetchData() {
+      const cities = await CityService.getAllCities();
+      setCitys(cities.map((city) => city.name));
+    }
+    fetchData();
+  }, []);
 
   /**
    * Set data by city
@@ -28,16 +44,28 @@ function HomeView() {
    */
   async function setMap(city) {
     const [place, boundary] = await getCoordinates(city);
-    setCityCoordinates({"lat": place.lat, "long": place.lon})
+    setCityCoordinates({ lat: place.lat, long: place.lon });
+    getCityData();
+  }
+
+  /**
+   * Get all city details
+   * { "id": 1, "name": "Stockholm", "stations": 5, "bikes": 240 }
+   */
+  async function getCityData() {
+    const cityDetails = await CityService.getCityDetails();
+    setCityDetails(cityDetails);
   }
 
   return (
     <>
-      <h2>City name</h2>
+      <h2>{cityDetails.name}</h2>
+
       <div className={styles.table}>
         <SelectCity setMap={setMap} cityData={citys} />
       </div>
-      <Map coords={cityCoordinates} bikes={"bikes"} />
+      <CityTable cityDetails={cityDetails} />
+      <Map coords={cityCoordinates} bikes={cityDetails} />
     </>
   );
 }
