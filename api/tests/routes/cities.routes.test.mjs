@@ -88,7 +88,7 @@ describe('Cities API - ok', () => {
         expect(res.body[0]).toHaveProperty('longitude', 14.156200);
     });
 
-    test('PUT /users/:id update a city', async () => {
+    test('PUT /cities/:id update a city', async () => {
         mockDb.select.mockResolvedValue([
             { id: 1,
                 name: "Jönköping City",
@@ -134,72 +134,130 @@ describe('Cities API - ok', () => {
     });
 });
 
-// // De negativa fallen
-// describe('Users API - NOK (500)', () => {
-//     // Byter ut console.error mot en tom funktion, Inget skrivs till terminalen.
-//     beforeAll(() => {
-//         console.error = jest.fn();
-//     });
-//     test('POST /users returns 500 on error', async () => {
-//         mockDb.insert.mockRejectedValue(new Error('DB error'));
-//         const res = await request(app)
-//             .post('/users')
-//             .send({ username: 'Falcon', email: 'falcon@hotmail.com' });
+// De negativa fallen
+describe('Cities API - NOK (500)', () => {
+    // Byter ut console.error mot en tom funktion, Inget skrivs till terminalen.
+    beforeAll(() => {
+        console.error = jest.fn();
+    });
+    test('POST /cities returns 500 on error', async () => {
+        mockDb.insert.mockRejectedValue(new Error('DB error'));
+        const res = await request(app)
+            .post('/cities')
+            .send({ name: 'Habo',
+                latitude: 57.9093,
+                longitude: 14.0744
+            });
 
-//         expect(res.status).toBe(500);
-//         expect(res.body).toHaveProperty('error', 'Could not create user');
-//     });
+        expect(res.status).toBe(500);
+        expect(res.body).toHaveProperty('error', 'Could not create city');
+    });
 
-//     test('GET /users/:id returns 500 on error', async () => {
-//         mockDb.select.mockRejectedValue(new Error('DB error'));
-//         const res = await request(app).get('/users/1');
+    test('GET /cities/:id returns 500 on error', async () => {
+        mockDb.select.mockRejectedValue(new Error('DB error'));
+        const res = await request(app).get('/cities/1');
 
-//         expect(res.status).toBe(500);
-//         expect(res.body).toHaveProperty('error', 'Could not fetch user');
-//     });
+        expect(res.status).toBe(500);
+        expect(res.body).toHaveProperty('error', 'Could not fetch city');
+    });
 
-//     test('GET /users returns 500 on error', async () => {
-//         mockDb.select.mockRejectedValue(new Error('DB error'));
-//         const res = await request(app).get('/users');
+    test('GET /cities returns 500 on error', async () => {
+        mockDb.select.mockRejectedValue(new Error('DB error'));
+        const res = await request(app).get('/cities');
 
-//         expect(res.status).toBe(500);
-//         expect(res.body).toHaveProperty('error', 'Could not fetch users');
-//     });
+        expect(res.status).toBe(500);
+        expect(res.body).toHaveProperty('error', 'Could not fetch cities');
+    });
 
-//     test('PUT /users/:id returns 500 on error', async () => {
-//         mockDb.select.mockRejectedValue(new Error('DB error'));
-//         const res = await request(app)
-//             .put('/users/1')
-//             .send({ username: 'Falcon Bird', email: 'king_falcon@hotmail.com' });
+    test('PUT /cities/:id returns 500 on error', async () => {
+        mockDb.select.mockRejectedValue(new Error('DB error'));
+        const res = await request(app)
+            .put('/cities/1')
+            .send({
+                name: 'Habo City',
+                latitude: 57.9093,
+                logitude: 14.0744
+            });
 
-//         expect(res.status).toBe(500);
-//         expect(res.body).toHaveProperty('error', 'Could not update user');
-//     });
+        expect(res.status).toBe(500);
+        expect(res.body).toHaveProperty('error', 'Could not update city');
+    });
 
-//     test('PATCH /users/:id returns 500 on error', async () => {
-//         mockDb.select.mockRejectedValue(new Error('DB error'));
-//         const res = await request(app)
-//             .patch('/users/1')
-//             .send({ username: 'Falcon', email: 'king_falcon@hotmail.com' });
+    test('DELETE /cities/:id returns 500 on error', async () => {
+        mockDb.remove.mockRejectedValue(new Error('DB error'));
+        const res = await request(app).delete('/cities/1');
 
-//         expect(res.status).toBe(500);
-//         expect(res.body).toHaveProperty('error', 'Could not update user');
-//     });
+        expect(res.status).toBe(500);
+        expect(res.body).toHaveProperty('error', 'Could not delete city');
+    });
 
-//     test('DELETE /users/:id returns 500 on error', async () => {
-//         mockDb.remove.mockRejectedValue(new Error('DB error'));
-//         const res = await request(app).delete('/users/1');
+    test('GET /cities?name= triggers 500 on db error', async () => {
+        mockDb.select.mockRejectedValue(new Error('DB error'));
 
-//         expect(res.status).toBe(500);
-//         expect(res.body).toHaveProperty('error', 'Could not delete user');
-//     });
+        const res = await request(app).get('/cities?name=Habos');
 
-//     test('GET /users?email= triggers 500 on db error', async () => {
-//         mockDb.select.mockRejectedValue(new Error('DB error'));
+        expect(res.status).toBe(500);
+        expect(res.body).toHaveProperty('error');
+    });
+});
 
-//         const res = await request(app).get('/users?email=test@mail.com');
+// Negativa tester för 400
+describe('cities API - NOK (400)', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
 
-//         expect(res.status).toBe(500);
-//         expect(res.body).toHaveProperty('error');
-//     });
-// });
+    // Saknade fält
+    test('POST /cities returns 400 if required fields are missing', async () => {
+        const res = await request(app)
+            .post('/cities')
+            // saknar latitud och longitud
+            .send({ name: 'Habo' });
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Missing required fields');
+    });
+
+    // Ogiltigt latitud eller longitud
+    test('POST /cities returns 400 if location format is invalid', async () => {
+        const res = await request(app)
+            .post('/cities')
+            .send({
+                name: 'Habo',
+                latitude: "abc",
+                longitude: 14.0744
+            });
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Latitude and longitude must be numbers');
+    });
+
+    // Ogiltigt eller saknat id
+    test('GET /cities/:id returns 400 if id is invalid', async () => {
+    // id som inte är nummer.
+        const res = await request(app).get('/cities/abc');
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Id is wrong');
+    });
+
+    test('PUT /cities/:id returns 400 if id is invalid', async () => {
+        const res = await request(app)
+            .put('/cities/abc')
+            .send({
+                name: 'Habo',
+                latitude: 57.9093,
+                logitude: 14.0744
+            });
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Id is wrong');
+    });
+
+    test('DELETE /cities/:id returns 400 if id is invalid', async () => {
+        const res = await request(app).delete('/cities/abc');
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Id is wrong');
+    });
+});

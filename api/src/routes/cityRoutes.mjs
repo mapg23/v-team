@@ -1,11 +1,28 @@
 import express from 'express';
 import validateJsonBody from '../middleware/validateJsonBody.mjs';
+import cityHelpers from '../helpers/validateCity.mjs';
 import createCities from "../models/cities.mjs";
 
 export default function createCityRouter(cities = createCities()) {
     const route = express.Router();
 
     route.post(`/cities`, validateJsonBody, async (req, res) => {
+        const lat = req.body.latitude;
+        const lon = req.body.longitude;
+
+        // Fältspecifik validering
+        const error = cityHelpers.validateBody(req.body);
+
+        if (error) {
+            return res.status(400).json({ error: error });
+        }
+
+        const formatError = cityHelpers.validateLatAndLong(lat, lon);
+
+        if (formatError) {
+            return res.status(400).json({ error: formatError });
+        }
+
         try {
             const result = await cities.createCity(req.body);
 
@@ -19,6 +36,11 @@ export default function createCityRouter(cities = createCities()) {
     });
 
     route.get(`/cities/:id`, async (req, res) => {
+        const idError = cityHelpers.validateId(req.params.id);
+
+        if (idError) {
+            return res.status(400).json({ error: idError });
+        }
         try {
             const city = await cities.getCityById(req.params.id);
 
@@ -46,9 +68,15 @@ export default function createCityRouter(cities = createCities()) {
         }
     });
 
+
     route.put(`/cities/:id`, validateJsonBody, async (req, res) => {
+        const idError = cityHelpers.validateId(req.params.id);
+
+        if (idError) {
+            return res.status(400).json({ error: idError });
+        }
         try {
-        // Uppdaterar staden.
+            // Uppdaterar staden.
             await cities.updateCity(req.params.id, req.body);
 
             const updatedCity = await cities.getCityById(req.params.id);
@@ -61,6 +89,11 @@ export default function createCityRouter(cities = createCities()) {
     });
 
     route.delete(`/cities/:id`, async (req, res) => {
+        const idError = cityHelpers.validateId(req.params.id);
+
+        if (idError) {
+            return res.status(400).json({ error: idError });
+        }
         try {
             await cities.deleteCity(req.params.id);
 
