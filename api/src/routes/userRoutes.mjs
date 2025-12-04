@@ -1,11 +1,25 @@
 import express from 'express';
 import validateJsonBody from '../middleware/validateJsonBody.mjs';
+import helpers from '../helpers/validateUser.mjs';
 import createUsers from "../models/users.mjs";
 
 export default function createUserRouter(users = createUsers()) {
     const route = express.Router();
 
     route.post(`/users`, validateJsonBody, async (req, res) => {
+        // Fältspecifik validering
+        const error = helpers.validateBody(req.body);
+
+        if (error) {
+            return res.status(400).json({ error: error });
+        }
+
+        const emailError = helpers.validateEmailFormat(req.body.email);
+
+        if (emailError) {
+            return res.status(400).json({ error: emailError });
+        }
+
         try {
             const result = await users.createUser(req.body);
 
@@ -19,6 +33,11 @@ export default function createUserRouter(users = createUsers()) {
     });
 
     route.get(`/users/:id`, async (req, res) => {
+        const idError = helpers.validateId(req.params.id);
+
+        if (idError) {
+            return res.status(400).json({ error: idError });
+        }
         try {
             const user = await users.getUserById(req.params.id);
 
@@ -47,6 +66,12 @@ export default function createUserRouter(users = createUsers()) {
     });
 
     route.put(`/users/:id`, validateJsonBody, async (req, res) => {
+        const idError = helpers.validateId(req.params.id);
+
+        if (idError) {
+            return res.status(400).json({ error: idError });
+        }
+
         try {
         // Uppdaterar användaren
             await users.updateUser(req.params.id, req.body);
@@ -62,6 +87,11 @@ export default function createUserRouter(users = createUsers()) {
 
     // Uppdaterar en del av användarens uppgifter.
     route.patch(`/users/:id`, validateJsonBody, async (req, res) => {
+        const idError = helpers.validateId(req.params.id);
+
+        if (idError) {
+            return res.status(400).json({ error: idError });
+        }
         try {
             await users.updateUser(req.params.id, req.body);
 
@@ -75,6 +105,11 @@ export default function createUserRouter(users = createUsers()) {
     });
 
     route.delete(`/users/:id`, async (req, res) => {
+        const idError = helpers.validateId(req.params.id);
+
+        if (idError) {
+            return res.status(400).json({ error: idError });
+        }
         try {
             await users.deleteUser(req.params.id);
 

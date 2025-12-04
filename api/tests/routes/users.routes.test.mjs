@@ -30,11 +30,19 @@ describe('Users API - ok', () => {
     test('POST /users creates a user', async () => {
         mockDb.insert.mockResolvedValue({ insertId: 1 });
         mockDb.select.mockResolvedValue(
-            [{ id: 1, username: 'Falcon', email: 'falcon@hotmail.com' }]
+            [{
+                id: 1,
+                username: 'Falcon',
+                email: 'falcon@hotmail.com',
+                password: 'secret'
+            }]
         );
         const res = await request(app)
             .post('/users')
-            .send({ username: 'Falcon', email: 'falcon@hotmail.com' });
+            .send({ username: 'Falcon',
+                email: 'falcon@hotmail.com',
+                password: 'secret'
+            });
 
         expect(res.status).toBe(201);
         expect(res.body[0]).toHaveProperty('id');
@@ -113,7 +121,7 @@ describe('Users API - ok', () => {
 });
 
 // De negativa fallen
-describe('Users API - NOK (500)', () => {
+describe('Users API - NOK (500) and (400)', () => {
     // Byter ut console.error mot en tom funktion, Inget skrivs till terminalen.
     beforeAll(() => {
         console.error = jest.fn();
@@ -122,7 +130,9 @@ describe('Users API - NOK (500)', () => {
         mockDb.insert.mockRejectedValue(new Error('DB error'));
         const res = await request(app)
             .post('/users')
-            .send({ username: 'Falcon', email: 'falcon@hotmail.com' });
+            .send({ username: 'Falcon',
+                email: 'falcon@hotmail.com',
+                password: 'secret' });
 
         expect(res.status).toBe(500);
         expect(res.body).toHaveProperty('error', 'Could not create user');
@@ -179,5 +189,66 @@ describe('Users API - NOK (500)', () => {
 
         expect(res.status).toBe(500);
         expect(res.body).toHaveProperty('error');
+    });
+});
+
+// Negativa tester för 400
+describe('Users API - NOK (400)', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    // Saknade fält
+    test('POST /users returns 400 if required fields are missing', async () => {
+        const res = await request(app)
+            .post('/users')
+            .send({ email: 'falcon@hotmail.com' }); // saknar username & password
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Missing required fields');
+    });
+
+    // Ogiltigt emailformat
+    test('POST /users returns 400 if email format is invalid', async () => {
+        const res = await request(app)
+            .post('/users')
+            .send({ username: 'Falcon', email: 'falcon-at-hotmail.com', password: 'secret' });
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Invalid email format');
+    });
+
+    // Ogiltigt eller saknat id
+    test('GET /users/:id returns 400 if id is invalid', async () => {
+    // id som inte är nummer.
+        const res = await request(app).get('/users/abc');
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Id is wrong');
+    });
+
+    test('PUT /users/:id returns 400 if id is invalid', async () => {
+        const res = await request(app)
+            .put('/users/abc')
+            .send({ username: 'Falcon', email: 'falcon@hotmail.com' });
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Id is wrong');
+    });
+
+    test('PATCH /users/:id returns 400 if id is invalid', async () => {
+        const res = await request(app)
+            .patch('/users/abc')
+            .send({ username: 'Falcon' });
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Id is wrong');
+    });
+
+    test('DELETE /users/:id returns 400 if id is invalid', async () => {
+        const res = await request(app).delete('/users/abc');
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Id is wrong');
     });
 });
