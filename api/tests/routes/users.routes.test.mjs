@@ -227,6 +227,22 @@ describe('Users API - NOK (400)', () => {
         expect(res.body).toHaveProperty('error', 'Id is wrong');
     });
 
+    // Saknat email vid sökning mha email
+    test('GET /users?email= returns 400 if email is empty', async () => {
+        const res = await request(app).get('/users?email=""');
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Email is missing or has wrong format');
+    });
+
+    // Ogiltigt email vid sökning mha email.
+    test('GET /users?email= returns 400 if email format is invalid', async () => {
+        const res = await request(app).get('/users?email=abc@');
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Email is missing or has wrong format');
+    });
+
     test('PUT /users/:id returns 400 if id is invalid', async () => {
         const res = await request(app)
             .put('/users/abc')
