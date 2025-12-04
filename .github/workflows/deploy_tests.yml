@@ -30,11 +30,7 @@ jobs:
         working-directory: ${{ matrix.folder }}
 
       - name: Run Jest Tests
-<<<<<<< HEAD
-        run: npm run test:ci
-=======
         run: npm test -- --ci --coverage
->>>>>>> origin/main
         working-directory: ${{ matrix.folder }}
 
       - name: Debug coverage folder
