@@ -47,7 +47,7 @@ const cityService = {
     return { id: 1, name: "Stockholm", stations: 5, bikes: 240 };
 
     try {
-      const response = await fetch(`${API}/cities(${id})`, {
+      const response = await fetch(`${API}/cities/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -67,6 +67,40 @@ const cityService = {
       return [];
     }
   },
+
+  /**
+   * Get all bikes in city
+   * @param {int} id city id
+   * @return {Object}
+   */
+  getBikesInCity: async function getBikesInCity(id) {
+    return [
+      { id: 1, cityId: 1, status: 100, battery: 85, lat: 59.33, lng: 18.07 },
+      { id: 2, cityId: 1, status: 400, battery: 60, lat: 59.35, lng: 18.08 },
+    ];
+    try {
+      const response = await fetch(`${API}/cities/${id}/bikes`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error on getAllCities! Status: ${response.status}`
+        );
+      }
+
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  },
+
+
 };
 
 
