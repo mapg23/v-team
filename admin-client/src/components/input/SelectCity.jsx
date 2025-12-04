@@ -4,7 +4,7 @@
  * @param {{function, cityData}} setMap, cityData function to call when a value is updated 
  * @returns 
  */
-export default function DropDown({ setMap, cityData }) {
+export default function DropDown({ setMap, cityOptions }) {
   // Eventlistener
   // Update the map coordinates based on selection
   function handleChange(e) {
@@ -13,7 +13,8 @@ export default function DropDown({ setMap, cityData }) {
 
   return (
     <select onChange={handleChange}>
-      {cityData.map((city) => (
+      <option key="Översikt">Översikt</option>
+      {cityOptions.map((city) => (
         <option key={city}>{city}</option>
       ))}
     </select>
