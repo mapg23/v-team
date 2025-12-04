@@ -11,17 +11,18 @@ function BikeListHelper(count){
     );
 }
 
-describe('Performance testing', () => {
+async function generateCords(count) {
+    const cords = {};
+    for(let i = 0; i < count; i++) {
+        let randomX = randomInt(1000);
+        let randomY = randomInt(1000);
+        cords[i] = [{ x: randomX, y: randomY}];
+    }
+    return cords;
+}
 
-    const generateCords = async (count) => {
-        const cords = {};
-        for(let i = 0; i < count; i++) {
-            let randomX = randomInt(1000);
-            let randomY = randomInt(1000);
-            cords[i] = [{ x: randomX, y: randomY}];
-        }
-        return cords;
-    };
+
+describe('Performance testing', () => {
 
     const simulateHeartbeat = async (count) => {
         const simm = createSimulator({ total_bikes: count });
@@ -57,7 +58,6 @@ describe('Performance testing', () => {
         expect(res.startTime).toBeLessThan(200);
         expect(res.heartbeat).toBeLessThan(200);
     });
-
 });
 
 describe('testing the worker calls', () => {
@@ -81,7 +81,6 @@ describe('testing the worker calls', () => {
         expect(result.data.length).toBe(5);
         expect(result.data[0]).toBeInstanceOf(Device);
     });
-
 });
 
 describe('Testing Simulator', () => { 
@@ -97,8 +96,8 @@ describe('Testing Simulator', () => {
     
     test('Start method', () => {
         const bikes = BikeListHelper(100);
-        const simm = new Simulator(100);
         
+        const simm = new Simulator(100);
         expect(simm.bikes).toEqual([]);
         simm.start();
         expect(simm.bikes).toEqual(bikes);
@@ -107,7 +106,76 @@ describe('Testing Simulator', () => {
     });
     
     test('End method', () => {
+        const bikes = BikeListHelper(100);
+        const simm = new Simulator(100);
+        expect(simm.bikes).toEqual([]);
+        simm.start()
+        expect(simm.bikes).toEqual(bikes);
+        simm.end();
+        expect(simm.bikes).toEqual([]);
+    });
+
+    test('Heartbeat method, correct return', () => {
+        const simm = new Simulator();
+        let res = simm.heartbeat();
+        expect(res).toEqual({ event: 'Heartbeat updated' });
+    });
+
+    test('Heartbeat method, updated bikes', async () => {
+        const simm = new Simulator(11);
+        const cords = await generateCords(11);
+        simm.start()
+        simm.setCordinates(cords);
+        const originalCords = { ...simm.bikes[10].cords };
+        simm.heartbeat();
+        expect(simm.bikes[10].cords).not.toEqual(originalCords);
+    });
+
+    test('Heartbeat method, no cords left', () => {
+        const simm = new Simulator(10);
         
+        const cords = {};
+
+        for(let i = 0; i < 10; i++) {
+            cords[i] = [];
+        }
+
+        simm.start();
+        simm.setCordinates(cords);
+
+        const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
+        simm.heartbeat();
+        
+        for (let i = 0; i < 10; i++) {
+            expect(simm.cordinates[i]).toEqual([]);
+            expect(logSpy).toHaveBeenCalledWith(`Bike: ${i} has no cordinates left 0`);
+        }
+
+        logSpy.mockRestore();
+    });
+
+    test('Heartbeat method, skipping bike (4)', () => {
+        const simm = new Simulator(3);
+        simm.start();
+
+        simm.setCordinates({
+            0: [{ x: 1, y:1 }],
+            1: [{ x: 1, y:1 }],
+            2: [{ x: 1, y:1 }],
+            3: [{ x: 1, y:1 }],
+            4: [{ x: 1, y:1 }],
+            5: [{ x: 1, y:1 }],
+        });
+
+        let res = simm.heartbeat();
+
+        expect(simm.bikes[0].cords).toEqual({ x: 1, y: 1})
+        expect(simm.bikes[3]).toBeUndefined();
+        expect(simm.bikes[4]).toBeUndefined();
+        expect(simm.bikes[5]).toBeUndefined();
+
+        expect(res).toEqual({ event: 'Heartbeat updated' });
     });
     
     test('List method', () => {
@@ -120,5 +188,25 @@ describe('Testing Simulator', () => {
         expect(result).toHaveProperty('event', 'Listing all bikes');
         expect(result).toHaveProperty('data', bikes);
         expect(result.data).toEqual(bikes);
+    });
+
+    test('getBike method', () => {
+        const bikes = [
+            new Device(0, {x: 123, y: 321}, 99, 'new_status', false, 999),
+            new Device(1, {x: 321, y: 123}, 33, 'other_status', true, 33)
+        ];
+
+        const simm = new Simulator(2, bikes);
+
+        simm.start()
+
+        let res = simm.getBike({id: 1});
+
+        expect(res.data.id).toEqual(bikes[1].id);
+        expect(res.data.battery).toEqual(bikes[1].battery);
+        expect(res.data.cords).toEqual(bikes[1].cords);
+        expect(res.data.occupied).toEqual(bikes[1].occupied);
+
+        expect(res.data.speed).not.toEqual(bikes[0].speed);
     });
 });
