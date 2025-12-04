@@ -23,6 +23,15 @@ class Device {
         this.cords = cords;
     }
 
+    selfDiagnostics() {
+        if (this.battery > 20) {
+            this.status = 50;
+            return;
+        }
+        this.status = 10;
+        return;
+    }
+
 
     // self diagnostics,
 

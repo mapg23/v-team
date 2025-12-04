@@ -15,6 +15,10 @@ class Simulator {
         this.cordinates = cordinates;
     }
 
+    setCordinates(coords) {
+        this.cordinates = coords;
+    }
+
     /**
      * Method for start of simulation.
      * @returns {Array} - Event with data.
