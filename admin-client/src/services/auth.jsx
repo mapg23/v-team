@@ -1,10 +1,11 @@
+import API from "../config/api.js";
+
 /**
  * Object exporting methods for authentication,
  * such as login/logout
  *
  * Admins cannot be created since it would make no sence
  */
-
 const authObject = {
   /**
    * Login user
