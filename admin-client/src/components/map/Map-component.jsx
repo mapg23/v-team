@@ -1,10 +1,11 @@
 /* global L */
 import { useEffect } from "react";
 import styles from "./Map-component.module.css";
+import bikeIconUrl from "../../assets/bike.png";
 
 export default function MapComponent({ coords, bikes }) {
-  
   useEffect(() => {
+    console.log(coords);
     // Hämta elementet som React nu har renderat
     if (!coords.lat || !coords.long) return;
 
@@ -16,63 +17,85 @@ export default function MapComponent({ coords, bikes }) {
         '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
-    // Cleanup när komponenten avmountas
-    return (
-      () => {
-        map.remove();
-      }
-    );
+    // add all bikes to map
+    const bikes = [
+      {
+        id: 1,
+        lat: coords.lat,
+        long: coords.long,
+      },
+    ];
 
+    for (const bike of bikes) {
+      renderMarkers(bike);
+    }
+
+    function renderMarkers(bike) {
+      const locationMarker = L.icon({
+        iconUrl: bikeIconUrl,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12],
+        popupAnchor: [0, 0],
+      });
+
+      L.marker([bike.lat, bike.long], { icon: locationMarker })
+        .bindPopup(
+          `
+          message: Jag hyr
+          `
+        )
+        .openPopup()
+        .addTo(map);
+    }
+
+    // Cleanup när komponenten avmountas
+    return () => {
+      map.remove();
+    };
   }, [coords]);
   return <div id="map" className={styles.map}></div>;
 
+  // const bikeObjects = JSON.parse(bikes);
+  //         trainObjct.values().forEach(element => {
+  //             renderMarkers(element);
+  //         });;
+  //     }
 
+  // // Train markers
+  // async function renderMarkers(train) {
+  //     let points = train.CurrentLocation.Geometry.WGS84
+  //     // Replace POINT () chars with empty string
+  //     // Split into array on space and slice from first index (a space)
+  //     let [long, lat] = this.getCoordinates(points);
+  //     // const pointsArray = points.replaceAll(/[POINT\(\)]/gi, "").split(" ").slice(1);
+  //     // let [long, lat] = pointsArray;
+  //     const locationMarker = L.icon({
+  //         iconUrl: "./style/assets/train.png",
+  //         iconSize: [24, 24],
+  //         iconAnchor: [12, 12],
+  //         popupAnchor: [0, 0],
+  //     });
 
-    // const bikeObjects = JSON.parse(bikes);
-    //         trainObjct.values().forEach(element => {
-    //             renderMarkers(element);
-    //         });;
-    //     }
+  //     // Train route and delay
+  //     const info = {
+  //         "start": train.FromLocation.AdvertisedLocationName,
+  //         "current": train.CurrentLocation.AdvertisedLocationName,
+  //         "end": train.ToLocation.AdvertisedLocationName,
+  //         "delay": this.calculateDelay(train)
+  //     };
 
-    // // Train markers
-    // async function renderMarkers(train) {
-    //     let points = train.CurrentLocation.Geometry.WGS84
-    //     // Replace POINT () chars with empty string
-    //     // Split into array on space and slice from first index (a space)
-    //     let [long, lat] = this.getCoordinates(points);
-    //     // const pointsArray = points.replaceAll(/[POINT\(\)]/gi, "").split(" ").slice(1);
-    //     // let [long, lat] = pointsArray;
-    //     const locationMarker = L.icon({
-    //         iconUrl: "./style/assets/train.png",
-    //         iconSize: [24, 24],
-    //         iconAnchor: [12, 12],
-    //         popupAnchor: [0, 0],
-    //     });
-
-    //     // Train route and delay
-    //     const info = {
-    //         "start": train.FromLocation.AdvertisedLocationName,
-    //         "current": train.CurrentLocation.AdvertisedLocationName,
-    //         "end": train.ToLocation.AdvertisedLocationName,
-    //         "delay": this.calculateDelay(train)
-    //     };
-
-    //     L.marker([
-    //         parseFloat(lat),
-    //         parseFloat(long)],
-    //         {icon: locationMarker,
-    //         })
-    //         .addTo(this.map)
-    //         .bindPopup(`
-    //             Startstation: ${info.start}
-    //             Nuvarande station: ${info.current}
-    //             Slutstation: ${info.end}
-    //             Försening hh:mm:ss: ${info.delay}
-    //             `).openPopup();
-
-    
-
-  
+  //     L.marker([
+  //         parseFloat(lat),
+  //         parseFloat(long)],
+  //         {icon: locationMarker,
+  //         })
+  //         .addTo(this.map)
+  //         .bindPopup(`
+  //             Startstation: ${info.start}
+  //             Nuvarande station: ${info.current}
+  //             Slutstation: ${info.end}
+  //             Försening hh:mm:ss: ${info.delay}
+  //             `).openPopup();
 }
 
 // export default class MapComp extends HTMLElement {
