@@ -13,7 +13,7 @@ const cityService = {
   getAllCities: async function getAllCities() {
     return [
       { id: 1, name: "Stockholm" },
-      { id: 2, name: "Gothenburg" },
+      { id: 2, name: "Göteborg" },
       { id: 3, name: "Malmö" },
     ];
     try {
@@ -71,7 +71,11 @@ const cityService = {
    * @return {Object} { "id": 1, "name": "Stockholm", "stations": 5, "bikes": 240 }
    */
   getCityDetails: async function getCityDetails(id) {
-    return { id: 1, name: "Stockholm", stations: 5, bikes: 240 };
+    return [
+      { id: 1, name: "Stockholm", stations: 5, bikes: 240 },
+      { id: 2, name: "Göteborg", stations: 4, bikes: 400 },
+      { id: 3, name: "Malmö", stations: 11, bikes: 400 },
+    ];
 
     try {
       const response = await fetch(`${API}/cities/${id}`, {
