@@ -17,8 +17,8 @@ const jwtService = {
    * @param   {string} expiryTime How long a token is valid.
    * @returns {string} token A JWT token
    */
-  createToken: async function (userId, userRole, expiryTime = 60 * 60 * 5) {
-    const token = jwt.sign({ userId: userId, userRole: userRole }, jwtSecret, {
+  createToken: async function (payload, expiryTime = 60 * 60 * 5) {
+    const token = jwt.sign({ sub: payload }, jwtSecret, {
       expiresIn: expiryTime,
     });
     return token;
@@ -29,7 +29,7 @@ const jwtService = {
       const decoded = await verifyAsync(token, jwtSecret);
       // console.log("decoded.sub: ", decoded.sub);
 
-      return { userId: decoded.userId, userRole: decoded.userRole };
+      return decoded.sub;
     } catch (err) {
       throw new Error("Invalid token.");
     }

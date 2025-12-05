@@ -62,6 +62,13 @@ router.post(
   async (req, res) => {
     try {
       const { rawState, encryptedState, code, code_verifier } = req.body;
+      console.log(
+        "logging in.. .",
+        rawState,
+        encryptedState,
+        code,
+        code_verifier
+      );
 
       const token = await oAuthService.oAuthLogin(
         rawState,

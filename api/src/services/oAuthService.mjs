@@ -76,12 +76,13 @@ const oauthService = {
    */
   oAuthLogin: async function (rawState, encryptedState, code, codeVerifier) {
     const decryptedState = await jwtService.verifyToken(encryptedState);
-
+    console.log("state compare: ", decryptedState, rawState);
     if (decryptedState !== rawState) {
       throw new Error("Failed to authenticate state");
     }
 
     const accessToken = await this.getAccessToken(code, codeVerifier);
+    console.log(accessToken);
     const userEmail = await this.getUserEmail(accessToken);
     const user = await this.findOrCreateOauthUser(userEmail);
     const token = await jwtService.createToken(user.id);
@@ -116,6 +117,7 @@ const oauthService = {
         email: email,
         password: null,
         oauth: true,
+        role: user,
       });
       if (created.insertId) {
         const newUser = await userModel.getUserById(created.insertId);
