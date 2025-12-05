@@ -71,9 +71,10 @@ class Simulator {
         });
     }
 
-    startFromMemory() {
+    startFromMemory(payload) {
         // Retrives all bikes from db
         // Start bike movement
+        this.bikes = payload
     }
 
     /**
@@ -175,6 +176,7 @@ export async function handleWorkerMessage(msg, simm) {
 
     const routers = {
         'start-job': () => simm.start(),
+        'start-job-memory': () => simm.startFromMemory(payload),
         'end-job': () => simm.end(),
         'list': () => simm.list(),
 

@@ -97,6 +97,21 @@ app.get('/start', async (req, res) => {
   }
 });
 
+app.post('/start', async (req, res) => {
+  try {
+    let bikes = req.body.bikes;
+    const response = await callWorker('start-jobb-memory', bikes);
+    console.log(response);
+    res.json({
+      ok: true,
+      msg: 'started-job-memory',
+    });
+  } catch (error) {
+    console.error(error);
+  }
+
+});
+
 app.get('/end', async (req, res) => {
   try {
     const response = await callWorker('end-job');
