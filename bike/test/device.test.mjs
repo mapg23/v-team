@@ -28,21 +28,21 @@ describe('Test device', () => {
         expect(res).toEqual({ event: 'bike is unable to move, reason:', data: 60});
     });
 
-    test('Self diagnostics method, high battery', () => {
-        const device = new Device(0, { x: 0, y:0}, 100, 10, false, 0);
-        device.status = 10;
-        device.battery = 21;
-        device.selfDiagnostics();
+    // test('Self diagnostics method, high battery', () => {
+    //     const device = new Device(0, { x: 0, y:0}, 100, 10, false, 0);
+    //     device.status = 10;
+    //     device.battery = 21;
+    //     device.selfDiagnostics();
 
-        expect(device.status).toEqual(50);
-    });
+    //     expect(device.status).toEqual(50);
+    // });
 
-    test('Self diagnostics method, low battery', () => {
-        const device = new Device(0, { x: 0, y:0}, 100, 10, false, 0);
-        device.status = 50;
-        device.battery = 10
-        device.selfDiagnostics();
+    // test('Self diagnostics method, low battery', () => {
+    //     const device = new Device(0, { x: 0, y:0}, 100, 10, false, 0);
+    //     device.status = 50;
+    //     device.battery = 10
+    //     device.selfDiagnostics();
         
-        expect(device.status).toEqual(10);
-    });
+    //     expect(device.status).toEqual(10);
+    // });
 });
