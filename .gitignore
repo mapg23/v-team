@@ -3,7 +3,9 @@ database/logs/
 prototypes/
 .DS_STORE
 .DS_Store
+
 api/node_modules
 bike/node_modules
+
 bike/coverage
 api/coverage

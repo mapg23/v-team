@@ -1,10 +1,10 @@
 name: Run Jest tests
 
 on:
+  push:
+    branches: ["*"]
   pull_request:
     branches: ["*"]
-  push:
-    branches: ["main"]
 
 permissions:
   contents: write
@@ -30,6 +30,11 @@ jobs:
       - name: Run Jest Tests
         run: npm test -- --ci --coverage
         working-directory: ${{ matrix.folder }}
+
+      - name: Run Artillery Tests
+        run: |
+          npm run artillery-test
+        working-directory: bike
 
       - name: Debug coverage folder
         run: |

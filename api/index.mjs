@@ -18,6 +18,11 @@ app.use(cors());
 app.use(`/api/${version}`, createUserRouter());
 
 
+app.post('/telemetry', (req, res) => {
+    console.log(req.body);
+    res.json({ ok: true });
+});
+
 app.listen(port, function() {
     console.log(`Server is listening on port: ${port}`);
 });
