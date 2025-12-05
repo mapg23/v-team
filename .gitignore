@@ -2,6 +2,8 @@ database/data/
 database/logs/
 prototypes/
 .DS_STORE
+.DS_Store
+
 api/node_modules
 bike/node_modules
 

@@ -4,6 +4,8 @@ import express from "express";
 import { Worker } from "worker_threads";
 import { randomUUID } from "crypto";
 
+import { forwardToMain } from "./src/util.mjs";
+
 const app = express();
 const port = process.env.BIKE_PORT || 7071;
 
@@ -43,6 +45,12 @@ function callWorker(cmd, payload = {}) {
 }
 
 worker.on('message', (msg) => {
+  if(msg.type === "telemetry") {
+    console.log("inside worker messages")
+    forwardToMain(msg.data);
+    return;
+  }
+  
   const { id, event, data} = msg;
 
   if (pending.has(id)) {
@@ -50,7 +58,6 @@ worker.on('message', (msg) => {
     pending.delete(id);
   }
 })
-
 
 app.get('/heartbeat', async (req, res) => {
   try {
@@ -61,7 +68,6 @@ app.get('/heartbeat', async (req, res) => {
     console.error(error);
   }
 });
-
 
 // cordinates params { bike_id : {...cordinates}, bike_id: {...cordinates}}
 app.post('/setRoute', async (req, res) => {
@@ -89,6 +95,21 @@ app.get('/start', async (req, res) => {
   } catch (error) {
     console.error(error)
   }
+});
+
+app.post('/start', async (req, res) => {
+  try {
+    let bikes = req.body.bikes;
+    const response = await callWorker('start-jobb-memory', bikes);
+    console.log(response);
+    res.json({
+      ok: true,
+      msg: 'started-job-memory',
+    });
+  } catch (error) {
+    console.error(error);
+  }
+
 });
 
 app.get('/end', async (req, res) => {
@@ -126,7 +147,6 @@ app.get('/bike/:id', async (req, res) => {
   res.json(response['data'])
 });
 
-
-app.listen(port, function () {
+app.listen(port, function() {
   console.log(`Listening on port: ${port}`);
 });
