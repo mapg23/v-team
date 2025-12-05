@@ -13,7 +13,7 @@ export default function DropDown({ setMap, cityOptions }) {
 
   return (
     <select onChange={handleChange}>
-      <option key="Översikt">Översikt</option>
+      <option key="choose">Välj en stad</option>
       {cityOptions.map((city) => (
         <option key={city}>{city}</option>
       ))}
