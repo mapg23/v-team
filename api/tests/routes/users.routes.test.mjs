@@ -121,7 +121,7 @@ describe('Users API - ok', () => {
 });
 
 // De negativa fallen
-describe('Users API - NOK (500) and (400)', () => {
+describe('Users API - NOK (500)', () => {
     // Byter ut console.error mot en tom funktion, Inget skrivs till terminalen.
     beforeAll(() => {
         console.error = jest.fn();
@@ -202,7 +202,8 @@ describe('Users API - NOK (400)', () => {
     test('POST /users returns 400 if required fields are missing', async () => {
         const res = await request(app)
             .post('/users')
-            .send({ email: 'falcon@hotmail.com' }); // saknar username & password
+            // saknar användarnamn och lösenord.
+            .send({ email: 'falcon@hotmail.com' });
 
         expect(res.status).toBe(400);
         expect(res.body).toHaveProperty('error', 'Missing required fields');
