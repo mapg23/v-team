@@ -17,10 +17,10 @@ export default function createCityRouter(cities = createCities()) {
             return res.status(400).json({ error: error });
         }
 
-        const formatError = cityHelpers.validateLatAndLong(lat, lon);
+        const locationError = cityHelpers.validateLatAndLong(lat, lon);
 
-        if (formatError) {
-            return res.status(400).json({ error: formatError });
+        if (locationError) {
+            return res.status(400).json({ error: locationError });
         }
 
         try {
@@ -75,6 +75,12 @@ export default function createCityRouter(cities = createCities()) {
         if (idError) {
             return res.status(400).json({ error: idError });
         }
+
+        // Namnvalidering
+        if (!req.body.name || req.body.name.trim() === "") {
+            return res.status(400).json({ error: "Name is missing" });
+        }
+
         try {
             // Uppdaterar staden.
             await cities.updateCity(req.params.id, req.body);

@@ -176,7 +176,7 @@ describe('Cities API - NOK (500)', () => {
             .send({
                 name: 'Habo City',
                 latitude: 57.9093,
-                logitude: 14.0744
+                longitude: 14.0744
             });
 
         expect(res.status).toBe(500);
@@ -218,7 +218,7 @@ describe('cities API - NOK (400)', () => {
         expect(res.body).toHaveProperty('error', 'Missing required fields');
     });
 
-    // Ogiltigt latitud eller longitud
+    // Latitud eller longitud som inte är nummer
     test('POST /cities returns 400 if location format is invalid', async () => {
         const res = await request(app)
             .post('/cities')
@@ -232,6 +232,36 @@ describe('cities API - NOK (400)', () => {
         expect(res.body).toHaveProperty('error', 'Latitude and longitude must be numbers');
     });
 
+    // Ogiltigt latitud eller longitud (fel antal siffror före eller efter punkten)
+    test('POST /cities returns 400 if location format is invalid', async () => {
+        const res = await request(app)
+            .post('/cities')
+            .send({
+                name: 'Habo',
+                latitude: "2222.1111",
+                longitude: 14.0744
+            });
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Latitude or longitude have invalid format');
+    });
+
+    // Saknade namnfält för stad vid uppdatering
+    test('PUT /cities/:id returns 400 if name is empty', async () => {
+        const res = await request(app)
+            .put('/cities/1')
+            .send({
+                name: '',
+                latitude: 57.9093,
+                longitude: 14.0744
+            });
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error', 'Name is missing');
+    });
+
+
+
     // Ogiltigt eller saknat id
     test('GET /cities/:id returns 400 if id is invalid', async () => {
     // id som inte är nummer.
@@ -240,6 +270,7 @@ describe('cities API - NOK (400)', () => {
         expect(res.status).toBe(400);
         expect(res.body).toHaveProperty('error', 'Id is wrong');
     });
+
 
     test('PUT /cities/:id returns 400 if id is invalid', async () => {
         const res = await request(app)
