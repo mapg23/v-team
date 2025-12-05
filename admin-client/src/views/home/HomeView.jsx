@@ -7,6 +7,7 @@ import CityService from "services/cities";
 import CityTable from "components/table/CityTable";
 import PieChart from "components/chart/PieChart";
 import bikeService from "services/bikes";
+import cityService from "../../services/cities";
 
 // TODO - Om ingen stad är vald, visa en överblick över städer, cyklar, stationer och användare
 // Om specifik stad är vald, visa data för den staden
@@ -28,6 +29,14 @@ function HomeView() {
   // Select options for choosing a city
   // Available cities are fetched in useEffect
   const [cityOptions, setCityOptions] = useState([]);
+
+  // Current selected city
+  const [selectedCity, setselectedCity] = useState({
+    id: null,
+    name: null,
+    stations: null,
+    bikes: null
+  });
 
   // Array containing City Objects with details
   // [ id: null,
@@ -66,11 +75,13 @@ function HomeView() {
    * @param {Array} arrayOfCities array of city objects
    */
   async function getAllCityDetails(arrayOfCities) {
-    const promises = arrayOfCities.map((city) =>
-      CityService.getCityDetails(city.id)
-    );
-    // Vänta tills ALLA är klara
-    const allCityDetails = await Promise.all(promises);
+    // const promises = arrayOfCities.map((city) =>
+    //   CityService.getCityDetails(city.id)
+    // );
+    // // Vänta tills ALLA är klara
+    // const allCityDetails = await Promise.all(promises);
+    // console.log(allCityDetails);
+    const allCityDetails = await cityService.getCityDetails();
     setAllCityDetails(allCityDetails);
     setLoading(false);
   }
@@ -84,7 +95,6 @@ function HomeView() {
   async function getCityDetails(id) {
     const cityDetails = await CityService.getCityDetails(id);
     setCityDetails(cityDetails);
-    console.log(cityDetails)
   }
 
   /**
@@ -100,9 +110,9 @@ function HomeView() {
 
     // Get cityObject based on city name from Select option
     const chosenCity = allCityDetails.find((cityObj) => cityObj.name === city);
-
     // Update current city details
     getCityDetails(chosenCity.id)
+    // setselectedCity(chosenCity);
   }
 
   // Visa en översikt endast om användare inte valt stad
@@ -126,7 +136,7 @@ function HomeView() {
   return (
     <>
       <SelectCity setMap={setMap} cityOptions={cityOptions} />
-      <h2>{cityDetails.name}</h2>
+      {/* <h2>{selectedCity.name}</h2> */}
       <CityTable cityDetails={cityDetails} />
       {/* {JSON.stringify(cityDetails)} */}
       <PieChart total={500} used={100} />
