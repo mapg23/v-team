@@ -6,11 +6,18 @@ const app = express();
 const port = process.env.API_PORT || 9091
 const version = process.env.API_VERSION;
 
+app.use(express.json());
+
 app.get(`/${version}/`, (req, res) => {
     res.json({
         status: "ok",
         msg: "GET / ENDPOINT"
     });
+});
+
+app.post('/telemetry', (req, res) => {
+    console.log(req.body);
+    res.json({ ok: true });
 });
 
 app.listen(port, function() {

@@ -11,8 +11,10 @@ class Simulator {
     heartbeat_count = 0;
     movementInterval = null;
 
-    constructor(total_bikes=1) {
+    constructor(total_bikes=1, bikes = [], cordinates = {}) {
         this.total_bikes = total_bikes;
+        this.bikes = bikes;
+        this.cordinates = cordinates;
     }
 
     setCordinates(coords) {
@@ -165,7 +167,7 @@ export function createSimulator(options) {
 
 
 // Instance of Simulator, this is active while the main thread is.
-const simm = createSimulator({ total_bikes: 100});
+const simm = createSimulator({ total_bikes: 1000});
 
 /**
  * Routing from the main application into the simulator class.
