@@ -1,12 +1,12 @@
 import styles from "./HomeView.module.css";
-import Map from "../../components/map/Map-component";
+import Map from "@/components/map/Map-component";
 import { useEffect, useState } from "react";
-import SelectCity from "../../components/input/SelectCity";
-import getCoordinates from "../../services/nominatim";
-import CityService from "../../services/cities";
-import CityTable from "../../components/table/cityTable";
-import PieChart from "../../components/chart/PieChart";
-import bikeService from "../../services/bikes";
+import SelectCity from "components/input/SelectCity";
+import getCoordinates from "services/nominatim";
+import CityService from "services/cities";
+import CityTable from "components/table/CityTable";
+import PieChart from "components/chart/PieChart";
+import bikeService from "services/bikes";
 
 // TODO - Om ingen stad är vald, visa en överblick över städer, cyklar, stationer och användare
 // Om specifik stad är vald, visa data för den staden
