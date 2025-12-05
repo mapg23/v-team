@@ -6,7 +6,7 @@ import Navbar from "./components/nav/Nav";
 import { useState } from "react";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
   if (!loggedIn) {
     return (
       <Router>

@@ -19,6 +19,10 @@ app.disable('x-powered-by');
 // Monterar routern
 app.use(`/api/${version}`, createUserRouter());
 
+app.get('/', (req, res) => {
+    res.redirect(`/api/${version}/users`);
+});
+
 
 app.post('/telemetry', (req, res) => {
     console.log(req.body);
