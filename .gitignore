@@ -3,7 +3,16 @@ database/logs/
 prototypes/
 .DS_STORE
 api/node_modules
+<<<<<<< HEAD
+
+bike/node_modules
+=======
 bike/node_modules
 
+<<<<<<< HEAD
+>>>>>>> origin/main
+bike/coverage
+=======
 bike/coverage
 api/coverage
+>>>>>>> origin/main
