@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon index.mjs",
     "eslint": "eslint .",
-    "test": "jest --detectOpenHandles"
+    "test": "jest --detectOpenHandles",
+    "test:ci": "jest --passWithNoTests"
   },
   "keywords": [],
   "author": "",
