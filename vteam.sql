@@ -2,12 +2,10 @@
 -- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
--- Host: mariadb:3306
--- Generation Time: Nov 13, 2025 at 12:19 PM
--- Server version: 12.0.2-MariaDB-ubu2404
--- PHP Version: 8.3.27
-
--- Test edited
+-- Värd: mariadb:3306
+-- Tid vid skapande: 05 dec 2025 kl 11:36
+-- Serverversion: 12.1.2-MariaDB-ubu2404
+-- PHP-version: 8.3.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `vteam`
+-- Databas: `vteam`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cards`
+-- Tabellstruktur `cards`
 --
 
 CREATE TABLE `cards` (
@@ -42,7 +40,7 @@ CREATE TABLE `cards` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `charging_zones`
+-- Tabellstruktur `charging_zones`
 --
 
 CREATE TABLE `charging_zones` (
@@ -53,19 +51,29 @@ CREATE TABLE `charging_zones` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cities`
+-- Tabellstruktur `cities`
 --
 
 CREATE TABLE `cities` (
   `id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL,
-  `location` varchar(32) NOT NULL
+  `latitude` decimal(9,6) NOT NULL,
+  `longitude` decimal(9,6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumpning av Data i tabell `cities`
+--
+
+INSERT INTO `cities` (`id`, `name`, `latitude`, `longitude`) VALUES
+(1, 'Bankeryd', 57.860210, 14.124000),
+(2, 'Habo', 57.909300, 14.074400),
+(3, 'Jönköping', 57.781500, 14.156200);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cities_to_charging`
+-- Tabellstruktur `cities_to_charging`
 --
 
 CREATE TABLE `cities_to_charging` (
@@ -77,7 +85,7 @@ CREATE TABLE `cities_to_charging` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cities_to_parking`
+-- Tabellstruktur `cities_to_parking`
 --
 
 CREATE TABLE `cities_to_parking` (
@@ -89,7 +97,7 @@ CREATE TABLE `cities_to_parking` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `parking_zones`
+-- Tabellstruktur `parking_zones`
 --
 
 CREATE TABLE `parking_zones` (
@@ -100,7 +108,7 @@ CREATE TABLE `parking_zones` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `scooters`
+-- Tabellstruktur `scooters`
 --
 
 CREATE TABLE `scooters` (
@@ -114,7 +122,7 @@ CREATE TABLE `scooters` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `scooter_in_use`
+-- Tabellstruktur `scooter_in_use`
 --
 
 CREATE TABLE `scooter_in_use` (
@@ -128,7 +136,7 @@ CREATE TABLE `scooter_in_use` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `transactions`
+-- Tabellstruktur `transactions`
 --
 
 CREATE TABLE `transactions` (
@@ -145,43 +153,50 @@ CREATE TABLE `transactions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Tabellstruktur `users`
 --
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(64) NOT NULL,
-  `password` varchar(256) DEFAULT NULL,
-  `email` varchar(64) NOT NULL,
-  `oauth` tinyint(1) NOT NULL DEFAULT 0
+  `password` varchar(256) NOT NULL,
+  `email` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 --
--- Indexes for dumped tables
+-- Dumpning av Data i tabell `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `password`, `email`) VALUES
+(21, 'Falcon', 'hdhsh', 'falcon@example.com'),
+(22, 'Eagle', 'hdhsh', 'eagle@example.com');
+
+--
+-- Index för dumpade tabeller
 --
 
 --
--- Indexes for table `cards`
+-- Index för tabell `cards`
 --
 ALTER TABLE `cards`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `charging_zones`
+-- Index för tabell `charging_zones`
 --
 ALTER TABLE `charging_zones`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `cities`
+-- Index för tabell `cities`
 --
 ALTER TABLE `cities`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `name` (`name`);
 
 --
--- Indexes for table `cities_to_charging`
+-- Index för tabell `cities_to_charging`
 --
 ALTER TABLE `cities_to_charging`
   ADD PRIMARY KEY (`id`),
@@ -189,7 +204,7 @@ ALTER TABLE `cities_to_charging`
   ADD KEY `charging_id` (`charging_id`);
 
 --
--- Indexes for table `cities_to_parking`
+-- Index för tabell `cities_to_parking`
 --
 ALTER TABLE `cities_to_parking`
   ADD PRIMARY KEY (`id`),
@@ -197,19 +212,19 @@ ALTER TABLE `cities_to_parking`
   ADD KEY `parking_id` (`parking_id`);
 
 --
--- Indexes for table `parking_zones`
+-- Index för tabell `parking_zones`
 --
 ALTER TABLE `parking_zones`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `scooters`
+-- Index för tabell `scooters`
 --
 ALTER TABLE `scooters`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `scooter_in_use`
+-- Index för tabell `scooter_in_use`
 --
 ALTER TABLE `scooter_in_use`
   ADD PRIMARY KEY (`id`),
@@ -217,7 +232,7 @@ ALTER TABLE `scooter_in_use`
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `transactions`
+-- Index för tabell `transactions`
 --
 ALTER TABLE `transactions`
   ADD PRIMARY KEY (`id`),
@@ -225,108 +240,108 @@ ALTER TABLE `transactions`
   ADD KEY `scooter_id` (`scooter_id`);
 
 --
--- Indexes for table `users`
+-- Index för tabell `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT för dumpade tabeller
 --
 
 --
--- AUTO_INCREMENT for table `cards`
+-- AUTO_INCREMENT för tabell `cards`
 --
 ALTER TABLE `cards`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `charging_zones`
+-- AUTO_INCREMENT för tabell `charging_zones`
 --
 ALTER TABLE `charging_zones`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `cities`
+-- AUTO_INCREMENT för tabell `cities`
 --
 ALTER TABLE `cities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `cities_to_charging`
+-- AUTO_INCREMENT för tabell `cities_to_charging`
 --
 ALTER TABLE `cities_to_charging`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `cities_to_parking`
+-- AUTO_INCREMENT för tabell `cities_to_parking`
 --
 ALTER TABLE `cities_to_parking`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `parking_zones`
+-- AUTO_INCREMENT för tabell `parking_zones`
 --
 ALTER TABLE `parking_zones`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `scooters`
+-- AUTO_INCREMENT för tabell `scooters`
 --
 ALTER TABLE `scooters`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `scooter_in_use`
+-- AUTO_INCREMENT för tabell `scooter_in_use`
 --
 ALTER TABLE `scooter_in_use`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `transactions`
+-- AUTO_INCREMENT för tabell `transactions`
 --
 ALTER TABLE `transactions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT för tabell `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
--- Constraints for dumped tables
+-- Restriktioner för dumpade tabeller
 --
 
 --
--- Constraints for table `cards`
+-- Restriktioner för tabell `cards`
 --
 ALTER TABLE `cards`
   ADD CONSTRAINT `fk_card_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
--- Constraints for table `cities_to_charging`
+-- Restriktioner för tabell `cities_to_charging`
 --
 ALTER TABLE `cities_to_charging`
   ADD CONSTRAINT `fk_ctc_charging` FOREIGN KEY (`charging_id`) REFERENCES `charging_zones` (`id`),
   ADD CONSTRAINT `fk_ctc_city` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`);
 
 --
--- Constraints for table `cities_to_parking`
+-- Restriktioner för tabell `cities_to_parking`
 --
 ALTER TABLE `cities_to_parking`
   ADD CONSTRAINT `fk_ctp_city` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`),
   ADD CONSTRAINT `fk_ctp_parking` FOREIGN KEY (`parking_id`) REFERENCES `parking_zones` (`id`);
 
 --
--- Constraints for table `scooter_in_use`
+-- Restriktioner för tabell `scooter_in_use`
 --
 ALTER TABLE `scooter_in_use`
   ADD CONSTRAINT `fk_siu_scooter` FOREIGN KEY (`scooter_id`) REFERENCES `scooters` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_siu_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `transactions`
+-- Restriktioner för tabell `transactions`
 --
 ALTER TABLE `transactions`
   ADD CONSTRAINT `fk_transactions_scooter` FOREIGN KEY (`scooter_id`) REFERENCES `scooters` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
