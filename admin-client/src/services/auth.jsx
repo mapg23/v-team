@@ -1,10 +1,8 @@
 import API from "../config/api.js";
 
 /**
- * Object exporting methods for authentication,
- * such as login/logout
- *
- * Admins cannot be created since it would make no sence
+ * Auth Service handling all routes regarding authentication
+ * Based on endpoints: https://docs.google.com/spreadsheets/d/1Tza3ZSUOJJRQJeSquKQbE6fRy4d3zNGafAVQxUVNg9M/edit?gid=0#gid=0
  */
 const authObject = {
   /**

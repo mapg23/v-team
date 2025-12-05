@@ -1,5 +1,5 @@
 /**
- * Service to return map objects
+ * Service to return map objects based on a adress
  * @param {string} address as string
  * @returns json
  */
