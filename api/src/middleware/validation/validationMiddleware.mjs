@@ -50,6 +50,12 @@ export const oAuthLoginRules = [
     .isJWT(),
 
   body("code").notEmpty().withMessage("Code is required."),
+
+  body("code_verifier")
+    .notEmpty()
+    .withMessage("Code is required.")
+    .isAlphanumeric()
+    .withMessage("Code verifier has to be alphanumeric."),
 ];
 
 export const getStateRules = [

@@ -11,17 +11,21 @@ const oauthService = {
    * @param   {string} code         Code from Oatuh provider
    * @returns {string} access_token Access token from Oatuh provider
    */
-  getAccessToken: async function (code) {
+  getAccessToken: async function (code, codeVerifier) {
+    console.log(codeVerifier);
     const res = await fetch("https://github.com/login/oauth/access_token", {
       method: "POST",
       headers: { Accept: "application/json" },
       body: new URLSearchParams({
         client_id: process.env.GITHUB_CLIENT_ID,
         client_secret: process.env.GITHUB_CLIENT_SECRET,
+        redirect_uri: "http://localhost:5173/login/github/callback",
         code: code,
+        code_verifier: codeVerifier,
       }),
     });
     const { access_token, error } = await res.json();
+    console.log("access or error: ", access_token, error);
 
     if (error) {
       const err = new Error(`Failed getting Github token: ${error}`);
@@ -70,14 +74,14 @@ const oauthService = {
    * @param   {string} code           Code from Oatuh provider
    * @returns {string} token          A JWT to access API
    */
-  oAuthLogin: async function (rawState, encryptedState, code) {
+  oAuthLogin: async function (rawState, encryptedState, code, codeVerifier) {
     const decryptedState = await jwtService.verifyToken(encryptedState);
 
     if (decryptedState !== rawState) {
       throw new Error("Failed to authenticate state");
     }
 
-    const accessToken = await this.getAccessToken(code);
+    const accessToken = await this.getAccessToken(code, codeVerifier);
     const userEmail = await this.getUserEmail(accessToken);
     const user = await this.findOrCreateOauthUser(userEmail);
     const token = await jwtService.createToken(user.id);

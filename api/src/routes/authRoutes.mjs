@@ -61,12 +61,13 @@ router.post(
   validation.checkValidationResult,
   async (req, res) => {
     try {
-      const { rawState, encryptedState, code } = req.body;
+      const { rawState, encryptedState, code, code_verifier } = req.body;
 
       const token = await oAuthService.oAuthLogin(
         rawState,
         encryptedState,
-        code
+        code,
+        code_verifier
       );
 
       return res.json({ jwt: token });
