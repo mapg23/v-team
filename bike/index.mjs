@@ -4,6 +4,8 @@ import express from "express";
 import { Worker } from "worker_threads";
 import { randomUUID } from "crypto";
 
+import { forwardToMain } from "./src/util.mjs";
+
 const app = express();
 const port = process.env.BIKE_PORT || 7071;
 
@@ -43,6 +45,12 @@ function callWorker(cmd, payload = {}) {
 }
 
 worker.on('message', (msg) => {
+  if(msg.type === "telemetry") {
+    console.log("inside worker messages")
+    forwardToMain(msg.data);
+    return;
+  }
+  
   const { id, event, data} = msg;
 
   if (pending.has(id)) {

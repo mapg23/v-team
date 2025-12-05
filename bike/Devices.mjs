@@ -13,7 +13,25 @@ class Device {
         this.speed = speed;
     }
 
-    // Förflytta move funktion
+    moveToCordinates(cordinates, heartbeat=5) {
+        let id = 0;
+        let running = true;
+        while(running){
+            const heart = setInterval(() => {
+                if (id > cordinates.length) {
+                    running = false;
+                }
+
+                this.cords = cordinates[id];
+                id++;
+
+            }, heartbeat);
+
+            clearInterval(heart);
+        }
+        
+        return { event: 'Bike has reached its location' };
+    }
 
     move(cords) {
         if (this.status > 50) {
@@ -23,21 +41,6 @@ class Device {
         this.cords = cords;
     }
 
-    selfDiagnostics() {
-        if (this.battery > 20) {
-            this.status = 50;
-            return;
-        }
-        this.status = 10;
-        return;
-    }
-
-
-    // self diagnostics,
-
-    // Batteriet är ok
-    // Batteri är mindre än 20% > status = 50
-    //
 }
 
 export default Device;
