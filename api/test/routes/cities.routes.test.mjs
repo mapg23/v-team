@@ -42,9 +42,7 @@ describe('Cities API - ok', () => {
             .post('/cities')
             .send(
                 {
-                    name: 'Jönköping',
-                    latitude: 57.781500,
-                    longitude: 14.156200
+                    name: 'Jönköping'
                 }
             );
 
@@ -144,9 +142,7 @@ describe('Cities API - NOK (500)', () => {
         mockDb.insert.mockRejectedValue(new Error('DB error'));
         const res = await request(app)
             .post('/cities')
-            .send({ name: 'Habo',
-                latitude: 57.9093,
-                longitude: 14.0744
+            .send({ name: 'Habo'
             });
 
         expect(res.status).toBe(500);
@@ -202,48 +198,32 @@ describe('Cities API - NOK (500)', () => {
 });
 
 // Negativa tester för 400
-describe('cities API - NOK (400)', () => {
+describe('cities API - NOK (400), (404)', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    // Saknade fält
-    test('POST /cities returns 400 if required fields are missing', async () => {
-        const res = await request(app)
-            .post('/cities')
-            // saknar latitud och longitud
-            .send({ name: 'Habo' });
-
-        expect(res.status).toBe(400);
-        expect(res.body).toHaveProperty('error', 'Missing required fields');
-    });
-
-    // Latitud eller longitud som inte är nummer
-    test('POST /cities returns 400 if location format is invalid', async () => {
+    // Saknade namnfält vid skapande.
+    test('POST /cities/ returns 400 if name is empty', async () => {
         const res = await request(app)
             .post('/cities')
             .send({
-                name: 'Habo',
-                latitude: "abc",
-                longitude: 14.0744
+                name: ''
             });
 
         expect(res.status).toBe(400);
-        expect(res.body).toHaveProperty('error', 'Latitude and longitude must be numbers');
+        expect(res.body).toHaveProperty('error', 'Name is missing');
     });
 
-    // Ogiltigt latitud eller longitud (fel antal siffror före eller efter punkten)
-    test('POST /cities returns 400 if location format is invalid', async () => {
+    test('POST /cities returns 404 if city not found via Nominatim', async () => {
+        // simulerar att inget hittas
+        mockDb.select.mockResolvedValue([]);
         const res = await request(app)
             .post('/cities')
-            .send({
-                name: 'Habo',
-                latitude: "2222.1111",
-                longitude: 14.0744
-            });
+            .send({ name: 'NonExistingCity' });
 
-        expect(res.status).toBe(400);
-        expect(res.body).toHaveProperty('error', 'Latitude or longitude have invalid format');
+        expect(res.status).toBe(404);
+        expect(res.body).toHaveProperty('error', 'City not found');
     });
 
     // Saknade namnfält för stad vid uppdatering

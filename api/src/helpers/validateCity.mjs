@@ -32,37 +32,6 @@ const CityHelpers = {
     },
 
     /**
-     * Validates latitude and longitude
-     * format during city registration.
-     *
-     * @param {number} latitude - The latitude entered by the admin.
-     * @param {number} longitude - The longitude entered by the admin.
-     * @returns {string|null} Returns an error message
-     * if validation fails, otherwise null.
-     */
-    validateLatAndLong: function validateLatAndLong(lat, lon) {
-        if (isNaN(Number(lat)) || isNaN(Number(lon))) {
-            return "Latitude and longitude must be numbers";
-        }
-
-        // Kontrollera precision mot DECIMAL(9,6)
-        // 2 siffror före punkt, 4-6 efter för svenska städer.
-        // för att förhindra att databasen får fel format.
-        const regex = /^\d{2}\.\d{4,6}$/;
-
-        // Konverterar till sträng för validering med regex.
-        const latStr = String(lat);
-
-        const lonStr = String(lon);
-
-        if (!regex.test(latStr) || !regex.test(lonStr)) {
-            return "Latitude or longitude have invalid format";
-        }
-
-        // Om allt ok
-        return null;
-    },
-    /**
      * Validates id during id search.
      *
      * Checks if id is present and is a number.

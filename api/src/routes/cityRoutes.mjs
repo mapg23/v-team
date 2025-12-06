@@ -10,7 +10,7 @@ export default function createCityRouter(cities = createCities()) {
         const name  = req.body.name;
 
         if (!name) {
-            return res.status(400).json({ error: 'Name is required' });
+            return res.status(400).json({ error: 'Name is missing' });
         }
         // Anropa en funktion som hämtar lat, lon via Nominatim.
         const location = await cityHelpers.getGeoCoordinates(name);
