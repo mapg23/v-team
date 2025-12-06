@@ -32,8 +32,12 @@ export default function GithubCallback() {
       });
 
       const data = await response.json();
+      // Empty session storage
+      sessionStorage.clear()
 
       if (data.jwt) {
+        // Token ska göra att jag är inloggad
+        // Hantera i userObject eller nå liknande
         sessionStorage.setItem("jwt", data.jwt);
         navigate("/welcome");
       }
