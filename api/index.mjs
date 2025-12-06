@@ -7,7 +7,7 @@ import createUserRouter from './src/routes/userRoutes.mjs';
 
 const app = express();
 const port = process.env.API_PORT || 9091;
-const version = process.env.API_VERSION;
+const version = process.env.API_VERSION || "v1";
 
 app.use(cors({ origin: "*" }));
 app.set("json spaces", 2);
@@ -18,6 +18,7 @@ app.disable('x-powered-by');
 
 // Monterar routern
 app.use(`/api/${version}`, createUserRouter());
+app.use(`/api/v1/auth`, authRoutes);
 
 app.get('/', (req, res) => {
     res.redirect(`/api/${version}/users`);
@@ -30,5 +31,5 @@ app.post('/telemetry', (req, res) => {
 });
 
 app.listen(port, function() {
-    console.log(`Server is listening on port: ${port}`);
+    console.log(`Server is listening on port: ${port} with api version ${version}`);
 });
