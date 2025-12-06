@@ -7,24 +7,23 @@ export default function createCityRouter(cities = createCities()) {
     const route = express.Router();
 
     route.post(`/cities`, validateJsonBody, async (req, res) => {
-        const lat = req.body.latitude;
-        const lon = req.body.longitude;
+        const name  = req.body.name;
 
-        // Fältspecifik validering
-        const error = cityHelpers.validateBody(req.body);
+        if (!name) {
+            return res.status(400).json({ error: 'Name is required' });
+        }
+        // Anropa en funktion som hämtar lat, lon via Nominatim.
+        const location = await cityHelpers.getGeoCoordinates(name);
 
-        if (error) {
-            return res.status(400).json({ error: error });
+        if (!location) {
+            return res.status(404).json({ error: 'City not found' });
         }
 
-        const locationError = cityHelpers.validateLatAndLong(lat, lon);
-
-        if (locationError) {
-            return res.status(400).json({ error: locationError });
-        }
+        const { latitude, longitude } = location;
 
         try {
-            const result = await cities.createCity(req.body);
+            // Skapar staden i DB
+            const result = await cities.createCity({ name, latitude, longitude });
 
             const newCity = await cities.getCityById(Number(result.insertId));
 

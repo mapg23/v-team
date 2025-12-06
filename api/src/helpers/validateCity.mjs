@@ -3,26 +3,27 @@
  */
 
 const CityHelpers = {
-    /**
-     * Validates city input for registration.
-     *
-     * Checks that required fields (name, latitud, longitud) are present
-     * and that they have correct format.
-     *
-     * @param {Object} body - The request body containing city data.
-     * @returns {string|null} Returns an error message
-     * if validation fails, otherwise null.
-     */
 
-    validateBody: function validateBody(body) {
-        const { name, latitude, longitude } = body;
+    getGeoCoordinates: async function getGeoCoordinates(name) {
+        const base = "https://nominatim.openstreetmap.org/search";
 
-        if (!name || !latitude || !longitude) {
-            return "Missing required fields";
+        const url = `${base}?city=${encodeURIComponent(name)}&countrycodes=se&format=json&limit=1`;
+
+        // Anropar Nominatim för att hämta koordinater
+        const response = await fetch(url);
+
+        const data = await response.json();
+
+        if (!data.length) {
+            return null;
         }
 
-        // Om allt ok
-        return null;
+        const { lat, lon } = data[0];
+
+        return {
+            latitude: parseFloat(lat),
+            longitude: parseFloat(lon)
+        };
     },
 
     /**
