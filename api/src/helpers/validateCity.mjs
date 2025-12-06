@@ -3,7 +3,12 @@
  */
 
 const CityHelpers = {
-
+    /**
+     * Get coordinates (latitude and longitude) of a Swedish city.
+     *
+     * @param {string} name - City name.
+     * @returns {Promise<Object|null>} Coordinates object or null if not found.
+     */
     getGeoCoordinates: async function getGeoCoordinates(name) {
         const base = "https://nominatim.openstreetmap.org/search";
 
