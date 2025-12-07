@@ -3,10 +3,9 @@ import dbDefault from "../database.mjs";
 export default function createUsers(db = dbDefault) {
     const users = {
         /**
-         * Create a new user in the database.
+         * Get all users from database
          *
-         * @param {Object} body - An object containing the user data to insert.
-         * @returns {Promise} The result from the database insert operation.
+         * @returns {Promise} The result from the database fetch operation.
          */
         getUsers: async function getUsers() {
             const users = await db.select('users', ['id', 'username', 'email']);
