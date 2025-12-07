@@ -1,12 +1,13 @@
 /**
  * Create a Table based on a array of objects
- * @param {Array} cityDetails array of objects
+ * 
+ * @param {Array} data array of objects
  * @returns 
  */
-export default function CityTable({ cityDetails }) {
-  if (!Array.isArray(cityDetails) || cityDetails.length === 0) return null;
+export default function CityTable({ data }) {
+  if (!Array.isArray(data) || data.length === 0) return null;
 
-  const headers = Object.keys(cityDetails[0]);
+  const headers = Object.keys(data[0]);
 
   return (
     <table>
@@ -19,10 +20,10 @@ export default function CityTable({ cityDetails }) {
       </thead>
 
       <tbody>
-        {cityDetails.map((city) => (
-          <tr key={city.id}>
+        {data.map((obj) => (
+          <tr key={obj.id}>
             {headers.map((key) => (
-              <td key={city.id + "-" + key}>{city[key]}</td>
+              <td key={obj.id + "-" + key}>{obj[key]}</td>
             ))}
           </tr>
         ))}
