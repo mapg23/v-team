@@ -7,7 +7,8 @@ import CityService from "services/cities";
 import CityTable from "components/table/CityTable";
 import PieChart from "components/chart/PieChart";
 import bikeService from "services/bikes";
-import cityService from "../../services/cities";
+import cityService from "services/cities";
+import userService from "services/users";
 
 // TODO - Om ingen stad är vald, visa en överblick över städer, cyklar, stationer och användare
 // Om specifik stad är vald, visa data för den staden
@@ -35,7 +36,7 @@ function HomeView() {
     id: null,
     name: null,
     stations: null,
-    bikes: null
+    bikes: null,
   });
 
   // Array containing City Objects with details
@@ -59,13 +60,18 @@ function HomeView() {
     bikes: null,
   });
 
-  // Fetch all available cities.
+  // Active users
+  const [activeUsers, setActiveUsers] = useState([]);
+
+  // Fetch all data for overview
   useEffect(() => {
     async function fetchData() {
       const cities = await CityService.getAllCities();
       setCityOptions(cities.map((city) => city.name));
       // Get details for all cities
       getAllCityDetails(cities);
+      // get all users
+      setActiveUsers(await userService.getAllUsers());
     }
     fetchData();
   }, []);
@@ -111,8 +117,8 @@ function HomeView() {
     // Get cityObject based on city name from Select option
     const chosenCity = allCityDetails.find((cityObj) => cityObj.name === city);
     // Update current city details
-    getCityDetails(chosenCity.id)
-    // setselectedCity(chosenCity);
+    getCityDetails(chosenCity.id);
+    setselectedCity(chosenCity);
   }
 
   // Visa en översikt endast om användare inte valt stad
@@ -123,26 +129,32 @@ function HomeView() {
         <>
           <h1>Överblick</h1>
           {/* {JSON.stringify(allCityDetails)} */}
-          <CityTable cityDetails={allCityDetails} />
+          <CityTable data={allCityDetails} />
+          <h2>Users</h2>
+          <CityTable data={activeUsers} />
           <h2>Välj en stad för att visa stadspecifika detaljer</h2>
           <SelectCity setMap={setMap} cityOptions={cityOptions} />
         </>
       );
-    }
-    return <><h1>Loading..</h1></>
+    } 
+      return (
+        <>
+          <h1>Loading..</h1>
+        </>
+      );
   }
 
   if (userSelected)
-  return (
-    <>
-      <SelectCity setMap={setMap} cityOptions={cityOptions} />
-      {/* <h2>{selectedCity.name}</h2> */}
-      <CityTable cityDetails={cityDetails} />
-      {/* {JSON.stringify(cityDetails)} */}
-      <PieChart total={500} used={100} />
-      <Map coords={cityCoordinates} bikes={cityDetails} />
-    </>
-  );
+    return (
+      <>
+        <SelectCity setMap={setMap} cityOptions={cityOptions} />
+        <h2>{selectedCity.name}</h2>
+        <CityTable data={cityDetails} />
+        {/* {JSON.stringify(cityDetails)} */}
+        <PieChart total={500} used={100} />
+        <Map coords={cityCoordinates} bikes={cityDetails} />
+      </>
+    );
 }
 
 export default HomeView;
