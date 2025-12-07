@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Värd: mariadb:3306
--- Tid vid skapande: 05 dec 2025 kl 11:36
+-- Tid vid skapande: 07 dec 2025 kl 06:27
 -- Serverversion: 12.1.2-MariaDB-ubu2404
 -- PHP-version: 8.3.28
 
@@ -66,9 +66,9 @@ CREATE TABLE `cities` (
 --
 
 INSERT INTO `cities` (`id`, `name`, `latitude`, `longitude`) VALUES
-(1, 'Bankeryd', 57.860210, 14.124000),
-(2, 'Habo', 57.909300, 14.074400),
-(3, 'Jönköping', 57.781500, 14.156200);
+(1, 'Bankeryd', 57.863142, 14.127853),
+(2, 'Habo', 57.916015, 14.052711),
+(3, 'Jönköping', 57.782563, 14.165719);
 
 -- --------------------------------------------------------
 
@@ -116,7 +116,8 @@ CREATE TABLE `scooters` (
   `status` int(11) NOT NULL DEFAULT 10,
   `battery` int(3) NOT NULL DEFAULT 100,
   `location` varchar(64) NOT NULL,
-  `occupied` tinyint(1) NOT NULL DEFAULT 0
+  `occupied` tinyint(1) NOT NULL DEFAULT 0,
+  `city_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- --------------------------------------------------------
@@ -221,7 +222,8 @@ ALTER TABLE `parking_zones`
 -- Index för tabell `scooters`
 --
 ALTER TABLE `scooters`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_scooter_city` (`city_id`);
 
 --
 -- Index för tabell `scooter_in_use`
@@ -265,7 +267,7 @@ ALTER TABLE `charging_zones`
 -- AUTO_INCREMENT för tabell `cities`
 --
 ALTER TABLE `cities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT för tabell `cities_to_charging`
@@ -332,6 +334,12 @@ ALTER TABLE `cities_to_charging`
 ALTER TABLE `cities_to_parking`
   ADD CONSTRAINT `fk_ctp_city` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`),
   ADD CONSTRAINT `fk_ctp_parking` FOREIGN KEY (`parking_id`) REFERENCES `parking_zones` (`id`);
+
+--
+-- Restriktioner för tabell `scooters`
+--
+ALTER TABLE `scooters`
+  ADD CONSTRAINT `fk_scooter_city` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`);
 
 --
 -- Restriktioner för tabell `scooter_in_use`

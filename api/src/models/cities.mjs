@@ -72,7 +72,7 @@ export default function createCities(db = dbDefault) {
          */
         deleteCity: async function deleteCity(id) {
             return await db.remove('cities', 'id = ?', [id]);
-        }
+        },
     };
 
     return cities;
