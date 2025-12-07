@@ -276,7 +276,7 @@ describe('cities API - NOK (400), (404), (409)', () => {
             .send({
                 name: 'Habo',
                 latitude: 57.9093,
-                logitude: 14.0744
+                longitude: 14.0744
             });
 
         expect(res.status).toBe(400);
