@@ -8,10 +8,10 @@ function Navigation() {
     return (
       <ul>
         <li>
-          <a href="/">Översikt</a>
+          <a href="/welcome">Översikt</a>
         </li>
         <li>
-          <a href="city">Städer</a>
+          <a href="/city">Städer</a>
         </li>
         <li>
           <a href="/cost">Prissättning</a>

@@ -7,33 +7,22 @@ import { useState } from "react";
 import GithubCallback from "./components/auth/GithubCallback";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  return (
-    <div className="app-layout">
-      <Navbar />
-      <div className="app-content">
-        <Router>
-          <Routes>
-            <Route path="/" element={<LoginView />}></Route>
-            <Route path="/login/github/callback" element={<GithubCallback />} />
-            <Route path="/welcome" element={<HomeView />}></Route>
-          </Routes>
-        </Router>
-      </div>
-    </div>
-  );
-
-  if (!loggedIn) {
+  // const isLoggedin = sessionStorage.getItem("jwt") ? true : false;
+  const isLoggedin = true;
+  if (!isLoggedin) {
     return (
       <Router>
         <Routes>
           <Route path="/" element={<LoginView />}></Route>
           <Route path="/login/github/callback" element={<GithubCallback />} />
-          <Route path="/welcome" element={<HomeView />}></Route>
         </Routes>
       </Router>
     );
   }
+
+  /**
+   * User is logged in
+   */
   return (
     <div className="app-layout">
       <Navbar />
