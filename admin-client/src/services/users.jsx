@@ -8,6 +8,23 @@ const userService = {
    * @returns {JSON}
    */
   getAllUsers: async function getAllUsers() {
+    return [
+      {
+        id: 1,
+        username: "demo1",
+        email: "demo1@gmail.com",
+      },
+      {
+        id: 2,
+        username: "demo2",
+        email: "demo1@gmail.com",
+      },
+      {
+        id: 3,
+        username: "demo3",
+        email: "demo1@gmail.com",
+      },
+    ];
     try {
       const response = await fetch(`${API}/users`, {
         method: "GET",
@@ -122,12 +139,12 @@ const userService = {
    * @param {Object} userData - Objekt med keys och values att uppdatera
    */
   updateUser: async function updateUser(userId, userData) {
-    const userData = {
+    const userObject = {
       ...userData,
     };
     try {
       const response = await fetch(`${API}/users/${userId}`, {
-        body: JSON.stringify(userData),
+        body: JSON.stringify(userObject),
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -152,12 +169,12 @@ const userService = {
    * @param {Object} userData - Objekt med keys och values att uppdatera
    */
   patchUser: async function patchUser(userId, userData) {
-    const userData = {
+    const userObject = {
       ...userData,
     };
     try {
       const response = await fetch(`${API}/users/${userId}`, {
-        body: JSON.stringify(userData),
+        body: JSON.stringify(userObject),
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
