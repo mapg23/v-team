@@ -10,45 +10,46 @@ const router = express.Router();
  * Register a user
  */
 router.post(
-  `/register`,
-  validation.userRules,
-  validation.checkValidationResult,
-  async (req, res) => {
-    const { email, password, username } = req.body;
+    `/register`,
+    validation.userRules,
+    validation.checkValidationResult,
+    async (req, res) => {
+        const { email, password, username } = req.body;
 
-    // if (!email || !password) {
-    //   return res.status(400).json({
-    //     message: "Missing email or password",
-    //   });
-    // }
+        // if (!email || !password) {
+        //   return res.status(400).json({
+        //     message: "Missing email or password",
+        //   });
+        // }
 
-    try {
-      const user = await authService.registerUser(email, password, username);
-      return res.json(user);
-    } catch (err) {
-      return res.status(400).json(err);
+        try {
+            const user = await authService.registerUser(email, password, username);
+
+            return res.json(user);
+        } catch (err) {
+            return res.status(400).json(err);
+        }
     }
-  }
 );
 
 /**
  * Normal login flow. Returns a JWT if credentials match.
  */
 router.post(
-  `/login`,
-  validation.userRules,
-  validation.checkValidationResult,
-  async (req, res) => {
-    try {
-      const { email, password, username } = req.body;
+    `/login`,
+    validation.userRules,
+    validation.checkValidationResult,
+    async (req, res) => {
+        try {
+            const { email, password, username } = req.body;
 
-      const token = await authService.loginUser(email, password, username);
+            const token = await authService.loginUser(email, password, username);
 
-      return res.json({ jwt: token });
-    } catch (err) {
-      return res.status(401).json(err);
+            return res.json({ jwt: token });
+        } catch (err) {
+            return res.status(401).json(err);
+        }
     }
-  }
 );
 
 /**
@@ -56,32 +57,33 @@ router.post(
  * Will login or register a new oauth-user.
  */
 router.post(
-  `/oauth/login`,
-  validation.oAuthLoginRules,
-  validation.checkValidationResult,
-  async (req, res) => {
-    try {
-      const { rawState, encryptedState, code, code_verifier } = req.body;
-      console.log(
-        "logging in.. .",
-        rawState,
-        encryptedState,
-        code,
-        code_verifier
-      );
+    `/oauth/login`,
+    validation.oAuthLoginRules,
+    validation.checkValidationResult,
+    async (req, res) => {
+        try {
+            const { rawState, encryptedState, code, code_verifier } = req.body;
 
-      const token = await oAuthService.oAuthLogin(
-        rawState,
-        encryptedState,
-        code,
-        code_verifier
-      );
+            console.log(
+                "logging in.. .",
+                rawState,
+                encryptedState,
+                code,
+                code_verifier
+            );
 
-      return res.json({ jwt: token });
-    } catch (err) {
-      return res.status(401).json(err);
+            const token = await oAuthService.oAuthLogin(
+                rawState,
+                encryptedState,
+                code,
+                code_verifier
+            );
+
+            return res.json({ jwt: token });
+        } catch (err) {
+            return res.status(401).json(err);
+        }
     }
-  }
 );
 
 /**
@@ -90,16 +92,16 @@ router.post(
  * to increase security.
  */
 router.post(
-  `/oauth/get_state`,
-  validation.getStateRules,
-  validation.checkValidationResult,
-  async (req, res) => {
-    const state = req.body.state;
+    `/oauth/get_state`,
+    validation.getStateRules,
+    validation.checkValidationResult,
+    async (req, res) => {
+        const state = req.body.state;
 
-    const encryptedState = await jwtService.createToken(state, 60);
+        const encryptedState = await jwtService.createToken(state, 60);
 
-    return res.json({ encryptedState: encryptedState });
-  }
+        return res.json({ encryptedState: encryptedState });
+    }
 );
 
 export default router;
