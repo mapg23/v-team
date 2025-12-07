@@ -21,6 +21,12 @@ export default function createCityRouter(cities = createCities()) {
 
         const { latitude, longitude } = location;
 
+        // Kolla om staden redan finns
+        const existingCity = await cities.getCityByName(name);
+        if (existingCity.length > 0) {
+            return res.status(409).json({ error: 'City already exists' });
+        }
+
         try {
             // Skapar staden i DB
             const result = await cities.createCity({ name, latitude, longitude });

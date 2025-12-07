@@ -28,6 +28,8 @@ describe('Cities API - ok', () => {
         console.error = jest.fn();
     });
     test('POST /cities creates a city', async () => {
+        // Inga städer med samma namn
+        mockDb.select.mockResolvedValueOnce([]);
         mockDb.insert.mockResolvedValue({ insertId: 1 });
         mockDb.select.mockResolvedValue([
             {
@@ -139,6 +141,8 @@ describe('Cities API - NOK (500)', () => {
         console.error = jest.fn();
     });
     test('POST /cities returns 500 on error', async () => {
+        // Ingen dubblett på stad (tom array), insert körs
+        mockDb.select.mockResolvedValue([]);
         mockDb.insert.mockRejectedValue(new Error('DB error'));
         const res = await request(app)
             .post('/cities')
@@ -198,7 +202,7 @@ describe('Cities API - NOK (500)', () => {
 });
 
 // Negativa tester för 400
-describe('cities API - NOK (400), (404)', () => {
+describe('cities API - NOK (400), (404), (409)', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -226,6 +230,22 @@ describe('cities API - NOK (400), (404)', () => {
         expect(res.body).toHaveProperty('error', 'City not found');
     });
 
+    test('POST /cities returns 409 if city already exists', async () => {
+    mockDb.select.mockResolvedValue(
+        [{
+            id: 1,
+            name: 'Jönköping'
+        }]);
+
+    const res = await request(app)
+        .post('/cities')
+        .send({ name: 'Jönköping' });
+
+    expect(res.status).toBe(409);
+    expect(res.body).toHaveProperty('error', 'City already exists');
+});
+
+
     // Saknade namnfält för stad vid uppdatering
     test('PUT /cities/:id returns 400 if name is empty', async () => {
         const res = await request(app)
@@ -239,8 +259,6 @@ describe('cities API - NOK (400), (404)', () => {
         expect(res.status).toBe(400);
         expect(res.body).toHaveProperty('error', 'Name is missing');
     });
-
-
 
     // Ogiltigt eller saknat id
     test('GET /cities/:id returns 400 if id is invalid', async () => {
