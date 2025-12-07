@@ -2,6 +2,7 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginView from "./views/auth/LoginView";
 import HomeView from "./views/home/HomeView";
+import UserView from "./views/user/UserView";
 import Navbar from "./components/nav/Nav";
 import { useState } from "react";
 import GithubCallback from "./components/auth/GithubCallback";
@@ -30,6 +31,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/welcome" element={<HomeView />}></Route>
+            <Route path="/user/:id" element={<UserView />}></Route>
           </Routes>
         </Router>
       </div>
