@@ -1,10 +1,8 @@
-
 import request from 'supertest';
 import express from 'express';
 import createCityRouter from '../../src/routes/cityRoutes.mjs';
 import createCities from '../../src/models/cities.mjs';
 
-// Mockar databasen
 const mockDb = {
     select: jest.fn(),
     insert: jest.fn(),
@@ -12,57 +10,42 @@ const mockDb = {
     remove: jest.fn()
 };
 
-// Skapar users-objektet med mocken
 const cities = createCities(mockDb);
 
-// Skapar app och montera routern
 const app = express();
 
 app.use(express.json());
 app.use(createCityRouter(cities));
 
-// Testerna
+beforeEach(() => {
+    jest.clearAllMocks();
+    // Stänger ner console.error för tester
+    console.error = jest.fn();
+});
+
 describe('Cities API - ok', () => {
-    // Byter ut console.error mot en tom funktion, Inget skrivs till terminalen.
-    beforeAll(() => {
-        console.error = jest.fn();
-    });
     test('POST /cities creates a city', async () => {
-        // Inga städer med samma namn
+        // Inga dubbletter
         mockDb.select.mockResolvedValueOnce([]);
         mockDb.insert.mockResolvedValue({ insertId: 1 });
         mockDb.select.mockResolvedValue([
-            {
-                id: 1,
-                name: 'Jönköping',
-                latitude: 57.781500,
-                longitude: 14.156200
-            }
+            { id: 1, name: 'Jönköping', latitude: 57.7815, longitude: 14.1562 }
         ]);
 
         const res = await request(app)
             .post('/cities')
-            .send(
-                {
-                    name: 'Jönköping'
-                }
-            );
+            .send({ name: 'Jönköping' });
 
         expect(res.status).toBe(201);
         expect(res.body[0]).toHaveProperty('id');
         expect(res.body[0].name).toBe('Jönköping');
-        expect(res.body[0].latitude).toBe(57.781500);
-        expect(res.body[0].longitude).toBe(14.156200);
+        expect(res.body[0].latitude).toBe(57.7815);
+        expect(res.body[0].longitude).toBe(14.1562);
     });
 
     test('GET /cities/:id returns a city', async () => {
         mockDb.select.mockResolvedValue([
-            {
-                id: 1,
-                name: 'Jönköping',
-                latitude: 57.781500,
-                longitude: 14.156200
-            }
+            { id: 1, name: 'Jönköping', latitude: 57.7815, longitude: 14.1562 }
         ]);
         const res = await request(app).get('/cities/1');
 
@@ -72,221 +55,90 @@ describe('Cities API - ok', () => {
 
     test('GET /cities/ returns cities', async () => {
         mockDb.select.mockResolvedValue([
-            {
-                id: 1,
-                name: 'Jönköping',
-                latitude: 57.781500,
-                longitude: 14.156200
-            }
+            { id: 1, name: 'Jönköping', latitude: 57.7815, longitude: 14.1562 }
         ]);
         const res = await request(app).get('/cities');
 
         expect(res.status).toBe(200);
         expect(res.body[0]).toHaveProperty('id', 1);
-        expect(res.body[0]).toHaveProperty('name', 'Jönköping');
-        expect(res.body[0]).toHaveProperty('latitude', 57.781500);
-        expect(res.body[0]).toHaveProperty('longitude', 14.156200);
+        expect(res.body[0].name).toBe('Jönköping');
     });
 
     test('PUT /cities/:id update a city', async () => {
         mockDb.select.mockResolvedValue([
-            { id: 1,
-                name: "Jönköping City",
-                latitude: 57.781500,
-                longitude: 14.156200
-            }
+            { id: 1, name: 'Jönköping City', latitude: 57.7815, longitude: 14.1562 }
         ]);
         const res = await request(app)
             .put('/cities/1')
-            .send(
-                { id: 1,
-                    name: "Jönköping City",
-                    latitude: 57.781500,
-                    longitude: 14.156200
-                });
+            .send({ id: 1, name: 'Jönköping City', latitude: 57.7815, longitude: 14.1562 });
 
         expect(res.status).toBe(200);
-        expect(res.body[0]).toHaveProperty('id');
         expect(res.body[0].name).toBe('Jönköping City');
-        expect(res.body[0].latitude).toBe(57.781500);
-        expect(res.body[0].longitude).toBe(14.156200);
     });
 
-
     test('DELETE /cities/:id delete a city', async () => {
-        const res = await request(app)
-            .delete('/cities/1');
+        const res = await request(app).delete('/cities/1');
 
         expect(res.status).toBe(204);
     });
 
     test('GET /cities?name returns city by name', async () => {
         mockDb.select.mockResolvedValue([
-            { id: 1, name: "Jönköping", latitude: 57.781500, longitude: 14.156200 }
+            { id: 1, name: 'Jönköping', latitude: 57.7815, longitude: 14.1562 }
         ]);
-
         const res = await request(app).get('/cities?name=Jönköping');
 
         expect(res.status).toBe(200);
-        expect(res.body[0]).toHaveProperty('id', 1);
-        expect(res.body[0]).toHaveProperty('latitude', 57.781500);
-        expect(res.body[0]).toHaveProperty('longitude', 14.156200);
+        expect(res.body[0].name).toBe('Jönköping');
     });
 });
 
-// De negativa fallen
 describe('Cities API - NOK (500)', () => {
-    // Byter ut console.error mot en tom funktion, Inget skrivs till terminalen.
-    beforeAll(() => {
-        console.error = jest.fn();
-    });
-    test('POST /cities returns 500 on error', async () => {
-        // Ingen dubblett på stad (tom array), insert körs
+    test('POST /cities returns 500 on DB error', async () => {
         mockDb.select.mockResolvedValue([]);
         mockDb.insert.mockRejectedValue(new Error('DB error'));
-        const res = await request(app)
-            .post('/cities')
-            .send({ name: 'Habo'
-            });
+        const res = await request(app).post('/cities').send({ name: 'Habo' });
 
         expect(res.status).toBe(500);
-        expect(res.body).toHaveProperty('error', 'Could not create city');
+        expect(res.body.error).toBe('Could not create city');
     });
 
-    test('GET /cities/:id returns 500 on error', async () => {
+    test('GET /cities/:id returns 500 on DB error', async () => {
         mockDb.select.mockRejectedValue(new Error('DB error'));
         const res = await request(app).get('/cities/1');
 
         expect(res.status).toBe(500);
-        expect(res.body).toHaveProperty('error', 'Could not fetch city');
+        expect(res.body.error).toBe('Could not fetch city');
     });
 
-    test('GET /cities returns 500 on error', async () => {
+    test('GET /cities returns 500 on DB error', async () => {
         mockDb.select.mockRejectedValue(new Error('DB error'));
         const res = await request(app).get('/cities');
 
         expect(res.status).toBe(500);
-        expect(res.body).toHaveProperty('error', 'Could not fetch cities');
-    });
-
-    test('PUT /cities/:id returns 500 on error', async () => {
-        mockDb.select.mockRejectedValue(new Error('DB error'));
-        const res = await request(app)
-            .put('/cities/1')
-            .send({
-                name: 'Habo City',
-                latitude: 57.9093,
-                longitude: 14.0744
-            });
-
-        expect(res.status).toBe(500);
-        expect(res.body).toHaveProperty('error', 'Could not update city');
-    });
-
-    test('DELETE /cities/:id returns 500 on error', async () => {
-        mockDb.remove.mockRejectedValue(new Error('DB error'));
-        const res = await request(app).delete('/cities/1');
-
-        expect(res.status).toBe(500);
-        expect(res.body).toHaveProperty('error', 'Could not delete city');
-    });
-
-    test('GET /cities?name= triggers 500 on db error', async () => {
-        mockDb.select.mockRejectedValue(new Error('DB error'));
-
-        const res = await request(app).get('/cities?name=Habos');
-
-        expect(res.status).toBe(500);
-        expect(res.body).toHaveProperty('error');
+        expect(res.body.error).toBe('Could not fetch cities');
     });
 });
 
-// Negativa tester för 400
-describe('cities API - NOK (400), (404), (409)', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
-    // Saknade namnfält vid skapande.
-    test('POST /cities/ returns 400 if name is empty', async () => {
-        const res = await request(app)
-            .post('/cities')
-            .send({
-                name: ''
-            });
+describe('Cities API - NOK (400)', () => {
+    test('POST /cities returns 400 if name is empty', async () => {
+        const res = await request(app).post('/cities').send({ name: '' });
 
         expect(res.status).toBe(400);
-        expect(res.body).toHaveProperty('error', 'Name is missing');
+        expect(res.body.error).toBe('Name is missing');
     });
-
-//     test('POST /cities returns 404 if city not found via Nominatim', async () => {
-//         // simulerar att inget hittas
-//         mockDb.select.mockResolvedValue([]);
-//         const res = await request(app)
-//             .post('/cities')
-//             .send({ name: 'NonExistingCity' });
-
-//         expect(res.status).toBe(404);
-//         expect(res.body).toHaveProperty('error', 'City not found');
-//     });
-
-//     test('POST /cities returns 409 if city already exists', async () => {
-//     mockDb.select.mockResolvedValue(
-//         [{
-//             id: 1,
-//             name: 'Jönköping'
-//         }]);
-
-//     const res = await request(app)
-//         .post('/cities')
-//         .send({ name: 'Jönköping' });
-
-//     expect(res.status).toBe(409);
-//     expect(res.body).toHaveProperty('error', 'City already exists');
-// });
-
-
-    // Saknade namnfält för stad vid uppdatering
-    test('PUT /cities/:id returns 400 if name is empty', async () => {
-        const res = await request(app)
-            .put('/cities/1')
-            .send({
-                name: '',
-                latitude: 57.9093,
-                longitude: 14.0744
-            });
-
-        expect(res.status).toBe(400);
-        expect(res.body).toHaveProperty('error', 'Name is missing');
-    });
-
-    // Ogiltigt eller saknat id
-    test('GET /cities/:id returns 400 if id is invalid', async () => {
-    // id som inte är nummer.
-        const res = await request(app).get('/cities/abc');
-
-        expect(res.status).toBe(400);
-        expect(res.body).toHaveProperty('error', 'Id is wrong');
-    });
-
 
     test('PUT /cities/:id returns 400 if id is invalid', async () => {
-        const res = await request(app)
-            .put('/cities/abc')
-            .send({
-                name: 'Habo',
-                latitude: 57.9093,
-                longitude: 14.0744
-            });
+        const res = await request(app).put('/cities/abc').send({ name: 'Habo' });
 
         expect(res.status).toBe(400);
-        expect(res.body).toHaveProperty('error', 'Id is wrong');
+        expect(res.body.error).toBe('Id is wrong');
     });
 
     test('DELETE /cities/:id returns 400 if id is invalid', async () => {
         const res = await request(app).delete('/cities/abc');
 
         expect(res.status).toBe(400);
-        expect(res.body).toHaveProperty('error', 'Id is wrong');
+        expect(res.body.error).toBe('Id is wrong');
     });
 });

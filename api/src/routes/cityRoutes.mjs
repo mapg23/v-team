@@ -23,6 +23,7 @@ export default function createCityRouter(cities = createCities()) {
 
         // Kolla om staden redan finns
         const existingCity = await cities.getCityByName(name);
+
         if (existingCity.length > 0) {
             return res.status(409).json({ error: 'City already exists' });
         }
@@ -93,8 +94,8 @@ export default function createCityRouter(cities = createCities()) {
             const updatedCity = await cities.getCityById(req.params.id);
 
             if (updatedCity.length === 0) {
-            return res.status(404).json({ error: "City not found" });
-        }
+                return res.status(404).json({ error: "City not found" });
+            }
 
             return res.status(200).json(updatedCity);
         } catch (err) {
