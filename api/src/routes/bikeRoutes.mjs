@@ -6,7 +6,7 @@ export default function createBikeRouter(db) {
     const route = express.Router();
     const bikes = createBikes(db);
 
-    // Create a bike
+    // Skapar en cykel manuellt - Admin
     route.post(`/bikes`, validateJsonBody, async (req, res) => {
         try {
             const { status, battery, location, occupied, city_id} = req.body;
@@ -32,7 +32,6 @@ export default function createBikeRouter(db) {
         }
     });
 
-    // Get all bikes
     route.get(`/bikes`, async (req, res) => {
         try {
             const list = await bikes.getBikes();
