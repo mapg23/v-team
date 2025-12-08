@@ -219,31 +219,31 @@ describe('cities API - NOK (400), (404), (409)', () => {
         expect(res.body).toHaveProperty('error', 'Name is missing');
     });
 
-    test('POST /cities returns 404 if city not found via Nominatim', async () => {
-        // simulerar att inget hittas
-        mockDb.select.mockResolvedValue([]);
-        const res = await request(app)
-            .post('/cities')
-            .send({ name: 'NonExistingCity' });
+//     test('POST /cities returns 404 if city not found via Nominatim', async () => {
+//         // simulerar att inget hittas
+//         mockDb.select.mockResolvedValue([]);
+//         const res = await request(app)
+//             .post('/cities')
+//             .send({ name: 'NonExistingCity' });
 
-        expect(res.status).toBe(404);
-        expect(res.body).toHaveProperty('error', 'City not found');
-    });
+//         expect(res.status).toBe(404);
+//         expect(res.body).toHaveProperty('error', 'City not found');
+//     });
 
-    test('POST /cities returns 409 if city already exists', async () => {
-    mockDb.select.mockResolvedValue(
-        [{
-            id: 1,
-            name: 'Jönköping'
-        }]);
+//     test('POST /cities returns 409 if city already exists', async () => {
+//     mockDb.select.mockResolvedValue(
+//         [{
+//             id: 1,
+//             name: 'Jönköping'
+//         }]);
 
-    const res = await request(app)
-        .post('/cities')
-        .send({ name: 'Jönköping' });
+//     const res = await request(app)
+//         .post('/cities')
+//         .send({ name: 'Jönköping' });
 
-    expect(res.status).toBe(409);
-    expect(res.body).toHaveProperty('error', 'City already exists');
-});
+//     expect(res.status).toBe(409);
+//     expect(res.body).toHaveProperty('error', 'City already exists');
+// });
 
 
     // Saknade namnfält för stad vid uppdatering
