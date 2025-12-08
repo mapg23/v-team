@@ -102,7 +102,7 @@ class Simulator {
     end() {
         // Save all bike positions to database
 
-        
+
         this.bikes = [];
         this.stopMovement();
         return { event: 'stopping worker'};
@@ -119,7 +119,7 @@ class Simulator {
 
     /**
      * Getter method for device based on id.
-     * @param {Array} payload 
+     * @param {Array} payload
      * @returns {Array} - Device
      */
     getBike(payload) {
@@ -128,7 +128,7 @@ class Simulator {
 
     /**
      * Method that alters a specific bikes cordinates based on bike id.
-     * @param {Array} payload 
+     * @param {Array} payload
      * @returns {Array} - Array of result.
      */
     setRoute(payload) {
@@ -151,7 +151,7 @@ class Simulator {
         const prevY = this.bikes[bike.id].cords.y;
 
         const returnMsg = { event: `Changed bike: ${bike.id} from {x:${prevX}, y:${prevY}} to: {x: ${bike.x}, y: ${bike.y}} `}
-        
+
         this.bikes[bike.id].move({
             x: Number(bike.x),
             y: Number(bike.y)

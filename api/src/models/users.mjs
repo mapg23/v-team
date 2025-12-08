@@ -3,9 +3,9 @@ import dbDefault from "../database.mjs";
 export default function createUsers(db = dbDefault) {
     const users = {
         /**
-         * Get all users from database
+         * Get all users.
          *
-         * @returns {Promise} The result from the database fetch operation.
+         * @returns {Promise<Array>} List of users.
          */
         getUsers: async function getUsers() {
             const users = await db.select('users', ['id', 'username', 'email']);
@@ -16,17 +16,17 @@ export default function createUsers(db = dbDefault) {
          * Create a new user in the database.
          *
          * @param {Object} body - User data to insert.
-         * @returns {Promise} Result of the insert operation.
+         * @returns {Promise<Array>} Insert result.
          */
         createUser: async function createUser(body) {
             return await db.insert('users', body);
         },
 
         /**
-         * Fetch a single user by ID.
+         * Get a single user by ID.
          *
          * @param {number} id - ID of the user.
-         * @returns {Promise} User record if found.
+         * @returns {Promise<Array>} User record if found.
          */
         getUserById: async function getUserById(id) {
             return await db.select(
@@ -38,10 +38,10 @@ export default function createUsers(db = dbDefault) {
         },
 
         /**
-         * Fetch a single user by email.
+         * Get a single user by email.
          *
          * @param {string} email - The email of the user.
-         * @returns {Promise} User record if found.
+         * @returns {Promise<Array>} User record if found.
          */
         getUserByEmail: async function getUserByEmail(email) {
             return await db.select(
@@ -57,7 +57,7 @@ export default function createUsers(db = dbDefault) {
          *
          * @param {number} id - The ID of the user to update.
          * @param {Object} data - An object containing the fields to update.
-         * @returns {Promise} The result of the database update operation.
+         * @returns {Promise<Array>} The result of the database update operation.
          */
         updateUser: async function updateUser(id, data) {
             return await db.update('users', data, 'id = ?', [id]);
@@ -67,7 +67,7 @@ export default function createUsers(db = dbDefault) {
          * Delete a user from the database by ID.
          *
          * @param {number} id - The ID of the user to delete.
-         * @returns {Promise} The result of the database delete operation.
+         * @returns {Promise<Array>} The result of the database delete operation.
          */
         deleteUser: async function deleteUser(id) {
             return await db.remove('users', 'id = ?', [id]);
