@@ -5,6 +5,7 @@ import cors from "cors";
 import authRoutes from "./src/routes/authRoutes.mjs";
 import createUserRouter from './src/routes/userRoutes.mjs';
 import createCityRouter from './src/routes/cityRoutes.mjs';
+import createBikeRouter from './src/routes/bikeRoutes.mjs';
 
 const app = express();
 const port = process.env.API_PORT || 9091;
@@ -20,6 +21,7 @@ app.disable('x-powered-by');
 // Monterar routern
 app.use(`/api/${version}`, createUserRouter());
 app.use(`/api/${version}`, createCityRouter());
+app.use(`/api/${version}`, createBikeRouter());
 
 app.get('/', (req, res) => {
     res.redirect(`/api/${version}/users`);

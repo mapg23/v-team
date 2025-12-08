@@ -231,19 +231,19 @@ describe('cities API - NOK (400), (404), (409)', () => {
     });
 
     test('POST /cities returns 409 if city already exists', async () => {
-    mockDb.select.mockResolvedValue(
-        [{
-            id: 1,
-            name: 'Jönköping'
-        }]);
+        mockDb.select.mockResolvedValue(
+            [{
+                id: 1,
+                name: 'Jönköping'
+            }]);
 
-    const res = await request(app)
-        .post('/cities')
-        .send({ name: 'Jönköping' });
+        const res = await request(app)
+            .post('/cities')
+            .send({ name: 'Jönköping' });
 
-    expect(res.status).toBe(409);
-    expect(res.body).toHaveProperty('error', 'City already exists');
-});
+        expect(res.status).toBe(409);
+        expect(res.body).toHaveProperty('error', 'City already exists');
+    });
 
 
     // Saknade namnfält för stad vid uppdatering

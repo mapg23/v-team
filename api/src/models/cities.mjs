@@ -70,6 +70,39 @@ export default function createCities(db = dbDefault) {
         deleteCity: async function deleteCity(id) {
             return await db.remove('cities', 'id = ?', [id]);
         },
+        getBikeCount: async function getBikeCount(cityId) {
+            const result = await db.select(
+                'scooters',
+                ['COUNT(*) AS bike_count'],
+                'city_id = ?',
+                [cityId]
+            );
+
+            return result[0]?.bike_count || 0;
+        },
+
+        getCityDetails: async function getCityDetails(cityId) {
+            if (cityId) {
+                const cityArray = await cities.getCityById(cityId);
+
+                if (!cityArray[0]) {
+                    return null;
+                }
+
+                const city = cityArray[0];
+
+                city.bike_count = await cities.getBikeCount(cityId);
+                return city;
+            } else {
+                const citiesArray = await cities.getCities();
+
+                for (const city of citiesArray) {
+                    city.bike_count = await cities.getBikeCount(city.id);
+                }
+                return citiesArray;
+            }
+        }
+
     };
 
     return cities;

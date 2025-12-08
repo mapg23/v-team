@@ -1,0 +1,100 @@
+import express from "express";
+import createBikes from "../models/bikes.mjs";
+import validateJsonBody from "../middleware/validateJsonBody.mjs";
+
+export default function createBikeRouter(db) {
+    const route = express.Router();
+    const bikes = createBikes(db);
+
+    // Create a bike
+    route.post(`/bikes`, validateJsonBody, async (req, res) => {
+        try {
+            const { status, battery, location, occupied, cityId } = req.body;
+
+            if (!cityId || !location) {
+                return res.status(400).json({ error: "Missing city_id or location" });
+            }
+
+            const result = await bikes.createBike({
+                status,
+                battery,
+                location,
+                occupied,
+                cityId
+            });
+
+            return res
+                .status(201)
+                .json({ message: "Bike created", id: Number(result.insertId) });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Could not create bike" });
+        }
+    });
+
+    // Get all bikes
+    route.get(`/bikes`, async (req, res) => {
+        try {
+            const list = await bikes.getBikes();
+
+            return res.status(200).json(list);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Could not fetch bikes" });
+        }
+    });
+
+    route.get(`/bikes/:id`, async (req, res) => {
+        try {
+            const id = Number(req.params.id);
+            const bike = await bikes.getBikeById(id);
+
+            if (!bike[0]) {
+                return res.status(404).json({ error: "Bike not found" });
+            }
+
+            return res.status(200).json(bike[0]);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Could not fetch bike" });
+        }
+    });
+
+    route.put(`/bikes/:id`, validateJsonBody, async (req, res) => {
+        try {
+            const id = Number(req.params.id);
+            const data = req.body;
+
+            const result = await bikes.updateBike(id, data);
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: "Bike not found" });
+            }
+
+            return res.status(200).json({ message: "Bike updated" });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Could not update bike" });
+        }
+    });
+
+    route.delete(`/bikes/:id`, async (req, res) => {
+        try {
+            const id = Number(req.params.id);
+
+            const result = await bikes.deleteBike(id);
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: "Bike not found" });
+            }
+
+            return res.status(200).json({ message: "Bike deleted" });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Could not delete bike" });
+        }
+    });
+
+
+    return route;
+}

@@ -2,8 +2,9 @@ import express from 'express';
 import validateJsonBody from '../middleware/validateJsonBody.mjs';
 import cityHelpers from '../helpers/validateCity.mjs';
 import createCities from "../models/cities.mjs";
+import createBikes from "../models/bikes.mjs";
 
-export default function createCityRouter(cities = createCities()) {
+export default function createCityRouter(cities = createCities(), bikes = createBikes()) {
     const route = express.Router();
 
     route.post(`/cities`, validateJsonBody, async (req, res) => {
@@ -23,6 +24,7 @@ export default function createCityRouter(cities = createCities()) {
 
         // Kolla om staden redan finns
         const existingCity = await cities.getCityByName(name);
+
         if (existingCity.length > 0) {
             return res.status(409).json({ error: 'City already exists' });
         }
@@ -40,14 +42,39 @@ export default function createCityRouter(cities = createCities()) {
         }
     });
 
+    // route.get(`/cities/:id`, async (req, res) => {
+    //     const idError = cityHelpers.validateId(req.params.id);
+
+    //     if (idError) {
+    //         return res.status(400).json({ error: idError });
+    //     }
+    //     try {
+    //         const city = await cities.getCityById(req.params.id);
+
+    //         return res.status(200).json(city);
+    //     } catch (err) {
+    //         console.error(err);
+    //         return res.status(500).json({ error: 'Could not fetch city' });
+    //     }
+    // });
+
     route.get(`/cities/:id`, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
 
         if (idError) {
             return res.status(400).json({ error: idError });
         }
+
         try {
-            const city = await cities.getCityById(req.params.id);
+            const city = await cities.getCityDetails(req.params.id);
+
+            if (!city) {
+                return res.status(404).json({ error: 'City not found' });
+            }
+
+            // Konverterar BigInt till Number innan JSON
+            city.id = Number(city.id);
+            city.bike_count = Number(city.bike_count);
 
             return res.status(200).json(city);
         } catch (err) {
@@ -55,6 +82,7 @@ export default function createCityRouter(cities = createCities()) {
             return res.status(500).json({ error: 'Could not fetch city' });
         }
     });
+
 
     route.get(`/cities`, async (req, res) => {
         try {
@@ -93,8 +121,8 @@ export default function createCityRouter(cities = createCities()) {
             const updatedCity = await cities.getCityById(req.params.id);
 
             if (updatedCity.length === 0) {
-            return res.status(404).json({ error: "City not found" });
-        }
+                return res.status(404).json({ error: "City not found" });
+            }
 
             return res.status(200).json(updatedCity);
         } catch (err) {
@@ -117,6 +145,27 @@ export default function createCityRouter(cities = createCities()) {
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: 'Could not delete city' });
+        }
+    });
+
+    route.get(`/cities/:id/bikes`, async (req, res) => {
+        try {
+            const cityId = Number(req.params.id);
+
+            // Kollar att staden finns
+            const city = await cities.getCityById(cityId);
+
+            if (!city[0]) {
+                return res.status(404).json({ error: "City not found" });
+            }
+
+            // Hämtar cyklar i staden
+            const bikesList = await bikes.getBikesByCityId(cityId);
+
+            return res.status(200).json(bikesList);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Could not fetch bikes for city" });
         }
     });
     return route;
