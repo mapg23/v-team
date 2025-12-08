@@ -195,8 +195,12 @@ const userService = {
         throw new Error(`HTTP error on patchUser! Status: ${response.status}`);
       }
 
-      const responseData = await response.json();
-      return responseData;
+      // return response
+      if (response.status === 204) {
+        return true;
+      }
+      return false
+
     } catch (error) {
       console.error(error);
       return [];
@@ -208,9 +212,11 @@ const userService = {
    * @returns {JSON}
    */
   getUserRentalDetails: async function getUserRentalDetails(userId) {
-    return [{
-      id: 1
-    }]
+    return [
+      {
+        id: 1,
+      },
+    ];
     try {
       const response = await fetch(`${API}/users/${userId}/rentals`, {
         method: "GET",
@@ -332,8 +338,8 @@ const userService = {
    */
   getUserBalanceDetails: async function getUserBalanceDetails(userId) {
     return {
-      balance: 100
-    }
+      balance: 100,
+    };
     try {
       const response = await fetch(`${API}/users/${userId}/balance`, {
         method: "GET",
