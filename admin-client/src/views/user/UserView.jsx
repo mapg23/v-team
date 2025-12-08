@@ -45,7 +45,6 @@ export default function UserView() {
 
   // Fetch all data for overview
   useEffect(() => {
-    console.log(params.id);
     async function fetchData() {
       const userDetails = await UserService.getUserDetails(userId);
       const balance = await UserService.getUserBalanceDetails(userId);
