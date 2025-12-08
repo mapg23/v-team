@@ -6,6 +6,7 @@ import UserView from "./views/user/UserView";
 import Navbar from "./components/nav/Nav";
 import { useState } from "react";
 import GithubCallback from "./components/auth/GithubCallback";
+// import SocketTest from "./components/socket/SocketTest.jsx"
 
 function App() {
   // const isLoggedin = sessionStorage.getItem("jwt") ? true : false;
@@ -26,6 +27,7 @@ function App() {
    */
   return (
     <div className="app-layout">
+      {/* <SocketTest /> */}
       <Navbar />
       <div className="app-content">
         <Router>
