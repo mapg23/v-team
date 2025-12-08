@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import UserService from "../../services/users";
-import { useParams } from "react-router";
+import { useParams, Navigate, useNavigate } from "react-router";
 import Profile from "../../components/user/Profile";
 import Balance from "../../components/user/Balance";
 import History from "../../components/user/History";
+import styles from "../../components/button/Button.module.css";
 
 /**
  * View for viewing a profile
  */
 export default function UserView() {
+  const navigate = useNavigate();
+
   // Get params
   const params = useParams();
   const userId = params.id;
@@ -43,7 +46,10 @@ export default function UserView() {
     return <p>no userid provided...</p>;
   }
 
-  // Fetch all data for overview
+  /**
+   * Fetch all data and set loading = false when done
+   *
+   */
   useEffect(() => {
     async function fetchData() {
       const userDetails = await UserService.getUserDetails(userId);
@@ -58,13 +64,30 @@ export default function UserView() {
     fetchData();
   }, []);
 
+  /**
+   * Delete user
+   */
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const success = await UserService.deleteUser(userId);
+    if (success) navigate("/welcome");
+  }
+
   if (!loading) {
     return (
       <>
-      <h2>Profilepage</h2>
+        <h2>Profilepage</h2>
         <Profile userDetails={userDetails} />
         <Balance balance={balance} />
         <History history={history} />
+        <form onSubmit={handleSubmit}>
+          <button
+            className={`${styles.buttuon} ${styles.delete}`}
+            type="submit"
+          >
+            Delete user
+          </button>
+        </form>
       </>
     );
   }
