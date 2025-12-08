@@ -5,6 +5,7 @@ import SelectCity from "components/input/SelectCity";
 import getCoordinates from "services/nominatim";
 import CityService from "services/cities";
 import CityTable from "components/table/CityTable";
+import UserTable from "components/table/UserTable";
 import PieChart from "components/chart/PieChart";
 import bikeService from "services/bikes";
 import cityService from "services/cities";
@@ -131,7 +132,7 @@ function HomeView() {
           {/* {JSON.stringify(allCityDetails)} */}
           <CityTable data={allCityDetails} />
           <h2>Users</h2>
-          <CityTable data={activeUsers} />
+          <UserTable data={activeUsers} />
           <h2>Välj en stad för att visa stadspecifika detaljer</h2>
           <SelectCity setMap={setMap} cityOptions={cityOptions} />
         </>
