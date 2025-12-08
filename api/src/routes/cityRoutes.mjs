@@ -168,5 +168,30 @@ export default function createCityRouter(cities = createCities(), bikes = create
             return res.status(500).json({ error: "Could not fetch bikes for city" });
         }
     });
+
+    route.get(`/cities/:id/bike/:bikeId`, async (req, res) => {
+        try {
+            const cityId = Number(req.params.id);
+            const bikeId = Number(req.params.bikeId);
+
+            // Kolla att staden finns
+            const city = await cities.getCityById(cityId);
+
+            if (!city[0]) {return res.status(404).json({ error: "City not found" });}
+
+            // Hämta cykeln och kolla att den tillhör staden
+            const bike = await bikes.getBikeById(bikeId);
+
+            if (!bike[0] || bike[0].city_id !== cityId) {
+                return res.status(404).json({ error: "Bike not found in this city" });
+            }
+
+            return res.status(200).json(bike[0]);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Could not fetch bike" });
+        }
+    });
+
     return route;
 }

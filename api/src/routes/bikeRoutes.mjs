@@ -9,10 +9,10 @@ export default function createBikeRouter(db) {
     // Create a bike
     route.post(`/bikes`, validateJsonBody, async (req, res) => {
         try {
-            const { status, battery, location, occupied, cityId } = req.body;
+            const { status, battery, location, occupied, city_id} = req.body;
 
-            if (!cityId || !location) {
-                return res.status(400).json({ error: "Missing city_id or location" });
+            if (!city_id || !location) {
+                return res.status(400).json({ error: "Missing cityId or location" });
             }
 
             const result = await bikes.createBike({
@@ -20,7 +20,7 @@ export default function createBikeRouter(db) {
                 battery,
                 location,
                 occupied,
-                cityId
+                city_id
             });
 
             return res
