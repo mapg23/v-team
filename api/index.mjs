@@ -1,11 +1,11 @@
 "use strict";
 import express from "express";
-import "dotenv/config";
+import "dotenv";
 import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
-import authRoutes from "./src/routes/authRoutes.mjs";
+// import authRoutes from "./src/routes/authRoutes.mjs";
 import createUserRouter from './src/routes/userRoutes.mjs';
 import createCityRouter from './src/routes/cityRoutes.mjs';
 import createBikeRouter from './src/routes/bikeRoutes.mjs';
@@ -21,12 +21,14 @@ app.use(express.json());
 // Döljer Express-version
 app.disable('x-powered-by');
 
-
-app.use(`/api/${version}`, authRoutes);
+// app.use(`/api/${version}`, authRoutes);
 app.use(`/api/${version}`, createUserRouter());
 app.use(`/api/${version}`, createCityRouter());
 app.use(`/api/${version}`, createBikeRouter());
 
+app.get('/', (req, res) => {
+    res.redirect(`/api/${version}/cities`);
+});
 
 // HTTP och Socket.IO server
 const httpServer = createServer(app);
@@ -34,7 +36,6 @@ const httpServer = createServer(app);
 export const io = new Server(httpServer, {
     cors: { origin: "*" }
 });
-
 
 // Telemetry route (WebSocket)
 app.post('/telemetry', (req, res) => {
