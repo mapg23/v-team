@@ -1,3 +1,5 @@
+import API from "../config/api.js";
+
 /**
  * User service handling all routes regarding users
  * Based on: https://docs.google.com/spreadsheets/d/1Tza3ZSUOJJRQJeSquKQbE6fRy4d3zNGafAVQxUVNg9M/edit?gid=0#gid=0
@@ -8,23 +10,6 @@ const userService = {
    * @returns {JSON}
    */
   getAllUsers: async function getAllUsers() {
-    return [
-      {
-        id: 1,
-        username: "demo1",
-        email: "demo1@gmail.com",
-      },
-      {
-        id: 2,
-        username: "demo2",
-        email: "demo1@gmail.com",
-      },
-      {
-        id: 3,
-        username: "demo3",
-        email: "demo1@gmail.com",
-      },
-    ];
     try {
       const response = await fetch(`${API}/users`, {
         method: "GET",
@@ -223,6 +208,9 @@ const userService = {
    * @returns {JSON}
    */
   getUserRentalDetails: async function getUserRentalDetails(userId) {
+    return [{
+      id: 1
+    }]
     try {
       const response = await fetch(`${API}/users/${userId}/rentals`, {
         method: "GET",
@@ -343,6 +331,9 @@ const userService = {
    * @returns {JSON}
    */
   getUserBalanceDetails: async function getUserBalanceDetails(userId) {
+    return {
+      balance: 100
+    }
     try {
       const response = await fetch(`${API}/users/${userId}/balance`, {
         method: "GET",
