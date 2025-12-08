@@ -11,11 +11,6 @@ import bikeService from "services/bikes";
 import cityService from "services/cities";
 import userService from "services/users";
 
-// TODO - Om ingen stad är vald, visa en överblick över städer, cyklar, stationer och användare
-// Om specifik stad är vald, visa data för den staden
-// CityTable är uppdaterad att fungera oavsett data
-// Problemet är logiken för cityDetails
-
 /**
  * Home view for admin
  *
