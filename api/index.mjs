@@ -5,14 +5,17 @@ import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
-// import authRoutes from "./src/routes/authRoutes.mjs";
+import authRoutes from "./src/routes/authRoutes.mjs";
 import createUserRouter from './src/routes/userRoutes.mjs';
 import createCityRouter from './src/routes/cityRoutes.mjs';
 import createBikeRouter from './src/routes/bikeRoutes.mjs';
+import socketAuth from "./src/middleware/socketAuth.js";
+import jwtService from "./src/services/jwtService.mjs";
 
 const app = express();
 const port = process.env.API_PORT || 9091;
 const version = process.env.API_VERSION || 'v1';
+const jwtSecret = process.env.JWT_SECRET;
 
 // Middleware
 app.use(cors({ origin: "*" }));
@@ -24,28 +27,28 @@ app.disable('x-powered-by');
 // app.use(`/api/${version}`, authRoutes);
 app.use(`/api/${version}`, createUserRouter());
 app.use(`/api/v1/auth`, authRoutes);
+app.use(`/api/${version}`, createCityRouter());
 
 // -------- Socket.io
-const server = http.createServer(app);
+const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
+
+// Om godkänd klient
+io.on("connection", (socket) => {
+  console.log("connected!", socket.id)
+});
+
 
 app.use(`/api/${version}`, createBikeRouter());
 
 app.get('/', (req, res) => {
     res.redirect(`/api/${version}/cities`);
 });
-
-// HTTP och Socket.IO server
-// const httpServer = createServer(app);
-
-// export const io = new Server(httpServer, {
-//     cors: { origin: "*" }
-// });
 
 // Telemetry route (WebSocket)
 app.post('/telemetry', (req, res) => {
