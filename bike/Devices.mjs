@@ -13,32 +13,22 @@ class Device {
         this.speed = speed;
     }
 
-    moveToCordinates(cordinates, heartbeat=5) {
-        let id = 0;
-        let running = true;
-        while(running){
-            const heart = setInterval(() => {
-                if (id > cordinates.length) {
-                    running = false;
-                }
-
-                this.cords = cordinates[id];
-                id++;
-
-            }, heartbeat);
-
-            clearInterval(heart);
-        }
-        
-        return { event: 'Bike has reached its location' };
-    }
-
     move(cords) {
         if (this.status > 50) {
             return { event: 'bike is unable to move, reason:', data: this.status};
         }
 
         this.cords = cords;
+    }
+
+    setStatus(status) {
+        this.status = status;
+    }
+
+    selfDiagnose() {
+        if (this.battery <= 20) {
+            this.setStatus(50) // low battery
+        }
     }
 
 }
