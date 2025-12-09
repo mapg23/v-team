@@ -25,6 +25,7 @@ app.disable('x-powered-by');
 app.use(`/api/${version}`, createUserRouter());
 app.use(`/api/${version}`, createCityRouter());
 app.use(`/api/${version}`, createBikeRouter());
+app.use(`/api/${version}`, createStationRouter());
 
 app.get('/', (req, res) => {
     res.redirect(`/api/${version}/cities`);

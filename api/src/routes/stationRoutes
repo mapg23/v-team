@@ -1,0 +1,94 @@
+import express from 'express';
+import validateJsonBody from '../middleware/validateJsonBody.mjs';
+import createStations from "../models/chargingZones.mjs";
+
+export default function createStationRouter(stations = createStations()) {
+    const route = express.Router();
+
+    // Skapar en ny station - Admin
+    route.post(`/stations`, validateJsonBody, async (req, res) => {
+        const { name, latitude, longitude } = req.body;
+
+        if (!name || latitude === undefined || longitude === undefined) {
+            return res.status(400).json({ error: 'Missing name or coordinates' });
+        }
+
+        try {
+            const result = await stations.createChargingZone(
+                { name, latitude, longitude });
+            const newStation = await stations.getChargingZoneById(Number(result.insertId));
+
+            return res.status(201).json(newStation);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Could not create station' });
+        }
+    });
+
+    // Hämta en specifik station
+    route.get(`/stations/:id`, async (req, res) => {
+        const id = Number(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ error: 'Id is wrong' });
+
+        try {
+            const station = await stations.getChargingZoneById(id);
+
+            if (!station[0]) return res.status(404).json({ error: 'Station not found' });
+
+            return res.status(200).json(station);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Could not fetch station' });
+        }
+    });
+
+    // Hämta alla stationer
+    route.get(`/stations`, async (req, res) => {
+        try {
+            const allStations = await stations.getChargingZones();
+            return res.status(200).json(allStations);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Could not fetch stations' });
+        }
+    });
+
+    // Uppdatera en station
+    route.put(`/stations/:id`, validateJsonBody, async (req, res) => {
+        const id = Number(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ error: 'Id is wrong' });
+
+        const { name, latitude, longitude } = req.body;
+        if (!name || latitude === undefined || longitude === undefined) {
+            return res.status(400).json({ error: 'Missing name or coordinates' });
+        }
+
+        try {
+            await stations.updateChargingZone(id, { name, latitude, longitude });
+            const updatedStation = await stations.getChargingZoneById(id);
+
+            if (!updatedStation[0]) return res.status(404).json({ error: 'Station not found' });
+
+            return res.status(200).json(updatedStation);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Could not update station' });
+        }
+    });
+
+    // Ta bort en station
+    route.delete(`/stations/:id`, async (req, res) => {
+        const id = Number(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ error: 'Id is wrong' });
+
+        try {
+            await stations.deleteChargingZone(id);
+            res.sendStatus(204);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Could not delete station' });
+        }
+    });
+
+    return route;
+}
