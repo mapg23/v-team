@@ -6,6 +6,52 @@ export default function createBikeRouter(db) {
     const route = express.Router();
     const bikes = createBikes(db);
 
+    // Hämtar cyklar och skickar dem till /telemetry
+    route.get(`/bikes/sync`, async (req, res) => {
+        try {
+            const bikesList = await bikes.getBikes();
+
+            // Skickar cyklarna till telemetry-endpointen i index.mjs
+            await fetch("http://localhost:9091/telemetry", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ bikes: bikesList })
+            });
+
+            return res.status(200).json({ message: "Bikes sent to telemetry" });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Failed to send bikes" });
+        }
+    });
+
+    // Uppdaterar cyklar baserat på simulatorns telemetry
+    route.put(`/bikes/telemetry`, async (req, res) => {
+        try {
+            const updatedBikes = req.body.bikes;
+
+            if (!Array.isArray(updatedBikes)) {
+                return res.status(400).json({ error: "Missing bikes array" });
+            }
+
+            // Loopar igenom och uppdatera varje cykel
+            for (const bike of updatedBikes) {
+                await bikes.updateBike(bike.id, {
+                    status: bike.status,
+                    battery: bike.battery,
+                    location: bike.location,
+                    occupied: bike.occupied,
+                    city_id: bike.city_id
+                });
+            }
+
+            return res.status(200).json({ message: "Telemetry updated" });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Failed to update telemetry" });
+        }
+    });
+
     // Skapar en cykel manuellt - Admin
     route.post(`/bikes`, validateJsonBody, async (req, res) => {
         try {
@@ -46,6 +92,10 @@ export default function createBikeRouter(db) {
     route.get(`/bikes/:id`, async (req, res) => {
         try {
             const id = Number(req.params.id);
+
+            if (isNaN(id)) {
+                return res.status(400).json({ error: "Invalid bike id" });
+            }
             const bike = await bikes.getBikeById(id);
 
             if (!bike[0]) {
@@ -93,7 +143,6 @@ export default function createBikeRouter(db) {
             return res.status(500).json({ error: "Could not delete bike" });
         }
     });
-
 
     return route;
 }
