@@ -2,54 +2,23 @@ import express from "express";
 import createBikes from "../models/bikes.mjs";
 import validateJsonBody from "../middleware/validateJsonBody.mjs";
 
-export default function createBikeRouter(db) {
-    const route = express.Router();
-    const bikes = createBikes(db);
 
-    // Hämtar cyklar och skickar dem till /telemetry
+export default function createBikeRouter(io) {
+    const route = express.Router();
+    const bikes = createBikes();
+
+    // Hämtar cyklar och skickar dem via socket.io till simulatorn
     route.get(`/bikes/sync`, async (req, res) => {
         try {
             const bikesList = await bikes.getBikes();
 
-            // Skickar cyklarna till telemetry-endpointen i index.mjs
-            await fetch("http://bike:7071/start", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ bikes: bikesList })
-            });
-
+            // Skickar som event till simulatorn
+            io.emit('syncBikes', bikesList);
 
             return res.status(200).json({ message: "Bikes sent to simulator" });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Failed to send bikes" });
-        }
-    });
-
-    // Uppdaterar cyklar baserat på simulatorns telemetry
-    route.put(`/bikes/telemetry`, async (req, res) => {
-        try {
-            const updatedBikes = req.body.bikes;
-
-            if (!Array.isArray(updatedBikes)) {
-                return res.status(400).json({ error: "Missing bikes array" });
-            }
-
-            // Loopar igenom och uppdatera varje cykel
-            for (const bike of updatedBikes) {
-                await bikes.updateBike(bike.id, {
-                    status: bike.status,
-                    battery: bike.battery,
-                    location: bike.location,
-                    occupied: bike.occupied,
-                    city_id: bike.city_id
-                });
-            }
-
-            return res.status(200).json({ message: "Telemetry updated" });
-        } catch (err) {
-            console.error(err);
-            return res.status(500).json({ error: "Failed to update telemetry" });
         }
     });
 

@@ -24,7 +24,7 @@ app.disable('x-powered-by');
 // app.use(`/api/${version}`, authRoutes);
 app.use(`/api/${version}`, createUserRouter());
 app.use(`/api/${version}`, createCityRouter());
-app.use(`/api/${version}`, createBikeRouter());
+
 
 app.get('/', (req, res) => {
     res.redirect(`/api/${version}/cities`);
@@ -36,6 +36,8 @@ const httpServer = createServer(app);
 export const io = new Server(httpServer, {
     cors: { origin: "*" }
 });
+
+app.use(`/api/${version}`, createBikeRouter(io));
 
 // Telemetry route (WebSocket)
 app.post('/telemetry', (req, res) => {
