@@ -2,7 +2,7 @@ import styles from "./HomeView.module.css";
 import Map from "@/components/map/Map-component";
 import { useEffect, useState } from "react";
 import SelectCity from "components/input/SelectCity";
-import getCoordinates from "services/nominatim";
+// import getCoordinates from "services/nominatim";
 import CityService from "services/cities";
 import CityTable from "components/table/CityTable";
 import UserTable from "components/table/UserTable";
@@ -27,33 +27,28 @@ function HomeView() {
   // Available cities are fetched in useEffect
   const [cityOptions, setCityOptions] = useState([]);
 
-  // Current selected city
-  const [selectedCity, setselectedCity] = useState({
-    id: null,
-    name: null,
-    stations: null,
-    bikes: null,
-  });
-
   // Array containing City Objects with details
-  // [ id: null,
+  // [ { id: null,
   //   name: null,
   //   stations: null,
-  //   bikes: null ]
-  const [allCityDetails, setAllCityDetails] = useState([]);
+  //   bikes: null }]
+  const [allCityDetails, setAllCityDetails] = useState([
+    {
+      id: null,
+      name: null,
+      latitude: null,
+      longitude: null,
+      bike_count: null,
+    },
+  ]);
 
-  // when admin chose a city - the map componentent updates accordingly
-  const [cityCoordinates, setCityCoordinates] = useState({
-    lat: null,
-    long: null,
-  });
-
-  // City details, including, id, name, stations and bikes
-  const [cityDetails, setCityDetails] = useState({
+  // City chosen from select button
+  const [chosenCityDetails, setChosenCityDetails] = useState({
     id: null,
     name: null,
-    stations: null,
-    bikes: null,
+    latitute: null,
+    longitude: null,
+    bike_count: null,
   });
 
   // Active users
@@ -68,6 +63,8 @@ function HomeView() {
       getAllCityDetails(cities);
       // get all users
       setActiveUsers(await userService.getAllUsers());
+      // Loading is done when all data is fetched
+      setLoading(false);
     }
     fetchData();
   }, []);
@@ -83,18 +80,6 @@ function HomeView() {
     // Vänta tills ALLA är klara
     const allCityDetails = await Promise.all(promises);
     setAllCityDetails(allCityDetails);
-    setLoading(false);
-  }
-
-  /**
-   * Get city details
-   * { "id": 1, "name": "Stockholm", "stations": 5, "bikes": 240 }
-   * @param {Int} id the id of a city
-   * @returns {None}
-   */
-  async function getCityDetails(id) {
-    const cityDetails = await CityService.getCityDetails(id);
-    setCityDetails(cityDetails);
   }
 
   /**
@@ -103,22 +88,19 @@ function HomeView() {
    * @param {string} city name
    */
   async function setMap(city) {
-    // When specifics is true, render map Component
-    setUserSelected(true);
-    const [place, boundary] = await getCoordinates(city);
-    setCityCoordinates({ lat: place.lat, long: place.lon });
-
     // Get cityObject based on city name from Select option
     const chosenCity = allCityDetails.find((cityObj) => cityObj.name === city);
-    // Update current city details
-    getCityDetails(chosenCity.id);
-    setselectedCity(chosenCity);
+
+    // Update chosen city's details
+    setChosenCityDetails(chosenCity);
+    // When specifics is true, render map Component
+    setUserSelected(true);
   }
 
   // Visa en översikt endast om användare inte valt stad
   // och data har hämtats
-  if (!userSelected) {
-    if (!loading) {
+  if (!loading) {
+    if (!userSelected) {
       return (
         <>
           <h1>Överblick</h1>
@@ -130,25 +112,27 @@ function HomeView() {
           <SelectCity setMap={setMap} cityOptions={cityOptions} />
         </>
       );
-    } 
-      return (
-        <>
-          <h1>Loading..</h1>
-        </>
-      );
-  }
-
-  if (userSelected)
+    }
+    // User selected a city
     return (
       <>
         <SelectCity setMap={setMap} cityOptions={cityOptions} />
-        <h2>{selectedCity.name}</h2>
-        <CityTable data={cityDetails} />
-        {/* {JSON.stringify(cityDetails)} */}
-        <PieChart total={500} used={100} />
-        <Map coords={cityCoordinates} bikes={cityDetails} />
+        <h2>{chosenCityDetails.name}</h2>
+        <div style={{ display: "flex", justifyContent: "space-around"}}>
+          <CityTable data={chosenCityDetails} vertical={true} />
+          {/* {JSON.stringify(chosenCityDetails)} */}
+          <PieChart total={500} used={100} />
+        </div>
+        <Map coords={chosenCityDetails} bikes={0} />
       </>
     );
+  }
+  // data is loading
+  return (
+    <>
+      <h1>Loading..</h1>
+    </>
+  );
 }
 
 export default HomeView;
