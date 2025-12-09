@@ -77,13 +77,11 @@ function HomeView() {
    * @param {Array} arrayOfCities array of city objects
    */
   async function getAllCityDetails(arrayOfCities) {
-    // const promises = arrayOfCities.map((city) =>
-    //   CityService.getCityDetails(city.id)
-    // );
-    // // Vänta tills ALLA är klara
-    // const allCityDetails = await Promise.all(promises);
-    // console.log(allCityDetails);
-    const allCityDetails = await cityService.getCityDetails();
+    const promises = arrayOfCities.map((city) =>
+      CityService.getCityDetails(city.id)
+    );
+    // Vänta tills ALLA är klara
+    const allCityDetails = await Promise.all(promises);
     setAllCityDetails(allCityDetails);
     setLoading(false);
   }
