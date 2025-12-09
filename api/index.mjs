@@ -9,8 +9,6 @@ import authRoutes from "./src/routes/authRoutes.mjs";
 import createUserRouter from './src/routes/userRoutes.mjs';
 import createCityRouter from './src/routes/cityRoutes.mjs';
 import createBikeRouter from './src/routes/bikeRoutes.mjs';
-import socketAuth from "./src/middleware/socketAuth.js";
-import jwtService from "./src/services/jwtService.mjs";
 
 const app = express();
 const port = process.env.API_PORT || 9091;
@@ -24,10 +22,12 @@ app.use(express.json());
 // Döljer Express-version
 app.disable('x-powered-by');
 
+// ----------- Routes
 // app.use(`/api/${version}`, authRoutes);
 app.use(`/api/${version}`, createUserRouter());
 app.use(`/api/v1/auth`, authRoutes);
 app.use(`/api/${version}`, createCityRouter());
+app.use(`/api/${version}`, createBikeRouter());
 
 // -------- Socket.io
 const server = createServer(app);
@@ -43,8 +43,6 @@ io.on("connection", (socket) => {
   console.log("connected!", socket.id)
 });
 
-
-app.use(`/api/${version}`, createBikeRouter());
 
 app.get('/', (req, res) => {
     res.redirect(`/api/${version}/cities`);
