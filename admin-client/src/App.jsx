@@ -9,8 +9,8 @@ import GithubCallback from "./components/auth/GithubCallback";
 // import SocketTest from "./components/socket/SocketTest.jsx"
 
 function App() {
-  // const isLoggedin = sessionStorage.getItem("jwt") ? true : false;
-  const isLoggedin = true;
+  const isLoggedin = sessionStorage.getItem("jwt") ? true : false;
+  // const isLoggedin = true;
   if (!isLoggedin) {
     return (
       <Router>
