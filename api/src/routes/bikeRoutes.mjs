@@ -12,13 +12,14 @@ export default function createBikeRouter(db) {
             const bikesList = await bikes.getBikes();
 
             // Skickar cyklarna till telemetry-endpointen i index.mjs
-            await fetch("http://localhost:9091/telemetry", {
+            await fetch("http://bike:7071/start", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ bikes: bikesList })
             });
 
-            return res.status(200).json({ message: "Bikes sent to telemetry" });
+
+            return res.status(200).json({ message: "Bikes sent to simulator" });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Failed to send bikes" });
