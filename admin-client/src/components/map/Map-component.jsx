@@ -5,11 +5,13 @@ import bikeIconUrl from "../../assets/bike.png";
 
 export default function MapComponent({ coords, bikes }) {
   useEffect(() => {
-    console.log(coords);
     // Hämta elementet som React nu har renderat
-    if (!coords.lat || !coords.long) return;
+    if (!coords.latitude || !coords.longitude) {
+      console.log("latitude och longitude saknas", coords);
+      return
+    }
 
-    const map = L.map("map").setView([coords.lat, coords.long], 13);
+    const map = L.map("map").setView([Number(coords.latitude), Number(coords.longitude)], 13);
 
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
@@ -21,8 +23,8 @@ export default function MapComponent({ coords, bikes }) {
     const bikes = [
       {
         id: 1,
-        lat: coords.lat,
-        long: coords.long,
+        lat: coords.latitude,
+        long: coords.longitude,
       },
     ];
 
