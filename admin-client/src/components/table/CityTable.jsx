@@ -1,14 +1,29 @@
+import styles from "./Table.module.css";
 /**
  * Create a Table based on a array of objects
- * 
+ *
  * @param {Array} data array of objects
- * @returns 
+ * @returns
  */
-export default function CityTable({ data }) {
+export default function CityTable({ data, vertical }) {
   const _data = Array.isArray(data) ? data : [data];
 
   const headers = Object.keys(_data[0]);
-
+  if (vertical) {
+    console.log("returning vertical")
+    return (
+      <table className={styles.verticalTable}>
+        <tbody>
+          {Object.keys(_data[0]).map((key) => (
+            <tr key={key}>
+              <th>{key}</th>
+              <td>{_data[0][key]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  }
   return (
     <table>
       <thead>
