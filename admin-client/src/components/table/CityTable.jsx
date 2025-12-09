@@ -5,9 +5,9 @@
  * @returns 
  */
 export default function CityTable({ data }) {
-  if (!Array.isArray(data) || data.length === 0) return null;
+  const _data = Array.isArray(data) ? data : [data];
 
-  const headers = Object.keys(data[0]);
+  const headers = Object.keys(_data[0]);
 
   return (
     <table>
@@ -20,7 +20,7 @@ export default function CityTable({ data }) {
       </thead>
 
       <tbody>
-        {data.map((obj) => (
+        {_data.map((obj) => (
           <tr key={obj.id}>
             {headers.map((key) => (
               <td key={obj.id + "-" + key}>{obj[key]}</td>
