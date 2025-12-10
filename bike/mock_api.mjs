@@ -1,4 +1,5 @@
 "use strict"
+import Device from "./Devices.mjs";
 
 async function start() {
     let done = false;
@@ -16,8 +17,20 @@ async function start() {
         2: []
       },
     };
+    let bikes = [
+      { id: 1, location: {x: 0, y: 0}, battery: 100, status: 10, occupied: false },
+      { id: 5, location: {x: 0, y: 0}, battery: 100, status: 10, occupied: false },
+      { id: 234, location: {x: 0, y: 0}, battery: 100, status: 10, occupied: false },
+      { id: 4, location: {x: 0, y: 0}, battery: 100, status: 10, occupied: false },
+    ]
 
-    const start = await fetch('http://localhost:7071/start');
+    const start = await fetch('http://localhost:7071/start', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ bikes: bikes })
+    });
     let startJSON = await start.json();
     console.log(`[LOG]: ${startJSON.msg}`);
 
@@ -38,14 +51,15 @@ async function start() {
     console.log('======= Device LIST ========')
     
     setInterval(async () => {
-        let res = await fetch('http://localhost:7071/heartbeat');
-        console.log(await res.json());
-
         let list = await fetch('http://localhost:7071/list');
         console.log('======= Device LIST ========')
         console.log(await list.json());
         console.log('======= Device LIST ========')
     }, heartbeat_timer)
+}
+
+async function startBikes(params) {
+  
 }
 
 await start();

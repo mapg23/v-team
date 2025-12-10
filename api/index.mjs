@@ -27,7 +27,7 @@ app.disable('x-powered-by');
 app.use(`/api/${version}`, createUserRouter());
 app.use(`/api/v1/auth`, authRoutes);
 app.use(`/api/${version}`, createCityRouter());
-app.use(`/api/${version}`, createBikeRouter());
+
 
 // -------- Socket.io
 const server = createServer(app);
@@ -47,6 +47,8 @@ io.on("connection", (socket) => {
 app.get('/', (req, res) => {
     res.redirect(`/api/${version}/cities`);
 });
+
+app.use(`/api/${version}`, createBikeRouter(io));
 
 // Telemetry route (WebSocket)
 app.post('/telemetry', (req, res) => {

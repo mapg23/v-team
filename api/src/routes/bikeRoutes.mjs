@@ -2,9 +2,25 @@ import express from "express";
 import createBikes from "../models/bikes.mjs";
 import validateJsonBody from "../middleware/validateJsonBody.mjs";
 
-export default function createBikeRouter(db) {
+
+export default function createBikeRouter(io) {
     const route = express.Router();
-    const bikes = createBikes(db);
+    const bikes = createBikes();
+
+    // Hämtar cyklar och skickar dem via socket.io till simulatorn
+    route.get(`/bikes/sync`, async (req, res) => {
+        try {
+            const bikesList = await bikes.getBikes();
+
+            // Skickar som event till simulatorn
+            io.emit('syncBikes', bikesList);
+
+            return res.status(200).json({ message: "Bikes sent to simulator" });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Failed to send bikes" });
+        }
+    });
 
     // Skapar en cykel manuellt - Admin
     route.post(`/bikes`, validateJsonBody, async (req, res) => {
@@ -46,6 +62,10 @@ export default function createBikeRouter(db) {
     route.get(`/bikes/:id`, async (req, res) => {
         try {
             const id = Number(req.params.id);
+
+            if (isNaN(id)) {
+                return res.status(400).json({ error: "Invalid bike id" });
+            }
             const bike = await bikes.getBikeById(id);
 
             if (!bike[0]) {
@@ -93,7 +113,6 @@ export default function createBikeRouter(db) {
             return res.status(500).json({ error: "Could not delete bike" });
         }
     });
-
 
     return route;
 }

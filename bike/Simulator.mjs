@@ -48,8 +48,8 @@ class Simulator {
             if (this.cordinates[key].length !== 0) {
                 this.bikes[key].status = 10;
                 const nextCordinate = this.cordinates[key].shift();
-
                 this.bikes[key].move(nextCordinate);
+
                 console.log(`Bike ${key} has updated it's cords`)
             } else {
                 console.log(`Bike: ${key} has no cordinates left ${this.cordinates[key].length}`)
@@ -76,7 +76,18 @@ class Simulator {
     startFromMemory(payload) {
         // Retrives all bikes from db
         // Start bike movement
-        this.bikes = payload
+        this.bikes = [];
+        for (let bike of payload) {
+            this.bikes.push(new Device(
+                bike.id,
+                bike.location,
+                bike.battery,
+                bike.status,
+                bike.occupied,
+            ));
+        }
+        this.startMovement();
+        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes}
     }
 
     /**
@@ -101,8 +112,6 @@ class Simulator {
      */
     end() {
         // Save all bike positions to database
-
-
         this.bikes = [];
         this.stopMovement();
         return { event: 'stopping worker'};
