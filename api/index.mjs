@@ -9,6 +9,7 @@ import authRoutes from "./src/routes/authRoutes.mjs";
 import createUserRouter from './src/routes/userRoutes.mjs';
 import createCityRouter from './src/routes/cityRoutes.mjs';
 import createBikeRouter from './src/routes/bikeRoutes.mjs';
+import startSimulator from './src/startSimulator.mjs';
 
 const app = express();
 const port = process.env.API_PORT || 9091;
@@ -62,6 +63,9 @@ app.post('/telemetry', (req, res) => {
 });
 
 // Startar server med Socket.IO
-server.listen(port, () => {
+server.listen(port, async () => {
     console.log(`Server is listening on port: ${port}`);
+
+    // Här startar vi simulatorn direkt när servern är uppe
+    await startSimulator();
 });

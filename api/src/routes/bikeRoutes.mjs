@@ -3,17 +3,25 @@ import createBikes from "../models/bikes.mjs";
 import validateJsonBody from "../middleware/validateJsonBody.mjs";
 
 
-export default function createBikeRouter(io) {
+export default function createBikeRouter() {
     const route = express.Router();
     const bikes = createBikes();
 
-    // Hämtar cyklar och skickar dem via socket.io till simulatorn
+    /** Route to manually sync bikes from the database to the simulator.
+    * Can be called anytime while the API server is running to push new or updated bikes.
+    * This allows the simulator to get the latest bike data without restarting the container.
+    */
     route.get(`/bikes/sync`, async (req, res) => {
         try {
             const bikesList = await bikes.getBikes();
 
-            // Skickar som event till simulatorn
-            io.emit('syncBikes', bikesList);
+            // Skickar cyklarna till telemetry-endpointen i index.mjs
+            await fetch("http://bike:7071/start", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ bikes: bikesList })
+            });
+
 
             return res.status(200).json({ message: "Bikes sent to simulator" });
         } catch (err) {
