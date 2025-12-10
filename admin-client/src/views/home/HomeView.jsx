@@ -1,15 +1,13 @@
-import styles from "./HomeView.module.css";
 import Map from "@/components/map/Map-component";
 import { useEffect, useState } from "react";
 import SelectCity from "components/input/SelectCity";
-// import getCoordinates from "services/nominatim";
 import CityService from "services/cities";
 import CityTable from "components/table/CityTable";
 import UserTable from "components/table/UserTable";
 import PieChart from "components/chart/PieChart";
-import bikeService from "services/bikes";
-import cityService from "services/cities";
 import userService from "services/users";
+import BikeSocket from "components/socket/BikeSocket";
+import bikeService from "../../services/bikes";
 
 /**
  * Home view for admin
@@ -19,9 +17,6 @@ import userService from "services/users";
 function HomeView() {
   // Only render elements when loading is false
   const [loading, setLoading] = useState(true);
-
-  // User selected a city and wants city details
-  const [userSelected, setUserSelected] = useState(false);
 
   // Select options for choosing a city
   // Available cities are fetched in useEffect
@@ -51,10 +46,23 @@ function HomeView() {
     bike_count: null,
   });
 
+  // Sync bikes from database
+  const [bikes, setBikes] = useState([]);
+
   // Active users
   const [activeUsers, setActiveUsers] = useState([]);
 
-  // Fetch all data for overview
+  // -----------------------------
+  // Update bikes from socket
+  // -----------------------------
+  function updateBikes(bikeData) {
+    console.log("Updating bikes from socket", bikeData);
+    setBikes(bikeData);
+  }
+
+  // -----------------------------
+  // Fetch initial data
+  // -----------------------------
   useEffect(() => {
     async function fetchData() {
       const cities = await CityService.getAllCities();
@@ -63,6 +71,10 @@ function HomeView() {
       getAllCityDetails(cities);
       // get all users
       setActiveUsers(await userService.getAllUsers());
+      // Start Bike Sync
+      const answer = await bikeService.startBikeSync();
+      console.log(answer)
+
       // Loading is done when all data is fetched
       setLoading(false);
     }
@@ -93,44 +105,38 @@ function HomeView() {
 
     // Update chosen city's details
     setChosenCityDetails(chosenCity);
-    // When specifics is true, render map Component
-    setUserSelected(true);
   }
 
   // Visa en översikt endast om användare inte valt stad
   // och data har hämtats
-  if (!loading) {
-    if (!userSelected) {
-      return (
+  if (loading) return <h1>Loading...</h1>;
+
+  return (
+    <>
+      {/* Socket always mounted */}
+      <BikeSocket onUpdate={updateBikes} />
+
+      {!chosenCityDetails.id ? (
         <>
           <h1>Överblick</h1>
-          {/* {JSON.stringify(allCityDetails)} */}
           <CityTable data={allCityDetails} />
           <h2>Users</h2>
           <UserTable data={activeUsers} />
-          <h2>Välj en stad för att visa stadspecifika detaljer</h2>
           <SelectCity setMap={setMap} cityOptions={cityOptions} />
         </>
-      );
-    }
-    // User selected a city
-    return (
-      <>
-        <SelectCity setMap={setMap} cityOptions={cityOptions} />
-        <h2>{chosenCityDetails.name}</h2>
-        <div style={{ display: "flex", justifyContent: "space-around"}}>
-          <CityTable data={chosenCityDetails} vertical={true} />
-          {/* {JSON.stringify(chosenCityDetails)} */}
-          <PieChart total={500} used={100} />
-        </div>
-        <Map coords={chosenCityDetails} bikes={0} />
-      </>
-    );
-  }
-  // data is loading
-  return (
-    <>
-      <h1>Loading..</h1>
+      ) : (
+        <>
+          <SelectCity setMap={setMap} cityOptions={cityOptions} />
+          <h2>{chosenCityDetails.name}</h2>
+
+          <div style={{ display: "flex", justifyContent: "space-around" }}>
+            <CityTable data={chosenCityDetails} vertical={true} />
+            <PieChart total={500} used={100} />
+          </div>
+
+          <Map coords={chosenCityDetails} bikes={bikes} />
+        </>
+      )}
     </>
   );
 }
