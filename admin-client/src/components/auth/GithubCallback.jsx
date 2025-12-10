@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function GithubCallback() {
+export default function GithubCallback({onLogin}) {
   const navigate = useNavigate();
   const effectRan = useRef(false);
 
@@ -37,7 +37,10 @@ export default function GithubCallback() {
 
       if (data.jwt) {
         // Token ska göra att jag är inloggad
+        console.log(data.jwt)
         sessionStorage.setItem("jwt", data.jwt);
+        console.log("logged in, navigating to /welcome")
+        await onLogin();
         navigate("/welcome");
       }
     }
