@@ -1,43 +1,55 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginView from "./views/auth/LoginView";
 import HomeView from "./views/home/HomeView";
 import ProfileView from "./views/user/ProfileView";
 import Navbar from "./components/nav/Nav";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GithubCallback from "./components/auth/GithubCallback";
-// import SocketTest from "./components/socket/SocketTest.jsx"
 
-function App() {
-  const isLoggedin = sessionStorage.getItem("jwt") ? true : false;
-  // const isLoggedin = true;
-  if (!isLoggedin) {
-    return (
-      <Router>
-        <Routes>
-          <Route path="/" element={<LoginView />}></Route>
-          <Route path="/login/github/callback" element={<GithubCallback />} />
-        </Routes>
-      </Router>
-    );
+function App() {  
+  const jwt = sessionStorage.getItem("jwt") ? true : false;
+
+  const [isLoggedin, setIsLoggedIn] = useState(jwt);
+
+  useEffect(() => {
+    const state = sessionStorage.getItem("jwt") ? true : false;
+    setIsLoggedIn(Boolean(state));
+  }, [])
+
+  async function updateLogin() {
+    const jwt = sessionStorage.getItem("jwt") ? true : false;
+    console.log(jwt)
+    setIsLoggedIn(true)
   }
 
-  /**
-   * User is logged in
-   */
   return (
-    <div className="app-layout">
-      {/* <SocketTest /> */}
-      <Navbar />
-      <div className="app-content">
-        <Router>
-          <Routes>
-            <Route path="/welcome" element={<HomeView />}></Route>
-            <Route path="/user/:id" element={<ProfileView />}></Route>
-          </Routes>
-        </Router>
-      </div>
-    </div>
+    <Router>
+      {!isLoggedin ? (
+        // --------------------------------------------
+        // NOT LOGGED IN
+        // --------------------------------------------
+        <Routes>
+          <Route path="/" element={<LoginView />} />
+          <Route path="/login/github/callback" element={<GithubCallback onLogin={updateLogin}/>} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      ) : (
+        // --------------------------------------------
+        // LOGGED IN 
+        // --------------------------------------------
+        <div className="app-layout">
+          <Navbar />
+          <div className="app-content">
+            <Routes>
+              <Route path="/welcome" element={<HomeView />} />
+              <Route path="/user/:id" element={<ProfileView />} />
+              <Route path="*" element={<Navigate to="/welcome" />} />
+            </Routes>
+          </div>
+        </div>
+      )}
+    </Router>
   );
 }
 
