@@ -17,10 +17,15 @@ function App() {
     setIsLoggedIn(Boolean(state));
   }, [])
 
-  async function updateLogin() {
+  async function login() {
     const jwt = sessionStorage.getItem("jwt") ? true : false;
     console.log(jwt)
     setIsLoggedIn(true)
+  }
+
+  async function logout() {
+    sessionStorage.removeItem("jwt");
+    setIsLoggedIn(false);
   }
 
   return (
@@ -31,15 +36,18 @@ function App() {
         // --------------------------------------------
         <Routes>
           <Route path="/" element={<LoginView />} />
-          <Route path="/login/github/callback" element={<GithubCallback onLogin={updateLogin}/>} />
+          <Route
+            path="/login/github/callback"
+            element={<GithubCallback onLogin={login} />}
+          />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       ) : (
         // --------------------------------------------
-        // LOGGED IN 
+        // LOGGED IN
         // --------------------------------------------
         <div className="app-layout">
-          <Navbar />
+          <Navbar logout={logout}/>
           <div className="app-content">
             <Routes>
               <Route path="/welcome" element={<HomeView />} />
