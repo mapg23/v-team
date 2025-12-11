@@ -1,0 +1,46 @@
+import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+
+export default function GithubCallback() {
+  const navigate = useNavigate();
+  const effectRan = useRef(false);
+
+  useEffect(() => {
+    if (effectRan.current) return;
+    effectRan.current = true;
+
+    async function handleCallback() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
+      const encryptedState = urlParams.get("state");
+
+      const savedState = sessionStorage.getItem("oauth_state");
+      const rawState = sessionStorage.getItem("oauth_state_raw");
+      const codeVerifier = sessionStorage.getItem("pkce_verifier");
+    //   console.log("Stored verifier:", codeVerifier);
+
+
+      if (encryptedState !== savedState) {
+        console.error("Invalid OAuth state!");
+        return;
+      }
+
+      const response = await fetch("http://localhost:9091/api/v1/auth/oauth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, encryptedState, rawState, code_verifier: codeVerifier }),
+      });
+
+      const data = await response.json();
+
+      if (data.jwt) {
+        sessionStorage.setItem("jwt", data.jwt);
+        navigate("/welcome");
+      }
+    }
+
+    handleCallback();
+  }, []);
+
+  return <p>Logging in... </p>;
+} 
