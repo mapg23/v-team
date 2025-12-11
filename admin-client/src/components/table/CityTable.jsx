@@ -10,7 +10,6 @@ export default function CityTable({ data, vertical }) {
 
   const headers = Object.keys(_data[0]);
   if (vertical) {
-    console.log("returning vertical")
     return (
       <table className={styles.verticalTable}>
         <tbody>
