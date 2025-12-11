@@ -1,54 +1,34 @@
-# v-team
+# V-team 08 - Rull
 
+## Coverage
+
+### API
 [![API Coverage](https://raw.githubusercontent.com/mapg23/v-team/main/coverage-badges/api-badge/api-coverage.svg)](https://github.com/mapg23/v-team/blob/main/coverage-badges/api-badge/api-coverage.svg)
 
+TODO: Lägg till flera mätvärden
+
+### Bike
 [![Bike Coverage](https://raw.githubusercontent.com/mapg23/v-team/main/coverage-badges/bike-badge/bike-coverage.svg)](https://github.com/mapg23/v-team/blob/main/coverage-badges/bike-badge/bike-coverage.svg)
 
-## Fresh start project
+TODO: Lägg till flera mätvärden
 
-1. Go into /api and do npm install
-2. inside /database create folders called /data /logs /init
-
-## Start docker and all its containers
-
+## Initialization ( docker compose )
+### To Start the system, stand in root and execute the command below:
 ```
 docker compose up -d --build
-
-// Start only one service
-docker compose up -d <service_name>
 ```
-
-## Rebuild all containers
-
+### To shut down the system, run the command below:
 ```
-docker compose up -d --force-recreate
+docker compose down -v
 ```
-
-## Store into database (not used, since we manualy import export data)
-
+## Initialization ( local )
+### To Start the system, stand in root and execute the command below:
 ```
-docker compose run --rm backup
+nohup bash -c "cd bike && npm install && npm run start" >/dev/null 2>&1 &
+nohup bash -c "cd api && npm install && npm run start" >/dev/null 2>&1 &
+nohup bash -c "cd admin-client && npm install && npm run dev" >/dev/null 2>&1 &
 ```
-
-## Curl for cordinates on bikes
-
+### To shut down the system, run the command below:
 ```
-
-curl --header "Content-Type: application/json" \
-  --request POST \
-  --data '{
-    "cordinates": {
-      "10": [
-        { "x": 0, "y": 0 },
-        { "x": 100, "y": 120 }
-      ],
-      "11": [
-        { "x": 10, "y": 20 },
-        { "x": 15, "y": 23 }
-      ]
-    }
-  }' \
-  http://localhost:7071/move/
-
-
+pkill -f "npm run start|npm run dev"
 ```
