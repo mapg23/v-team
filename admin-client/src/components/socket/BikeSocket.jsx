@@ -9,19 +9,19 @@ export default function BikeSocket({ onUpdate }) {
   useEffect(() => {
     const socket = io(URL);
 
-    socket.on("connect", () => {
-      console.log("Connected! Socket ID:", socket.id);
-    });
+    // socket.on("connect", () => {
+    //   console.log("Connected! Socket ID:", socket.id);
+    // });
 
     // Bike data
     socket.on("bikes", (data) => {
-      console.log("Received bike data:", data);
+      // console.log("Received bike data:", data);
       onUpdate(data);
     });
 
-    socket.onAny((event, data) => {
-      console.log("EVENT:", event, data);
-    });
+    // socket.onAny((event, data) => {
+    //   console.log("EVENT:", event, data);
+    // });
 
     return () => {
       socket.disconnect();
