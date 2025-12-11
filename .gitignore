@@ -3,6 +3,7 @@ database/logs/
 prototypes/
 .DS_STORE
 .DS_Store
+.package-lock.json
 
 api/node_modules
 bike/node_modules
