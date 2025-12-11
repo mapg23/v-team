@@ -56,7 +56,6 @@ function HomeView() {
   // Update bikes from socket
   // -----------------------------
   function updateBikes(bikeData) {
-    console.log("Updating bikes from socket", bikeData);
     setBikes(bikeData);
   }
 
