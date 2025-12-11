@@ -19,7 +19,7 @@ class Device {
     this.battery = battery;
     this.status = status;
     this.occupied = occupied;
-    this.speed = speed;
+    this.speed = speed; // unused for now
   }
 
   move(cords) {
