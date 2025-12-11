@@ -11,7 +11,7 @@ class Simulator {
     heartbeat_count = 0;
     movementInterval = null;
 
-    constructor(total_bikes=1, bikes = [], cordinates = {}) {
+    constructor(total_bikes = 1, bikes = [], cordinates = {}) {
         this.total_bikes = total_bikes;
         this.bikes = bikes;
         this.cordinates = cordinates;
@@ -40,7 +40,7 @@ class Simulator {
     }
 
     heartbeat() {
-        for(let key in this.cordinates) {
+        for (let key in this.cordinates) {
             if (!this.bikes[key]) {
                 continue;
             }
@@ -87,7 +87,7 @@ class Simulator {
             ));
         }
         this.startMovement();
-        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes}
+        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes }
     }
 
     /**
@@ -96,14 +96,14 @@ class Simulator {
      */
     start() {
         if (this.bikes.length >= this.total_bikes) {
-            return { event: `Bikes already at max capacity: ${this.bikes.length}/${this.total_bikes}`};
+            return { event: `Bikes already at max capacity: ${this.bikes.length}/${this.total_bikes}` };
         }
 
-        for(let i = 0; i < this.total_bikes; i++) {
-            this.bikes.push(new Device(i, {x: 0, y:0}))
+        for (let i = 0; i < this.total_bikes; i++) {
+            this.bikes.push(new Device(i, { x: 0, y: 0 }))
         }
         this.startMovement();
-        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes}
+        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes }
     }
 
     /**
@@ -111,10 +111,10 @@ class Simulator {
      * @returns {Array} - Event
      */
     end() {
+        this.stopMovement();
         // Save all bike positions to database
         this.bikes = [];
-        this.stopMovement();
-        return { event: 'stopping worker'};
+        return { event: 'stopping worker' };
 
     }
 
@@ -123,7 +123,7 @@ class Simulator {
      * @returns {Array} - Event with data
      */
     list() {
-        return { event: 'Listing all bikes', data : this.bikes};
+        return { event: 'Listing all bikes', data: this.bikes };
     }
 
     /**
@@ -132,7 +132,7 @@ class Simulator {
      * @returns {Array} - Device
      */
     getBike(payload) {
-        return { event: 'Retriving bike', data : this.bikes[payload.id]}
+        return { event: 'Retriving bike', data: this.bikes[payload.id] }
     }
 
     /**
@@ -145,10 +145,10 @@ class Simulator {
             for (let key in payload) {
                 this.cordinates[Number(key)] = payload[key];
             }
-            return { event: 'Succesfully added routes', data: payload};
+            return { event: 'Succesfully added routes', data: payload };
         } catch (error) {
             console.error('Invalid JSON structure', error.message);
-            return { event: 'Invalid JSON format'};
+            return { event: 'Invalid JSON format' };
         }
     }
 
@@ -159,8 +159,8 @@ class Simulator {
         const prevX = this.bikes[bike.id].cords.x;
         const prevY = this.bikes[bike.id].cords.y;
 
-        const returnMsg = { event: `Changed bike: ${bike.id} from {x:${prevX}, y:${prevY}} to: {x: ${bike.x}, y: ${bike.y}} `}
-        
+        const returnMsg = { event: `Changed bike: ${bike.id} from {x:${prevX}, y:${prevY}} to: {x: ${bike.x}, y: ${bike.y}} ` }
+
         this.bikes[bike.id].move({
             x: Number(bike.x),
             y: Number(bike.y)
@@ -176,7 +176,7 @@ export function createSimulator(options) {
 
 
 // Instance of Simulator, this is active while the main thread is.
-const simm = createSimulator({ total_bikes: 1000});
+const simm = createSimulator({ total_bikes: 1000 });
 
 /**
  * Routing from the main application into the simulator class.
@@ -201,7 +201,7 @@ export async function handleWorkerMessage(msg, simm) {
     const callFunction = routers[cmd];
 
     if (!callFunction) {
-        return {id, error: `Unknown call ${cmd}`};
+        return { id, error: `Unknown call ${cmd}` };
         // return parentPort.postMessage({id, error: `Unknown call ${cmd}`});
     }
 

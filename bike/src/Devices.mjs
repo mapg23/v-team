@@ -10,12 +10,12 @@ class Device {
         this.battery = battery;
         this.status = status;
         this.occupied = occupied;
-        this.speed = speed;
+        this.speed = speed; // Unused for now
     }
 
     move(cords) {
         if (this.status > 50) {
-            return { event: 'bike is unable to move, reason:', data: this.status};
+            return { event: 'bike is unable to move, reason:', data: this.status };
         }
 
         this.cords = cords;
