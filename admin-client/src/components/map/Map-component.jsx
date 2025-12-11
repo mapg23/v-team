@@ -2,16 +2,21 @@
 import { useEffect } from "react";
 import styles from "./Map-component.module.css";
 import bikeIconUrl from "../../assets/bike.png";
+import CityTable from "../table/CityTable";
+import { renderToString } from "react-dom/server";
 
 export default function MapComponent({ coords, bikes }) {
   useEffect(() => {
     // Hämta elementet som React nu har renderat
     if (!coords.latitude || !coords.longitude) {
       console.log("latitude och longitude saknas", coords);
-      return
+      return;
     }
 
-    const map = L.map("map").setView([Number(coords.latitude), Number(coords.longitude)], 13);
+    const map = L.map("map").setView(
+      [Number(coords.latitude), Number(coords.longitude)],
+      13
+    );
 
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
@@ -20,14 +25,6 @@ export default function MapComponent({ coords, bikes }) {
     }).addTo(map);
 
     // add all bikes to map
-    const bikes = [
-      {
-        id: 1,
-        lat: coords.latitude,
-        long: coords.longitude,
-      },
-    ];
-
     for (const bike of bikes) {
       renderMarkers(bike);
     }
@@ -39,11 +36,40 @@ export default function MapComponent({ coords, bikes }) {
         iconAnchor: [12, 12],
         popupAnchor: [0, 0],
       });
+      const [lat, long] = bike.cords.trim().split(",");
 
-      L.marker([bike.lat, bike.long], { icon: locationMarker })
+      // To render a component as pure html
+      // const htmlTable = renderToString(<CityTable data={bike} vertical={true}></CityTable>)
+
+      L.marker([Number(lat), Number(long)], { icon: locationMarker })
         .bindPopup(
           `
-          message: Jag hyr
+          <table>
+          <tr>
+            <th>ID:</th>
+            <td>${bike.id}</td>
+          </tr>
+          <tr>
+            <th>Status:</th>
+            <td>${bike.status}</td>
+          </tr>
+          <tr>
+            <th>Cords:</th>
+            <td>${bike.cords}</td>
+          </tr>
+          <tr>
+            <th>Occupied:</th>
+            <td>${bike.occupied}</td>
+          </tr>
+          <tr>
+            <th>City_Id:</th>
+            <td>${bike.city_id}</td>
+          </tr>
+          <tr>
+            <th>Speed:</th>
+            <td>${bike.speed}</td>
+          </tr>
+          </table>
           `
         )
         .openPopup()
