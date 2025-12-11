@@ -61,10 +61,14 @@ class Simulator {
     }
 
     sendUpdates() {
+        console.log(this.bikes)
         const data = this.bikes.map((b) => ({
             id: b.id,
             cords: b.cords,
-            status: b.status
+            status: b.status,
+            occupied: b.occupied,
+            city_id: b.city_id,
+            speed: b.speed
         }));
 
         parentPort?.postMessage({
@@ -81,6 +85,7 @@ class Simulator {
             this.bikes.push(new Device(
                 bike.id,
                 bike.location,
+                bike.city_id,
                 bike.battery,
                 bike.status,
                 bike.occupied,
@@ -100,7 +105,7 @@ class Simulator {
         }
 
         for(let i = 0; i < this.total_bikes; i++) {
-            this.bikes.push(new Device(i, {x: 0, y:0}))
+            this.bikes.push(new Device(i, {x: 0, y:0}, i.city_id))
         }
         this.startMovement();
         return { event: `Bikes: ${this.bikes.length}`, data: this.bikes}
