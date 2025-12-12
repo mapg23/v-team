@@ -84,7 +84,7 @@ export default function MapComponent({ coords, bikes }) {
     return () => {
       map.remove();
     };
-  }, [coords]);
+  }, [coords, bikes]);
   return <div id="map" className={styles.map}></div>;
 
   // const bikeObjects = JSON.parse(bikes);
