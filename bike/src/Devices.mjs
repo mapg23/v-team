@@ -7,19 +7,19 @@ class Device {
   constructor(
     id,
     cords,
-    city_id, 
     battery = 100,
     status = 10,
     occupied = false,
-    speed = 0
+    speed = 0,
+    city_id = null,
   ) {
     this.id = id;
     this.cords = cords;
-    this.city_id = city_id;
     this.battery = battery;
     this.status = status;
     this.occupied = occupied;
     this.speed = speed; // unused for now
+    this.city_id = city_id;
   }
 
   move(cords) {

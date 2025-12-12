@@ -21,7 +21,6 @@ async function generateCords(count) {
     return cords;
 }
 
-
 describe('Performance testing', () => {
     afterEach(() => {
         jest.clearAllTimers();
