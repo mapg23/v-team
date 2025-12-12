@@ -112,6 +112,34 @@ const bikeService = {
       return [];
     }
   },
+
+  /**
+   * Start sync for bikes
+   * @returns {JSON}
+   */
+  startBikeSync: async function startBikeSync() {
+    console.log("bike serivce called")
+    try {
+      const response = await fetch(`${API}/bikes/sync`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error on startBikeSync! Status: ${response.status}`
+        );
+      }
+
+      return await response.json();
+      
+    } catch (error) {
+      console.error("fetchDocuments error:", error);
+      return [];
+    }
+  },
 };
 
 export default bikeService;

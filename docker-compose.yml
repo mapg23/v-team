@@ -81,10 +81,10 @@ services:
     env_file: .env
     depends_on:
        - api
-    # volumes:
-    #   - ./api:/app
-    #   - /app/node_modules
-    # command: npx nodemon index.mjs
+    volumes:
+      - ./admin-client:/app
+      - /app/node_modules
+    command: npm run dev
     ports:
       - "${ADMIN_CLIENT_PORT:-5173}:5173" # Expose to host for testing
     networks:

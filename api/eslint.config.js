@@ -28,6 +28,7 @@ export default defineConfig([
 
             camelcase: [2, {
                 properties: "never",
+                allow: ["city_id"]
             }],
 
             curly: [2, "all"],

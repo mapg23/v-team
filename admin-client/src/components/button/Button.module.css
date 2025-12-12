@@ -8,6 +8,6 @@
   width: 100%;
 }
 
-.login {
-  
+.delete:hover {
+  background-color: red;
 }

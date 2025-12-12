@@ -11,7 +11,7 @@ class Simulator {
     heartbeat_count = 0;
     movementInterval = null;
 
-    constructor(total_bikes=1, bikes = [], cordinates = {}) {
+    constructor(total_bikes = 1, bikes = [], cordinates = {}) {
         this.total_bikes = total_bikes;
         this.bikes = bikes;
         this.cordinates = cordinates;
@@ -40,22 +40,25 @@ class Simulator {
     }
 
     heartbeat() {
-        for(let key in this.cordinates) {
-            if (!this.bikes[key]) {
+        for (let key in this.cordinates) {
+            let index = this.bikes.findIndex(function (device) {
+                return device.getId() === Number(key)
+            });
+
+            if (index === -1) {
                 continue;
             }
-            // Updated
-            if (this.cordinates[key].length !== 0) {
-                this.bikes[key].status = 10;
-                const nextCordinate = this.cordinates[key].shift();
-                this.bikes[key].move(nextCordinate);
 
-                console.log(`Bike ${key} has updated it's cords`)
-            } else {
+            if (this.cordinates[key].length === 0) {
                 console.log(`Bike: ${key} has no cordinates left ${this.cordinates[key].length}`)
-                this.bikes[key].status = 40;
+                this.bikes[index].status = 40;
                 this.cordinates[key] = [];
+                continue;
             }
+
+            this.bikes[index].status = 10;
+            const nextCordinate = this.cordinates[key].shift();
+            this.bikes[index].move(nextCordinate);
         }
         return { event: 'Heartbeat updated' };
     }
@@ -64,7 +67,10 @@ class Simulator {
         const data = this.bikes.map((b) => ({
             id: b.id,
             cords: b.cords,
-            status: b.status
+            status: b.status,
+            occupied: b.occupied,
+            city_id: b.city_id,
+            speed: b.speed
         }));
 
         parentPort?.postMessage({
@@ -78,16 +84,22 @@ class Simulator {
         // Start bike movement
         this.bikes = [];
         for (let bike of payload) {
+            let cleaned = bike.location.replace(/\s+/g, '');
+            let cords = cleaned.split(",");
+
+            let parsedCords = { x: Number(cords[0]), y: Number(cords[1]) };
+
             this.bikes.push(new Device(
                 bike.id,
-                bike.location,
+                parsedCords,
+                bike.city_id,
                 bike.battery,
                 bike.status,
                 bike.occupied,
             ));
         }
         this.startMovement();
-        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes}
+        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes }
     }
 
     /**
@@ -96,14 +108,14 @@ class Simulator {
      */
     start() {
         if (this.bikes.length >= this.total_bikes) {
-            return { event: `Bikes already at max capacity: ${this.bikes.length}/${this.total_bikes}`};
+            return { event: `Bikes already at max capacity: ${this.bikes.length}/${this.total_bikes}` };
         }
 
-        for(let i = 0; i < this.total_bikes; i++) {
-            this.bikes.push(new Device(i, {x: 0, y:0}))
+        for (let i = 0; i < this.total_bikes; i++) {
+            this.bikes.push(new Device(i, { x: 0, y: 0 }, i.city_id))
         }
         this.startMovement();
-        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes}
+        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes }
     }
 
     /**
@@ -111,10 +123,10 @@ class Simulator {
      * @returns {Array} - Event
      */
     end() {
+        this.stopMovement();
         // Save all bike positions to database
         this.bikes = [];
-        this.stopMovement();
-        return { event: 'stopping worker'};
+        return { event: 'stopping worker' };
 
     }
 
@@ -123,21 +135,21 @@ class Simulator {
      * @returns {Array} - Event with data
      */
     list() {
-        return { event: 'Listing all bikes', data : this.bikes};
+        return { event: 'Listing all bikes', data: this.bikes };
     }
 
     /**
      * Getter method for device based on id.
-     * @param {Array} payload 
+     * @param {Array} payload
      * @returns {Array} - Device
      */
     getBike(payload) {
-        return { event: 'Retriving bike', data : this.bikes[payload.id]}
+        return { event: 'Retriving bike', data: this.bikes[payload.id] }
     }
 
     /**
      * Method that alters a specific bikes cordinates based on bike id.
-     * @param {Array} payload 
+     * @param {Array} payload
      * @returns {Array} - Array of result.
      */
     setRoute(payload) {
@@ -145,10 +157,11 @@ class Simulator {
             for (let key in payload) {
                 this.cordinates[Number(key)] = payload[key];
             }
-            return { event: 'Succesfully added routes', data: payload};
+            console.log(this.cordinates);
+            return { event: 'Succesfully added routes', data: payload };
         } catch (error) {
             console.error('Invalid JSON structure', error.message);
-            return { event: 'Invalid JSON format'};
+            return { event: 'Invalid JSON format' };
         }
     }
 
@@ -159,8 +172,8 @@ class Simulator {
         const prevX = this.bikes[bike.id].cords.x;
         const prevY = this.bikes[bike.id].cords.y;
 
-        const returnMsg = { event: `Changed bike: ${bike.id} from {x:${prevX}, y:${prevY}} to: {x: ${bike.x}, y: ${bike.y}} `}
-        
+        const returnMsg = { event: `Changed bike: ${bike.id} from {x:${prevX}, y:${prevY}} to: {x: ${bike.x}, y: ${bike.y}} ` }
+
         this.bikes[bike.id].move({
             x: Number(bike.x),
             y: Number(bike.y)
@@ -176,7 +189,7 @@ export function createSimulator(options) {
 
 
 // Instance of Simulator, this is active while the main thread is.
-const simm = createSimulator({ total_bikes: 1000});
+const simm = createSimulator({ total_bikes: 1000 });
 
 /**
  * Routing from the main application into the simulator class.
@@ -201,7 +214,7 @@ export async function handleWorkerMessage(msg, simm) {
     const callFunction = routers[cmd];
 
     if (!callFunction) {
-        return {id, error: `Unknown call ${cmd}`};
+        return { id, error: `Unknown call ${cmd}` };
         // return parentPort.postMessage({id, error: `Unknown call ${cmd}`});
     }
 

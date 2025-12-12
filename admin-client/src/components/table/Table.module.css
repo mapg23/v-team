@@ -1,0 +1,26 @@
+.verticalTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  display: flex;
+}
+
+.verticalTable th,
+.verticalTable td {
+  border: 1px solid #ccc;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.verticalTable th {
+  font-weight: bold;
+  /* background-color: #f2f2f2; */
+}
+
+.verticalTable tr:nth-child(even) {
+  /* background-color: #fafafa; */
+}
+
+.verticalTable tr:nth-child(odd) {
+  /* background-color: #ffffff; */
+}
