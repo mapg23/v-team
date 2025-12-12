@@ -35,8 +35,8 @@
 
 .app-layout {
   display: flex;
-  width: 800px;
-  height: 800px;
+  width: 1024px;
+  height: 100vh;
   align-items: top;
   gap: 1rem;
   /* background-color: grey; */
