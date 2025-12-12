@@ -1,14 +1,20 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import LoginView from "./views/auth/LoginView";
 import HomeView from "./views/home/HomeView";
 import CityView from "./views/city/CityView";
+import InspectCityView from "./views/city/InspectCityView";
 import ProfileView from "./views/user/ProfileView";
 import Navbar from "./components/nav/Nav";
 import { useEffect, useState } from "react";
 import GithubCallback from "./components/auth/GithubCallback";
 
-function App() {  
+function App() {
   const jwt = sessionStorage.getItem("jwt") ? true : false;
 
   const [isLoggedin, setIsLoggedIn] = useState(jwt);
@@ -16,12 +22,12 @@ function App() {
   useEffect(() => {
     const state = sessionStorage.getItem("jwt") ? true : false;
     setIsLoggedIn(Boolean(state));
-  }, [])
+  }, []);
 
   async function login() {
     const jwt = sessionStorage.getItem("jwt") ? true : false;
-    console.log(jwt)
-    setIsLoggedIn(true)
+    console.log(jwt);
+    setIsLoggedIn(true);
   }
 
   async function logout() {
@@ -48,11 +54,12 @@ function App() {
         // LOGGED IN
         // --------------------------------------------
         <div className="app-layout">
-          <Navbar logout={logout}/>
+          <Navbar logout={logout} />
           <div className="app-content">
             <Routes>
               <Route path="/welcome" element={<HomeView />} />
               <Route path="/user/:id" element={<ProfileView />} />
+              <Route path="/city/:id" element={<InspectCityView />} />
               <Route path="/cities" element={<CityView />} />
               <Route path="*" element={<Navigate to="/welcome" />} />
             </Routes>
