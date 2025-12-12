@@ -29,7 +29,7 @@ describe('Performance testing', () => {
     });
 
     const simulateHeartbeat = async (count) => {
-        const simm = createSimulator({ total_bikes: count });
+        const simm = createSimulator({ totalBikes: count });
 
         const start = performance.now();
 
@@ -119,7 +119,7 @@ describe('Testing Simulator', () => {
         const simm = new Simulator(bikeCount, bikes, {});
 
         expect(simm.bikes).toEqual(bikes);
-        expect(simm.total_bikes).toEqual(bikeCount);
+        expect(simm.totalBikes).toEqual(bikeCount);
         expect(simm.cordinates).toEqual({});
     });
 
@@ -136,7 +136,7 @@ describe('Testing Simulator', () => {
 
         jest.runOnlyPendingTimers();
         // eslint-disable-next-line
-        expect(res).toHaveProperty('event', `Bikes already at max capacity: ${simm.bikes.length}/${simm.total_bikes}`);
+        expect(res).toHaveProperty('event', `Bikes already at max capacity: ${simm.bikes.length}/${simm.totalBikes}`);
         simm.end();
     });
 
