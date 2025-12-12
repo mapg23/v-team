@@ -17,25 +17,48 @@ beforeEach(() => {
 describe("bikes model", () => {
     test("getBikes returns bike list", async () => {
         mockDb.select.mockResolvedValue([
-            { id: 1, status: 10, battery: 100, location: "57.77,14.16", occupied: 0, city_id: 1 }
+            {
+                id: 1,
+                status: 10,
+                battery: 100,
+                latitude: 57.77,
+                longitude: 14.16,
+                occupied: 0,
+                city_id: 1
+            }
         ]);
 
         const result = await bikes.getBikes();
 
         expect(result).toEqual([
-            { id: 1, status: 10, battery: 100, location: "57.77,14.16", occupied: 0, city_id: 1 }
+            {
+                id: 1,
+                status: 10,
+                battery: 100,
+                latitude: 57.77,
+                longitude: 14.16,
+                occupied: 0,
+                city_id: 1
+            }
         ]);
 
         expect(mockDb.select).toHaveBeenCalledWith(
             'scooters',
-            ['id', 'status', 'battery', 'location', 'occupied', 'city_id']
+            ['id', 'status', 'battery', 'longitude', 'latitude', 'occupied', 'city_id']
         );
     });
 
     test("createBike inserts bike", async () => {
         mockDb.insert.mockResolvedValue({ insertId: 5 });
 
-        const body = { status: 10, battery: 100, location: "57.77,14.16", occupied: 0, city_id: 1 };
+        const body = {
+            status: 10,
+            battery: 100,
+            latitude: 57.77,
+            longitude: 14.16,
+            occupied: 0,
+            city_id: 1
+        };
         const result = await bikes.createBike(body);
 
         expect(result).toEqual({ insertId: 5 });
@@ -44,18 +67,34 @@ describe("bikes model", () => {
 
     test("getBikeById fetches single bike", async () => {
         mockDb.select.mockResolvedValue([
-            { id: 5, status: 10, battery: 100, location: "57.77,14.16", occupied: 0, city_id: 1 }
+            {
+                id: 5,
+                status: 10,
+                battery: 100,
+                latitude: 57.77,
+                longitude: 14.16,
+                occupied: 0,
+                city_id: 1
+            }
         ]);
 
         const result = await bikes.getBikeById(5);
 
         expect(result).toEqual([
-            { id: 5, status: 10, battery: 100, location: "57.77,14.16", occupied: 0, city_id: 1 }
+            {
+                id: 5,
+                status: 10,
+                battery: 100,
+                latitude: 57.77,
+                longitude: 14.16,
+                occupied: 0,
+                city_id: 1
+            }
         ]);
 
         expect(mockDb.select).toHaveBeenCalledWith(
             'scooters',
-            ['id', 'status', 'battery', 'location', 'occupied', 'city_id'],
+            ['id', 'status', 'battery', 'longitude', 'latitude', 'occupied', 'city_id'],
             'id = ?',
             [5]
         );
@@ -63,18 +102,34 @@ describe("bikes model", () => {
 
     test("getBikesByCityId fetches bikes in city", async () => {
         mockDb.select.mockResolvedValue([
-            { id: 3, status: 10, battery: 80, location: "57.78,14.16", occupied: 0, city_id: 2 }
+            {
+                id: 3,
+                status: 10,
+                battery: 80,
+                latitude: 57.78,
+                longitude: 14.16,
+                occupied: 0,
+                city_id: 2
+            }
         ]);
 
         const result = await bikes.getBikesByCityId(2);
 
         expect(result).toEqual([
-            { id: 3, status: 10, battery: 80, location: "57.78,14.16", occupied: 0, city_id: 2 }
+            {
+                id: 3,
+                status: 10,
+                battery: 80,
+                latitude: 57.78,
+                longitude: 14.16,
+                occupied: 0,
+                city_id: 2
+            }
         ]);
 
         expect(mockDb.select).toHaveBeenCalledWith(
             'scooters',
-            ['id', 'status', 'battery', 'location', 'occupied', 'city_id'],
+            ['id', 'status', 'battery', 'longitude', 'latitude', 'occupied', 'city_id'],
             'city_id = ?',
             [2]
         );

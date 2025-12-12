@@ -9,7 +9,7 @@ export default function createBikes(db = dbDefault) {
         getBikes: async function getBikes() {
             return await db.select(
                 'scooters',
-                ['id', 'status', 'battery', 'location', 'occupied', 'city_id']
+                ['id', 'status', 'battery', 'longitude', 'latitude', 'occupied', 'city_id']
             );
         },
 
@@ -31,7 +31,7 @@ export default function createBikes(db = dbDefault) {
         getBikeById: async function getBikeById(id) {
             return await db.select(
                 'scooters',
-                ['id', 'status', 'battery', 'location', 'occupied', 'city_id'],
+                ['id', 'status', 'battery', 'longitude', 'latitude', 'occupied', 'city_id'],
                 'id = ?',
                 [id]
             );
@@ -46,7 +46,7 @@ export default function createBikes(db = dbDefault) {
         getBikesByCityId: async function getBikesByCityId(cityId) {
             return await db.select(
                 'scooters',
-                ['id', 'status', 'battery', 'location', 'occupied', 'city_id'],
+                ['id', 'status', 'battery', 'longitude', 'latitude', 'occupied', 'city_id'],
                 'city_id = ?',
                 [cityId]
             );
