@@ -1,3 +1,5 @@
+import API from "../config/api.js";
+
 /**
  * User service handling all routes regarding users
  * Based on: https://docs.google.com/spreadsheets/d/1Tza3ZSUOJJRQJeSquKQbE6fRy4d3zNGafAVQxUVNg9M/edit?gid=0#gid=0
@@ -122,12 +124,12 @@ const userService = {
    * @param {Object} userData - Objekt med keys och values att uppdatera
    */
   updateUser: async function updateUser(userId, userData) {
-    const userData = {
+    const userObject = {
       ...userData,
     };
     try {
       const response = await fetch(`${API}/users/${userId}`, {
-        body: JSON.stringify(userData),
+        body: JSON.stringify(userObject),
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -152,12 +154,12 @@ const userService = {
    * @param {Object} userData - Objekt med keys och values att uppdatera
    */
   patchUser: async function patchUser(userId, userData) {
-    const userData = {
+    const userObject = {
       ...userData,
     };
     try {
       const response = await fetch(`${API}/users/${userId}`, {
-        body: JSON.stringify(userData),
+        body: JSON.stringify(userObject),
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -193,8 +195,12 @@ const userService = {
         throw new Error(`HTTP error on patchUser! Status: ${response.status}`);
       }
 
-      const responseData = await response.json();
-      return responseData;
+      // return response
+      if (response.status === 204) {
+        return true;
+      }
+      return false
+
     } catch (error) {
       console.error(error);
       return [];
@@ -206,6 +212,11 @@ const userService = {
    * @returns {JSON}
    */
   getUserRentalDetails: async function getUserRentalDetails(userId) {
+    return [
+      {
+        id: 1,
+      },
+    ];
     try {
       const response = await fetch(`${API}/users/${userId}/rentals`, {
         method: "GET",
@@ -326,6 +337,9 @@ const userService = {
    * @returns {JSON}
    */
   getUserBalanceDetails: async function getUserBalanceDetails(userId) {
+    return {
+      balance: 100,
+    };
     try {
       const response = await fetch(`${API}/users/${userId}/balance`, {
         method: "GET",
