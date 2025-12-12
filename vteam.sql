@@ -73,18 +73,8 @@ CREATE TABLE `cities` (
   `name` varchar(32) NOT NULL,
   `latitude` decimal(9,6) NOT NULL,
   `longitude` decimal(9,6) NOT NULL
-  `latitude` decimal(9,6) NOT NULL,
-  `longitude` decimal(9,6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumpning av Data i tabell `cities`
---
-
-INSERT INTO `cities` (`id`, `name`, `latitude`, `longitude`) VALUES
-(1, 'Bankeryd', 57.863142, 14.127853),
-(2, 'Habo', 57.916015, 14.052711),
-(3, 'Jönköping', 57.782563, 14.165719);
 
 --
 -- Dumpning av Data i tabell `cities`
@@ -253,8 +243,6 @@ ALTER TABLE `parking_zones`
 -- Index för tabell `scooters`
 --
 ALTER TABLE `scooters`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_scooter_city` (`city_id`);
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_scooter_city` (`city_id`);
 
