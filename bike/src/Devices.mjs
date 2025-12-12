@@ -7,11 +7,11 @@ class Device {
   constructor(
     id,
     cords,
-    city_id,
     battery = 100,
     status = 10,
     occupied = false,
-    speed = 0
+    speed = 0,
+    city_id,
   ) {
     this.id = id;
     this.cords = cords;
@@ -23,9 +23,9 @@ class Device {
   }
 
   move(cords) {
-    // if (this.status > 50) {
-    //   return { event: "bike is unable to move, reason:", data: this.status };
-    // }
+    if (this.status > 50) {
+      return { event: "bike is unable to move, reason:", data: this.status };
+    }
     this.cords = cords;
     console.log(`CYKEL ${this.id} HAR FLYTTATS TILL ${this.cords}`);
   }
