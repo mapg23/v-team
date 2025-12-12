@@ -8,9 +8,10 @@ const router = express.Router();
 router.get('/list', async (req, res) => {
     try {
         const response = await callWorker('list');
+
         res.json(response.data);
     } catch (error) {
-        console.error(error)
+        console.error(error);
     }
 });
 

@@ -8,19 +8,19 @@ const router = express.Router();
 
 router.get('bike/:id', async (req, res) => {
     let id = req.params.id;
-    let response = await callWorker('get-bike', { id: id })
+    let response = await callWorker('get-bike', { id: id });
 
-    res.json(response['data'])
+    res.json(response['data']);
 });
 
 router.get('/move/:id/:x/:y', async (req, res) => {
-    let x = req.params.x
-    let y = req.params.y
+    let x = req.params.x;
+    let y = req.params.y;
     let id = req.params.id;
 
     let response = await callWorker('move-specific', { x: x, y: y, id: id });
 
-    res.json(response)
+    res.json(response);
 });
 
 

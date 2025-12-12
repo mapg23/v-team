@@ -3,24 +3,41 @@ import { parentPort } from "worker_threads";
 
 import Device from './Devices.mjs';
 
+/**
+ * Simulator class
+ */
 class Simulator {
     bikes = [];
-    total_bikes = 1;
+    totalBikes = 1;
     cordinates = {};
 
     heartbeat_count = 0;
     movementInterval = null;
 
-    constructor(total_bikes = 1, bikes = [], cordinates = {}) {
-        this.total_bikes = total_bikes;
+    /**
+     * Constructor for simulator
+     * @param {Number} totalBikes 
+     * @param {Array} bikes 
+     * @param {Array} cordinates 
+     */
+    constructor(totalBikes = 1, bikes = [], cordinates = {}) {
+        this.totalBikes = totalBikes;
         this.bikes = bikes;
         this.cordinates = cordinates;
     }
 
+    /**
+     * Method to set pre-defined cordinates.
+     * @param {Array} coords 
+     */
     setCordinates(coords) {
         this.cordinates = coords;
     }
 
+    /**
+     * Method to start heartbeat
+     * @returns Void
+     */
     startMovement() {
         if (this.movementInterval) return;
 
@@ -31,6 +48,9 @@ class Simulator {
         console.log("Movement started");
     }
 
+    /**
+     * Mrthod to stop heartbeat
+     */
     stopMovement() {
         if (this.movementInterval) {
             clearInterval(this.movementInterval);
@@ -39,6 +59,10 @@ class Simulator {
         }
     }
 
+    /**
+     * Method for heartbeat
+     * @returns {Array|void} - Event array
+     */
     heartbeat() {
         for (let key in this.cordinates) {
             let index = this.bikes.findIndex(function (device) {
@@ -63,6 +87,9 @@ class Simulator {
         return { event: 'Heartbeat updated' };
     }
 
+    /**
+     * Method that sends bike positions like a soocket to api
+     */
     sendUpdates() {
         const data = this.bikes.map((b) => ({
             id: b.id,
@@ -79,6 +106,11 @@ class Simulator {
         });
     }
 
+    /**
+     * Method that starts simulator with pre-defined bikes from database.
+     * @param {Array} payload 
+     * @returns {Array|void}
+     */
     startFromMemory(payload) {
         // Retrives all bikes from db
         // Start bike movement
@@ -107,11 +139,11 @@ class Simulator {
      * @returns {Array} - Event with data.
      */
     start() {
-        if (this.bikes.length >= this.total_bikes) {
-            return { event: `Bikes already at max capacity: ${this.bikes.length}/${this.total_bikes}` };
+        if (this.bikes.length >= this.totalBikes) {
+            return { event: `Bikes already at max capacity: ${this.bikes.length}/${this.totalBikes}` };
         }
 
-        for (let i = 0; i < this.total_bikes; i++) {
+        for (let i = 0; i < this.totalBikes; i++) {
             this.bikes.push(new Device(i, { x: 0, y: 0 }, i.city_id))
         }
         this.startMovement();
@@ -184,12 +216,12 @@ class Simulator {
 };
 
 export function createSimulator(options) {
-    return new Simulator(options?.total_bikes ?? 1);
+    return new Simulator(options?.totalBikes ?? 1);
 }
 
 
 // Instance of Simulator, this is active while the main thread is.
-const simm = createSimulator({ total_bikes: 1000 });
+const simm = createSimulator({ totalBikes: 1000 });
 
 /**
  * Routing from the main application into the simulator class.

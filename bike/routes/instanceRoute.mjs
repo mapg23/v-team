@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/heartbeat', async (req, res) => {
     try {
-        const response = await callWorker('heartbeat')
+        const response = await callWorker('heartbeat');
 
         res.json(response);
     } catch (error) {
@@ -19,8 +19,9 @@ router.get('/heartbeat', async (req, res) => {
 router.post('/setRoute', async (req, res) => {
     let cordinates = req.body.cordinates;
     // console.log(req.body);
+
     try {
-        const response = await callWorker('setRoute', cordinates)
+        const response = await callWorker('setRoute', cordinates);
         // console.log(response);
 
         res.json(response);
@@ -32,6 +33,7 @@ router.post('/setRoute', async (req, res) => {
 router.get('/start', async (req, res) => {
     try {
         const response = await callWorker('start-job');
+
         console.log(response);
         res.json({
             ok: true,
@@ -39,7 +41,7 @@ router.get('/start', async (req, res) => {
             bikes: response
         });
     } catch (error) {
-        console.error(error)
+        console.error(error);
     }
 });
 
@@ -60,9 +62,10 @@ router.post('/start', async (req, res) => {
 router.get('/end', async (req, res) => {
     try {
         const response = await callWorker('end-job');
+
         res.json(response);
     } catch (error) {
-        console.error(error)
+        console.error(error);
     }
 });
 
