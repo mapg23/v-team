@@ -176,10 +176,10 @@ CREATE TABLE `trips` (
   `cost` decimal(10,2) NOT NULL,
   `start_latitude` decimal(9,6) NOT NULL,
   `start_longitude` decimal(9,6) NOT NULL,
-  `end_latitude` decimal(9,6) NOT NULL,
-  `end_longitude` decimal(9,6) NOT NULL,
+  `end_latitude` decimal(9,6) NULL,
+  `end_longitude` decimal(9,6) NULL,
   `start_time` datetime NOT NULL,
-  `end_time` datetime NOT NULL
+  `end_time` datetime NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- --------------------------------------------------------
