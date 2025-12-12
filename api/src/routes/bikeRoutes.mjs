@@ -3,9 +3,8 @@ import createBikes from "../models/bikes.mjs";
 import validateJsonBody from "../middleware/validateJsonBody.mjs";
 
 
-export default function createBikeRouter() {
+export default function createBikeRouter(bikes = createBikes()) {
     const route = express.Router();
-    const bikes = createBikes();
 
     /** Route to manually sync bikes from the database to the simulator.
     * Can be called anytime while the API server is running to push new or updated bikes.
@@ -90,6 +89,10 @@ export default function createBikeRouter() {
     route.put(`/bikes/:id`, validateJsonBody, async (req, res) => {
         try {
             const id = Number(req.params.id);
+
+            if (isNaN(id)) {
+                return res.status(400).json({ error: "Invalid bike id" });
+            }
             const data = req.body;
 
             const result = await bikes.updateBike(id, data);
@@ -108,6 +111,11 @@ export default function createBikeRouter() {
     route.delete(`/bikes/:id`, async (req, res) => {
         try {
             const id = Number(req.params.id);
+
+            if (isNaN(id)) {
+                return res.status(400).json({ error: "Invalid bike id" });
+            }
+
 
             const result = await bikes.deleteBike(id);
 
