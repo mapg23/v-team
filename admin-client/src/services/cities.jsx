@@ -11,11 +11,6 @@ const cityService = {
       { id: 3, name: "Malmö" }
    */
   getAllCities: async function getAllCities() {
-    return [
-      { id: 1, name: "Stockholm" },
-      { id: 2, name: "Göteborg" },
-      { id: 3, name: "Malmö" },
-    ];
     try {
       const response = await fetch(`${API}/cities`, {
         method: "GET",
@@ -42,25 +37,53 @@ const cityService = {
    * Add new city in database
    * @returns {Object} new city
    */
-  addNewCity: async function addNewCity() {
-    const newCity = {};
+  addNewCity: async function addNewCity(city) {
+    const cityObject = {
+      name: `${city}`,
+    };
     try {
       const response = await fetch(`${API}/cities`, {
-        body: JSON.stringify(newCity),
+        body: JSON.stringify(cityObject),
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error on addNewCity! Status: ${response.status}`);
-      }
+      return await response.json();
 
-      const responseData = await response.json();
-      return responseData;
+      // if (!response.ok) {
+      //   throw new Error(`HTTP error on addNewCity! Status: ${response.status}`);
+      // }
+      // const responseData = await response.json();
+      // return responseData;
     } catch (error) {
       console.error(error);
+      return [];
+    }
+  },
+
+  /**
+   * Delete city from database
+   * @returns {Object} new city
+   */
+  deleteCity: async function deleteCity(cityId) {
+    const cityObject = {
+      id: `${cityId}`,
+    };
+    try {
+      const response = await fetch(`${API}/cities/${cityId}`, {
+        // body: JSON.stringify(cityObject),
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.status
+
+    } catch (error) {
+        console.error(error);
       return [];
     }
   },
@@ -71,12 +94,6 @@ const cityService = {
    * @return {Object} { "id": 1, "name": "Stockholm", "stations": 5, "bikes": 240 }
    */
   getCityDetails: async function getCityDetails(id) {
-    return [
-      { id: 1, name: "Stockholm", stations: 5, bikes: 240 },
-      { id: 2, name: "Göteborg", stations: 4, bikes: 400 },
-      { id: 3, name: "Malmö", stations: 11, bikes: 400 },
-    ];
-
     try {
       const response = await fetch(`${API}/cities/${id}`, {
         method: "GET",
