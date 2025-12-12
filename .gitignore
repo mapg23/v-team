@@ -7,6 +7,7 @@ prototypes/
 
 api/node_modules
 bike/node_modules
+client/node_modules
 
 bike/coverage
 api/coverage
