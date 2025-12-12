@@ -36,7 +36,11 @@ export default function MapComponent({ coords, bikes }) {
         iconAnchor: [12, 12],
         popupAnchor: [0, 0],
       });
-      const [lat, long] = bike.cords.trim().split(",");
+
+      console.log(bike.cords);
+      const lat = bike.cords.x;
+      const long = bike.cords.y;
+      // const [lat, long] = bike.cords.trim().split(",");
 
       // To render a component as pure html
       // const htmlTable = renderToString(<CityTable data={bike} vertical={true}></CityTable>)
