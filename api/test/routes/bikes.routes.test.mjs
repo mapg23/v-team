@@ -21,7 +21,6 @@ beforeAll(() => {
     console.error = jest.fn();
 });
 
-
 // Positiva tester
 describe("Bikes API - OK", () => {
     test("POST /bikes creates a bike", async () => {
@@ -32,7 +31,8 @@ describe("Bikes API - OK", () => {
             .send({
                 status: "available",
                 battery: 90,
-                location: "59.33,18.06",
+                latitude: 59.33,
+                longitude: 18.06,
                 occupied: 0,
                 city_id: 1
             });
@@ -44,7 +44,15 @@ describe("Bikes API - OK", () => {
 
     test("GET /bikes returns bike list", async () => {
         mockDb.select.mockResolvedValue([
-            { id: 1, status: "ok", battery: 80, location: "59,18", occupied: 0, city_id: 1 }
+            {
+                id: 1,
+                status: "ok",
+                battery: 80,
+                latitude: 59.0,
+                longitude: 18.0,
+                occupied: 0,
+                city_id: 1
+            }
         ]);
 
         const res = await request(app).get('/bikes');
@@ -55,7 +63,15 @@ describe("Bikes API - OK", () => {
 
     test("GET /bikes/:id returns a bike", async () => {
         mockDb.select.mockResolvedValue([
-            { id: 2, status: "ok", battery: 75, location: "59,18", occupied: 0, city_id: 1 }
+            {
+                id: 2,
+                status: "ok",
+                battery: 75,
+                latitude: 59.0,
+                longitude: 18.0,
+                occupied: 0,
+                city_id: 1
+            }
         ]);
 
         const res = await request(app).get('/bikes/2');
@@ -95,7 +111,8 @@ describe("Bikes API - NOK (500)", () => {
             .send({
                 status: "available",
                 battery: 80,
-                location: "59,18",
+                latitude: 59.0,
+                longitude: 18.0,
                 occupied: 0,
                 city_id: 1
             });
@@ -143,9 +160,9 @@ describe("Bikes API - NOK (500)", () => {
     });
 });
 
-// Negativa tester (400)
+// Negativa tester (400/404)
 describe("Bikes API - NOK (400), (404)", () => {
-    test("POST /bikes returns 400 if city_id or location missing", async () => {
+    test("POST /bikes returns 400 if city_id or lat/lon missing", async () => {
         const res = await request(app)
             .post('/bikes')
             .send({
@@ -155,7 +172,7 @@ describe("Bikes API - NOK (400), (404)", () => {
             });
 
         expect(res.status).toBe(400);
-        expect(res.body).toHaveProperty("error", "Missing cityId or location");
+        expect(res.body).toHaveProperty("error", "Missing city_id, latitude or longitude");
     });
 
     test("GET /bikes/:id returns 400 if id is invalid", async () => {
@@ -166,7 +183,6 @@ describe("Bikes API - NOK (400), (404)", () => {
     });
 
     test("GET /bikes/:id returns 404 if bike does not exist", async () => {
-        // Inget objekt, bike[0] saknas.
         mockDb.select.mockResolvedValue([]);
 
         const res = await request(app).get('/bikes/999');
@@ -174,7 +190,6 @@ describe("Bikes API - NOK (400), (404)", () => {
         expect(res.status).toBe(404);
         expect(res.body).toHaveProperty("error", "Bike not found");
     });
-
 
     test("PUT /bikes/:id returns 400 if id is invalid", async () => {
         const res = await request(app)
@@ -195,7 +210,6 @@ describe("Bikes API - NOK (400), (404)", () => {
         expect(res.status).toBe(404);
         expect(res.body).toHaveProperty("error", "Bike not found");
     });
-
 
     test("DELETE /bikes/:id returns 400 if id is invalid", async () => {
         const res = await request(app).delete('/bikes/abc');

@@ -2,25 +2,19 @@ import express from "express";
 import createBikes from "../models/bikes.mjs";
 import validateJsonBody from "../middleware/validateJsonBody.mjs";
 
-
 export default function createBikeRouter(bikes = createBikes()) {
     const route = express.Router();
 
-    /** Route to manually sync bikes from the database to the simulator.
-    * Can be called anytime while the API server is running to push new or updated bikes.
-    * This allows the simulator to get the latest bike data without restarting the container.
-    */
+    // Sync bikes to simulator
     route.get(`/bikes/sync`, async (req, res) => {
         try {
             const bikesList = await bikes.getBikes();
 
-            // Skickar cyklarna till telemetry-endpointen i index.mjs
             await fetch("http://bike:7071/start", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ bikes: bikesList })
             });
-
 
             return res.status(200).json({ message: "Bikes sent to simulator" });
         } catch (err) {
@@ -29,19 +23,20 @@ export default function createBikeRouter(bikes = createBikes()) {
         }
     });
 
-    // Skapar en cykel manuellt - Admin
+    // Skapar cykel manuellt - Admin
     route.post(`/bikes`, validateJsonBody, async (req, res) => {
         try {
-            const { status, battery, location, occupied, city_id} = req.body;
+            const { status, battery, latitude, longitude, occupied, city_id } = req.body;
 
-            if (!city_id || !location) {
-                return res.status(400).json({ error: "Missing cityId or location" });
+            if (!city_id || latitude === undefined || longitude === undefined) {
+                return res.status(400).json({ error: "Missing city_id, latitude or longitude" });
             }
 
             const result = await bikes.createBike({
                 status,
                 battery,
-                location,
+                latitude,
+                longitude,
                 occupied,
                 city_id
             });
@@ -55,6 +50,7 @@ export default function createBikeRouter(bikes = createBikes()) {
         }
     });
 
+    // Hämtar alla cyklar
     route.get(`/bikes`, async (req, res) => {
         try {
             const list = await bikes.getBikes();
@@ -66,6 +62,7 @@ export default function createBikeRouter(bikes = createBikes()) {
         }
     });
 
+    // Hämtar cykel per ID
     route.get(`/bikes/:id`, async (req, res) => {
         try {
             const id = Number(req.params.id);
@@ -73,6 +70,7 @@ export default function createBikeRouter(bikes = createBikes()) {
             if (isNaN(id)) {
                 return res.status(400).json({ error: "Invalid bike id" });
             }
+
             const bike = await bikes.getBikeById(id);
 
             if (!bike[0]) {
@@ -86,6 +84,7 @@ export default function createBikeRouter(bikes = createBikes()) {
         }
     });
 
+    // Uppdaterar cykel
     route.put(`/bikes/:id`, validateJsonBody, async (req, res) => {
         try {
             const id = Number(req.params.id);
@@ -93,9 +92,8 @@ export default function createBikeRouter(bikes = createBikes()) {
             if (isNaN(id)) {
                 return res.status(400).json({ error: "Invalid bike id" });
             }
-            const data = req.body;
 
-            const result = await bikes.updateBike(id, data);
+            const result = await bikes.updateBike(id, req.body);
 
             if (result.affectedRows === 0) {
                 return res.status(404).json({ error: "Bike not found" });
@@ -108,6 +106,7 @@ export default function createBikeRouter(bikes = createBikes()) {
         }
     });
 
+    // Tar bort cykel
     route.delete(`/bikes/:id`, async (req, res) => {
         try {
             const id = Number(req.params.id);
@@ -115,7 +114,6 @@ export default function createBikeRouter(bikes = createBikes()) {
             if (isNaN(id)) {
                 return res.status(400).json({ error: "Invalid bike id" });
             }
-
 
             const result = await bikes.deleteBike(id);
 
