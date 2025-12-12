@@ -1,4 +1,4 @@
-import { generateRandomString, createPKCE } from "../services/crypto";
+import { generateRandomString, createPKCE } from "services/crypto";
 const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const redirectUri = "http://localhost:5173/login/github/callback";
 

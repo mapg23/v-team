@@ -5,24 +5,27 @@ import styles from "./Table.module.css";
  * @param {Array} data array of objects
  * @returns
  */
-export default function CityTable({ data, vertical }) {
+export default function CityTable({ data, action, inspect }) {
   const _data = Array.isArray(data) ? data : [data];
 
   const headers = Object.keys(_data[0]);
-  if (vertical) {
-    return (
-      <table className={styles.verticalTable}>
-        <tbody>
-          {Object.keys(_data[0]).map((key) => (
-            <tr key={key}>
-              <th>{key}</th>
-              <td>{_data[0][key]}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
+
+  /**
+   * Call action on object with id <id>
+   * @param {Int} objectId 
+   */
+  function handleAction(objectId) {
+    action(objectId)
   }
+
+  /**
+   * Call action on object with id <id>
+   * @param {Int} objectId 
+   */
+  function handleInspect(objectId) {
+    inspect(objectId);
+  }
+
   return (
     <table>
       <thead>
@@ -30,6 +33,7 @@ export default function CityTable({ data, vertical }) {
           {headers.map((key) => (
             <th key={key}>{key.toUpperCase()}</th>
           ))}
+          <th key="action">ACTION</th>
         </tr>
       </thead>
 
@@ -39,6 +43,10 @@ export default function CityTable({ data, vertical }) {
             {headers.map((key) => (
               <td key={obj.id + "-" + key}>{obj[key]}</td>
             ))}
+            <td key={obj.id}>
+                <button onClick={() => handleAction(obj.id)}>delete</button>
+                <button onClick={() => handleInspect(obj.id)}>Inspect</button>
+            </td>
           </tr>
         ))}
       </tbody>
