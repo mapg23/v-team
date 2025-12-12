@@ -1,20 +1,16 @@
-
 import { useEffect, useState } from "react";
 import CityService from "services/cities";
-import { useNavigate } from "react-router-dom";
 
 /**
  * Component that renders a dropdown based on data
- * when selection changes, redirects to city/:id
+ * when selection changes, calls action method
  */
-export default function CityDropDown() {
+export default function CityDropDown({action}) {
   const [loading, setLoading] = useState(true);
 
   const [cityNames, setCityNames] = useState([]);
 
   const [allCities, setAllCities] = useState([]);
-
-  const navigate = useNavigate();
 
   /**
    * Set cityNames
@@ -31,12 +27,12 @@ export default function CityDropDown() {
   }, []);
 
   /**
-   * Redirect to city/:id
+   * Calls provided action with cityId
    */
   async function handleSelect(value) {
     const city = allCities.find((city) => city.name === value);
-    console.log(`city/${city.id}`);
-    navigate(`/city/${city.id}`);
+    // calls parent method
+    action(city.id)
   }
 
   if (loading) return <p>laddar..</p>;
