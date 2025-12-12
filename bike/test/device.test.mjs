@@ -1,11 +1,10 @@
-"use strict"
+"use strict";
 process.env.NODE_ENV = "test";
 
 import Device from "../src/Devices.mjs";
 
 
 describe('Test device', () => {
-
     test('Device initialization', () => {
         const device = new Device(0, { x: 0, y: 0 }, 100, 10, false, 0);
 
@@ -22,9 +21,11 @@ describe('Test device', () => {
 
     test('Move method, bad status', () => {
         const device = new Device(0, { x: 0, y: 0 }, 100, 10, false, 0);
+
         device.status = 60;
 
         let res = device.move({ x: 100, y: 100 });
+
         expect(res).toEqual({ event: 'bike is unable to move, reason:', data: 60 });
     });
 

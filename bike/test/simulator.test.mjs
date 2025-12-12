@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 process.env.NODE_ENV = "test";
 
 import Simulator, { handleWorkerMessage, createSimulator } from "../src/Simulator.mjs";
@@ -13,9 +13,11 @@ function BikeListHelper(count) {
 
 async function generateCords(count) {
     const cords = {};
+
     for (let i = 0; i < count; i++) {
         let randomX = randomInt(1000);
         let randomY = randomInt(1000);
+
         cords[i] = [{ x: randomX, y: randomY }];
     }
     return cords;
@@ -30,35 +32,41 @@ describe('Performance testing', () => {
         const simm = createSimulator({ total_bikes: count });
 
         const start = performance.now();
+
         simm.start();
         const startTime = performance.now() - start;
 
         const cords = generateCords(count);
+
         simm.setCordinates(cords);
 
         const heartbeatStart = performance.now();
+
         simm.heartbeat();
         const heartbeat = performance.now() - heartbeatStart;
 
         simm.end();
 
         return { startTime, heartbeat };
-    }
+    };
 
     test('running thousand bikes', async () => {
         let res = await simulateHeartbeat(1000);
+
         expect(res.startTime).toBeLessThan(50);
         expect(res.heartbeat).toBeLessThan(50);
     });
 
     test('running five thousand bikes', async () => {
         let res = await simulateHeartbeat(5000);
+
         expect(res.startTime).toBeLessThan(100);
         expect(res.heartbeat).toBeLessThan(100);
     });
 
     test('running ten thousand bikes', async () => {
         let res = await simulateHeartbeat(10000);
+
         expect(res.startTime).toBeLessThan(200);
         expect(res.heartbeat).toBeLessThan(200);
     });
@@ -119,12 +127,15 @@ describe('Testing Simulator', () => {
         const bikes = BikeListHelper(100);
 
         const simm = new Simulator(100);
+
         expect(simm.bikes).toEqual([]);
         simm.start();
         jest.runOnlyPendingTimers();
         expect(simm.bikes).toEqual(bikes);
         let res = simm.start();
+
         jest.runOnlyPendingTimers();
+        // eslint-disable-next-line
         expect(res).toHaveProperty('event', `Bikes already at max capacity: ${simm.bikes.length}/${simm.total_bikes}`);
         simm.end();
     });
@@ -132,8 +143,9 @@ describe('Testing Simulator', () => {
     test('End method', () => {
         const bikes = BikeListHelper(100);
         const simm = new Simulator(100);
+
         expect(simm.bikes).toEqual([]);
-        simm.start()
+        simm.start();
         jest.runOnlyPendingTimers();
 
         expect(simm.bikes).toEqual(bikes);
@@ -144,6 +156,7 @@ describe('Testing Simulator', () => {
     test('Heartbeat method, correct return', () => {
         const simm = new Simulator();
         let res = simm.heartbeat();
+
         jest.runOnlyPendingTimers();
 
         expect(res).toEqual({ event: 'Heartbeat updated' });
@@ -153,10 +166,12 @@ describe('Testing Simulator', () => {
     test('Heartbeat method, updated bikes', async () => {
         const simm = new Simulator(11);
         const cords = await generateCords(11);
-        simm.start()
+
+        simm.start();
         jest.runOnlyPendingTimers();
         simm.setCordinates(cords);
         const originalCords = { ...simm.bikes[10].cords };
+
         simm.heartbeat();
         expect(simm.bikes[10].cords).not.toEqual(originalCords);
         simm.end();
@@ -190,6 +205,7 @@ describe('Testing Simulator', () => {
 
     test('Heartbeat method, skipping bike (4)', () => {
         const simm = new Simulator(3);
+
         simm.start();
         jest.runOnlyPendingTimers();
 
@@ -205,7 +221,7 @@ describe('Testing Simulator', () => {
 
         let res = simm.heartbeat();
 
-        expect(simm.bikes[0].cords).toEqual({ x: 1, y: 1 })
+        expect(simm.bikes[0].cords).toEqual({ x: 1, y: 1 });
         expect(simm.bikes[3]).toBeUndefined();
         expect(simm.bikes[4]).toBeUndefined();
         expect(simm.bikes[5]).toBeUndefined();
@@ -218,6 +234,7 @@ describe('Testing Simulator', () => {
     test('List method', () => {
         const simm = new Simulator(1, [], {});
         const bikes = [new Device(0, { x: 0, y: 0 })];
+
         simm.start();
         jest.runOnlyPendingTimers();
 
@@ -238,7 +255,7 @@ describe('Testing Simulator', () => {
 
         const simm = new Simulator(2, bikes);
 
-        simm.start()
+        simm.start();
         jest.runOnlyPendingTimers();
 
 

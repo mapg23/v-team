@@ -5,7 +5,7 @@ import express from "express";
 // Worker thread fetch
 import { forwardToMain } from "./src/util.mjs";
 // Worker thread
-import { worker, pending, callWorker } from "./src/Worker.mjs";
+import { worker, pending } from "./src/Worker.mjs";
 
 // Routes
 import infoRoutes from "./routes/infoRoute.mjs";
@@ -26,21 +26,21 @@ app.use('/', instanceRoutes);
 app.use('/', bikeRoute);
 
 worker.on('message', (msg) => {
-  if (msg.type === "telemetry") {
-    console.log("inside worker messages")
-    forwardToMain(msg.data);
-    return;
-  }
+    if (msg.type === "telemetry") {
+        console.log("inside worker messages");
+        forwardToMain(msg.data);
+        return;
+    }
 
-  const { id, event, data } = msg;
+    const { id, event, data } = msg;
 
-  if (pending.has(id)) {
-    pending.get(id).resolve({ event, data });
-    pending.delete(id);
-  }
-})
+    if (pending.has(id)) {
+        pending.get(id).resolve({ event, data });
+        pending.delete(id);
+    }
+});
 
 
 app.listen(port, function () {
-  console.log(`Listening on port: ${port}`);
+    console.log(`Listening on port: ${port}`);
 });
