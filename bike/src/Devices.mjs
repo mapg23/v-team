@@ -11,7 +11,7 @@ class Device {
     status = 10,
     occupied = false,
     speed = 0,
-    city_id,
+    city_id = null,
   ) {
     this.id = id;
     this.cords = cords;
