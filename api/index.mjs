@@ -10,6 +10,7 @@ import createUserRouter from './src/routes/userRoutes.mjs';
 import createCityRouter from './src/routes/cityRoutes.mjs';
 import createBikeRouter from './src/routes/bikeRoutes.mjs';
 import startSimulator from './src/startSimulator.mjs';
+import stopSimulator from './src/stopSimulator.mjs';
 
 const app = express();
 const port = process.env.API_PORT || 9091;
@@ -58,3 +59,12 @@ httpServer.listen(port, async () => {
     // Här startar vi simulatorn direkt när servern är uppe
     await startSimulator();
 });
+
+// Här stoppas simulatorn direkt när servern stängs ner.
+const serverShutDown = async () => {
+    // Anropar funktionen som sparar cyklarna i databasen.
+    await stopSimulator();
+};
+
+// Stoppar simulatorn vid docker-compose down
+process.on('SIGTERM', serverShutDown);
