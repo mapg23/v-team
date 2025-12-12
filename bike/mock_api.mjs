@@ -40,23 +40,57 @@ async function start() {
     });
     let routesJson = await setRoutes.json();
 
-    console.log(`[LOG]: ${routesJson.event}`);
+  console.log(`[LOG]: ${routesJson.event}`);
 
+  let list = await fetch('http://localhost:7071/list');
+  let listJSON = await list.json();
+  // let listOBJ = JSON.parse(listJSON);
+  console.log('======= Device LIST ========')
+  console.log(listJSON);
+  console.log('======= Device LIST ========')
+
+  setInterval(async () => {
     let list = await fetch('http://localhost:7071/list');
-    let listJSON = await list.json();
-    // let listOBJ = JSON.parse(listJSON);
-
-    console.log('======= Device LIST ========');
-    console.log(listJSON);
-    console.log('======= Device LIST ========');
-
-    setInterval(async () => {
-        let list = await fetch('http://localhost:7071/list');
-
-        console.log('======= Device LIST ========');
-        console.log(await list.json());
-        console.log('======= Device LIST ========');
-    }, heartbeatTimer);
+    console.log('======= Device LIST ========')
+    console.log(await list.json());
+    console.log('======= Device LIST ========')
+  }, heartbeat_timer)
 }
 
-await start();
+async function startBikes(params) {
+  let cordinates = {
+    cordinates: {
+      12: [
+        { x: 57.8602, y: 14.1240 },
+        { x: 57.8608, y: 14.1240 },
+        { x: 57.8612, y: 14.1240 },
+        { x: 57.8618, y: 14.1240 },
+        { x: 57.8624, y: 14.1240 },
+        { x: 57.8630, y: 14.1240 },
+        { x: 57.8636, y: 14.1240 },
+        { x: 57.8642, y: 14.1240 },
+        { x: 57.8648, y: 14.1240 },
+        { x: 57.8654, y: 14.1240 },
+        { x: 57.8660, y: 14.1240 },
+        { x: 57.8666, y: 14.1240 },
+        { x: 57.8672, y: 14.1240 },
+        { x: 57.8678, y: 14.1240 },
+        { x: 57.8684, y: 14.1240 },
+        { x: 57.8690, y: 14.1240 },
+        { x: 57.8696, y: 14.1240 },
+      ],
+    },
+  };
+
+
+  const setRoutes = await fetch('http://localhost:7071/setRoute', {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(cordinates)
+  });
+  let routesJson = await setRoutes.json();
+
+  console.log(`[LOG]: ${routesJson.event}`);
+}
+
+await startBikes();

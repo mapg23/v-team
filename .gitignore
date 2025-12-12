@@ -3,10 +3,10 @@ database/logs/
 prototypes/
 .DS_STORE
 .DS_Store
-.package-lock.json
 
 api/node_modules
 bike/node_modules
+admin-client/node_modules
 client/node_modules
 
 bike/coverage

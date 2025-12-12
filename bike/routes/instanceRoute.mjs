@@ -49,8 +49,6 @@ router.post('/start', async (req, res) => {
     try {
         let bikes = req.body.bikes;
         const response = await callWorker('start-job-memory', bikes);
-
-        console.log(response);
         res.json({
             ok: true,
             msg: 'started-job-memory',
