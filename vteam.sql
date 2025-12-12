@@ -135,7 +135,7 @@ CREATE TABLE `scooters` (
   `status` int(11) NOT NULL DEFAULT 10,
   `battery` int(3) NOT NULL DEFAULT 100,
   `latitude` decimal(9,6) NOT NULL,
-  `longitude` decimal(9,6) NOT NULL
+  `longitude` decimal(9,6) NOT NULL,
   `occupied` tinyint(1) NOT NULL DEFAULT 0,
   `city_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
@@ -166,9 +166,9 @@ CREATE TABLE `trips` (
   `scooter_id` int(11) NOT NULL,
   `cost` decimal(10,2) NOT NULL,
   `start_latitude` decimal(9,6) NOT NULL,
-  `start_longitude` decimal(9,6) NOT NULL
+  `start_longitude` decimal(9,6) NOT NULL,
   `end_latitude` decimal(9,6) NOT NULL,
-  `end_longitude` decimal(9,6) NOT NULL
+  `end_longitude` decimal(9,6) NOT NULL,
   `start_time` datetime NOT NULL,
   `end_time` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
