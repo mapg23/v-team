@@ -41,27 +41,29 @@ class Simulator {
 
     heartbeat() {
         for (let key in this.cordinates) {
-            if (!this.bikes[key]) {
+            let index = this.bikes.findIndex(function (device) {
+                return device.getId() === Number(key)
+            });
+
+            if (index === -1) {
                 continue;
             }
-            // Updated
-            if (this.cordinates[key].length !== 0) {
-                this.bikes[key].status = 10;
-                const nextCordinate = this.cordinates[key].shift();
-                this.bikes[key].move(nextCordinate);
 
-                console.log(`Bike ${key} has updated it's cords`)
-            } else {
+            if (this.cordinates[key].length === 0) {
                 console.log(`Bike: ${key} has no cordinates left ${this.cordinates[key].length}`)
-                this.bikes[key].status = 40;
+                this.bikes[index].status = 40;
                 this.cordinates[key] = [];
+                continue;
             }
+
+            this.bikes[index].status = 10;
+            const nextCordinate = this.cordinates[key].shift();
+            this.bikes[index].move(nextCordinate);
         }
         return { event: 'Heartbeat updated' };
     }
 
     sendUpdates() {
-        console.log(this.bikes)
         const data = this.bikes.map((b) => ({
             id: b.id,
             cords: b.cords,
@@ -82,9 +84,14 @@ class Simulator {
         // Start bike movement
         this.bikes = [];
         for (let bike of payload) {
+            let cleaned = bike.location.replace(/\s+/g, '');
+            let cords = cleaned.split(",");
+
+            let parsedCords = { x: Number(cords[0]), y: Number(cords[1]) };
+
             this.bikes.push(new Device(
                 bike.id,
-                bike.location,
+                parsedCords,
                 bike.city_id,
                 bike.battery,
                 bike.status,
@@ -104,8 +111,8 @@ class Simulator {
             return { event: `Bikes already at max capacity: ${this.bikes.length}/${this.total_bikes}` };
         }
 
-        for(let i = 0; i < this.total_bikes; i++) {
-            this.bikes.push(new Device(i, {x: 0, y:0}, i.city_id))
+        for (let i = 0; i < this.total_bikes; i++) {
+            this.bikes.push(new Device(i, { x: 0, y: 0 }, i.city_id))
         }
         this.startMovement();
         return { event: `Bikes: ${this.bikes.length}`, data: this.bikes }
@@ -150,6 +157,7 @@ class Simulator {
             for (let key in payload) {
                 this.cordinates[Number(key)] = payload[key];
             }
+            console.log(this.cordinates);
             return { event: 'Succesfully added routes', data: payload };
         } catch (error) {
             console.error('Invalid JSON structure', error.message);
@@ -164,7 +172,7 @@ class Simulator {
         const prevX = this.bikes[bike.id].cords.x;
         const prevY = this.bikes[bike.id].cords.y;
 
-        const returnMsg = { event: `Changed bike: ${bike.id} from {x:${prevX}, y:${prevY}} to: {x: ${bike.x}, y: ${bike.y}} `}
+        const returnMsg = { event: `Changed bike: ${bike.id} from {x:${prevX}, y:${prevY}} to: {x: ${bike.x}, y: ${bike.y}} ` }
 
         this.bikes[bike.id].move({
             x: Number(bike.x),
