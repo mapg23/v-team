@@ -2,6 +2,7 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginView from "./views/auth/LoginView";
 import HomeView from "./views/home/HomeView";
+import CityView from "./views/city/CityView";
 import ProfileView from "./views/user/ProfileView";
 import Navbar from "./components/nav/Nav";
 import { useEffect, useState } from "react";
@@ -52,6 +53,7 @@ function App() {
             <Routes>
               <Route path="/welcome" element={<HomeView />} />
               <Route path="/user/:id" element={<ProfileView />} />
+              <Route path="/cities" element={<CityView />} />
               <Route path="*" element={<Navigate to="/welcome" />} />
             </Routes>
           </div>
