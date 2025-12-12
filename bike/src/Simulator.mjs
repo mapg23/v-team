@@ -90,7 +90,6 @@ class Simulator {
      * Method that updates the bikes, works like a socket that emits the bikes
      */
     sendUpdates() {
-        console.log(this.bikes);
         const data = this.bikes.map((b) => ({
             id: b.id,
             cords: b.cords,
