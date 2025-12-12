@@ -5,7 +5,8 @@ import style from "../../components/forms/Form.module.css";
 import TableWithActions from "../../components/table/TableWithActions"
 
 /**
- * CRUD view for City's
+ * View for showing all city's and it's details
+ * Admin can also add or delete an already existing city
  */
 export default function CityView() {
   const navigate = useNavigate();
