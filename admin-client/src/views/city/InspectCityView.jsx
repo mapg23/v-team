@@ -7,11 +7,14 @@ import BikeSocket from "components/socket/BikeSocket";
 import bikeService from "../../services/bikes";
 import { useParams } from "react-router";
 import CityDropDown from "../../components/input/CityDropDown";
+import { useNavigate } from "react-router-dom";
 
 /**
  * View for showing a city based on url
  */
 export default function InspectCityView() {
+  const navigate = useNavigate();
+
   // Get params
   const params = useParams();
   const cityId = params.id;
@@ -57,6 +60,14 @@ export default function InspectCityView() {
     fetchData();
   }, [cityId]);
 
+  /**
+   * Method for handling the selectionChange
+   * @param {id} cityId redirect to city/:id
+   */
+  function redirectToCity(cityId) {
+    navigate(`/city/${cityId}`);
+  }
+
   // Visa en översikt endast om användare inte valt stad
   // och data har hämtats
   if (loading) return <h1>Loading...</h1>;
@@ -64,7 +75,7 @@ export default function InspectCityView() {
   return (
     <>
       <BikeSocket onUpdate={updateBikes} />
-      <CityDropDown />
+      <CityDropDown action={redirectToCity}/>
       <h1>{cityDetails.name}</h1>
       <div style={{ display: "flex", justifyContent: "space-around" }}>
         <CityTable data={cityDetails} vertical={true} />
