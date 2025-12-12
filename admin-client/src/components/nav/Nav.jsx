@@ -16,7 +16,7 @@ function Navigation({ logout }) {
           <a href="/welcome">Översikt</a>
         </li>
         <li>
-          <a href="/city">Städer</a>
+          <a href="/cities">Städer</a>
         </li>
         <li>
           <a href="/cost">Prissättning</a>
