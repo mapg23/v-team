@@ -1,13 +1,6 @@
-import Map from "@/components/map/Map-component";
+
 import { useEffect, useState } from "react";
-import SelectCity from "components/input/SelectCity";
 import CityService from "services/cities";
-import CityTable from "components/table/CityTable";
-import UserTable from "components/table/UserTable";
-import PieChart from "components/chart/PieChart";
-import userService from "services/users";
-import BikeSocket from "components/socket/BikeSocket";
-import bikeService from "../../services/bikes";
 import { useNavigate } from "react-router-dom";
 
 /**
