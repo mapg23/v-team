@@ -40,7 +40,7 @@ const cityService = {
   getCityDetailsById: async function getCityDetailsById(id) {
     try {
       const response = await fetch(`${API}/cities/${id}`, {
-        method: "GEt",
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
@@ -95,34 +95,6 @@ const cityService = {
       });
 
       return await response.status;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  },
-
-  /**
-   * Get City details
-   * @param {int} id for the city
-   * @return {Object} { "id": 1, "name": "Stockholm", "stations": 5, "bikes": 240 }
-   */
-  getCityDetails: async function getCityDetails(id) {
-    try {
-      const response = await fetch(`${API}/cities/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on getAllCities! Status: ${response.status}`
-        );
-      }
-
-      const responseData = await response.json();
-      return responseData;
     } catch (error) {
       console.error(error);
       return [];
