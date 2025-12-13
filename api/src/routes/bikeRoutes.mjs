@@ -35,8 +35,15 @@ export default function createBikeRouter() {
         try {
             const { status, battery, location, occupied, city_id} = req.body;
 
-            if (!city_id || !location) {
-                return res.status(400).json({ error: "Missing cityId or location" });
+            const requiredFields = [status, battery, location, city_id];
+
+            if (requiredFields.some((field) => field === undefined)){
+                return res
+                  .status(400)
+                  .json({
+                    error:
+                      "Missing on or more of the required properties: status, battery, location, city_id",
+                  });
             }
 
             const result = await bikes.createBike({
