@@ -3,8 +3,16 @@ import validateJsonBody from '../middleware/validateJsonBody.mjs';
 import cityHelpers from '../helpers/validateCity.mjs';
 import createCities from "../models/cities.mjs";
 import createBikes from "../models/bikes.mjs";
+import createStations from "../models/stations.mjs";
+import createParkings from "../models/parkings.mjs";
 
-export default function createCityRouter(cities = createCities(), bikes = createBikes()) {
+
+export default function createCityRouter(
+    cities = createCities(),
+    bikes = createBikes(),
+    stations = createStations(),
+    parkings = createParkings()
+) {
     const route = express.Router();
 
     route.post(`/cities`, validateJsonBody, async (req, res) => {
@@ -150,6 +158,52 @@ export default function createCityRouter(cities = createCities(), bikes = create
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not fetch bikes for city" });
+        }
+    });
+
+    route.get('/cities/:id/stations', async (req, res) => {
+        try {
+            const cityId = Number(req.params.id);
+
+            if (isNaN(cityId)) {
+                return res.status(400).json({ error: 'Invalid city id' });
+            }
+
+            const city = await cities.getCityById(cityId);
+
+            if (!city[0]) {
+                return res.status(404).json({ error: 'City not found' });
+            }
+
+            const stationsList = await stations.getStationsByCityId(cityId);
+
+            return res.status(200).json(stationsList);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Could not fetch stations' });
+        }
+    });
+
+    route.get('/cities/:id/parkings', async (req, res) => {
+        try {
+            const cityId = Number(req.params.id);
+
+            if (isNaN(cityId)) {
+                return res.status(400).json({ error: 'Invalid city id' });
+            }
+
+            const city = await cities.getCityById(cityId);
+
+            if (!city[0]) {
+                return res.status(404).json({ error: 'City not found' });
+            }
+
+            const parkingsList = await parkings.getParkingsByCityId(cityId);
+
+            return res.status(200).json(parkingsList);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Could not fetch parking zones' });
         }
     });
 
