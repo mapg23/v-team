@@ -25,11 +25,20 @@ beforeAll(() => {
 describe("Bikes API - OK", () => {
     test("POST /bikes creates a bike", async () => {
         mockDb.insert.mockResolvedValue({ insertId: 10 });
+        mockDb.select.mockResolvedValue([{
+            id: 10,
+            status: 10,
+            battery: 90,
+            latitude: 59.33,
+            longitude: 18.06,
+            occupied: 0,
+            city_id: 1
+        }]);
 
         const res = await request(app)
             .post('/bikes')
             .send({
-                status: "available",
+                status: 10,
                 battery: 90,
                 latitude: 59.33,
                 longitude: 18.06,
@@ -39,55 +48,63 @@ describe("Bikes API - OK", () => {
 
         expect(res.status).toBe(201);
         expect(res.body).toHaveProperty("id", 10);
+        expect(res.body).toHaveProperty("status", 10);
     });
 
     test("GET /bikes returns bike list", async () => {
-        mockDb.select.mockResolvedValue([
-            {
-                id: 1,
-                status: "ok",
-                battery: 80,
-                latitude: 59.0,
-                longitude: 18.0,
-                occupied: 0,
-                city_id: 1
-            }
-        ]);
+        mockDb.select.mockResolvedValue([{
+            id: 1,
+            status: 10,
+            battery: 80,
+            latitude: 59.0,
+            longitude: 18.0,
+            occupied: 0,
+            city_id: 1
+        }]);
 
         const res = await request(app).get('/bikes');
 
         expect(res.status).toBe(200);
-        expect(res.body[0]).toHaveProperty("id", 1);
+        expect(res.body[0]).toHaveProperty("status", 10);
     });
 
     test("GET /bikes/:id returns a bike", async () => {
-        mockDb.select.mockResolvedValue([
-            {
-                id: 2,
-                status: "ok",
-                battery: 75,
-                latitude: 59.0,
-                longitude: 18.0,
-                occupied: 0,
-                city_id: 1
-            }
-        ]);
+        mockDb.select.mockResolvedValue([{
+            id: 2,
+            status: 10,
+            battery: 75,
+            latitude: 59.0,
+            longitude: 18.0,
+            occupied: 0,
+            city_id: 1
+        }]);
 
         const res = await request(app).get('/bikes/2');
 
         expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty("id", 2);
+        expect(res.body).toHaveProperty("status", 10);
     });
 
     test("PUT /bikes/:id updates a bike", async () => {
         mockDb.update.mockResolvedValue({ affectedRows: 1 });
+        mockDb.select.mockResolvedValue([{
+            id: 3,
+            status: 10,
+            battery: 50,
+            latitude: 59.0,
+            longitude: 18.0,
+            occupied: 0,
+            city_id: 1
+        }]);
 
         const res = await request(app)
             .put('/bikes/3')
             .send({ battery: 50 });
 
         expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty("message", "Bike updated");
+        expect(res.body).toHaveProperty("id", 3);
+        expect(res.body).toHaveProperty("status", 10);
+        expect(res.body).toHaveProperty("battery", 50);
     });
 
     test("DELETE /bikes/:id deletes a bike", async () => {
@@ -108,7 +125,7 @@ describe("Bikes API - NOK (500)", () => {
         const res = await request(app)
             .post('/bikes')
             .send({
-                status: "available",
+                status: 10,
                 battery: 80,
                 latitude: 59.0,
                 longitude: 18.0,
@@ -165,7 +182,7 @@ describe("Bikes API - NOK (400), (404)", () => {
         const res = await request(app)
             .post('/bikes')
             .send({
-                status: "available",
+                status: 10,
                 battery: 90,
                 occupied: 0
             });
@@ -183,7 +200,6 @@ describe("Bikes API - NOK (400), (404)", () => {
 
     test("GET /bikes/:id returns 404 if bike does not exist", async () => {
         mockDb.select.mockResolvedValue([]);
-
         const res = await request(app).get('/bikes/999');
 
         expect(res.status).toBe(404);
@@ -201,7 +217,6 @@ describe("Bikes API - NOK (400), (404)", () => {
 
     test("PUT /bikes/:id returns 404 if bike does not exist", async () => {
         mockDb.update.mockResolvedValue({ affectedRows: 0 });
-
         const res = await request(app)
             .put('/bikes/99')
             .send({ battery: 50 });
@@ -219,7 +234,6 @@ describe("Bikes API - NOK (400), (404)", () => {
 
     test("DELETE /bikes/:id returns 404 if bike does not exist", async () => {
         mockDb.remove.mockResolvedValue({ affectedRows: 0 });
-
         const res = await request(app).delete('/bikes/99');
 
         expect(res.status).toBe(404);

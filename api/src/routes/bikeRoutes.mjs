@@ -50,7 +50,9 @@ export default function createBikeRouter(bikes = createBikes()) {
                 city_id
             });
 
-            return res.status(201).json({ id: Number(result.insertId) });
+            const newBike = await bikes.getBikeById(result.insertId);
+
+            return res.status(201).json(newBike[0]);
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not create bike" });
@@ -107,12 +109,15 @@ export default function createBikeRouter(bikes = createBikes()) {
                 return res.status(404).json({ error: "Bike not found" });
             }
 
-            return res.status(200).json({ message: "Bike updated" });
+            const updatedBike = await bikes.getBikeById(id);
+
+            return res.status(200).json(updatedBike[0]); // returnerar hela objektet
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not update bike" });
         }
     });
+
 
     // Tar bort cykel
     route.delete(`/bikes/:id`, async (req, res) => {
