@@ -24,12 +24,21 @@ export default function createBikeRouter(bikes = createBikes()) {
     });
 
     // Skapar cykel manuellt - Admin
-    route.post(`/bikes`, validateJsonBody, async (req, res) => {
+    route.post("/bikes", validateJsonBody, async (req, res) => {
         try {
             const { status, battery, latitude, longitude, occupied, city_id } = req.body;
 
-            if (!city_id || latitude === undefined || longitude === undefined) {
-                return res.status(400).json({ error: "Missing city_id, latitude or longitude" });
+            const requiredFields = [
+                status,
+                battery,
+                latitude,
+                longitude,
+                occupied,
+                city_id
+            ];
+
+            if (requiredFields.some((field) => field == null)) {
+                return res.status(400).json({ error: "Missing required fields" });
             }
 
             const result = await bikes.createBike({
@@ -41,14 +50,15 @@ export default function createBikeRouter(bikes = createBikes()) {
                 city_id
             });
 
-            return res
-                .status(201)
-                .json({ message: "Bike created", id: Number(result.insertId) });
+            const newBike = await bikes.getBikeById(result.insertId);
+
+            return res.status(201).json(newBike[0]);
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not create bike" });
         }
     });
+
 
     // Hämtar alla cyklar
     route.get(`/bikes`, async (req, res) => {
@@ -99,12 +109,15 @@ export default function createBikeRouter(bikes = createBikes()) {
                 return res.status(404).json({ error: "Bike not found" });
             }
 
-            return res.status(200).json({ message: "Bike updated" });
+            const updatedBike = await bikes.getBikeById(id);
+
+            return res.status(200).json(updatedBike[0]); // returnerar hela objektet
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not update bike" });
         }
     });
+
 
     // Tar bort cykel
     route.delete(`/bikes/:id`, async (req, res) => {
@@ -121,12 +134,13 @@ export default function createBikeRouter(bikes = createBikes()) {
                 return res.status(404).json({ error: "Bike not found" });
             }
 
-            return res.status(200).json({ message: "Bike deleted" });
+            return res.sendStatus(204);
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not delete bike" });
         }
     });
+
 
     return route;
 }
