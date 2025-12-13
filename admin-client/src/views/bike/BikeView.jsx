@@ -15,9 +15,19 @@ export default function BikeView() {
   const [loading, setLoading] = useState(true);
 
   const [bikes, setBikes] = useState([]);
+  const [bikeFilter, setBikeFilter] = useState([]);
 
   const [result, setResult] = useState(null);
   const [resultType, setResultType] = useState("error");
+
+  const resultClassMap = {
+    success: style.success,
+    error: style.error,
+    warning: style.warning,
+    info: style.info,
+  };
+
+  const resultClass = resultClassMap[resultType] || "";
 
   useEffect(() => {
     fetchData();
@@ -28,6 +38,7 @@ export default function BikeView() {
    */
   async function fetchData() {
     setBikes(await BikeService.getAllBikes());
+    setBikeFilter(await BikeService.getAllBikes());
     setLoading(false);
   }
 
@@ -82,6 +93,34 @@ export default function BikeView() {
     return;
   }
 
+  /**
+   * Filter bikes in table based on chosen City
+   */
+  async function filterBikes(value) {
+    console.log("filtered bikes", value);
+    const previousFilter = bikeFilter;
+    const filteredBikes = bikes.filter((bike) => bike.city_id === value);
+    const cityObject = await cityService.getCityDetailsById(value);
+    if (filteredBikes.length > 0) {
+      setBikeFilter(filteredBikes);
+      setResult(`Filter by: ${cityObject.name}`);
+      setResultType("success");
+    } else {
+      setBikeFilter(previousFilter);
+      setResult(`No bikes in: ${cityObject.name}`);
+      setResultType("error");
+    }
+  }
+
+  /**
+   * Reset filter
+   */
+  function clearFilter() {
+    setBikeFilter(bikes)
+    setResult(`Filter cleared`);
+    setResultType("info");
+  }
+
   if (loading) return <p>loading..</p>;
 
   return (
@@ -89,18 +128,22 @@ export default function BikeView() {
       <h1>BikeView</h1>
       <h2>Chose a city and create a new bike</h2>
       <CreateBikeForm action={createNewBike}></CreateBikeForm>
+      {/* {Filter by city} */}
+      <h2>Filter by city</h2>
+      <CityDropDown action={filterBikes} />
+      <button type="button" onClick={clearFilter}>
+        Clear filter
+      </button>
       {/* </div> */}
-      <p className={resultType === "error" ? style.error : style.success}>
+      {/* <p className={resultType === "error" ? style.error : style.success}> */}
+      <p className={resultClass}>
         {result}
       </p>
-      <>
-      {/* {filter bikes on city} */}
-
-      </>
-      {/* Display all bikes */}
+      {/* Display bikes based on filter */}
       <div className="hideOverFlow">
+        <p>Total bikes: {bikes.length}</p>
         <TableWithActions
-          data={bikes}
+          data={bikeFilter}
           action={deleteBike}
           inspect={inspectBike}
         />
