@@ -21,7 +21,6 @@ beforeAll(() => {
     console.error = jest.fn();
 });
 
-// Positiva tester
 describe("Bikes API - OK", () => {
     test("POST /bikes creates a bike", async () => {
         mockDb.insert.mockResolvedValue({ insertId: 10 });
@@ -38,7 +37,6 @@ describe("Bikes API - OK", () => {
             });
 
         expect(res.status).toBe(201);
-        expect(res.body).toHaveProperty("message", "Bike created");
         expect(res.body).toHaveProperty("id", 10);
     });
 
@@ -162,7 +160,7 @@ describe("Bikes API - NOK (500)", () => {
 
 // Negativa tester (400/404)
 describe("Bikes API - NOK (400), (404)", () => {
-    test("POST /bikes returns 400 if city_id or lat/lon missing", async () => {
+    test("POST /bikes returns 400 if required fields missing", async () => {
         const res = await request(app)
             .post('/bikes')
             .send({
@@ -172,7 +170,7 @@ describe("Bikes API - NOK (400), (404)", () => {
             });
 
         expect(res.status).toBe(400);
-        expect(res.body).toHaveProperty("error", "Missing city_id, latitude or longitude");
+        expect(res.body).toHaveProperty("error", "Missing required fields");
     });
 
     test("GET /bikes/:id returns 400 if id is invalid", async () => {

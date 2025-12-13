@@ -24,12 +24,21 @@ export default function createBikeRouter(bikes = createBikes()) {
     });
 
     // Skapar cykel manuellt - Admin
-    route.post(`/bikes`, validateJsonBody, async (req, res) => {
+    route.post("/bikes", validateJsonBody, async (req, res) => {
         try {
             const { status, battery, latitude, longitude, occupied, city_id } = req.body;
 
-            if (!city_id || latitude === undefined || longitude === undefined) {
-                return res.status(400).json({ error: "Missing city_id, latitude or longitude" });
+            const requiredFields = [
+                status,
+                battery,
+                latitude,
+                longitude,
+                occupied,
+                city_id
+            ];
+
+            if (requiredFields.some((field) => field == null)) {
+                return res.status(400).json({ error: "Missing required fields" });
             }
 
             const result = await bikes.createBike({
@@ -41,14 +50,13 @@ export default function createBikeRouter(bikes = createBikes()) {
                 city_id
             });
 
-            return res
-                .status(201)
-                .json({ message: "Bike created", id: Number(result.insertId) });
+            return res.status(201).json({ id: Number(result.insertId) });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not create bike" });
         }
     });
+
 
     // Hämtar alla cyklar
     route.get(`/bikes`, async (req, res) => {
