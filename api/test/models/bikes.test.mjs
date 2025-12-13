@@ -194,6 +194,7 @@ describe("bikes model", () => {
 describe("validateZone", () => {
     test("returns true for free parking (no zone type)", async () => {
         const result = await validateZone(null, null, 1, mockDb);
+
         expect(result).toBe(true);
     });
 
@@ -215,6 +216,7 @@ describe("validateZone", () => {
         mockDb.select.mockResolvedValue([]);
 
         const result = await validateZone('charging', 99, 2, mockDb);
+
         expect(result).toBe(false);
     });
 
@@ -234,6 +236,7 @@ describe("validateZone", () => {
 
     test("invalid zone type returns false", async () => {
         const result = await validateZone('invalid', 1, 1, mockDb);
+
         expect(result).toBe(false);
     });
 });
