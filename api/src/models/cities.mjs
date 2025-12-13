@@ -72,7 +72,7 @@ export default function createCities(db = dbDefault) {
             return await db.remove('cities', 'id = ?', [id]);
         },
 
-/**
+        /**
  * Get the number of rows in a specific table for a city.
  *
  * @async
@@ -82,47 +82,53 @@ export default function createCities(db = dbDefault) {
  * @param {string} alias - Alias for the count (e.g. 'bike_count').
  * @returns {Promise<number>} The total count in the city.
  */
-getCount: async function getCount(cityId, table, alias) {
-    const sql = `COUNT(*) AS ${alias}`;
-    const result = await db.select(
-        table,
-        [sql],
-        'city_id = ?',
-        [cityId]
-    );
+        getCount: async function getCount(cityId, table, alias) {
+            const sql = `COUNT(*) AS ${alias}`;
+            const result = await db.select(
+                table,
+                [sql],
+                'city_id = ?',
+                [cityId]
+            );
 
-    return result[0]?.[alias] || 0;
-},
-    /**
-     * Fetches detailed information for a city, including counts
-     * of bikes, stations, and parking zones.
-     *
-     * @async
-     * @function getCityDetails
-     * @param {number} cityId - The ID of the city to fetch details for.
-     * @returns {Promise<Object|null>} Returns a city object with additional fields:
-     *   - bike_count {number} Number of bikes in the city.
-     *   - station_count {number} Number of charging stations in the city.
-     *   - parking_count {number} Number of parking zones in the city.
-     *   Returns null if the city does not exist.
-     */
-    getCityDetails: async function getCityDetails(cityId) {
-    const cityArray = await cities.getCityById(cityId);
+            return result[0]?.[alias] || 0;
+        },
+        /**
+ * Fetches detailed information for a city, including counts
+ * of bikes, stations, and parking zones.
+ *
+ * @async
+ * @function getCityDetails
+ * @param {number} cityId - The ID of the city to fetch details for.
+ * @returns {Promise<Object|null>} Returns a city object with additional fields:
+ *   - bikeCount {number} Number of bikes in the city.
+ *   - stationCount {number} Number of charging stations in the city.
+ *   - parkingCount {number} Number of parking zones in the city.
+ *   Returns null if the city does not exist.
+ */
 
-    if (!cityArray[0]) {
-        return null;
-    }
+        getCityDetails: async function getCityDetails(cityId) {
+            const cityArray = await cities.getCityById(cityId);
 
-    const city = cityArray[0];
+            if (!cityArray[0]) {
+                return null;
+            }
 
-    city.bike_count = await cities.getCount(cityId, 'scooters', 'bike_count');
-    city.station_count = await cities.getCount(cityId, 'charging_zones', 'station_count');
-    city.parking_count = await cities.getCount(cityId, 'parking_zones', 'parking_count');
+            const city = cityArray[0];
 
-    return city;
-}
+            const bikeCount = await cities.getCount(cityId, 'scooters', 'bike_count');
+            const stationCount = await cities.getCount(cityId, 'charging_zones', 'station_count');
+            const parkingCount = await cities.getCount(cityId, 'parking_zones', 'parking_count');
 
-    }
+            return {
+                ...city,
+                bikeCount,
+                stationCount,
+                parkingCount
+            };
+        }
+
+    };
 
     return cities;
 }

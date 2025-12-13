@@ -13,7 +13,7 @@ export default function createCityRouter(cities = createCities(), bikes = create
         if (!name) {
             return res.status(400).json({ error: 'Name is missing' });
         }
-        // Anropa en funktion som hämtar lat, lon via Nominatim.
+        // Anropar en funktion som hämtar lat, lon via Nominatim.
         const location = await cityHelpers.getGeoCoordinates(name);
 
         if (!location) {
@@ -22,7 +22,7 @@ export default function createCityRouter(cities = createCities(), bikes = create
 
         const { latitude, longitude } = location;
 
-        // Kolla om staden redan finns
+        // Kollar om staden redan finns
         const existingCity = await cities.getCityByName(name);
 
         if (existingCity.length > 0) {
@@ -43,27 +43,31 @@ export default function createCityRouter(cities = createCities(), bikes = create
     });
 
     route.get(`/cities/:id`, async (req, res) => {
-    const idError = cityHelpers.validateId(req.params.id);
-    if (idError) return res.status(400).json({ error: idError });
+        const idError = cityHelpers.validateId(req.params.id);
 
-    try {
-        const city = await cities.getCityDetails(Number(req.params.id));
-        if (!city) {
-            return res.status(404).json({ error: 'City not found' });
+        if (idError) {
+            return res.status(400).json({ error: idError });
         }
 
-        // Konverterar id och counts till Number.
-        city.id = Number(city.id);
-        city.bike_count = Number(city.bike_count);
-        city.station_count = Number(city.station_count);
-        city.parking_count = Number(city.parking_count);
+        try {
+            const city = await cities.getCityDetails(Number(req.params.id));
 
-        return res.status(200).json(city);
-    } catch (err) {
-        console.error(err);
-        return res.status(500).json({ error: 'Could not fetch city' });
-    }
-});
+            if (!city) {
+                return res.status(404).json({ error: 'City not found' });
+            }
+
+            // Konverterar id och counts till Number.
+            city.id = Number(city.id);
+            city.bikeCount = Number(city.bikeCount);
+            city.stationCount = Number(city.stationCount);
+            city.parkingCount = Number(city.parkingCount);
+
+            return res.status(200).json(city);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Could not fetch city' });
+        }
+    });
 
     route.get(`/cities`, async (req, res) => {
         try {
@@ -96,7 +100,7 @@ export default function createCityRouter(cities = createCities(), bikes = create
         }
 
         try {
-            // Uppdaterar staden.
+
             await cities.updateCity(req.params.id, req.body);
 
             const updatedCity = await cities.getCityById(req.params.id);
@@ -155,15 +159,17 @@ export default function createCityRouter(cities = createCities(), bikes = create
             const cityId = Number(req.params.id);
             const bikeId = Number(req.params.bikeId);
 
-            // Kolla att staden finns
+            // Kollar att staden finns
             const city = await cities.getCityById(cityId);
 
-            if (!city[0]) {return res.status(404).json({ error: "City not found" });}
+            if (!city[0]) {
+                return res.status(404).json({ error: "City not found" });
+            }
 
-            // Hämta cykeln och kolla att den tillhör staden
+            // Hämtar cykeln och kolla att den tillhör staden
             const bike = await bikes.getBikeById(bikeId);
 
-            if (!bike[0] || bike[0].city_id !== cityId) {
+            if (!bike[0] || bike[0].cityId !== cityId) {
                 return res.status(404).json({ error: "Bike not found in this city" });
             }
 
