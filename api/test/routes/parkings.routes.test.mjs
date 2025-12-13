@@ -36,18 +36,19 @@ describe("Parkings API - OK", () => {
 
         const res = await request(app)
             .post('/parkings')
-            .send(
-                {
-                    city_id: 1,
-                    max_lat: 59,
-                    max_long: 18,
-                    min_lat: 58,
-                    min_long: 17
-                }
-            );
+            .send({
+                cityId: 1,
+                maxLat: 59,
+                maxLong: 18,
+                minLat: 58,
+                minLong: 17
+            });
 
         expect(res.status).toBe(201);
-        expect(res.body[0]).toHaveProperty('id', 10);
+        expect(res.body).toHaveProperty('id', 10);
+        expect(res.body).toHaveProperty('cityId', 1);
+        expect(res.body).toHaveProperty('maxLat', 59);
+        expect(res.body).toHaveProperty('minLong', 17);
     });
 
     test("GET /parkings returns all parking zones", async () => {
@@ -65,9 +66,10 @@ describe("Parkings API - OK", () => {
 
         expect(res.status).toBe(200);
         expect(res.body[0]).toHaveProperty('id', 1);
+        expect(res.body[0]).toHaveProperty('cityId', 2);
     });
 
-    test("GET /parkings?city_id=2 returns zones for a city", async () => {
+    test("GET /parkings?cityId=2 returns zones for a city", async () => {
         mockDb.select.mockResolvedValue([
             {
                 id: 2,
@@ -78,10 +80,10 @@ describe("Parkings API - OK", () => {
                 min_long: 17
             }
         ]);
-        const res = await request(app).get('/parkings').query({ city_id: 2 });
+        const res = await request(app).get('/parkings').query({ cityId: 2 });
 
         expect(res.status).toBe(200);
-        expect(res.body[0]).toHaveProperty('city_id', 2);
+        expect(res.body[0]).toHaveProperty('cityId', 2);
     });
 
     test("GET /parkings/:id returns a parking zone", async () => {
@@ -114,10 +116,10 @@ describe("Parkings API - OK", () => {
             }
         ]);
 
-        const res = await request(app).put('/parkings/3').send({ max_lat: 60 });
+        const res = await request(app).put('/parkings/3').send({ maxLat: 60 });
 
         expect(res.status).toBe(200);
-        expect(res.body[0]).toHaveProperty('max_lat', 60);
+        expect(res.body).toHaveProperty('maxLat', 60);
     });
 
     test("DELETE /parkings/:id deletes a parking zone", async () => {
@@ -130,7 +132,7 @@ describe("Parkings API - OK", () => {
 
 describe("Parkings API - NOK (400)", () => {
     test("POST /parkings returns 400 if fields missing", async () => {
-        const res = await request(app).post('/parkings').send({ city_id: 1 });
+        const res = await request(app).post('/parkings').send({ cityId: 1 });
 
         expect(res.status).toBe(400);
         expect(res.body).toHaveProperty('error', 'Missing required fields');
@@ -140,18 +142,21 @@ describe("Parkings API - NOK (400)", () => {
         const res = await request(app).get('/parkings/abc');
 
         expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error');
     });
 
     test("PUT /parkings/:id returns 400 if id invalid", async () => {
-        const res = await request(app).put('/parkings/abc').send({ max_lat: 60 });
+        const res = await request(app).put('/parkings/abc').send({ maxLat: 60 });
 
         expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error');
     });
 
     test("DELETE /parkings/:id returns 400 if id invalid", async () => {
         const res = await request(app).delete('/parkings/abc');
 
         expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error');
     });
 });
 
@@ -166,7 +171,7 @@ describe("Parkings API - NOK (404)", () => {
 
     test("PUT /parkings/:id returns 404 if not found", async () => {
         mockDb.update.mockResolvedValue({ affectedRows: 0 });
-        const res = await request(app).put('/parkings/99').send({ max_lat: 60 });
+        const res = await request(app).put('/parkings/99').send({ maxLat: 60 });
 
         expect(res.status).toBe(404);
         expect(res.body).toHaveProperty('error', 'Parking zone not found');
@@ -183,15 +188,13 @@ describe("Parkings API - NOK (404)", () => {
 describe("Parkings API - NOK (500)", () => {
     test("POST /parkings returns 500 on DB error", async () => {
         mockDb.insert.mockRejectedValue(new Error("DB error"));
-        const res = await request(app).post('/parkings').send(
-            {
-                city_id: 1,
-                max_lat: 59,
-                max_long: 18,
-                min_lat: 58,
-                min_long: 17
-            }
-        );
+        const res = await request(app).post('/parkings').send({
+            cityId: 1,
+            maxLat: 59,
+            maxLong: 18,
+            minLat: 58,
+            minLong: 17
+        });
 
         expect(res.status).toBe(500);
         expect(res.body).toHaveProperty('error', 'Could not create parking zone');
@@ -207,7 +210,7 @@ describe("Parkings API - NOK (500)", () => {
 
     test("PUT /parkings/:id returns 500 on DB error", async () => {
         mockDb.update.mockRejectedValue(new Error("DB error"));
-        const res = await request(app).put('/parkings/3').send({ max_lat: 60 });
+        const res = await request(app).put('/parkings/3').send({ maxLat: 60 });
 
         expect(res.status).toBe(500);
         expect(res.body).toHaveProperty('error', 'Could not update parking zone');

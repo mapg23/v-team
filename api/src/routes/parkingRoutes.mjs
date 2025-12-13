@@ -7,30 +7,39 @@ export default function createParkingRouter(parkings = createParkings()) {
     const route = express.Router();
 
     route.post(`/parkings`, validateJsonBody, async (req, res) => {
-        const { city_id, max_lat, max_long, min_lat, min_long } = req.body;
+        const { cityId, maxLat, maxLong, minLat, minLong } = req.body;
 
-        if (
-            !city_id ||
-            max_lat == null ||
-            max_long == null ||
-            min_lat == null ||
-            min_long == null
-        ) {
+        const requiredFields = [cityId, maxLat, maxLong, minLat, minLong];
+
+        if (requiredFields.some(field => field == null)) {
             return res.status(400).json({ error: "Missing required fields" });
         }
 
         try {
             const result = await parkings.createParking({
-                city_id,
-                max_lat,
-                max_long,
-                min_lat,
-                min_long
+                city_id: cityId,
+                max_lat: maxLat,
+                max_long: maxLong,
+                min_lat: minLat,
+                min_long: minLong
             });
 
-            const newParking = await parkings.getParkingById(result.insertId);
+            const newParkingArray = await parkings.getParkingById(result.insertId);
 
-            return res.status(201).json(newParking);
+            if (!newParkingArray[0]) {
+                return res.status(404).json({ error: "Parking zone not found" });
+            }
+
+            const parking = newParkingArray[0];
+
+            return res.status(201).json({
+                id: parking.id,
+                cityId: parking.city_id,
+                maxLat: Number(parking.max_lat),
+                maxLong: Number(parking.max_long),
+                minLat: Number(parking.min_lat),
+                minLong: Number(parking.min_long)
+            });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not create parking zone" });
@@ -39,15 +48,24 @@ export default function createParkingRouter(parkings = createParkings()) {
 
     route.get(`/parkings`, async (req, res) => {
         try {
-            if (req.query.city_id) {
-                const list = await parkings.getParkingsByCityId(Number(req.query.city_id));
+            let list;
 
-                return res.status(200).json(list);
+            if (req.query.cityId) {
+                list = await parkings.getParkingsByCityId(Number(req.query.cityId));
+            } else {
+                list = await parkings.getParkings();
             }
 
-            const parkingList = await parkings.getParkings();
+            const mappedList = list.map(p => ({
+                id: p.id,
+                cityId: p.city_id,
+                maxLat: Number(p.max_lat),
+                maxLong: Number(p.max_long),
+                minLat: Number(p.min_lat),
+                minLong: Number(p.min_long)
+            }));
 
-            return res.status(200).json(parkingList);
+            return res.status(200).json(mappedList);
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not fetch parking zones" });
@@ -62,13 +80,22 @@ export default function createParkingRouter(parkings = createParkings()) {
         }
 
         try {
-            const parking = await parkings.getParkingById(req.params.id);
+            const parkingArray = await parkings.getParkingById(req.params.id);
 
-            if (!parking[0]) {
+            if (!parkingArray[0]) {
                 return res.status(404).json({ error: "Parking zone not found" });
             }
 
-            return res.status(200).json(parking[0]);
+            const parking = parkingArray[0];
+
+            return res.status(200).json({
+                id: parking.id,
+                cityId: parking.city_id,
+                maxLat: Number(parking.max_lat),
+                maxLong: Number(parking.max_long),
+                minLat: Number(parking.min_lat),
+                minLong: Number(parking.min_long)
+            });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not fetch parking zone" });
@@ -82,16 +109,38 @@ export default function createParkingRouter(parkings = createParkings()) {
             return res.status(400).json({ error: idError });
         }
 
+        const { cityId, maxLat, maxLong, minLat, minLong } = req.body;
+        const updateData = {
+            city_id: cityId,
+            max_lat: maxLat,
+            max_long: maxLong,
+            min_lat: minLat,
+            min_long: minLong
+        };
+
         try {
-            const result = await parkings.updateParking(req.params.id, req.body);
+            const result = await parkings.updateParking(req.params.id, updateData);
 
             if (result.affectedRows === 0) {
                 return res.status(404).json({ error: "Parking zone not found" });
             }
 
-            const updatedParking = await parkings.getParkingById(req.params.id);
+            const updatedParkingArray = await parkings.getParkingById(req.params.id);
 
-            return res.status(200).json(updatedParking);
+            if (!updatedParkingArray[0]) {
+                return res.status(404).json({ error: "Parking zone not found" });
+            }
+
+            const parking = updatedParkingArray[0];
+
+            return res.status(200).json({
+                id: parking.id,
+                cityId: parking.city_id,
+                maxLat: Number(parking.max_lat),
+                maxLong: Number(parking.max_long),
+                minLat: Number(parking.min_lat),
+                minLong: Number(parking.min_long)
+            });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not update parking zone" });
