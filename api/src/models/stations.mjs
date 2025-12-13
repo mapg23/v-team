@@ -1,61 +1,74 @@
 import dbDefault from "../database.mjs";
 
-export default function createChargingZones(db = dbDefault) {
-    const chargingZones = {
+export default function createStations(db = dbDefault) {
+    const stations = {
         /**
-         * Get all charging zones.
-         * @returns {Promise<Array>} List of charging zones.
+         * Get all charging stations.
+         * @returns {Promise<Array>} List of stations.
          */
-        getChargingZones: async function getChargingZones() {
-            const zones = await db.select(
+        getStations: async function getStations() {
+            return await db.select(
                 'charging_zones',
-                ['id', 'name', 'latitude', 'longitude']
+                ['id', 'city_id', 'name', 'latitude', 'longitude', 'capacity']
             );
-            return zones;
         },
 
         /**
-         * Create a new charging zone.
-         * @param {Object} body - Charging zone data.
+         * Create a new charging station.
+         * @param {Object} body - Station data.
          * @returns {Promise<Array>} Insert result.
          */
-        createChargingZone: async function createChargingZone(body) {
+        createStation: async function createStation(body) {
             return await db.insert('charging_zones', body);
         },
 
         /**
-         * Get a charging zone by ID.
-         * @param {number} id - The ID of the charging zone.
-         * @returns {Promise<Array>} Charging zone record.
+         * Get a charging station by ID.
+         * @param {number} id - Station ID.
+         * @returns {Promise<Array>} Station record.
          */
-        getChargingZoneById: async function getChargingZoneById(id) {
+        getStationById: async function getStationById(id) {
             return await db.select(
                 'charging_zones',
-                ['id', 'name', 'latitude', 'longitude'],
+                ['id', 'city_id', 'name', 'latitude', 'longitude', 'capacity'],
                 'id = ?',
                 [id]
             );
         },
 
         /**
-         * Update a charging zone in the database.
-         * @param {number} id - The ID of the charging zone to update.
-         * @param {Object} data - An object containing the fields to update.
-         * @returns {Promise<Array>} The result of the database update operation.
+         * Get all charging stations for a specific city.
+         * @param {number} cityId - City ID.
+         * @returns {Promise<Array>} List of stations.
          */
-        updateChargingZone: async function updateChargingZone(id, data) {
+        getStationsByCityId: async function getStationsByCityId(cityId) {
+            return await db.select(
+                'charging_zones',
+                ['id', 'city_id', 'name', 'latitude', 'longitude', 'capacity'],
+                'city_id = ?',
+                [cityId]
+            );
+        },
+
+        /**
+         * Update a charging station.
+         * @param {number} id - Station ID.
+         * @param {Object} data - Fields to update.
+         * @returns {Promise<Array>} Update result.
+         */
+        updateStation: async function updateStation(id, data) {
             return await db.update('charging_zones', data, 'id = ?', [id]);
         },
 
         /**
-         * Delete a charging zone from the database by ID.
-         * @param {number} id - The ID of the charging zone to delete.
-         * @returns {Promise<Array>} The result of the database delete operation.
+         * Delete a charging station by ID.
+         * @param {number} id - Station ID.
+         * @returns {Promise<Array>} Delete result.
          */
-        deleteChargingZone: async function deleteChargingZone(id) {
+        deleteStation: async function deleteStation(id) {
             return await db.remove('charging_zones', 'id = ?', [id]);
         }
     };
 
-    return chargingZones;
+    return stations;
 }

@@ -9,6 +9,7 @@ import authRoutes from "./src/routes/authRoutes.mjs";
 import createUserRouter from "./src/routes/userRoutes.mjs";
 import createCityRouter from "./src/routes/cityRoutes.mjs";
 import createBikeRouter from "./src/routes/bikeRoutes.mjs";
+import createStationRouter from "./src/routes/stationRoutes.mjs";
 import startSimulator from "./src/startSimulator.mjs";
 import stopSimulator from "./src/stopSimulator.mjs";
 
