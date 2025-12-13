@@ -34,6 +34,26 @@ const cityService = {
   },
 
   /**
+   * Get city details based on city id
+   * @param {int} cityId get city with id
+   */
+  getCityDetailsById: async function getCityDetailsById(id) {
+    try {
+      const response = await fetch(`${API}/cities/${id}`, {
+        method: "GEt",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json();
+    } catch (error) {
+        console.error(error);
+      return [];
+    }
+  },
+
+  /**
    * Add new city in database
    * @returns {Object} new city
    */
@@ -51,12 +71,6 @@ const cityService = {
       });
 
       return await response.json();
-
-      // if (!response.ok) {
-      //   throw new Error(`HTTP error on addNewCity! Status: ${response.status}`);
-      // }
-      // const responseData = await response.json();
-      // return responseData;
     } catch (error) {
       console.error(error);
       return [];
@@ -80,10 +94,9 @@ const cityService = {
         },
       });
 
-      return await response.status
-
+      return await response.status;
     } catch (error) {
-        console.error(error);
+      console.error(error);
       return [];
     }
   },
@@ -178,6 +191,5 @@ const cityService = {
     }
   },
 };
-
 
 export default cityService;
