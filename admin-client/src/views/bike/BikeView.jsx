@@ -1,13 +1,11 @@
-import Map from "@/components/map/Map-component";
 import { useEffect, useState } from "react";
-import CityService from "services/cities";
-import PieChart from "components/chart/PieChart";
-import BikeSocket from "components/socket/BikeSocket";
 import BikeService from "../../services/bikes";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import CityDropDown from "../../components/input/CityDropDown";
 import TableWithActions from "../../components/table/TableWithActions";
 import style from "../../components/forms/Form.module.css";
+import CreateBikeForm from "../../components/forms/CreateBikeForm";
+import cityService from "../../services/cities";
 
 /**
  * Bike view
@@ -27,7 +25,7 @@ export default function BikeView() {
       setLoading(false);
     }
     fetchData();
-  }, [bikes]);
+  }, []);
 
   /**
    * Delete bike with id
@@ -51,8 +49,26 @@ export default function BikeView() {
    * @param {int} bikeId
    */
   function inspectBike(bikeId) {
-    console.log(bikeId)
     navigate(`/bikes/${bikeId}`);
+  }
+
+  /**
+   * Create a new bike
+   * @param {Object} bikeId {cityId, [Long, lat]}
+   */
+  async function createNewBike(bikeObj) {
+    // Bike requiers battery, occupied, status
+    bikeObj.battery = 100;
+    bikeObj.occupied = 0;
+    bikeObj.status = 10;
+    const response = await BikeService.createNewBike(bikeObj);
+    if (response.message) {
+      setResult(response.message);
+      setResultType("success");
+      return;
+    }
+    setResult(response.error);
+    setResultType("error");
   }
 
   if (loading) return <p>loading..</p>;
@@ -60,13 +76,23 @@ export default function BikeView() {
   return (
     <>
       <h1>BikeView</h1>
-      {/* {create a new bike} */}
+      <h2>Chose a city and create a new bike</h2>
+      <CreateBikeForm action={createNewBike}></CreateBikeForm>
+      {/* </div> */}
       <p className={resultType === "error" ? style.error : style.success}>
         {result}
       </p>
-      {/* {add new bike form} */}
+      <>
+      {/* {filter bikes on city} */}
+
+      </>
+      {/* Display all bikes */}
       <div className="hideOverFlow">
-        <TableWithActions data={bikes} action={deleteBike} inspect={inspectBike} />
+        <TableWithActions
+          data={bikes}
+          action={deleteBike}
+          inspect={inspectBike}
+        />
       </div>
     </>
   );
