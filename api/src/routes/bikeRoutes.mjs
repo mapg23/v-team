@@ -1,5 +1,5 @@
 import express from "express";
-import createBikes from "../models/bikes.mjs";
+import createBikes, { validateZone } from "../models/bikes.mjs";
 import validateJsonBody from "../middleware/validateJsonBody.mjs";
 
 export default function createBikeRouter(bikes = createBikes()) {
@@ -26,7 +26,16 @@ export default function createBikeRouter(bikes = createBikes()) {
     // Skapar cykel manuellt - Admin
     route.post("/bikes", validateJsonBody, async (req, res) => {
         try {
-            const { status, battery, latitude, longitude, occupied, city_id } = req.body;
+            const {
+                status,
+                battery,
+                latitude,
+                longitude,
+                occupied,
+                cityId,
+                currentZoneId,
+                currentZoneType
+            } = req.body;
 
             const requiredFields = [
                 status,
@@ -34,12 +43,16 @@ export default function createBikeRouter(bikes = createBikes()) {
                 latitude,
                 longitude,
                 occupied,
-                city_id
+                cityId
             ];
 
-            if (requiredFields.some((field) => field == null)) {
+            if (requiredFields.some(field => field == null)) {
                 return res.status(400).json({ error: "Missing required fields" });
             }
+
+            const isValid = await validateZone(currentZoneType, currentZoneId, cityId, bikes.db);
+
+            if (!isValid) {return res.status(400).json({ error: "Invalid zone" });}
 
             const result = await bikes.createBike({
                 status,
@@ -47,7 +60,9 @@ export default function createBikeRouter(bikes = createBikes()) {
                 latitude,
                 longitude,
                 occupied,
-                city_id
+                city_id: cityId,
+                current_zone_id: currentZoneId ?? null,
+                current_zone_type: currentZoneType ?? null
             });
 
             const newBike = await bikes.getBikeById(result.insertId);
@@ -56,6 +71,47 @@ export default function createBikeRouter(bikes = createBikes()) {
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not create bike" });
+        }
+    });
+
+    // Uppdaterar cykel
+    route.put(`/bikes/:id`, validateJsonBody, async (req, res) => {
+        try {
+            const id = Number(req.params.id);
+
+            if (isNaN(id)) {
+                return res.status(400).json({ error: "Invalid bike id" });
+            }
+
+            if ('currentZoneType' in req.body || 'currentZoneId' in req.body) {
+                const bike = await bikes.getBikeById(id);
+                // Använder befintlig city som default
+                const cityId = req.body.cityId ?? bike[0].city_id;
+
+                const isValid = await validateZone(
+                    req.body.currentZoneType,
+                    req.body.currentZoneId,
+                    cityId,
+                    bikes.db
+                );
+
+                if (!isValid) {
+                    return res.status(400).json({ error: "Invalid zone" });
+                }
+            }
+
+            const result = await bikes.updateBike(id, req.body);
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: "Bike not found" });
+            }
+
+            const updatedBike = await bikes.getBikeById(id);
+
+            return res.status(200).json(updatedBike[0]);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Could not update bike" });
         }
     });
 
@@ -94,31 +150,6 @@ export default function createBikeRouter(bikes = createBikes()) {
         }
     });
 
-    // Uppdaterar cykel
-    route.put(`/bikes/:id`, validateJsonBody, async (req, res) => {
-        try {
-            const id = Number(req.params.id);
-
-            if (isNaN(id)) {
-                return res.status(400).json({ error: "Invalid bike id" });
-            }
-
-            const result = await bikes.updateBike(id, req.body);
-
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: "Bike not found" });
-            }
-
-            const updatedBike = await bikes.getBikeById(id);
-
-            return res.status(200).json(updatedBike[0]); // returnerar hela objektet
-        } catch (err) {
-            console.error(err);
-            return res.status(500).json({ error: "Could not update bike" });
-        }
-    });
-
-
     // Tar bort cykel
     route.delete(`/bikes/:id`, async (req, res) => {
         try {
@@ -140,7 +171,6 @@ export default function createBikeRouter(bikes = createBikes()) {
             return res.status(500).json({ error: "Could not delete bike" });
         }
     });
-
 
     return route;
 }
