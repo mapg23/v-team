@@ -4,7 +4,6 @@ import createStationRouter from '../../src/routes/stationRoutes.mjs';
 import createStations from '../../src/models/stations.mjs';
 import createCities from '../../src/models/cities.mjs';
 
-// Mocka databaser
 const mockStationsDb = {
     select: jest.fn(),
     insert: jest.fn(),
@@ -30,8 +29,6 @@ beforeAll(() => {
     console.error = jest.fn();
 });
 
-
-// Positiva tester (200/201)
 describe("Stations API - OK", () => {
     test("POST /stations creates a station", async () => {
         mockCitiesDb.select.mockResolvedValue([{ id: 1, name: "City A" }]);
@@ -49,7 +46,7 @@ describe("Stations API - OK", () => {
         const res = await request(app)
             .post('/stations')
             .send({
-                city_id: 1,
+                cityId: 1,
                 name: "Station X",
                 latitude: 59.3,
                 longitude: 18.1,
@@ -57,8 +54,8 @@ describe("Stations API - OK", () => {
             });
 
         expect(res.status).toBe(201);
-        expect(res.body[0]).toHaveProperty("id", 10);
-        expect(res.body[0]).toHaveProperty("name", "Station X");
+        expect(res.body).toHaveProperty("id", 10);
+        expect(res.body).toHaveProperty("name", "Station X");
     });
 
     test("GET /stations returns all stations", async () => {
@@ -116,7 +113,7 @@ describe("Stations API - OK", () => {
             .send({ capacity: 25 });
 
         expect(res.status).toBe(200);
-        expect(res.body[0]).toHaveProperty("capacity", 25);
+        expect(res.body).toHaveProperty("capacity", 25);
     });
 
     test("DELETE /stations/:id deletes a station", async () => {
@@ -128,8 +125,6 @@ describe("Stations API - OK", () => {
     });
 });
 
-
-// Negativa tester (500)
 describe("Stations API - NOK (500)", () => {
     test("POST /stations returns 500 on DB error", async () => {
         mockCitiesDb.select.mockResolvedValue([{ id: 1 }]);
@@ -137,7 +132,7 @@ describe("Stations API - NOK (500)", () => {
 
         const res = await request(app)
             .post('/stations')
-            .send({ city_id: 1, name: "Station Y", latitude: 59.3, longitude: 18.1, capacity: 10 });
+            .send({ cityId: 1, name: "Station Y", latitude: 59.3, longitude: 18.1, capacity: 10 });
 
         expect(res.status).toBe(500);
         expect(res.body).toHaveProperty("error", "Could not create station");
@@ -173,14 +168,11 @@ describe("Stations API - NOK (500)", () => {
     });
 });
 
-
-// Negativa tester(400/404)
 describe("Stations API - NOK (400/404)", () => {
     test("POST /stations returns 400 if required fields are missing", async () => {
         const res = await request(app)
             .post('/stations')
-            // Saknar lat, lon, capacity
-            .send({ city_id: 1, name: "Station Z" });
+            .send({ cityId: 1, name: "Station Z" });
 
         expect(res.status).toBe(400);
         expect(res.body).toHaveProperty("error", "Missing required fields");
@@ -192,7 +184,7 @@ describe("Stations API - NOK (400/404)", () => {
             .post('/stations')
             .send(
                 {
-                    city_id: 999,
+                    cityId: 999,
                     name: "Station Z",
                     latitude: 59.3,
                     longitude: 18.0,
@@ -247,4 +239,5 @@ describe("Stations API - NOK (400/404)", () => {
         expect(res.status).toBe(400);
         expect(res.body).toHaveProperty("error");
     });
+
 });

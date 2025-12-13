@@ -100,7 +100,6 @@ export default function createCityRouter(cities = createCities(), bikes = create
         }
 
         try {
-
             await cities.updateCity(req.params.id, req.body);
 
             const updatedCity = await cities.getCityById(req.params.id);
