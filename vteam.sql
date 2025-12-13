@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb:3306
--- Generation Time: Dec 13, 2025 at 12:15 PM
+-- Generation Time: Dec 13, 2025 at 04:10 PM
 -- Server version: 12.1.2-MariaDB-ubu2404
 -- PHP Version: 8.3.28
 
@@ -144,16 +144,19 @@ CREATE TABLE `scooters` (
   `latitude` decimal(9,6) NOT NULL,
   `longitude` decimal(9,6) NOT NULL,
   `occupied` tinyint(1) NOT NULL DEFAULT 0,
-  `city_id` int(11) NOT NULL
+  `city_id` int(11) NOT NULL,
+  `current_zone_id` int(11) DEFAULT NULL,
+  `current_zone_type` enum('charging','parking') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 --
 -- Dumping data for table `scooters`
 --
 
-INSERT INTO `scooters` (`id`, `status`, `battery`, `latitude`, `longitude`, `occupied`, `city_id`) VALUES
-(1, 10, 82, 57.860200, 14.124000, 0, 1),
-(2, 10, 90, 57.860200, 14.124000, 0, 1);
+INSERT INTO `scooters` (`id`, `status`, `battery`, `latitude`, `longitude`, `occupied`, `city_id`, `current_zone_id`, `current_zone_type`) VALUES
+(1, 10, 82, 57.860200, 14.124000, 0, 1, NULL, NULL),
+(2, 10, 90, 57.860200, 14.124000, 0, 1, NULL, NULL),
+(6, 10, 90, 57.860200, 14.124000, 0, 2, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -330,7 +333,7 @@ ALTER TABLE `parking_zones`
 -- AUTO_INCREMENT for table `scooters`
 --
 ALTER TABLE `scooters`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `scooter_in_use`
