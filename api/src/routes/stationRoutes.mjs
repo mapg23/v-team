@@ -13,13 +13,14 @@ export default function createStationRouter(
     route.post(`/stations`, validateJsonBody, async (req, res) => {
         const { city_id, name, latitude, longitude, capacity } = req.body;
 
-       if (!city_id || !name || latitude == null || longitude == null || capacity == null) {
+        if (!city_id || !name || latitude == null || longitude == null || capacity == null) {
             return res.status(400).json({ error: "Missing required fields" });
         }
 
         try {
             // Kontrollera att staden finns
             const city = await cities.getCityById(city_id);
+
             if (!city[0]) {
                 return res.status(404).json({ error: "City not found" });
             }
@@ -45,10 +46,12 @@ export default function createStationRouter(
         try {
             if (req.query.city_id) {
                 const list = await stations.getStationsByCityId(Number(req.query.city_id));
+
                 return res.status(200).json(list);
             }
 
             const stationList = await stations.getStations();
+
             return res.status(200).json(stationList);
         } catch (err) {
             console.error(err);
@@ -58,6 +61,7 @@ export default function createStationRouter(
 
     route.get(`/stations/:id`, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
+
         if (idError) {
             return res.status(400).json({ error: idError });
         }
@@ -78,6 +82,7 @@ export default function createStationRouter(
 
     route.put(`/stations/:id`, validateJsonBody, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
+
         if (idError) {
             return res.status(400).json({ error: idError });
         }
@@ -90,6 +95,7 @@ export default function createStationRouter(
             }
 
             const updatedStation = await stations.getStationById(req.params.id);
+
             return res.status(200).json(updatedStation);
         } catch (err) {
             console.error(err);
@@ -99,6 +105,7 @@ export default function createStationRouter(
 
     route.delete(`/stations/:id`, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
+
         if (idError) {
             return res.status(400).json({ error: idError });
         }
