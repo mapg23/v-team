@@ -21,6 +21,7 @@ beforeAll(() => {
     console.error = jest.fn();
 });
 
+// Positiva tester
 describe("Bikes API - OK", () => {
     test("POST /bikes creates a bike", async () => {
         mockDb.insert.mockResolvedValue({ insertId: 10 });
@@ -94,8 +95,8 @@ describe("Bikes API - OK", () => {
 
         const res = await request(app).delete('/bikes/3');
 
-        expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty("message", "Bike deleted");
+        expect(res.status).toBe(204);
+        expect(res.body).toEqual({});
     });
 });
 

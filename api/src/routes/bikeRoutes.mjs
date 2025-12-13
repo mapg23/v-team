@@ -129,12 +129,13 @@ export default function createBikeRouter(bikes = createBikes()) {
                 return res.status(404).json({ error: "Bike not found" });
             }
 
-            return res.status(200).json({ message: "Bike deleted" });
+            return res.sendStatus(204);
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not delete bike" });
         }
     });
+
 
     return route;
 }
