@@ -159,7 +159,9 @@ export default function createStationRouter(
         try {
             const result = await stations.deleteStation(req.params.id);
 
-            if (result.affectedRows === 0) {return res.status(404).json({ error: "Station not found" });}
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: "Station not found" });
+            }
 
             return res.sendStatus(204);
         } catch (err) {

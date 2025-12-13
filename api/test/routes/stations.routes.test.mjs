@@ -239,5 +239,4 @@ describe("Stations API - NOK (400/404)", () => {
         expect(res.status).toBe(400);
         expect(res.body).toHaveProperty("error");
     });
-
 });

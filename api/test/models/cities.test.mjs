@@ -210,14 +210,26 @@ describe("cities model", () => {
 
             expect(cities.getCount).toHaveBeenCalledTimes(3);
 
-            expect(cities.getCount).toHaveBeenNthCalledWith
-            (1, 1, 'scooters', 'bike_count');
+            expect(cities.getCount).toHaveBeenNthCalledWith(
+                1,
+                1,
+                'scooters',
+                'bike_count'
+            );
 
-            expect(cities.getCount).toHaveBeenNthCalledWith
-            (2, 1, 'charging_zones', 'station_count');
+            expect(cities.getCount).toHaveBeenNthCalledWith(
+                2,
+                1,
+                'charging_zones',
+                'station_count'
+            );
 
-            expect(cities.getCount).toHaveBeenNthCalledWith
-            (3, 1, 'parking_zones', 'parking_count');
+            expect(cities.getCount).toHaveBeenNthCalledWith(
+                3,
+                1,
+                'parking_zones',
+                'parking_count'
+            );
         });
     });
 });
