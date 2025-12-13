@@ -42,47 +42,28 @@ export default function createCityRouter(cities = createCities(), bikes = create
         }
     });
 
-    // route.get(`/cities/:id`, async (req, res) => {
-    //     const idError = cityHelpers.validateId(req.params.id);
-
-    //     if (idError) {
-    //         return res.status(400).json({ error: idError });
-    //     }
-    //     try {
-    //         const city = await cities.getCityById(req.params.id);
-
-    //         return res.status(200).json(city);
-    //     } catch (err) {
-    //         console.error(err);
-    //         return res.status(500).json({ error: 'Could not fetch city' });
-    //     }
-    // });
-
     route.get(`/cities/:id`, async (req, res) => {
-        const idError = cityHelpers.validateId(req.params.id);
+    const idError = cityHelpers.validateId(req.params.id);
+    if (idError) return res.status(400).json({ error: idError });
 
-        if (idError) {
-            return res.status(400).json({ error: idError });
+    try {
+        const city = await cities.getCityDetails(Number(req.params.id));
+        if (!city) {
+            return res.status(404).json({ error: 'City not found' });
         }
 
-        try {
-            const city = await cities.getCityDetails(req.params.id);
+        // Konverterar id och counts till Number.
+        city.id = Number(city.id);
+        city.bike_count = Number(city.bike_count);
+        city.station_count = Number(city.station_count);
+        city.parking_count = Number(city.parking_count);
 
-            if (!city) {
-                return res.status(404).json({ error: 'City not found' });
-            }
-
-            // Konverterar BigInt till Number innan JSON
-            city.id = Number(city.id);
-            city.bike_count = Number(city.bike_count);
-
-            return res.status(200).json(city);
-        } catch (err) {
-            console.error(err);
-            return res.status(500).json({ error: 'Could not fetch city' });
-        }
-    });
-
+        return res.status(200).json(city);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Could not fetch city' });
+    }
+});
 
     route.get(`/cities`, async (req, res) => {
         try {

@@ -53,15 +53,6 @@ describe('Cities API - ok', () => {
         expect(res.body[0].longitude).toBe(14.1562);
     });
 
-    // test('GET /cities/:id returns a city', async () => {
-    //     mockDb.select.mockResolvedValue(
-    //         [{ id: 1, name: 'Jönköping', latitude: 57.7815, longitude: 14.1562 }]);
-    //     const res = await request(app).get('/cities/1');
-
-    //     expect(res.status).toBe(200);
-    //     expect(res.body[0].id).toBe(1);
-    // });
-
     test('GET /cities returns cities', async () => {
         mockDb.select.mockResolvedValue(
             [{ id: 1, name: 'Jönköping', latitude: 57.7815, longitude: 14.1562 }]);
