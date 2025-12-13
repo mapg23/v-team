@@ -20,12 +20,16 @@ export default function BikeView() {
   const [resultType, setResultType] = useState("error");
 
   useEffect(() => {
-    async function fetchData() {
-      setBikes(await BikeService.getAllBikes());
-      setLoading(false);
-    }
     fetchData();
   }, []);
+
+  /**
+   * Fetch all data
+   */
+  async function fetchData() {
+    setBikes(await BikeService.getAllBikes());
+    setLoading(false);
+  }
 
   /**
    * Delete bike with id
@@ -37,14 +41,18 @@ export default function BikeView() {
     if (response.message) {
       setResult(response.message);
       setResultType("success");
+
+      // update bikes
+      fetchData();
       return;
     }
     setResult(response.error);
     setResultType("error");
+    return;
   }
 
   /**
-   * Delete bike with id
+   * Inspect bike with id
    *
    * @param {int} bikeId
    */
@@ -65,10 +73,13 @@ export default function BikeView() {
     if (response.message) {
       setResult(response.message);
       setResultType("success");
+      // update bikes
+      fetchData();
       return;
     }
     setResult(response.error);
     setResultType("error");
+    return;
   }
 
   if (loading) return <p>loading..</p>;
