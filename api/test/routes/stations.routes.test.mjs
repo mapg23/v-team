@@ -190,7 +190,14 @@ describe("Stations API - NOK (400/404)", () => {
         mockCitiesDb.select.mockResolvedValue([]);
         const res = await request(app)
             .post('/stations')
-            .send({ city_id: 999, name: "Station Z", latitude: 59.3, longitude: 18.0, capacity: 10 });
+            .send(
+                {
+                    city_id: 999,
+                    name: "Station Z",
+                    latitude: 59.3,
+                    longitude: 18.0,
+                    capacity: 10
+                });
 
         expect(res.status).toBe(404);
         expect(res.body).toHaveProperty("error", "City not found");

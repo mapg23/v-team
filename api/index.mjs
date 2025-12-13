@@ -10,6 +10,7 @@ import createUserRouter from "./src/routes/userRoutes.mjs";
 import createCityRouter from "./src/routes/cityRoutes.mjs";
 import createBikeRouter from "./src/routes/bikeRoutes.mjs";
 import createStationRouter from "./src/routes/stationRoutes.mjs";
+import createParkingRouter from "./src/routes/parkingRoutes.mjs";
 import startSimulator from "./src/startSimulator.mjs";
 import stopSimulator from "./src/stopSimulator.mjs";
 
@@ -32,6 +33,7 @@ app.use(`/api/v1/auth`, authRoutes);
 app.use(`/api/${version}`, createCityRouter());
 app.use(`/api/${version}`, createBikeRouter());
 app.use(`/api/${version}`, createStationRouter());
+app.use(`/api/${version}`, createParkingRouter());
 
 // -------- Socket.io
 const server = createServer(app);

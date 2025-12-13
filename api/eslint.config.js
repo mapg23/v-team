@@ -28,7 +28,7 @@ export default defineConfig([
 
             camelcase: [2, {
                 properties: "never",
-                allow: ["city_id"]
+                allow: ["city_id", "min_lat", "min_long", "max_lat", "max_long"]
             }],
 
             curly: [2, "all"],
