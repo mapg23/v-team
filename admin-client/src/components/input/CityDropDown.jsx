@@ -30,7 +30,9 @@ export default function CityDropDown({action}) {
    * Calls provided action with cityId
    */
   async function handleSelect(value) {
+    console.log("citydropdown:", value)
     const city = allCities.find((city) => city.name === value);
+    console.log("citydropdown:", city);
     // calls parent method
     action(city.id)
   }
@@ -40,11 +42,10 @@ export default function CityDropDown({action}) {
   return (
     <>
       <select
-        onChange={(e) => {
+        onClick={(e) => {
           handleSelect(e.target.value);
         }}
       >
-        <option key="choose">Välj en stad</option>
         {cityNames.map((city) => {
           return <option key={city}>{city}</option>;
         })}
