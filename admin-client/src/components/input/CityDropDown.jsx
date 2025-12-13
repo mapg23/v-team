@@ -30,9 +30,7 @@ export default function CityDropDown({action}) {
    * Calls provided action with cityId
    */
   async function handleSelect(value) {
-    console.log("citydropdown:", value)
     const city = allCities.find((city) => city.name === value);
-    console.log("citydropdown:", city);
     // calls parent method
     action(city.id)
   }
