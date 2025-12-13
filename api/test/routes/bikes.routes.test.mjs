@@ -13,7 +13,6 @@ const mockDb = {
 const bikes = createBikes(mockDb);
 
 const app = express();
-
 app.use(express.json());
 app.use(createBikeRouter(bikes));
 
@@ -32,7 +31,9 @@ describe("Bikes API - OK", () => {
             latitude: 59.33,
             longitude: 18.06,
             occupied: 0,
-            city_id: 1
+            city_id: 1,
+            current_zone_type: null,
+            current_zone_id: null
         }]);
 
         const res = await request(app)
@@ -43,12 +44,13 @@ describe("Bikes API - OK", () => {
                 latitude: 59.33,
                 longitude: 18.06,
                 occupied: 0,
-                city_id: 1
+                cityId: 1
             });
 
         expect(res.status).toBe(201);
         expect(res.body).toHaveProperty("id", 10);
         expect(res.body).toHaveProperty("status", 10);
+        expect(res.body).toHaveProperty("current_zone_type", null);
     });
 
     test("GET /bikes returns bike list", async () => {
@@ -59,13 +61,16 @@ describe("Bikes API - OK", () => {
             latitude: 59.0,
             longitude: 18.0,
             occupied: 0,
-            city_id: 1
+            city_id: 1,
+            current_zone_type: null,
+            current_zone_id: null
         }]);
 
         const res = await request(app).get('/bikes');
 
         expect(res.status).toBe(200);
         expect(res.body[0]).toHaveProperty("status", 10);
+        expect(res.body[0]).toHaveProperty("current_zone_type", null);
     });
 
     test("GET /bikes/:id returns a bike", async () => {
@@ -76,13 +81,16 @@ describe("Bikes API - OK", () => {
             latitude: 59.0,
             longitude: 18.0,
             occupied: 0,
-            city_id: 1
+            city_id: 1,
+            current_zone_type: 'parking',
+            current_zone_id: 5
         }]);
 
         const res = await request(app).get('/bikes/2');
 
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty("status", 10);
+        expect(res.body).toHaveProperty("current_zone_type", "parking");
     });
 
     test("PUT /bikes/:id updates a bike", async () => {
@@ -94,7 +102,9 @@ describe("Bikes API - OK", () => {
             latitude: 59.0,
             longitude: 18.0,
             occupied: 0,
-            city_id: 1
+            city_id: 1,
+            current_zone_type: null,
+            current_zone_id: null
         }]);
 
         const res = await request(app)
@@ -105,6 +115,7 @@ describe("Bikes API - OK", () => {
         expect(res.body).toHaveProperty("id", 3);
         expect(res.body).toHaveProperty("status", 10);
         expect(res.body).toHaveProperty("battery", 50);
+        expect(res.body).toHaveProperty("current_zone_type", null);
     });
 
     test("DELETE /bikes/:id deletes a bike", async () => {
@@ -130,7 +141,7 @@ describe("Bikes API - NOK (500)", () => {
                 latitude: 59.0,
                 longitude: 18.0,
                 occupied: 0,
-                city_id: 1
+                cityId: 1
             });
 
         expect(res.status).toBe(500);
