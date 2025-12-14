@@ -16,9 +16,9 @@ class Simulator {
 
     /**
      * Constructor for simulator
-     * @param {Number} totalBikes 
-     * @param {Array} bikes 
-     * @param {Array} cordinates 
+     * @param {Number} totalBikes
+     * @param {Array} bikes
+     * @param {Array} cordinates
      */
     constructor(totalBikes = 1, bikes = [], cordinates = {}) {
         this.totalBikes = totalBikes;
@@ -28,7 +28,7 @@ class Simulator {
 
     /**
      * Method to set pre-defined cordinates.
-     * @param {Array} coords 
+     * @param {Array} coords
      */
     setCordinates(coords) {
         this.cordinates = coords;
@@ -108,7 +108,7 @@ class Simulator {
 
     /**
      * Method that starts simulator with pre-defined bikes from database.
-     * @param {Array} payload 
+     * @param {Array} payload
      * @returns {Array|void}
      */
     startFromMemory(payload) {

@@ -27,8 +27,7 @@ export default defineConfig([
             semi: [2, "always"],
 
             camelcase: [2, {
-                properties: "never",
-                allow: ["city_id"]
+                properties: "never"
             }],
 
             curly: [2, "all"],
