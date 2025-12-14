@@ -172,5 +172,64 @@ export default function createBikeRouter(bikes = createBikes()) {
         }
     });
 
+    route.put('/bikes/:id/move', validateJsonBody, async (req, res) => {
+        const bikeId = Number(req.params.id);
+        const { zoneType, zoneId } = req.body;
+
+        const allowed = ['charging', 'parking'];
+
+        if (!allowed.includes(zoneType)) {
+            return res.status(400).json({ error: 'Invalid zone type' });
+        }
+
+
+        if (!zoneId || isNaN(zoneId)) {
+            return res.status(400).json({ error: 'Invalid zone ID' });
+        }
+
+        try {
+            // Hämtar cykeln först för att få city_id
+            const bikeArray = await bikes.getBikeById(bikeId);
+
+            if (!bikeArray[0]) {
+                return res.status(404).json({ error: 'Bike not found' });
+            }
+
+            const bike = bikeArray[0];
+
+            console.log('Move bike:', bikeId, zoneType, zoneId, bike.city_id);
+
+            // Validerar zonen mot staden
+            const isValidZone = await validateZone(
+                zoneType,
+                zoneId,
+                bike.city_id,
+                bikes.db
+            );
+
+            if (!isValidZone) {
+                return res.status(400).json({ error: 'Zone does not exist for this city' });
+            }
+
+            // Flyttar cykeln
+            const result = await bikes.updateBike(bikeId, {
+                current_zone_type: zoneType,
+                current_zone_id: zoneId
+            });
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Bike not found' });
+            }
+
+            const updatedBike = await bikes.getBikeById(bikeId);
+
+            return res.status(200).json(updatedBike[0]);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Could not move bike' });
+        }
+    });
+
+
     return route;
 }
