@@ -67,7 +67,43 @@ export default function createStations(db = dbDefault) {
          */
         deleteStation: async function deleteStation(id) {
             return await db.remove('charging_zones', 'id = ?', [id]);
+        },
+
+        /**
+         * Retrieves all bikes currently in charging mode at a specific station.
+         *
+         * @param {number} stationId - The ID of the station.
+         * @returns {Promise<Object>} An object containing the station ID,
+         * the number of bikes, and a list of bike objects.
+         */
+        getBikesByStationId: async function getBikesByStationId(stationId) {
+        // Hämtar alla cyklar som står i stationen
+            const bikes = await db.select(
+                'scooters',
+                [
+                    'id',
+                    'status',
+                    'battery',
+                    'latitude',
+                    'longitude',
+                    'occupied',
+                    'city_id',
+                    'current_zone_type',
+                    'current_zone_id'
+                ],
+                'current_zone_type = ? AND current_zone_id = ?',
+                ['charging', stationId]
+            );
+
+            return {
+                stationId,
+                // antal cyklar
+                bikeCount: bikes.length,
+                // lista med alla cyklar
+                bikes
+            };
         }
+
     };
 
     return stations;

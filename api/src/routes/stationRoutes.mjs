@@ -170,5 +170,30 @@ export default function createStationRouter(
         }
     });
 
+    // Hämtar alla cyklar i en specifik station
+    route.get('/stations/:id/bikes', async (req, res) => {
+        try {
+            const stationId = Number(req.params.id);
+
+            if (isNaN(stationId)) {
+                return res.status(400).json({ error: 'Invalid station id' });
+            }
+
+            const station = await stations.getStationById(stationId);
+
+            if (!station[0]) {
+                return res.status(404).json({ error: 'Station not found' });
+            }
+
+            const result = await stations.getBikesByStationId(stationId);
+
+            return res.status(200).json(result);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Could not fetch bikes for station' });
+        }
+    });
+
+
     return route;
 }
