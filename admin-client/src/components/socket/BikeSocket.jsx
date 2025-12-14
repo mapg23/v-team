@@ -15,7 +15,6 @@ export default function BikeSocket({ onUpdate }) {
 
     // Bike data
     socket.on("bikes", (data) => {
-      // console.log("Received bike data:", data);
       onUpdate(data);
     });
 
@@ -26,7 +25,7 @@ export default function BikeSocket({ onUpdate }) {
     return () => {
       socket.disconnect();
     };
-  }, [onUpdate]);
+  }, []);
 
   return null;
 }
