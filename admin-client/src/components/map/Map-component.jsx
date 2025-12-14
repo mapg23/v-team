@@ -4,6 +4,11 @@ import styles from "./Map-component.module.css";
 import bikeIconUrl from "../../assets/bike.png";
 
 export default function MapComponent({ coords, bikes }) {
+  const BikeStatusMap = {
+    10: "bike-blue",
+    available: "bike-green",
+  };
+
   const mapRef = useRef(null);
   const markersRef = useRef([]);
 
@@ -53,11 +58,13 @@ export default function MapComponent({ coords, bikes }) {
 
     // Lägg till nya markers
     bikes.forEach((bike) => {
+      const bikeClass = bike.occupied === 10 ? styles["bike-free"] : styles["bike-used"];
       const icon = L.icon({
         iconUrl: bikeIconUrl,
         iconSize: [24, 24],
-        iconAnchor: [12, 12],
+        iconAnchor: [24, 24],
         popupAnchor: [0, 0],
+        className: `${bikeClass}`,
       });
 
       const marker = L.marker([bike.cords.x, bike.cords.y], { icon })
@@ -97,6 +104,6 @@ export default function MapComponent({ coords, bikes }) {
       markersRef.current.push(marker);
     });
   }, [bikes]);
-  
+
   return <div id="map" className={styles.map}></div>;
 }
