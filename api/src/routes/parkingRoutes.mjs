@@ -168,5 +168,30 @@ export default function createParkingRouter(parkings = createParkings()) {
         }
     });
 
+    // Hämtar alla cyklar i en specifik parkeringszon
+    route.get('/parkings/:id/bikes', async (req, res) => {
+        try {
+            const parkingId = Number(req.params.id);
+
+            if (isNaN(parkingId)) {
+                return res.status(400).json({ error: 'Invalid parking id' });
+            }
+
+            const parking = await parkings.getParkingById(parkingId);
+
+            if (!parking[0]) {
+                return res.status(404).json({ error: 'Parking zone not found' });
+            }
+
+            const result = await parkings.getBikesByParkingId(parkingId);
+
+            return res.status(200).json(result);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Could not fetch bikes for parking zone' });
+        }
+    });
+
+
     return route;
 }
