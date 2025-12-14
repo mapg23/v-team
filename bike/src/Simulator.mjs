@@ -116,10 +116,7 @@ class Simulator {
         // Start bike movement
         this.bikes = [];
         for (let bike of payload) {
-            let cleaned = bike.location.replace(/\s+/g, '');
-            let cords = cleaned.split(",");
-
-            let parsedCords = { x: Number(cords[0]), y: Number(cords[1]) };
+            let parsedCords = { x: Number(bike.longitude), y: Number(bike.latitude) };
 
             this.bikes.push(new Device(
                 bike.id,
