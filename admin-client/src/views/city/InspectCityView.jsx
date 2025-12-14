@@ -34,11 +34,42 @@ export default function InspectCityView() {
   // Sync bikes from database
   const [bikes, setBikes] = useState([]);
 
+  // Map different bike status
+  const [bikeStatusMap, setBikeStatusMap] = useState({
+    available: null,
+    used: null,
+  });
+
   // -----------------------------
   // Update bikes from socket
   // -----------------------------
   function updateBikes(bikeData) {
     setBikes(bikeData);
+    updateBikeStatus(bikeData);
+  }
+
+  /**
+   * Filter different status
+   */
+  function updateBikeStatus(bikes) {
+    const availableCount = bikes.filter(bike => bike.occupied === 10).length;
+    const usedCount = bikes.length - availableCount;
+
+    setBikeStatusMap(prev => {
+      // Prev är befintliga värdet, om inget ändras, returna samma
+      if (
+        prev.available === availableCount &&
+        prev.used === usedCount
+      ) {
+        return prev;
+      }
+
+      // Annars ersätt
+      return {
+        available: availableCount,
+        used: usedCount,
+      };
+    });
   }
 
   // -----------------------------
@@ -68,18 +99,16 @@ export default function InspectCityView() {
     navigate(`/city/${cityId}`);
   }
 
-  // Visa en översikt endast om användare inte valt stad
-  // och data har hämtats
   if (loading) return <h1>Loading...</h1>;
 
   return (
     <>
       <BikeSocket onUpdate={updateBikes} />
-      <CityDropDown action={redirectToCity}/>
+      <CityDropDown action={redirectToCity} />
       <h1>{cityDetails.name}</h1>
       <div style={{ display: "flex", justifyContent: "space-around" }}>
         <CityTable data={cityDetails} vertical={true} />
-        <PieChart total={500} used={100} />
+        <PieChart bikeStatusMap={bikeStatusMap} />
       </div>
       <Map coords={cityDetails} bikes={bikes} />
     </>
