@@ -49,8 +49,8 @@ export default function BikeView() {
    */
   async function deleteBike(bikeId) {
     const response = await BikeService.deleteBike(bikeId);
-    if (response.message) {
-      setResult(response.message);
+    if (response.ok) {
+      setResult(`Deleted bike with id: ${bikeId}`);
       setResultType("success");
 
       // update bikes
@@ -76,7 +76,7 @@ export default function BikeView() {
    * @param {Object} bikeId {cityId, [Long, lat]}
    */
   async function createNewBike(bikeObj) {
-    // Bike requiers battery, occupied, status
+    // status, battery, latitude, longitude, occupied, cityId;
     bikeObj.battery = 100;
     bikeObj.occupied = 0;
     bikeObj.status = 10;

@@ -66,7 +66,7 @@ const bikeService = {
         },
       });
 
-      return await response.json();
+      return response;
     } catch (error) {
       console.error("deleteBike fetch error:", error);
       return null;
