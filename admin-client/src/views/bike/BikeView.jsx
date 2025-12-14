@@ -81,8 +81,9 @@ export default function BikeView() {
     bikeObj.occupied = 0;
     bikeObj.status = 10;
     const response = await BikeService.createNewBike(bikeObj);
-    if (response.message) {
-      setResult(response.message);
+    console.log(response);
+    if (response.id) {
+      setResult("Successfully created a new bike!");
       setResultType("success");
       // update bikes
       fetchData();
