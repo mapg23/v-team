@@ -44,8 +44,9 @@ export default function InspectCityView() {
   // Update bikes from socket
   // -----------------------------
   function updateBikes(bikeData) {
-    setBikes(bikeData);
-    updateBikeStatus(bikeData);
+    const bikesInCity = bikeData.filter((bike) => bike.city_id === Number(cityId))
+    setBikes(bikesInCity);
+    updateBikeStatus(bikesInCity);
   }
 
   /**
