@@ -1,7 +1,7 @@
-import tripModel from "../models/trips.mjs";
-import zonesModel from "../models/zones.mjs";
-import bikeStarter from "../models/bikes.mjs";
-const bikeModel = bikeStarter();
+import tripsModel from "../models/trips.mjs";
+import createBikes from "../models/bikes.mjs";
+import createZones from "../models/zones.mjs";
+// const bikeModel = createBikes();
 
 /**
  * transactionData = {
@@ -9,8 +9,10 @@ const bikeModel = bikeStarter();
 	user_id	        int(11)
 	scooter_id      int(11)
 	cost	        decimal(10,2)
-	start_location	varchar(64)
-	end_location	varchar(64)
+	start_longitude decimal(9, 6)
+    start_latitude	decimal(9, 6)
+	end_longitude	decimal(9, 6)
+    end_latitude	decimal(9, 6)
 	start_time	    datetime
 	end_time	    datetime
     }
@@ -36,7 +38,13 @@ const bikeModel = bikeStarter();
 
 
 class TripService {
-    constructor() {
+    constructor(tripModel = tripsModel, bikeModel = createBikes(), zoneModel = createZones()) {
+        /**
+         * Inject the models class is depending on.
+         */
+        this.tripModel = tripModel,
+        this.bikeModel = bikeModel,
+        this.zonesModel = zoneModel,
         /**
          * A list of parking zones
          * @type {Array}
@@ -49,7 +57,7 @@ class TripService {
      */
     async getParkingZones() {
         if (this.parkingZones.length === 0) {
-            this.parkingZones = await zonesModel.getZones();
+            this.parkingZones = await this.zonesModel.getZones();
         }
         if (this.parkingZones.length === 0) {
             throw new Error("Could not get parking zones");
@@ -69,38 +77,40 @@ class TripService {
         const bikeId = data.bikeId;
         const now = this.getDbDate();
 
-        const bikeResult = await bikeModel.getBikeById(bikeId);
+        const bikeResult = await this.bikeModel.getBikeById(bikeId);
         const bike = bikeResult[0];
 
         if (!bike) {
             throw new Error(`Bike with id: ${bikeId} was not found`);
         }
-        const startLocation = JSON.stringify(bike.location);
-        // console.log(bike);
-        // console.log("bike . ID", bike.id);
+
+        console.log("bike: ", bike);
         const tripData = {
             user_id: userId,
             scooter_id: bike.id,
             cost: 0,
-            start_location: startLocation,
-            end_location: 0,
+            start_latitude: bike.latitude,
+	        start_longitude: bike.longitude,
+	        end_latitude: null,
+	        end_longitude: null,
             start_time:  now,
-            end_time: 0
+            end_time: 0,
         };
-        const result = await tripModel.createTransaction(tripData);
+        const result = await this.tripModel.createTrip(tripData);
 
-        console.log(result);
+        // console.log(result);
         if (!result.affectedRows) {
             throw new Error("Ride could not be created");
         }
 
-        const statusUpdate = await bikeModel.updateBike(bike.id, {"status": 40});
+        const statusUpdate = await this.bikeModel.updateBike(bike.id, {"status": 40});
 
         if (!statusUpdate.affectedRows) {
             console.error("ERROR: Unable to change status to Occupied");
+            throw new Error("Unable to change status to Occupied");
         }
 
-        return await tripModel.getTransactionById(result.insertId);
+        return await this.tripModel.getTripById(result.insertId);
     }
 
     /**
@@ -132,13 +142,13 @@ class TripService {
     /**
      * Calculate rent-cost based on duration
      *
-     * @param {Object} data Transaction data
+     * @param {Object} data Trip data
      * @param {string} data.start_time Start timestamp
      * @param {string} data.end_time End timestamp
      * @returns {number} Cost of rent
      */
-    calculateRent(data) {
-        const minutes = this.getDuration(data.start_time, data.end_time);
+    calculateRent(startTime, endTime) {
+        const minutes = this.getDuration(startTime, endTime);
 
         return minutes * 5;
     }
@@ -146,16 +156,18 @@ class TripService {
     /**
      * Determine if a location/position is inside a given zone
      *
-     * @param {Object} zone The coordinates for top left and bottom right corners
-     * @param {Object} location Location to test against zone
+     * @param {Object} zone The coordinates for top left and bottom right corners of a zone
+     * @param {Object} lat The latitude of the position to compare
+     * @param {Object} long The longitude of the position to compare
      * @returns {boolean}
      */
-    isInZone(zone, location) {
+    isInZone(zone, lat, long) {
+        console.log(lat, zone.max_lat, zone.min_lat, long, zone.max_long, zone.min_long);
         return (
-            location.lat < zone.max_lat &&
-            location.lat > zone.min_lat &&
-            location.long < zone.max_long &&
-            location.long > zone.min_long
+            lat < zone.max_lat &&
+            lat > zone.min_lat &&
+            long < zone.max_long &&
+            long > zone.min_long
         );
     }
 
@@ -165,179 +177,111 @@ class TripService {
      * @param {Object} location {lat: <xx.xxxx>, long: <xx.xxxx>}
      * @returns {Promise<boolean>}
      */
-    async isInParking(location) {
+    async isInParking(lat, long) {
         const zones = await this.getParkingZones();
 
+        console.log(zones);
         for (const zone of zones) {
-            if (this.isInZone(zone.location, location)) {
+            if (this.isInZone(zone, lat, long)) {
+                console.log("true");
                 return true;
             }
         }
+        console.log("false");
         return false;
     }
 
-    async calculateCost(data) {
-        const rentCost = this.calculateRent(data);
-        const location = await JSON.parse(data.bike.location);
-        const parkedOK = await this.isInParking(location);
+    /**
+     *
+     * @param {Object} bike A bike object.
+     * @param {Object} trip A trip object
+     * @param {Boolean} parkedOK Tells if bike is parked in a parking zone.
+     * @returns {Number} totalCost The total cost of the trip.
+     */
+    async calculateCost(bike, trip, parkedOK) {
+        const now = this.getDbDate();
+        const rentCost = this.calculateRent(trip.start_time, now);
         const parkingFee = parkedOK ? 0 : 80;
 
+        const startFee = 35;
         let discount = 1;
 
         if (parkedOK) {
             // this.bikeStatus = 10;
-            const rentedFromParking = await this.isInParking(data.start_location);
+            console.log(bike);
+            const rentedFromParking = await this.isInParking(
+                trip.start_latitude, trip.start_longitude
+            );
 
             discount = rentedFromParking ? 1 : 0.8;
         }
 
-        const totalCost = (rentCost + parkingFee) * discount;
+        const totalCost = (rentCost + parkingFee) + (startFee * discount);
 
-        return totalCost;
+        // Returns number with two decimal places: 1 = 1.00.
+        return (+totalCost).toFixed(2);
     }
 
-    // async checkBikeBattery(bikeId) {
-    //     const bike = await bikeModel.getBikeById(bikeId);
+    async setBikeStatus(bike, parkedOK) {
+        let bikeStatus = parkedOK ? 10 : 20;
 
-    //     if (bike.battery <= 20) {
-    //         this.bikeStatus = 50;
-    //     }
-    // }
+        bikeStatus = bike.battery > 20 ? bikeStatus : 50;
+
+        await this.bikeModel.updateBike(bike.id, {status: bikeStatus});
+    }
 
     /**
-     * End a scooter rental transaction and calculating final cost.
+     * End a scooter rental trip and calculating final cost.
      *
-     * @param {Object} data Transaction data
+     * @param {Object} data Trip data
      *
      * @returns {Promise<Array>} Result from db update.
      */
-    async endRide(data) {
-        const totalCost = await this.calculateCost(data);
-        const  endLocation = await JSON.stringify(data.location);
-        const endTime = this.getDbDate();
-        // this.checkBikeBattery(data.bike_id);
-        // SET BIKE STATUS
+    async endTrip(tripId) {
+        const tripRes = await this.tripModel.getTripById(tripId);
+        const trip = tripRes?.[0];
 
-        return tripModel.updateTransaction(data.id, {
+        if (!trip) {
+            throw new Error(`Could not find trip with id ${tripId}`);
+        }
+
+        console.log("trip: ", trip);
+        const bikeRes = await this.bikeModel.getBikeById(trip.scooter_id);
+        const bike = bikeRes?.[0];
+
+        if (!bike) {
+            throw new Error(`Could not find trip with id ${trip.scooter_id}`);
+        }
+
+
+        console.log("bike: ", bike);
+        const parkedOK = await this.isInParking(bike.latitude, bike.longitude);
+        const totalCost = await this.calculateCost(bike, trip, parkedOK);
+        const endTime = this.getDbDate();
+
+        const result = await this.tripModel.updateTrip(trip.id, {
             cost: totalCost,
-            end_location: endLocation,
+            end_longitude: bike.longitude,
+            end_latitude: bike.latitude,
             end_time: endTime,
         });
+
+        if (!result?.affectedRows) {
+            throw new Error("Could not end trip");
+        }
+
+        console.log("setting status... ");
+        await this.setBikeStatus(bike, parkedOK);
+
+        const newTripRes = await this.tripModel.getTripById(tripId);
+        const newTrip = newTripRes?.[0];
+
+        if (!newTrip) {
+            throw new Error(`Could not find trip with id ${tripId}`);
+        }
+
+        return newTrip;
     }
 }
 
 export default new TripService();
-
-// export default transaction;
-
-// constructor(data) {
-//   this.id = data.id;
-//   this.scooterId = data.scooterId;
-//   this.startLocation.long = data.start_location.x;
-//   this.startLocation.lat = data.start_location.y;
-//   this.location.long = data.end_location.x;
-//   this.location.lat = data.end_location.y;
-//   this.startTime = data.start_time;
-//   this.endTime = data.end_time;
-// },
-
-
-// bikeInZone: null,
-
-// setZones: async function getZones(cityID) {
-//   const result = await getZones(city);
-//   parse result
-//   this.parkingZones = parsedResult;
-// },
-
-// const transaction = {
-
-//     parkingZones: [],
-
-//     getparkingZones: async function getparkingZones() {
-//         if (this.parkingZones.length === 0) {
-//             const result = await zonesModel.getZones();
-
-//             this.parkingZones = result;
-//         }
-//         return this.parkingZones;
-//     },
-
-//     /**
-//      *Calculate the duration of the ride.
-//     * @param {string} start_time String in date format
-//     * @param {string} end_time String in date format
-//     * @returns {Number}
-//     */
-//     getDuration: function getDuration(startTime, endTime) {
-//         const start = new Date(startTime);
-//         const end = new Date(endTime);
-//         const timeDifference = end - start;
-//         const minutesDifference = timeDifference / (1000 * 60);
-
-//         return minutesDifference;
-//     },
-
-//     calculateRent: async function calculateRent(data) {
-//         const minutes = this.getDuration(data.start_time, data.end_time);
-
-//         const cost = minutes * 5;
-
-//         return cost;
-//     },
-
-//     isInZone: function isInZone(zone, location) {
-//         return (
-//             location.lat < zone.maxLat &&
-//             location.lat > zone.minLat &&
-//             location.long < zone.maxLong &&
-//             location.long > zone.minLong
-//         );
-//     },
-
-//     isInParking: async function isInParking(location) {
-//         const parkingZones = await this.getparkingZones();
-
-//         for (const zone of parkingZones) {
-//             if (this.isInZone(zone, location)) {
-//                 return true;
-//             }
-//         }
-//         return false;
-//     },
-//     calculateCost: async function calculateCost(data) {
-//         const rentCost = await this.calculateRent(data);
-//         const parkedOK = await this.isInParking(data.end_location);
-//         const parkingFee = parkedOK ? 0 : 80;
-//         let discount = 1;
-
-//         if (parkedOK) {
-//             const rentedFromParking = await this.isInParking(data.start_location);
-
-//             discount = rentedFromParking ? 1 : 0.8;
-//         }
-
-//         const totalCost = (rentCost + parkingFee) * discount;
-
-//         return totalCost;
-//     },
-
-//     /**
-//      * Ends a ride and calculates the cost
-//      *
-//      * @param {Object} data transaction data.
-//      * @returns {Promise<Array>} Result from db update
-//      */
-//     endTransaction: async function endRide(data) {
-//         const totalCost = await this.calculateCost(data);
-//         const parkedOK = await this.isInParking(data.end_location);
-
-//         const update = {
-//             cost: totalCost,
-//         };
-
-//         return transactionModel.updateTransaction(data.id, update);
-//     },
-// };
-
-// export default transaction;

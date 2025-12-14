@@ -7,7 +7,7 @@ const trip = {
      * @param {Object} body - An object containing the trip data to insert.
      * @returns {Array} An array containing the result from the db operation.
      */
-    createTransaction: async function createTransaction(body) {
+    createTrip: async function createTrip(body) {
         return await db.insert("trips", body);
     },
 
@@ -17,7 +17,7 @@ const trip = {
      * @param {number} id - ID of the transaction.
      * @returns {Array} An array containing the result from the db operation.
      */
-    getTransactionById: async function getTransactionById(id) {
+    getTripById: async function getTripById(id) {
         return await db.select("trips", "*", "id = ?", [id]);
     },
 
@@ -28,7 +28,7 @@ const trip = {
      * @returns {Array} An array containing the result from the db operation.
      * select(table, columns = '*', where = '', params = [])
      */
-    getTransactionByUserId: async function getTransactionByUserId(userId) {
+    getTripsByUserId: async function getTripByUserId(userId) {
         return await db.select("trips", "*", "user_id = ?", [userId]);
     },
 
@@ -39,7 +39,7 @@ const trip = {
      * @param {Object} body - An object containing the trip data to insert.
      * @returns {Array} An array containing the result from the db operation.
      */
-    updateTransaction: async function updateTransaction(id, data) {
+    updateTrip: async function updateTrip(id, data) {
         return await db.update("trips", data, "id = ?", [id]);
     },
 };
