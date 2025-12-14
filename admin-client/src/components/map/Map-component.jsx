@@ -4,11 +4,6 @@ import styles from "./Map-component.module.css";
 import bikeIconUrl from "../../assets/bike.png";
 
 export default function MapComponent({ coords, bikes }) {
-  const BikeStatusMap = {
-    10: "bike-blue",
-    available: "bike-green",
-  };
-
   const mapRef = useRef(null);
   const markersRef = useRef([]);
 
@@ -73,7 +68,7 @@ export default function MapComponent({ coords, bikes }) {
           <table>
           <tr>
             <th>ID:</th>
-            <td>${bike.id}</td>
+            <td><a href="/bikes/${bike.id}">${bike.id}</td>
           </tr>
           <tr>
             <th>Status:</th>
