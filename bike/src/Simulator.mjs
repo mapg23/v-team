@@ -100,6 +100,8 @@ class Simulator {
             speed: b.speed
         }));
 
+        console.log(data);
+
         parentPort?.postMessage({
             type: "telemetry",
             data,
@@ -117,14 +119,14 @@ class Simulator {
         this.bikes = [];
         for (let bike of payload) {
             let parsedCords = { x: Number(bike.longitude), y: Number(bike.latitude) };
-
             this.bikes.push(new Device(
                 bike.id,
                 parsedCords,
-                bike.city_id,
                 bike.battery,
                 bike.status,
                 bike.occupied,
+                0,
+                bike.city_id,
             ));
         }
         this.startMovement();
