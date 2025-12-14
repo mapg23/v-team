@@ -9,7 +9,7 @@ import cityService from "../../services/cities";
 export default function CreateBikeForm({ action }) {
   const [loading, setLoading] = useState(true);
 
-  const [cityId, setCityid] = useState(null);
+  const [cityId, setCityid] = useState(1);
 
   /**
    * render when done
@@ -23,8 +23,7 @@ export default function CreateBikeForm({ action }) {
    *
    * @param {int} cityId
    */
-  function handleSelection(cityId) {
-    console.log(cityId);
+  function handleSelection(cityId) {    
     setCityid(cityId);
   }
 
@@ -36,10 +35,10 @@ export default function CreateBikeForm({ action }) {
     const response = await getCoordinates(city.name);
 
     const cityObj = {
-      city_id: cityId,
-      location: [response[0].lat, response[0].lon].join(),
-      lat: response[0].lat,
-      long: response[0].lon,
+      cityId: cityId,
+      // location: [response[0].lat, response[0].lon].join(),
+      latitude: response[0].lat,
+      longitude: response[0].lon,
     };
 
     // call provided method
