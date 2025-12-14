@@ -37,17 +37,6 @@ export default function createBikeRouter(bikes = createBikes()) {
                 currentZoneType
             } = req.body;
 
-<<<<<<< HEAD
-            const requiredFields = [status, battery, location, city_id];
-
-            if (requiredFields.some((field) => field === undefined)){
-                return res
-                  .status(400)
-                  .json({
-                    error:
-                      "Missing on or more of the required properties: status, battery, location, city_id",
-                  });
-=======
             const requiredFields = [
                 status,
                 battery,
@@ -59,7 +48,6 @@ export default function createBikeRouter(bikes = createBikes()) {
 
             if (requiredFields.some(field => field == null)) {
                 return res.status(400).json({ error: "Missing required fields" });
->>>>>>> feature/city-details-api
             }
 
             const isValid = await validateZone(currentZoneType, currentZoneId, cityId, bikes.db);
