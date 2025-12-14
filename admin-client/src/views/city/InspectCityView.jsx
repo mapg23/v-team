@@ -45,6 +45,7 @@ export default function InspectCityView() {
   // -----------------------------
   function updateBikes(bikeData) {
     const bikesInCity = bikeData.filter((bike) => bike.city_id === Number(cityId))
+    console.log(bikesInCity)
     setBikes(bikesInCity);
     updateBikeStatus(bikesInCity);
   }
@@ -104,7 +105,7 @@ export default function InspectCityView() {
 
   return (
     <>
-      <BikeSocket onUpdate={updateBikes} />
+      <BikeSocket paramId={cityId} onUpdate={updateBikes} />
       <CityDropDown action={redirectToCity} />
       <h1>{cityDetails.name}</h1>
       <div style={{ display: "flex", justifyContent: "space-around" }}>

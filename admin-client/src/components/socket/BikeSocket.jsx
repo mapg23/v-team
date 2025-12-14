@@ -5,7 +5,7 @@ const API_PORT = import.meta.env.VITE_API_URL || "9091";
 
 const URL = `http://localhost:${API_PORT}`;
 
-export default function BikeSocket({ onUpdate }) {
+export default function BikeSocket({ paramId, onUpdate }) {
   useEffect(() => {
     const socket = io(URL);
 
@@ -25,7 +25,7 @@ export default function BikeSocket({ onUpdate }) {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [paramId]);
 
   return null;
 }
