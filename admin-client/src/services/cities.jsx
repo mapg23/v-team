@@ -102,6 +102,50 @@ const cityService = {
   },
 
   /**
+   * Get stations in city by id
+   * 
+   * @return {Json} array of objects
+   */
+  getStationsInCity: async function getStationsInCity(cityId) {
+    try {
+      const response = await fetch(`${API}/cities/${cityId}/stations`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json()
+
+    } catch (error) {
+        console.error(error);
+      return [];
+    }
+  },
+
+  /**
+   * Get stations in city by id
+   * 
+   * @return {Json} array of objects
+   */
+  getParkingsInCity: async function getParkingsInCity(cityId) {
+    try {
+      const response = await fetch(`${API}/cities/${cityId}/parkerings`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json()
+
+    } catch (error) {
+        console.error(error);
+      return [];
+    }
+  },
+
+  /**
    * Get all bikes in city
    * @param {int} id city id
    * @return {Array} [
@@ -118,16 +162,10 @@ const cityService = {
         },
       });
 
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on getAllCities! Status: ${response.status}`
-        );
-      }
-
-      const responseData = await response.json();
-      return responseData;
+      return await response.json();
+      
     } catch (error) {
-      console.error(error);
+        console.error(error);
       return [];
     }
   },

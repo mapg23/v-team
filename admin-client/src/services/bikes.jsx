@@ -19,9 +19,8 @@ const bikeService = {
       });
 
       return await response.json();
-
     } catch (error) {
-        console.error(error);
+      console.error(error);
       return [];
     }
   },
@@ -55,7 +54,7 @@ const bikeService = {
 
   /**
    * Delete bike with ID
-   * 
+   *
    * @returns {JSON}
    */
   deleteBike: async function deleteBike(bikeId) {
@@ -81,7 +80,7 @@ const bikeService = {
   createNewBike: async function createNewBike(bike) {
     try {
       const bikeObj = {
-        ...bike
+        ...bike,
       };
       const response = await fetch(`${API}/bikes`, {
         body: JSON.stringify(bikeObj),
@@ -93,7 +92,7 @@ const bikeService = {
 
       return await response.json();
     } catch (error) {
-        console.error("CreateBike error:", error);
+      console.error("CreateBike error:", error);
       return null;
     }
   },
@@ -164,6 +163,31 @@ const bikeService = {
           `HTTP error on startBikeSync! Status: ${response.status}`
         );
       }
+
+      return await response.json();
+    } catch (error) {
+      console.error("fetchDocuments error:", error);
+      return [];
+    }
+  },
+
+  /**
+   * Start sync for bikes
+   * @returns {JSON}
+   */
+  moveBikeToZone: async function moveBikeToZone(bikeId, zoneId) {
+    const moveObject = {
+      bike_id: `${bikeId}`,
+      zone_id: `${zoneId}`,
+    };
+    try {
+      const response = await fetch(`${API}/bikes/${bikeId}/move`, {
+        body: JSON.stringify(moveObject),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       return await response.json();
     } catch (error) {
