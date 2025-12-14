@@ -57,7 +57,7 @@ function HomeView() {
    */
   async function getAllCityDetails(arrayOfCities) {
     const promises = arrayOfCities.map((city) =>
-      CityService.getCityDetails(city.id)
+      CityService.getCityDetailsById(city.id)
     );
     // Vänta tills ALLA är klara
     const allCityDetails = await Promise.all(promises);

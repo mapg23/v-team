@@ -47,7 +47,7 @@ export default function InspectCityView() {
   useEffect(() => {
     async function fetchData() {
       // get city details based on params
-      const cityResponse = await CityService.getCityDetails(cityId);
+      const cityResponse = await CityService.getCityDetailsById(cityId);
       setcityDetails(cityResponse);
 
       // Start Bike Sync
