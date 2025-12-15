@@ -13,11 +13,11 @@ import createStationRouter from "./src/routes/stationRoutes.mjs";
 import createParkingRouter from "./src/routes/parkingRoutes.mjs";
 import startSimulator from "./src/startSimulator.mjs";
 import stopSimulator from "./src/stopSimulator.mjs";
+import tripRoutes from "./src/routes/tripRoutes.mjs";
 
 const app = express();
 const port = process.env.API_PORT || 9091;
 const version = process.env.API_VERSION || "v1";
-const jwtSecret = process.env.JWT_SECRET;
 
 // Middleware
 app.use(cors({ origin: "*" }));
@@ -34,6 +34,7 @@ app.use(`/api/${version}`, createCityRouter());
 app.use(`/api/${version}`, createBikeRouter());
 app.use(`/api/${version}`, createStationRouter());
 app.use(`/api/${version}`, createParkingRouter());
+app.use(`/api/${version}/trip`, tripRoutes);
 
 // -------- Socket.io
 const server = createServer(app);
