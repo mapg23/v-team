@@ -5,6 +5,10 @@ import { callWorker } from "../src/Worker.mjs";
 
 const router = express.Router();
 
+/**
+ * GET /list
+ * Returns a list of all bikes.
+ */
 router.get('/list', async (req, res) => {
     try {
         const response = await callWorker('list');

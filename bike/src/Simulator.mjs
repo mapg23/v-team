@@ -100,7 +100,6 @@ class Simulator {
             speed: b.speed
         }));
 
-        console.log(data);
 
         parentPort?.postMessage({
             type: "telemetry",
@@ -188,7 +187,6 @@ class Simulator {
             for (let key in payload) {
                 this.cordinates[Number(key)] = payload[key];
             }
-            console.log(this.cordinates);
             return { event: 'Succesfully added routes', data: payload };
         } catch (error) {
             console.error('Invalid JSON structure', error.message);

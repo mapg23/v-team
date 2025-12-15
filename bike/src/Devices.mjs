@@ -3,14 +3,13 @@
 /**
  * Device Class, used to simulate a bike.
  *
- * =====================================================================
- * When changing bike class dont mess with order of constructor params.
- * That will mess the tests up!!!!
- * =====================================================================
+ * Supports:
+ *  - Legacy positional arguments
+ *  - Object-based constructor (preferred)
  */
 class Device {
   constructor(
-    id,
+    idOrOptions,
     cords,
     battery = 100,
     status = 10,
@@ -18,48 +17,96 @@ class Device {
     speed = 0,
     city_id = null,
   ) {
-    this.id = id;
-    this.cords = cords;
-    this.battery = battery;
-    this.status = status;
-    this.occupied = occupied;
-    this.speed = speed; // unused for now
-    this.city_id = city_id;
+    // Object-style constructor (preferred)
+    if (typeof idOrOptions === "object" && idOrOptions !== null) {
+      const {
+        id,
+        cords,
+        battery = 100,
+        status = 10,
+        occupied = false,
+        speed = 0,
+        city_id = null,
+      } = idOrOptions;
+
+      this.id = id;
+      this.cords = cords;
+      this.battery = battery;
+      this.status = status;
+      this.occupied = occupied;
+      this.speed = speed;
+      this.city_id = city_id;
+
+      // Positional constructor (legacy)
+    } else {
+      this.id = idOrOptions;
+      this.cords = cords;
+      this.battery = battery;
+      this.status = status;
+      this.occupied = occupied;
+      this.speed = speed;
+      this.city_id = city_id;
+    }
   }
 
   /**
-   * Getter for id
-   * @returns {Number} - id
+   * Getter for id.
+   * @returns {Number}
    */
   getId() {
     return this.id;
   }
 
-  /**
- * Method that changes bike position
- * @param {Array} cords - X and Y cord to change to
- * @returns Void
- */
-  move(cords) {
-    if (this.status > 50) {
-      return { event: "bike is unable to move, reason:", data: this.status };
-    }
+  // no method to set id, not mutable.
 
-    this.cords = cords;
+  /**
+   * Getter for city id.
+   * @returns {Number}
+   */
+  getCityId() {
+    return this.city_id;
   }
 
   /**
- * Method to change status.
- * @param {Number} status - Number that represents a state
- */
+   * Setter for city_id.
+   * @param {Number} city_id 
+   */
+  setCityId(city_id) {
+    this.city_id = city_id;
+  }
+
+  /**
+   * Getter for status
+   * @returns {Number}
+   */
+  getStatus() {
+    return this.status;
+  }
+
+  /**
+   * Setter for id.
+   * @param {Number} status 
+   */
   setStatus(status) {
     this.status = status;
   }
 
   /**
- * Method that will change status depending on health of bike
- * TODO: ADD MORE CONSTRAINS TO STATUS
- */
+   * Method to move bike.
+   * @param {Array}} cords 
+   * @returns  {Array}
+   */
+  move(cords) {
+    if (this.status > 50) {
+      return { event: "bike is unable to move", data: this.status };
+    }
+    this.cords = cords;
+  }
+
+
+  /**
+   * Method to self diagnose bike.
+   */
   selfDiagnose() {
     if (this.battery <= 20) {
       this.setStatus(50); // low battery

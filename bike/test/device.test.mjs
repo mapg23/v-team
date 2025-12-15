@@ -5,9 +5,30 @@ import Device from "../src/Devices.mjs";
 
 
 describe('Test device', () => {
-    test('Device initialization', () => {
-        const device = new Device(0, { x: 0, y: 0 }, 100, 10, false, 0);
+    const creeateMockDevice = (options = {}) => {
+        if (Object.keys(options).length === 0) {
+            return new Device({
+                id: 0,
+                cords: { x: 0, y: 0 },
+                battery: 100,
+                status: 10,
+                occupied: false,
+                speed: 0,
+                city_id: 0
+            });
+        }
+        return new Device(options);
+    }
 
+    test('Device initialization', () => {
+        const device = new Device({
+            id: 0,
+            cords: { x: 0, y: 0 },
+            battery: 100,
+            status: 10,
+            occupied: false,
+            speed: 0
+        });
         expect(device).toBeInstanceOf(Device);
     });
 
@@ -20,30 +41,41 @@ describe('Test device', () => {
     });
 
     test('Move method, bad status', () => {
-        const device = new Device(0, { x: 0, y: 0 }, 100, 10, false, 0);
-
-        device.status = 60;
+        const device = new Device({
+            id: 0,
+            cords: { x: 0, y: 0 },
+            battery: 100,
+            status: 10,
+            occupied: false,
+            speed: 0
+        })
+        device.setStatus(60);
 
         let res = device.move({ x: 100, y: 100 });
 
-        expect(res).toEqual({ event: 'bike is unable to move, reason:', data: 60 });
+        expect(res).toEqual({ event: 'bike is unable to move', data: 60 });
     });
 
-    // test('Self diagnostics method, high battery', () => {
-    //     const device = new Device(0, { x: 0, y:0}, 100, 10, false, 0);
-    //     device.status = 10;
-    //     device.battery = 21;
-    //     device.selfDiagnostics();
+    test('getId method', () => {
+        const device = creeateMockDevice();
 
-    //     expect(device.status).toEqual(50);
-    // });
+        expect(device.id).toBe(0);
 
-    // test('Self diagnostics method, low battery', () => {
-    //     const device = new Device(0, { x: 0, y:0}, 100, 10, false, 0);
-    //     device.status = 50;
-    //     device.battery = 10
-    //     device.selfDiagnostics();
+        expect(device.getId()).toBe(0);
+    })
 
-    //     expect(device.status).toEqual(10);
-    // });
+    test('getCityId && setCityId', () => {
+        const device = creeateMockDevice();
+        device.setCityId(123);
+
+        expect(device.getCityId()).toBe(123);
+    });
+
+    test('getStatus && setStatus', () => {
+        const device = creeateMockDevice();
+        expect(device.getStatus()).toBe(10);
+
+        device.setStatus(20);
+        expect(device.getStatus()).toBe(20)
+    });
 });

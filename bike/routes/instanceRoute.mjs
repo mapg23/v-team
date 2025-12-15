@@ -5,6 +5,10 @@ import { callWorker } from "../src/Worker.mjs";
 
 const router = express.Router();
 
+/**
+ * GET /heatbeat
+ * Used to call heartbeat.
+ */
 router.get('/heartbeat', async (req, res) => {
     try {
         const response = await callWorker('heartbeat');
@@ -15,21 +19,25 @@ router.get('/heartbeat', async (req, res) => {
     }
 });
 
-// cordinates params { bike_id : {...cordinates}, bike_id: {...cordinates}}
+/**
+ * GET /setRoute
+ * Route to set a pre-defined route 
+ */
 router.post('/setRoute', async (req, res) => {
-    let cordinates = req.body.cordinates;
-    // console.log(req.body);
-
+    let cordinates = req.body.cordinates || null;
     try {
         const response = await callWorker('setRoute', cordinates);
-        // console.log(response);
-
         res.json(response);
     } catch (error) {
         console.error(error);
     }
 });
 
+/**
+ * GET /start
+ * Route to start bikes and generate new ones.
+ * Dosent use the database or api.
+ */
 router.get('/start', async (req, res) => {
     try {
         const response = await callWorker('start-job');
@@ -45,6 +53,11 @@ router.get('/start', async (req, res) => {
     }
 });
 
+/**
+ * POST /start
+ * req.body.bikes = Array of bikes
+ * Route used to load bikes from database.
+ */
 router.post('/start', async (req, res) => {
     try {
         let bikes = req.body.bikes;
@@ -59,6 +72,10 @@ router.post('/start', async (req, res) => {
     }
 });
 
+/**
+ * GET /end
+ * Route used to end the simulation.
+ */
 router.get('/end', async (req, res) => {
     try {
         const response = await callWorker('end-job');

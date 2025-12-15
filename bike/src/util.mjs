@@ -1,3 +1,8 @@
+"use strict";
+/**
+ * Function to post bikes to api, uses worker thread messages to continously call this function.
+ * @param {Array} data - Array of bikes 
+ */
 async function forwardToMain(data) {
     try {
         await fetch('http://api:9091/telemetry', {
