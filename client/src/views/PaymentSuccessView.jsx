@@ -12,7 +12,6 @@ import React, { useEffect, useState } from "react";
 import {
   useStripe,
 } from "@stripe/react-stripe-js";
-import "./App.css";
 
 const SuccessIcon =
   <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
