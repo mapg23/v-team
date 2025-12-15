@@ -70,13 +70,12 @@ export default function createParkings(db = dbDefault) {
         },
 
         /**
-     * Retrieves all bikes currently located in a specific parking zone.
-     *
-     * @param {number} parkingId - The ID of the parking zone.
-     * @returns {Promise<Object>} An object containing the parking ID,
-     * the number of bikes, and a list of bike objects.
-     */
-
+         * Retrieves all bikes currently located in a specific parking zone.
+         *
+         * @param {number} parkingId - The ID of the parking zone.
+         * @returns {Promise<Object>} An object containing the parking ID,
+         * the number of bikes, and a list of bike objects.
+         */
         getBikesByParkingId: async function getBikesByParkingId(parkingId) {
             // Hämtar alla cyklar som står i parkeringszonen
             const bikes = await db.select(
