@@ -54,8 +54,8 @@ router.put(`/:id`,
     });
 
 router.get(`/hej`,
-    validation.idParam,
-    validation.checkValidationResult,
+    // validation.idParam,
+    // validation.checkValidationResult,
     async (req, res) => {
         console.log("get");
         return res.status(200).json({yo: "hej"});
