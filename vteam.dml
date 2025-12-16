@@ -17,7 +17,7 @@ INSERT INTO `cities_to_parking` (`id`, `city_id`, `parking_id`) VALUES
 (3, 3, 3);
 
 INSERT INTO `scooters`
-(`id`, `status`, `battery`, `longitude`, `latitude`, `occupied`, `city_id`)
+(`id`, `status`, `battery`, `latitude`, `longitude`, `occupied`, `city_id`)
 VALUES
 -- Bankeryd
 (1, 10, 88, 57.863800, 14.128300, 0, 1),
@@ -31,12 +31,6 @@ VALUES
 (5, 10, 55, 57.783100, 14.166800, 0, 3),
 (6, 10, 49, 57.782100, 14.164900, 0, 3);
 
-INSERT INTO `trips`
-(`id`, `user_id`, `scooter_id`, `cost`, `start_longitude`, `start_latitude`, `end_longitude`, `end_latitude`, `start_time`, `end_time`)
-VALUES
--- Bankeryd trip (User 1, Scooter 1)
-(1, 1, 1, 19.50, 57.863900, 14.128500, 57.862500, 14.127000,
- '2025-02-10 10:00:00', '2025-02-10 10:18:00');
 
  INSERT INTO `charging_zones` (`id`, `latitude`, `longitude`) VALUES
 (1, 57.863500, 14.129200),  -- Bankeryd
