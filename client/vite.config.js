@@ -7,9 +7,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: "0.0.0.0",
-    port: process.env.USER_CLIENT_PORT || 5174,
+    // port: process.env.USER_CLIENT_PORT || 5174
+    port: 5173,
     hmr: {
-      clientPort: process.env.USER_CLIENT_PORT || 5174
+      clientPort: 5173,
+      // clientPort: process.env.USER_CLIENT_PORT || 5174
     },
   },
   resolve: {

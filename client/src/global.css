@@ -1,0 +1,16 @@
+html,
+body,
+#root {
+    height: 100%;
+    overflow: hidden;
+}
+
+.page {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+nav {
+    padding-bottom: env(safe-area-inset-bottom);
+}
