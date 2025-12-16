@@ -1,17 +1,12 @@
-
-// export default function PaymentSuccessView() {
-
-//   return (
-//     <div>
-//         <h1>Success</h1>
-//     </div>
-//   );
-// };
-
 import React, { useEffect, useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
 import {
-  useStripe,
+    Elements,
+    useStripe,
 } from "@stripe/react-stripe-js";
+
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC);
 
 const SuccessIcon =
   <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,7 +48,7 @@ const STATUS_CONTENT_MAP = {
   }
 };
 
-export default function PaymentSuccessView() {
+function SuccessContent() {
   const stripe = useStripe();
 
   const [status, setStatus] = useState("default");
@@ -111,4 +106,12 @@ export default function PaymentSuccessView() {
       <a id="retry-button" href="/checkout">Test another</a>
     </div>
   );
-}
+};
+
+export default function PaymentSuccessView() {
+    return (
+        <Elements stripe={stripePromise}>
+            <SuccessContent />
+        </Elements>
+    );
+};

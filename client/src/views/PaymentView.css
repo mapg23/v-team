@@ -11,6 +11,7 @@
   h2 {
     margin-top: 10vh;
     margin-bottom: 2rem;
+    color: #083a44;
   }
 }
 
@@ -42,10 +43,11 @@ form {
 /* Buttons and links */
 button {
   background: #083a44;
+  background: #f4574f;
   font-family: Arial, sans-serif;
   color: #ffffff;
   margin-top: 1rem;
-  border-radius: 4px;
+  border-radius: 8px;
   border: 0;
   padding: 12px 16px;
   font-size: 16px;
