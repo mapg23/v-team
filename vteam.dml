@@ -1,9 +1,9 @@
-INSERT INTO `users` (`id`, `username`, `password`, `email`) VALUES
-(1, 'alice', 'hashed_pw_1', 'alice@example.com'),
-(2, 'bob', 'hashed_pw_2', 'bob@example.com'),
-(3, 'charlie', 'hashed_pw_3', 'charlie@example.com');
+INSERT INTO `users` (`username`, `password`, `email`) VALUES
+('alice', 'hashed_pw_1', 'alice@example.com'),
+('bob', 'hashed_pw_2', 'bob@example.com'),
+('charlie', 'hashed_pw_3', 'charlie@example.com');
 
-INSERT INTO `parking_zones` (`id`, `max_lat`, `max_long`, `min_lat`, `min_long`) VALUES
+INSERT INTO `parking_zones` (`city_id`, `max_lat`, `max_long`, `min_lat`, `min_long`) VALUES
 -- Bankeryd
 (1, 57.865000, 14.130500, 57.860000, 14.125000),
 -- Habo
@@ -11,10 +11,10 @@ INSERT INTO `parking_zones` (`id`, `max_lat`, `max_long`, `min_lat`, `min_long`)
 -- Jönköping (center)
 (3, 57.784000, 14.168000, 57.781000, 14.162000);
 
-INSERT INTO `cities_to_parking` (`id`, `city_id`, `parking_id`) VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3);
+INSERT INTO `cities_to_parking` (`city_id`, `parking_id`) VALUES
+(1, 1),
+(2, 2),
+(3, 3);
 
 INSERT INTO `scooters`
 (`id`, `status`, `battery`, `latitude`, `longitude`, `occupied`, `city_id`)
