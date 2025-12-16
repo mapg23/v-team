@@ -2,8 +2,16 @@
 import { useEffect, useRef } from "react";
 import styles from "./Map-component.module.css";
 import bikeIconUrl from "../../assets/bike.png";
+import { FaChargingStation } from "react-icons/fa";
+import { renderToStaticMarkup } from "react-dom/server";
+import { divIcon, DivIcon } from "leaflet";
 
-export default function MapComponent({ coords, bikes }) {
+export default function MapComponent({
+  coords,
+  bikes,
+  parkingZones,
+  chargingZones,
+}) {
   const mapRef = useRef(null);
   const markersRef = useRef([]);
 
@@ -53,7 +61,8 @@ export default function MapComponent({ coords, bikes }) {
 
     // Lägg till nya markers
     bikes.forEach((bike) => {
-      const bikeClass = bike.occupied === 10 ? styles["bike-free"] : styles["bike-used"];
+      const bikeClass =
+        bike.occupied === 10 ? styles["bike-free"] : styles["bike-used"];
       const icon = L.icon({
         iconUrl: bikeIconUrl,
         iconSize: [24, 24],
@@ -99,6 +108,97 @@ export default function MapComponent({ coords, bikes }) {
       markersRef.current.push(marker);
     });
   }, [bikes]);
+
+  /**
+   * Render parkingZones
+   */
+  // useEffect(() => {
+  //   const map = mapRef.current;
+  //   if (!map) return;
+
+  //   // Ta bort gamla markers
+  //   // markersRef.current.forEach((marker) => marker.remove());
+  //   // markersRef.current = [];
+
+  //   // Lägg till nya markers
+  //   bikes.forEach((bike) => {
+  //     const bikeClass =
+  //       bike.occupied === 10 ? styles["bike-free"] : styles["bike-used"];
+  //     const icon = L.icon({
+  //       iconUrl: bikeIconUrl,
+  //       iconSize: [24, 24],
+  //       iconAnchor: [12, 12],
+  //       popupAnchor: [0, 0],
+  //       className: `${bikeClass}`,
+  //     });
+
+  //     // Markers must be in Latitude, Longitude - else wont show!!
+  //     const marker = L.marker([bike.cords.y, bike.cords.x], { icon })
+  //       .bindPopup(
+  //         `
+  //         parking
+  //         `
+  //       )
+  //       .openPopup()
+  //       .addTo(map);
+  //     // markersRef.current.push(marker);
+  //   });
+  // }, [parkingZones]);
+
+  /**
+   * Render charginZones
+   */
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    const chargingStationIcon = renderToStaticMarkup(<FaChargingStation />);
+
+    const customIcon = divIcon({
+      html: chargingStationIcon,
+      className: styles["charging-station"],
+    });
+
+    // Lägg till nya markers
+    chargingZones.forEach((zone) => {
+      // Markers must be in Latitude, Longitude - else wont show!!
+      L.marker([zone.latitude, zone.longitude], {
+        icon: customIcon,
+      })
+        .bindPopup(
+          `
+          <table>
+          <tr>
+            <th>Station id:</th>
+            <td><a href="/station:${zone.id}">${zone.id}</td>
+          </tr>
+          <tr>
+            <th>City id:</th>
+            <td>${zone.city_id}</td>
+          </tr>
+          <tr>
+            <th>Name:</th>
+            <td>${zone.name}</td>
+          </tr>
+          <tr>
+            <th>Latitude:</th>
+            <td>${zone.latitude}</td>
+          </tr>
+          <tr>
+            <th>Longitude:</th>
+            <td>${zone.longitude}</td>
+          </tr>
+          <tr>
+            <th>Capacity:</th>
+            <td>${zone.capacity}</td>
+          </tr>
+          </table>
+          `
+        )
+        .openPopup()
+        .addTo(map);
+    });
+  }, [parkingZones]);
 
   return <div id="map" className={styles.map}></div>;
 }

@@ -34,6 +34,12 @@ export default function InspectCityView() {
   // Sync bikes from database
   const [bikes, setBikes] = useState([]);
 
+  // Sync parkings from database
+  const [parkingZones, setParkingZones] = useState([]);
+
+  // Sync charging zones from database
+  const [chargingZones, setChargingZones] = useState([]);
+
   // Map different bike status
   const [bikeStatusMap, setBikeStatusMap] = useState({
     available: null,
@@ -45,7 +51,7 @@ export default function InspectCityView() {
   // -----------------------------
   function updateBikes(bikeData) {
     const bikesInCity = bikeData.filter((bike) => bike.city_id === Number(cityId))
-    console.log(bikesInCity)
+    // console.log(bikesInCity)
     setBikes(bikesInCity);
     updateBikeStatus(bikesInCity);
   }
@@ -87,6 +93,13 @@ export default function InspectCityView() {
       const answer = await bikeService.startBikeSync();
       console.log(answer);
 
+      // Get parking zones
+      // const parkZones = await CityService.getParkingZonesInCity(cityId);
+      // console.log(parkZones);
+
+      // Get charging zones
+      setChargingZones(await CityService.getChargingStationsInCity(cityId));
+
       // Loading is done when all data is fetched
       setLoading(false);
     }
@@ -112,7 +125,7 @@ export default function InspectCityView() {
         <CityTable data={cityDetails} vertical={true} />
         <PieChart bikeStatusMap={bikeStatusMap} />
       </div>
-      <Map coords={cityDetails} bikes={bikes} />
+      <Map coords={cityDetails} bikes={bikes} parkingZones={parkingZones} chargingZones={chargingZones}/>
     </>
   );
 }

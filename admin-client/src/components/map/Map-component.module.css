@@ -5,9 +5,15 @@
 }
 
 .bike-used {
-  background-color: #0096FF;
+  color: #0096FF;
+  /* background-color: #0096FF; */
 }
 
 .bike-free {
   background-color: green;
+}
+
+.charging-station {
+  font-size: 1.2rem;
+  color: black
 }
