@@ -9,6 +9,7 @@ import "./PaymentView.css";
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
+// Test card: 42424242... date=future date, cvc=[0-9]{3}
 
 // public test key.
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC);
@@ -21,7 +22,7 @@ export default function PaymentView() {
   useEffect(() => {
     if (!selectedAmount) { return };
     // Create PaymentIntent as soon as the page loads
-    fetch("http://localhost:9091/api/v1/payment/create-intent", {
+    fetch("http://localhost:9091/api/v1/payments/create-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ amount: selectedAmount }),
