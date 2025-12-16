@@ -5,7 +5,9 @@ import { callWorker } from "../src/Worker.mjs";
 
 const router = express.Router();
 
-
+/**
+ * GET /bike/id - Returns specific bike with id.
+ */
 router.get('bike/:id', async (req, res) => {
     let id = req.params.id;
     let response = await callWorker('get-bike', { id: id });
@@ -13,6 +15,11 @@ router.get('bike/:id', async (req, res) => {
     res.json(response['data']);
 });
 
+/**
+ * GET /move/id/x/y - Moves a specific bike based on x and y.
+ * X = Longitude.
+ * Y = Latitued.
+ */
 router.get('/move/:id/:x/:y', async (req, res) => {
     let x = req.params.x;
     let y = req.params.y;

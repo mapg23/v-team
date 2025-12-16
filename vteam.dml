@@ -1,9 +1,14 @@
-INSERT INTO `users` (`id`, `username`, `password`, `email`) VALUES
-(1, 'alice', 'hashed_pw_1', 'alice@example.com'),
-(2, 'bob', 'hashed_pw_2', 'bob@example.com'),
-(3, 'charlie', 'hashed_pw_3', 'charlie@example.com');
+INSERT INTO `users` (`username`, `password`, `email`) VALUES
+('alice', 'hashed_pw_1', 'alice@example.com'),
+('bob', 'hashed_pw_2', 'bob@example.com'),
+('charlie', 'hashed_pw_3', 'charlie@example.com');
 
-INSERT INTO `parking_zones` (`id`, `max_lat`, `max_long`, `min_lat`, `min_long`) VALUES
+INSERT INTO `cities` (`name`, `latitude`, `longitude`) VALUES 
+('Bankeryd', 14.130500, 57.860000),
+('Habo', 14.055000, 57.914000),
+('Jönköping', 14.168000, 57.781000);
+
+INSERT INTO `parking_zones` (`city_id`, `max_lat`, `max_long`, `min_lat`, `min_long`) VALUES
 -- Bankeryd
 (1, 57.865000, 14.130500, 57.860000, 14.125000),
 -- Habo
@@ -11,39 +16,33 @@ INSERT INTO `parking_zones` (`id`, `max_lat`, `max_long`, `min_lat`, `min_long`)
 -- Jönköping (center)
 (3, 57.784000, 14.168000, 57.781000, 14.162000);
 
-INSERT INTO `cities_to_parking` (`id`, `city_id`, `parking_id`) VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3);
+INSERT INTO `cities_to_parking` (`city_id`, `parking_id`) VALUES
+(1, 1),
+(2, 2),
+(3, 3);
 
 INSERT INTO `scooters`
-(`id`, `status`, `battery`, `longitude`, `latitude`, `occupied`, `city_id`)
+(`status`, `battery`, `latitude`, `longitude`, `occupied`, `city_id`)
 VALUES
 -- Bankeryd
-(1, 10, 88, 57.863800, 14.128300, 0, 1),
-(2, 10, 76, 57.862900, 14.127100, 0, 1),
+(10, 88, 57.863800, 14.128300, 0, 1),
+(10, 76, 57.862900, 14.127100, 0, 1),
 
 -- Habo
-(3, 10, 92, 57.916500, 14.053400, 0, 2),
-(4, 10, 65, 57.915200, 14.052000, 0, 2),
+(10, 92, 57.916500, 14.053400, 0, 2),
+(10, 65, 57.915200, 14.052000, 0, 2),
 
 -- Jönköping
-(5, 10, 55, 57.783100, 14.166800, 0, 3),
-(6, 10, 49, 57.782100, 14.164900, 0, 3);
+(10, 55, 57.783100, 14.166800, 0, 3),
+(10, 49, 57.782100, 14.164900, 0, 3);
 
-INSERT INTO `trips`
-(`id`, `user_id`, `scooter_id`, `cost`, `start_longitude`, `start_latitude`, `end_longitude`, `end_latitude`, `start_time`, `end_time`)
-VALUES
--- Bankeryd trip (User 1, Scooter 1)
-(1, 1, 1, 19.50, 57.863900, 14.128500, 57.862500, 14.127000,
- '2025-02-10 10:00:00', '2025-02-10 10:18:00');
 
- INSERT INTO `charging_zones` (`id`, `latitude`, `longitude`) VALUES
-(1, 57.863500, 14.129200),  -- Bankeryd
-(2, 57.916800, 14.053100),  -- Habo
-(3, 57.783000, 14.166500);  -- Jönköping
+ INSERT INTO `charging_zones` (`city_id`, `name`, `latitude`, `longitude`, `capacity`) VALUES
+(1, 'Den första', 57.863500, 14.129200, 100),  -- Bankeryd
+(2, 'Den andra', 57.916800, 14.053100, 100),  -- Habo
+(3, 'Den tredje', 57.783000, 14.166500, 100);  -- Jönköping
 
-INSERT INTO cities_to_charging (`id`, `city_id`, `charging_id`) VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3);
+INSERT INTO cities_to_charging (`city_id`, `charging_id`) VALUES
+(1, 1),
+(2, 2),
+(3, 3);

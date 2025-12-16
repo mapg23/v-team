@@ -18,7 +18,7 @@ services:
 
   # phpMyAdmin
   phpmyadmin:
-    image: phpmyadmin:latest
+    image: phpmyadmin:5.2.1
     container_name: phpmyadmin
     restart: always
     depends_on:
@@ -28,6 +28,9 @@ services:
       PMA_PORT: 3306
       PMA_USER: ${MARIADB_USER}
       PMA_PASSWORD: ${MARIADB_PASSWORD}
+
+    volumes:
+      - "./php.ini:/usr/local/etc/php/conf.d/custom.ini"
     ports:
       - "${PHPMYADMIN_PORT:-8081}:80"
     networks:
