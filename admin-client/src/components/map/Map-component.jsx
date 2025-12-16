@@ -1,7 +1,6 @@
 /* global L */
 import { useEffect, useRef } from "react";
 import styles from "./Map-component.module.css";
-import bikeIconUrl from "../../assets/bike.png";
 import { FaChargingStation } from "react-icons/fa";
 import { MdElectricScooter } from "react-icons/md";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -124,38 +123,53 @@ export default function MapComponent({
   /**
    * Render parkingZones
    */
-  // useEffect(() => {
-  //   const map = mapRef.current;
-  //   if (!map) return;
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
 
-  //   // Ta bort gamla markers
-  //   // markersRef.current.forEach((marker) => marker.remove());
-  //   // markersRef.current = [];
-
-  //   // Lägg till nya markers
-  //   bikes.forEach((bike) => {
-  //     const bikeClass =
-  //       bike.occupied === 10 ? styles["bike-free"] : styles["bike-used"];
-  //     const icon = L.icon({
-  //       iconUrl: bikeIconUrl,
-  //       iconSize: [24, 24],
-  //       iconAnchor: [12, 12],
-  //       popupAnchor: [0, 0],
-  //       className: `${bikeClass}`,
-  //     });
-
-  //     // Markers must be in Latitude, Longitude - else wont show!!
-  //     const marker = L.marker([bike.cords.y, bike.cords.x], { icon })
-  //       .bindPopup(
-  //         `
-  //         parking
-  //         `
-  //       )
-  //       .openPopup()
-  //       .addTo(map);
-  //     // markersRef.current.push(marker);
-  //   });
-  // }, [parkingZones]);
+    // Lägg till nya parking rectangles
+    parkingZones.forEach((parking) => {
+      const polygonCoords = [
+        [parking.max_lat, parking.min_long], // nordväst (max_lat, min_long)
+        [parking.max_lat, parking.max_long], // nordost (max_lat, max_long)
+        [parking.min_lat, parking.max_long], // sydost (min_lat, max_long)
+        [parking.min_lat, parking.min_long], // sydväst (min_lat, min_long)
+      ];
+      L.polygon(polygonCoords, { color: "red" })
+        .bindPopup(
+          `
+          <table>
+          <tr>
+            <th>Parking ID:</th>
+            <td><a href="/parking/${parking.id}">${parking.id}</td>
+          </tr>
+          <tr>
+            <th>City id:</th>
+            <td>${parking.city_id}</td>
+          </tr>
+          <tr>
+            <th>Max_lat :</th>
+            <td>${parking.max_lat}</td>
+          </tr>
+          <tr>
+            <th>Max_long:</th>
+            <td>${parking.max_long}</td>
+          </tr>
+          <tr>
+            <th>Min_lat</th>
+            <td>${parking.min_lat}</td>
+          </tr>
+          <tr>
+            <th>Min_long:</th>
+            <td>${parking.min_long}</td>
+          </tr>
+          </table>
+          `
+        )
+        .openPopup()
+        .addTo(map);
+    });
+  }, [parkingZones]);
 
   /**
    * Render charginZones

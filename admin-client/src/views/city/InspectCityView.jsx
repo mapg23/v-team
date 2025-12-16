@@ -50,7 +50,9 @@ export default function InspectCityView() {
   // Update bikes from socket
   // -----------------------------
   function updateBikes(bikeData) {
-    const bikesInCity = bikeData.filter((bike) => bike.city_id === Number(cityId))
+    const bikesInCity = bikeData.filter(
+      (bike) => bike.city_id === Number(cityId)
+    );
     // console.log(bikesInCity)
     setBikes(bikesInCity);
     updateBikeStatus(bikesInCity);
@@ -60,15 +62,12 @@ export default function InspectCityView() {
    * Filter different status
    */
   function updateBikeStatus(bikes) {
-    const availableCount = bikes.filter(bike => bike.occupied === 10).length;
+    const availableCount = bikes.filter((bike) => bike.occupied === 10).length;
     const usedCount = bikes.length - availableCount;
 
-    setBikeStatusMap(prev => {
+    setBikeStatusMap((prev) => {
       // Prev är befintliga värdet, om inget ändras, returna samma
-      if (
-        prev.available === availableCount &&
-        prev.used === usedCount
-      ) {
+      if (prev.available === availableCount && prev.used === usedCount) {
         return prev;
       }
 
@@ -86,16 +85,14 @@ export default function InspectCityView() {
   useEffect(() => {
     async function fetchData() {
       // get city details based on params
-      const cityResponse = await CityService.getCityDetailsById(cityId);
-      setcityDetails(cityResponse);
+      setcityDetails(await CityService.getCityDetailsById(cityId));
 
       // Start Bike Sync
       const answer = await bikeService.startBikeSync();
-      console.log(answer);
+      // console.log(answer);
 
       // Get parking zones
-      // const parkZones = await CityService.getParkingZonesInCity(cityId);
-      // console.log(parkZones);
+      setParkingZones(await CityService.getParkingZonesInCity(cityId));
 
       // Get charging zones
       setChargingZones(await CityService.getChargingStationsInCity(cityId));
@@ -125,7 +122,12 @@ export default function InspectCityView() {
         <CityTable data={cityDetails} vertical={true} />
         <PieChart bikeStatusMap={bikeStatusMap} />
       </div>
-      <Map coords={cityDetails} bikes={bikes} parkingZones={parkingZones} chargingZones={chargingZones}/>
+      <Map
+        coords={cityDetails}
+        bikes={bikes}
+        parkingZones={parkingZones}
+        chargingZones={chargingZones}
+      />
     </>
   );
 }
