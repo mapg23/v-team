@@ -40,7 +40,6 @@ DROP TABLE IF EXISTS `users`;
 --
 -- Tabellstruktur `cards`
 --
-ALTER TABLE IF EXISTS `cards` AUTO_INCREMENT = 1;
 CREATE TABLE `cards` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -57,7 +56,6 @@ CREATE TABLE `cards` (
 -- Tabellstruktur `charging_zones`
 --
 
-ALTER TABLE IF EXISTS `charging_zones` AUTO_INCREMENT = 1;
 CREATE TABLE `charging_zones` (
   `id` int(11) NOT NULL,
   `city_id` int(11) NOT NULL,
@@ -76,7 +74,6 @@ CREATE TABLE `charging_zones` (
 -- Tabellstruktur `cities`
 --
 
-ALTER TABLE IF EXISTS `cities` AUTO_INCREMENT = 1;
 CREATE TABLE `cities` (
   `id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL,
@@ -89,7 +86,6 @@ CREATE TABLE `cities` (
 --
 -- Tabellstruktur `cities_to_charging`
 --
-ALTER TABLE IF EXISTS `cities_to_charging` AUTO_INCREMENT = 1;
 CREATE TABLE `cities_to_charging` (
   `id` int(11) NOT NULL,
   `city_id` int(11) NOT NULL,
@@ -102,7 +98,6 @@ CREATE TABLE `cities_to_charging` (
 -- Tabellstruktur `cities_to_parking`
 --
 
-ALTER TABLE IF EXISTS `cities_to_parking` AUTO_INCREMENT = 1;
 CREATE TABLE `cities_to_parking` (
   `id` int(11) NOT NULL,
   `city_id` int(11) NOT NULL,
@@ -171,7 +166,6 @@ CREATE TABLE `scooter_in_use` (
 -- Tabellstruktur `trips`
 --
 
-ALTER TABLE IF EXISTS `trips` AUTO_INCREMENT = 1;
 CREATE TABLE `trips` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -191,7 +185,6 @@ CREATE TABLE `trips` (
 -- Tabellstruktur `users`
 --
 
-ALTER TABLE IF EXISTS `users` AUTO_INCREMENT = 1;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(64) NOT NULL,
