@@ -54,7 +54,28 @@ const stationService = {
       console.error(error);
       return [];
     }
-  }
+  },
+
+  /**
+   * Get stations in city by id
+   *
+   * @return {Json} array of objects
+   */
+  getBikesInStation: async function getBikesInStation(stationId) {
+    try {
+      const response = await fetch(`${API}/stations/${stationId}/bikes`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  },
 };
 
 export default stationService;

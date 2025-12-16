@@ -4,6 +4,7 @@ import CityTable from "components/table/CityTable";
 import UserTable from "components/table/UserTable";
 import userService from "services/users";
 import CityDropDown from "../../components/input/CityDropDown";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Home view for admin
@@ -13,6 +14,8 @@ import CityDropDown from "../../components/input/CityDropDown";
 function HomeView() {
   // Only render elements when loading is false
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
 
   // Array containing City Objects with details
   // [ { id: null,
@@ -54,11 +57,19 @@ function HomeView() {
    */
   async function getAllCityDetails(arrayOfCities) {
     const promises = arrayOfCities.map((city) =>
-      CityService.getCityDetails(city.id)
+      CityService.getCityDetailsById(city.id)
     );
     // Vänta tills ALLA är klara
     const allCityDetails = await Promise.all(promises);
     setAllCityDetails(allCityDetails);
+  }
+
+  /**
+   * Method for handling the selectionChange
+   * @param {id} cityId redirect to city/:id
+   */
+  function redirectToCity(cityId) {
+    navigate(`/city/${cityId}`);
   }
 
   // Visa en översikt endast om användare inte valt stad
@@ -67,7 +78,7 @@ function HomeView() {
 
   return (
     <>
-      <CityDropDown></CityDropDown>
+      <CityDropDown action={redirectToCity}></CityDropDown>
       <h1>Överblick</h1>
       <CityTable data={allCityDetails} />
       <h2>Users</h2>

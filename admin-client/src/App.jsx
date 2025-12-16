@@ -8,7 +8,9 @@ import {
 import LoginView from "./views/auth/LoginView";
 import HomeView from "./views/home/HomeView";
 import CityView from "./views/city/CityView";
+import BikeView from "./views/bike/BikeView";
 import InspectCityView from "./views/city/InspectCityView";
+import InspectBikeView from "./views/bike/InspectBikeView";
 import ProfileView from "./views/user/ProfileView";
 import Navbar from "./components/nav/Nav";
 import { useEffect, useState } from "react";
@@ -61,6 +63,8 @@ function App() {
               <Route path="/user/:id" element={<ProfileView />} />
               <Route path="/city/:id" element={<InspectCityView />} />
               <Route path="/cities" element={<CityView />} />
+              <Route path="/bikes/:id" element={<InspectBikeView />} />
+              <Route path="/bikes" element={<BikeView />} />
               <Route path="*" element={<Navigate to="/welcome" />} />
             </Routes>
           </div>

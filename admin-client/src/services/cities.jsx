@@ -34,6 +34,26 @@ const cityService = {
   },
 
   /**
+   * Get city details based on city id
+   * @param {int} cityId get city with id
+   */
+  getCityDetailsById: async function getCityDetailsById(id) {
+    try {
+      const response = await fetch(`${API}/cities/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json();
+    } catch (error) {
+        console.error(error);
+      return [];
+    }
+  },
+
+  /**
    * Add new city in database
    * @returns {Object} new city
    */
@@ -51,12 +71,6 @@ const cityService = {
       });
 
       return await response.json();
-
-      // if (!response.ok) {
-      //   throw new Error(`HTTP error on addNewCity! Status: ${response.status}`);
-      // }
-      // const responseData = await response.json();
-      // return responseData;
     } catch (error) {
       console.error(error);
       return [];
@@ -80,7 +94,28 @@ const cityService = {
         },
       });
 
-      return await response.status
+      return await response.status;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  },
+
+  /**
+   * Get stations in city by id
+   * 
+   * @return {Json} array of objects
+   */
+  getStationsInCity: async function getStationsInCity(cityId) {
+    try {
+      const response = await fetch(`${API}/cities/${cityId}/stations`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json()
 
     } catch (error) {
         console.error(error);
@@ -89,29 +124,23 @@ const cityService = {
   },
 
   /**
-   * Get City details
-   * @param {int} id for the city
-   * @return {Object} { "id": 1, "name": "Stockholm", "stations": 5, "bikes": 240 }
+   * Get stations in city by id
+   * 
+   * @return {Json} array of objects
    */
-  getCityDetails: async function getCityDetails(id) {
+  getParkingsInCity: async function getParkingsInCity(cityId) {
     try {
-      const response = await fetch(`${API}/cities/${id}`, {
+      const response = await fetch(`${API}/cities/${cityId}/parkerings`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on getAllCities! Status: ${response.status}`
-        );
-      }
+      return await response.json()
 
-      const responseData = await response.json();
-      return responseData;
     } catch (error) {
-      console.error(error);
+        console.error(error);
       return [];
     }
   },
@@ -133,16 +162,10 @@ const cityService = {
         },
       });
 
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on getAllCities! Status: ${response.status}`
-        );
-      }
-
-      const responseData = await response.json();
-      return responseData;
+      return await response.json();
+      
     } catch (error) {
-      console.error(error);
+        console.error(error);
       return [];
     }
   },
@@ -178,6 +201,5 @@ const cityService = {
     }
   },
 };
-
 
 export default cityService;

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export default function PieChart({ total, used }) {
+export default function PieChart({ bikeStatusMap }) {
   const canvasRef = useRef(null); // istället för använda document.getElementByid
   const chartRef = useRef(null); // för att spara instans
 
@@ -9,16 +9,15 @@ export default function PieChart({ total, used }) {
     if (!window.Chart) return; // om CDN inte hunnit ladda
 
     const ctx = canvasRef.current;
-    const free = total - used;
 
     chartRef.current = new Chart(ctx, {
       type: "pie",
       data: {
-        labels: ["Lediga cyklar", "Hyrda cyklar"],
+        labels: ["Hyrda cyklar", "Lediga cyklar"],
         datasets: [
           {
-            data: [free, used],
-            backgroundColor: ["#ff5555", "#55cc55"], // röd / grön
+            data: [bikeStatusMap.used, bikeStatusMap.available],
+            backgroundColor: ["#0096FF", "#55cc55"], // blue / grön
           },
         ],
       },
@@ -33,10 +32,10 @@ export default function PieChart({ total, used }) {
     return () => {
       if (chartRef.current) chartRef.current.destroy();
     };
-  }, [total, used]); // om dessa ändras körs return
+  }, [bikeStatusMap]); // om dessa ändras körs rerender
 
   return (
-    <div style={{ width: "300px", height: "300px" }}>
+    <div style={{ width: "250px", height: "250px" }}>
       <canvas ref={canvasRef} />
     </div>
   );

@@ -3,8 +3,16 @@ import validateJsonBody from '../middleware/validateJsonBody.mjs';
 import cityHelpers from '../helpers/validateCity.mjs';
 import createCities from "../models/cities.mjs";
 import createBikes from "../models/bikes.mjs";
+import createStations from "../models/stations.mjs";
+import createParkings from "../models/parkings.mjs";
 
-export default function createCityRouter(cities = createCities(), bikes = createBikes()) {
+
+export default function createCityRouter(
+    cities = createCities(),
+    bikes = createBikes(),
+    stations = createStations(),
+    parkings = createParkings()
+) {
     const route = express.Router();
 
     route.post(`/cities`, validateJsonBody, async (req, res) => {
@@ -13,7 +21,7 @@ export default function createCityRouter(cities = createCities(), bikes = create
         if (!name) {
             return res.status(400).json({ error: 'Name is missing' });
         }
-        // Anropa en funktion som hämtar lat, lon via Nominatim.
+        // Anropar en funktion som hämtar lat, lon via Nominatim.
         const location = await cityHelpers.getGeoCoordinates(name);
 
         if (!location) {
@@ -22,7 +30,7 @@ export default function createCityRouter(cities = createCities(), bikes = create
 
         const { latitude, longitude } = location;
 
-        // Kolla om staden redan finns
+        // Kollar om staden redan finns
         const existingCity = await cities.getCityByName(name);
 
         if (existingCity.length > 0) {
@@ -42,22 +50,6 @@ export default function createCityRouter(cities = createCities(), bikes = create
         }
     });
 
-    // route.get(`/cities/:id`, async (req, res) => {
-    //     const idError = cityHelpers.validateId(req.params.id);
-
-    //     if (idError) {
-    //         return res.status(400).json({ error: idError });
-    //     }
-    //     try {
-    //         const city = await cities.getCityById(req.params.id);
-
-    //         return res.status(200).json(city);
-    //     } catch (err) {
-    //         console.error(err);
-    //         return res.status(500).json({ error: 'Could not fetch city' });
-    //     }
-    // });
-
     route.get(`/cities/:id`, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
 
@@ -66,15 +58,17 @@ export default function createCityRouter(cities = createCities(), bikes = create
         }
 
         try {
-            const city = await cities.getCityDetails(req.params.id);
+            const city = await cities.getCityDetails(Number(req.params.id));
 
             if (!city) {
                 return res.status(404).json({ error: 'City not found' });
             }
 
-            // Konverterar BigInt till Number innan JSON
+            // Konverterar id och counts till Number.
             city.id = Number(city.id);
-            city.bike_count = Number(city.bike_count);
+            city.bikeCount = Number(city.bikeCount);
+            city.stationCount = Number(city.stationCount);
+            city.parkingCount = Number(city.parkingCount);
 
             return res.status(200).json(city);
         } catch (err) {
@@ -82,7 +76,6 @@ export default function createCityRouter(cities = createCities(), bikes = create
             return res.status(500).json({ error: 'Could not fetch city' });
         }
     });
-
 
     route.get(`/cities`, async (req, res) => {
         try {
@@ -115,7 +108,6 @@ export default function createCityRouter(cities = createCities(), bikes = create
         }
 
         try {
-            // Uppdaterar staden.
             await cities.updateCity(req.params.id, req.body);
 
             const updatedCity = await cities.getCityById(req.params.id);
@@ -169,20 +161,68 @@ export default function createCityRouter(cities = createCities(), bikes = create
         }
     });
 
+    route.get('/cities/:id/stations', async (req, res) => {
+        try {
+            const cityId = Number(req.params.id);
+
+            if (isNaN(cityId)) {
+                return res.status(400).json({ error: 'Invalid city id' });
+            }
+
+            const city = await cities.getCityById(cityId);
+
+            if (!city[0]) {
+                return res.status(404).json({ error: 'City not found' });
+            }
+
+            const stationsList = await stations.getStationsByCityId(cityId);
+
+            return res.status(200).json(stationsList);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Could not fetch stations' });
+        }
+    });
+
+    route.get('/cities/:id/parkings', async (req, res) => {
+        try {
+            const cityId = Number(req.params.id);
+
+            if (isNaN(cityId)) {
+                return res.status(400).json({ error: 'Invalid city id' });
+            }
+
+            const city = await cities.getCityById(cityId);
+
+            if (!city[0]) {
+                return res.status(404).json({ error: 'City not found' });
+            }
+
+            const parkingsList = await parkings.getParkingsByCityId(cityId);
+
+            return res.status(200).json(parkingsList);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Could not fetch parking zones' });
+        }
+    });
+
     route.get(`/cities/:id/bike/:bikeId`, async (req, res) => {
         try {
             const cityId = Number(req.params.id);
             const bikeId = Number(req.params.bikeId);
 
-            // Kolla att staden finns
+            // Kollar att staden finns
             const city = await cities.getCityById(cityId);
 
-            if (!city[0]) {return res.status(404).json({ error: "City not found" });}
+            if (!city[0]) {
+                return res.status(404).json({ error: "City not found" });
+            }
 
-            // Hämta cykeln och kolla att den tillhör staden
+            // Hämtar cykeln och kolla att den tillhör staden
             const bike = await bikes.getBikeById(bikeId);
 
-            if (!bike[0] || bike[0].city_id !== cityId) {
+            if (!bike[0] || bike[0].cityId !== cityId) {
                 return res.status(404).json({ error: "Bike not found in this city" });
             }
 

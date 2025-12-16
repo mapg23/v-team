@@ -22,7 +22,7 @@ export default async function startSimulator() {
             body: JSON.stringify({ bikes: bikesList })
         });
 
-        console.log(`Simulator started with ${bikesList.length} bikes`);
+        // console.log(`Simulator started with ${bikesList.length} bikes`);
     } catch (err) {
         console.error("Failed to start simulator:", err);
     }

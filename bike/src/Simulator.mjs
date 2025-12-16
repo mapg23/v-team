@@ -16,9 +16,9 @@ class Simulator {
 
     /**
      * Constructor for simulator
-     * @param {Number} totalBikes 
-     * @param {Array} bikes 
-     * @param {Array} cordinates 
+     * @param {Number} totalBikes
+     * @param {Array} bikes
+     * @param {Array} cordinates
      */
     constructor(totalBikes = 1, bikes = [], cordinates = {}) {
         this.totalBikes = totalBikes;
@@ -28,7 +28,7 @@ class Simulator {
 
     /**
      * Method to set pre-defined cordinates.
-     * @param {Array} coords 
+     * @param {Array} coords
      */
     setCordinates(coords) {
         this.cordinates = coords;
@@ -100,6 +100,7 @@ class Simulator {
             speed: b.speed
         }));
 
+
         parentPort?.postMessage({
             type: "telemetry",
             data,
@@ -108,7 +109,7 @@ class Simulator {
 
     /**
      * Method that starts simulator with pre-defined bikes from database.
-     * @param {Array} payload 
+     * @param {Array} payload
      * @returns {Array|void}
      */
     startFromMemory(payload) {
@@ -116,18 +117,15 @@ class Simulator {
         // Start bike movement
         this.bikes = [];
         for (let bike of payload) {
-            let cleaned = bike.location.replace(/\s+/g, '');
-            let cords = cleaned.split(",");
-
-            let parsedCords = { x: Number(cords[0]), y: Number(cords[1]) };
-
+            let parsedCords = { x: Number(bike.longitude), y: Number(bike.latitude) };
             this.bikes.push(new Device(
                 bike.id,
                 parsedCords,
-                bike.city_id,
                 bike.battery,
                 bike.status,
                 bike.occupied,
+                0,
+                bike.city_id,
             ));
         }
         this.startMovement();
@@ -189,7 +187,6 @@ class Simulator {
             for (let key in payload) {
                 this.cordinates[Number(key)] = payload[key];
             }
-            console.log(this.cordinates);
             return { event: 'Succesfully added routes', data: payload };
         } catch (error) {
             console.error('Invalid JSON structure', error.message);

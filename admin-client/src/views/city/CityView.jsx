@@ -26,64 +26,82 @@ export default function CityView() {
   ]);
 
   /**
-   * Delete a city with <id>
-   * @param {int} id 
+   * Call fetchData
    */
-  async function deleteCity(id) {
-    const result = await CityService.deleteCity(id)
-  }
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   /**
-   * Delete a city with <id>
-   * @param {int} id 
+   * Fetch all cityData
    */
-  async function inspectCity(id) {
-    
-    navigate(`/city/${id}`)
+  async function fetchData() {
+    const cities = await CityService.getAllCities();
+    setCities(cities);
+    setLoading(false);
   }
 
   /**
    * Create a new City
-   * 
-   * @param {event} event 
-   * @returns 
+   *
+   * @param {event} event
+   * @returns
    */
   async function createCity(event) {
     event.preventDefault();
     // Create new city
-    const result = await CityService.addNewCity(newCity)
+    const result = await CityService.addNewCity(newCity);
     if (result.error) {
-      setResult(result.error)
-      setResultType("error")
-      return
+      setResult(result.error);
+      setResultType("error");
+    } else {
+       setResult(result[0].name + " skapat!");
+       setResultType("success");
+       setNewCity("");
     }
-    setResult(result[0].name + " skapat!")
-    setResultType("success")
-    setNewCity("");
+    // update data
+    fetchData();
+    return;
   }
 
   /**
-   * Get alla cities
+   * Delete a city with <id>
+   * @param {int} id
    */
-  useEffect(() => {
-    async function fetchData() {
-      const cities = await CityService.getAllCities();
-      // console.log(cities)
-      setCities(cities);
-      setLoading(false);
+  async function deleteCity(id) {
+    const result = await CityService.deleteCity(id);
+    if (result.error) {
+      setResult(result.error);
+      setResultType("error");
     }
+    // update data
     fetchData();
-  }, [cities]);
+    return;
+  }
+
+  /**
+   * Delete a city with <id>
+   * @param {int} id
+   */
+  async function inspectCity(id) {
+    navigate(`/city/${id}`);
+  }
 
   if (loading) return <h1>loading..</h1>;
 
   return (
     <>
       <h1>CityView</h1>
-      <TableWithActions data={cities} action={deleteCity} inspect={inspectCity} />
+      <TableWithActions
+        data={cities}
+        action={deleteCity}
+        inspect={inspectCity}
+      />
       <div style={{ margin: "0 auto" }}>
         <h2>Create new city</h2>
-        <p className={resultType === "error" ? style.error : style.success }>{result}</p>
+        <p className={resultType === "error" ? style.error : style.success}>
+          {result}
+        </p>
         <form className={style.form} onSubmit={createCity}>
           <label htmlFor="city">CityName</label>
           <input

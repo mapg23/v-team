@@ -53,20 +53,23 @@ export default function MapComponent({ coords, bikes }) {
 
     // Lägg till nya markers
     bikes.forEach((bike) => {
+      const bikeClass = bike.occupied === 10 ? styles["bike-free"] : styles["bike-used"];
       const icon = L.icon({
         iconUrl: bikeIconUrl,
         iconSize: [24, 24],
         iconAnchor: [12, 12],
         popupAnchor: [0, 0],
+        className: `${bikeClass}`,
       });
 
-      const marker = L.marker([bike.cords.x, bike.cords.y], { icon })
+      // Markers must be in Latitude, Longitude - else wont show!!
+      const marker = L.marker([bike.cords.y, bike.cords.x], { icon })
         .bindPopup(
           `
           <table>
           <tr>
             <th>ID:</th>
-            <td>${bike.id}</td>
+            <td><a href="/bikes/${bike.id}">${bike.id}</td>
           </tr>
           <tr>
             <th>Status:</th>
@@ -93,10 +96,9 @@ export default function MapComponent({ coords, bikes }) {
         )
         .openPopup()
         .addTo(map);
-
       markersRef.current.push(marker);
     });
   }, [bikes]);
-  
+
   return <div id="map" className={styles.map}></div>;
 }

@@ -12,7 +12,6 @@ import infoRoutes from "./routes/infoRoute.mjs";
 import instanceRoutes from "./routes/instanceRoute.mjs";
 import bikeRoute from "./routes/bikeRoute.mjs";
 
-
 const app = express();
 const port = process.env.BIKE_PORT || 7071;
 
@@ -25,6 +24,8 @@ app.use('/', infoRoutes);
 app.use('/', instanceRoutes);
 app.use('/', bikeRoute);
 
+// Worker messages
+// Priorities telemetry messages.
 worker.on('message', (msg) => {
     if (msg.type === "telemetry") {
         console.log("inside worker messages");
@@ -39,7 +40,6 @@ worker.on('message', (msg) => {
         pending.delete(id);
     }
 });
-
 
 app.listen(port, function () {
     console.log(`Listening on port: ${port}`);

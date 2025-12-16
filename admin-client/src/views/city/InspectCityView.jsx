@@ -7,11 +7,14 @@ import BikeSocket from "components/socket/BikeSocket";
 import bikeService from "../../services/bikes";
 import { useParams } from "react-router";
 import CityDropDown from "../../components/input/CityDropDown";
+import { useNavigate } from "react-router-dom";
 
 /**
  * View for showing a city based on url
  */
 export default function InspectCityView() {
+  const navigate = useNavigate();
+
   // Get params
   const params = useParams();
   const cityId = params.id;
@@ -31,11 +34,44 @@ export default function InspectCityView() {
   // Sync bikes from database
   const [bikes, setBikes] = useState([]);
 
+  // Map different bike status
+  const [bikeStatusMap, setBikeStatusMap] = useState({
+    available: null,
+    used: null,
+  });
+
   // -----------------------------
   // Update bikes from socket
   // -----------------------------
   function updateBikes(bikeData) {
-    setBikes(bikeData);
+    const bikesInCity = bikeData.filter((bike) => bike.city_id === Number(cityId))
+    console.log(bikesInCity)
+    setBikes(bikesInCity);
+    updateBikeStatus(bikesInCity);
+  }
+
+  /**
+   * Filter different status
+   */
+  function updateBikeStatus(bikes) {
+    const availableCount = bikes.filter(bike => bike.occupied === 10).length;
+    const usedCount = bikes.length - availableCount;
+
+    setBikeStatusMap(prev => {
+      // Prev är befintliga värdet, om inget ändras, returna samma
+      if (
+        prev.available === availableCount &&
+        prev.used === usedCount
+      ) {
+        return prev;
+      }
+
+      // Annars ersätt
+      return {
+        available: availableCount,
+        used: usedCount,
+      };
+    });
   }
 
   // -----------------------------
@@ -44,7 +80,7 @@ export default function InspectCityView() {
   useEffect(() => {
     async function fetchData() {
       // get city details based on params
-      const cityResponse = await CityService.getCityDetails(cityId);
+      const cityResponse = await CityService.getCityDetailsById(cityId);
       setcityDetails(cityResponse);
 
       // Start Bike Sync
@@ -57,18 +93,24 @@ export default function InspectCityView() {
     fetchData();
   }, [cityId]);
 
-  // Visa en översikt endast om användare inte valt stad
-  // och data har hämtats
+  /**
+   * Method for handling the selectionChange
+   * @param {id} cityId redirect to city/:id
+   */
+  function redirectToCity(cityId) {
+    navigate(`/city/${cityId}`);
+  }
+
   if (loading) return <h1>Loading...</h1>;
 
   return (
     <>
-      <BikeSocket onUpdate={updateBikes} />
-      <CityDropDown />
+      <BikeSocket paramId={cityId} onUpdate={updateBikes} />
+      <CityDropDown action={redirectToCity} />
       <h1>{cityDetails.name}</h1>
       <div style={{ display: "flex", justifyContent: "space-around" }}>
         <CityTable data={cityDetails} vertical={true} />
-        <PieChart total={500} used={100} />
+        <PieChart bikeStatusMap={bikeStatusMap} />
       </div>
       <Map coords={cityDetails} bikes={bikes} />
     </>
