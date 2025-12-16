@@ -18,16 +18,9 @@ const bikeService = {
         },
       });
 
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on fetchDocuments! Status: ${response.status}`
-        );
-      }
-
-      const responseData = await response.json();
-      return responseData;
+      return await response.json();
     } catch (error) {
-      console.error("fetchDocuments error:", error);
+      console.error(error);
       return [];
     }
   },
@@ -60,6 +53,51 @@ const bikeService = {
   },
 
   /**
+   * Delete bike with ID
+   *
+   * @returns {JSON}
+   */
+  deleteBike: async function deleteBike(bikeId) {
+    try {
+      const response = await fetch(`${API}/bikes/${bikeId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return response;
+    } catch (error) {
+      console.error("deleteBike fetch error:", error);
+      return null;
+    }
+  },
+
+  /**
+   * Delete bike with ID
+   * @returns {JSON}
+   */
+  createNewBike: async function createNewBike(bike) {
+    try {
+      const bikeObj = {
+        ...bike,
+      };
+      const response = await fetch(`${API}/bikes`, {
+        body: JSON.stringify(bikeObj),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error("CreateBike error:", error);
+      return null;
+    }
+  },
+
+  /**
    * Get bikes renetal details
    * @returns {JSON}
    */
@@ -72,17 +110,10 @@ const bikeService = {
         },
       });
 
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on fetchDocuments! Status: ${response.status}`
-        );
-      }
-
-      const responseData = await response.json();
-      return responseData;
+      return await response.json();
     } catch (error) {
       console.error("fetchDocuments error:", error);
-      return [];
+      return null;
     }
   },
 
@@ -107,6 +138,58 @@ const bikeService = {
 
       const responseData = await response.json();
       return responseData;
+    } catch (error) {
+      console.error("fetchDocuments error:", error);
+      return [];
+    }
+  },
+
+  /**
+   * Start sync for bikes
+   * @returns {JSON}
+   */
+  startBikeSync: async function startBikeSync() {
+    console.log("bike serivce called");
+    try {
+      const response = await fetch(`${API}/bikes/sync`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error on startBikeSync! Status: ${response.status}`
+        );
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("fetchDocuments error:", error);
+      return [];
+    }
+  },
+
+  /**
+   * Start sync for bikes
+   * @returns {JSON}
+   */
+  moveBikeToZone: async function moveBikeToZone(bikeId, zoneId) {
+    const moveObject = {
+      bike_id: `${bikeId}`,
+      zone_id: `${zoneId}`,
+    };
+    try {
+      const response = await fetch(`${API}/bikes/${bikeId}/move`, {
+        body: JSON.stringify(moveObject),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json();
     } catch (error) {
       console.error("fetchDocuments error:", error);
       return [];

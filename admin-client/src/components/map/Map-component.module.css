@@ -3,3 +3,11 @@
   height: 100%;
   border-radius: 10px;
 }
+
+.bike-used {
+  background-color: #0096FF;
+}
+
+.bike-free {
+  background-color: green;
+}

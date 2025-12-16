@@ -4,3 +4,15 @@
   text-align: left;
   gap: 0.5rem;
 }
+
+.success {
+  color: green
+}
+
+.error {
+  color: red
+}
+
+.info {
+  color: lightskyblue
+}
