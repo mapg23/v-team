@@ -21,6 +21,20 @@ SET time_zone = "+00:00";
 -- Databas: `vteam`
 --
 
+
+DROP TABLE IF EXISTS `cities_to_charging`;
+DROP TABLE IF EXISTS `cities_to_parking`;
+DROP TABLE IF EXISTS `charging_zones`;
+DROP TABLE IF EXISTS `parking_zones`;
+DROP TABLE IF EXISTS `transactions`;
+DROP TABLE IF EXISTS `trips`;
+DROP TABLE IF EXISTS `scooter_in_use`;
+DROP TABLE IF EXISTS `cards`;
+DROP TABLE IF EXISTS `scooters`;
+DROP TABLE IF EXISTS `cities`;
+DROP TABLE IF EXISTS `users`;
+
+
 -- --------------------------------------------------------
 
 --
