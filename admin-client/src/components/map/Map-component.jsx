@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import styles from "./Map-component.module.css";
 import bikeIconUrl from "../../assets/bike.png";
 import { FaChargingStation } from "react-icons/fa";
+import { MdElectricScooter } from "react-icons/md";
 import { renderToStaticMarkup } from "react-dom/server";
 import { divIcon, DivIcon } from "leaflet";
 
@@ -15,6 +16,19 @@ export default function MapComponent({
   const mapRef = useRef(null);
   const markersRef = useRef([]);
 
+  // BIKE ICON
+  // Color depends on usage
+  const scooterIcon = renderToStaticMarkup(<MdElectricScooter />);
+
+  // PARKING ICON
+
+  // CHARGINGSTATION ICON
+  const chargingStationIcon = renderToStaticMarkup(<FaChargingStation />);
+
+  const customIcon = divIcon({
+    html: chargingStationIcon,
+    className: styles["charging-station"],
+  });
   /**
    * Renders the map if new city coordinates
    */
@@ -61,18 +75,16 @@ export default function MapComponent({
 
     // Lägg till nya markers
     bikes.forEach((bike) => {
-      const bikeClass =
-        bike.occupied === 10 ? styles["bike-free"] : styles["bike-used"];
-      const icon = L.icon({
-        iconUrl: bikeIconUrl,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12],
-        popupAnchor: [0, 0],
-        className: `${bikeClass}`,
+      const customScooterIcon = divIcon({
+        html: scooterIcon,
+        className:
+          bike.occupied === 10 ? styles["bike-free"] : styles["bike-used"],
       });
 
       // Markers must be in Latitude, Longitude - else wont show!!
-      const marker = L.marker([bike.cords.y, bike.cords.x], { icon })
+      const marker = L.marker([bike.cords.y, bike.cords.x], {
+        icon: customScooterIcon,
+      })
         .bindPopup(
           `
           <table>
@@ -151,13 +163,6 @@ export default function MapComponent({
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-
-    const chargingStationIcon = renderToStaticMarkup(<FaChargingStation />);
-
-    const customIcon = divIcon({
-      html: chargingStationIcon,
-      className: styles["charging-station"],
-    });
 
     // Lägg till nya markers
     chargingZones.forEach((zone) => {
