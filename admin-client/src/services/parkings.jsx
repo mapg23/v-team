@@ -89,10 +89,10 @@ export default parkeringService = {
   },
 
   /**
-   * Delete parking zone 
+   * Delete parking zone
    * @return {JSON} array of objects
    */
-  updateParkingZone: async function updateParkingZone(parkId) {
+  deleteParkingZone: async function deleteParkingZone(parkId) {
     try {
       const response = await fetch(`${API}/parkings/${parkId}`, {
         method: "DELETE",
