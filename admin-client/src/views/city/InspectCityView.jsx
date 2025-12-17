@@ -88,8 +88,7 @@ export default function InspectCityView() {
       setcityDetails(await CityService.getCityDetailsById(cityId));
 
       // Start Bike Sync
-      const answer = await bikeService.startBikeSync();
-      // console.log(answer);
+      await bikeService.startBikeSync();
 
       // Get parking zones
       setParkingZones(await CityService.getParkingZonesInCity(cityId));
