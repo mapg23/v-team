@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import Chart from "chart.js/auto";
 
 export default function PieChart({ bikeStatusMap }) {
   const canvasRef = useRef(null); // istället för använda document.getElementByid
@@ -6,8 +7,6 @@ export default function PieChart({ bikeStatusMap }) {
 
   // useEffect körs när komponent renderas
   useEffect(() => {
-    if (!window.Chart) return; // om CDN inte hunnit ladda
-
     const ctx = canvasRef.current;
 
     chartRef.current = new Chart(ctx, {
