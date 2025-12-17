@@ -24,6 +24,7 @@ const version = process.env.API_VERSION || "v1";
 // Middleware
 app.use(cors({ origin: "*" }));
 
+// Must be defined before express.JSON, stripe demands RAW response for webhook.
 app.use(`/api/${version}/payments`, stripeWebhookRoute);
 
 app.set("json spaces", 2);

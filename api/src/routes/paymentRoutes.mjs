@@ -1,6 +1,7 @@
 import express from 'express';
 // import * as validation from "../middleware/validation/validationMiddleware.mjs";
 import Stripe from "stripe";
+import cards from '../models/cards.mjs';
 
 const stripe = new Stripe(`${process.env.STRIPE_SECRET}`);
 
@@ -42,6 +43,54 @@ router.post(`/create-intent`,
             res.status(500).json({ error: err.message });
         }
     });
+
+router.post(`/payment-success`,
+    // validation.payment,
+    // validation.checkValidationResult,
+    async (req, res) => {
+        const { userId, intentId, status } = req.body;
+
+        console.log("Status: ", status, ". For: ", intentId);
+
+        try {
+            const intent = stripe.paymentIntents.retrieve(intentId);
+            const {amount, status} = intent;
+            // Check currency?
+            // const expectedAmounts = [10000, 25000, 50000];
+
+            if (status !== "succeeded") {
+                return res.json({ status: status, message: "Payment was not successfull." });
+            }
+
+            let cardRes = await card.getCardById(userId);
+
+            if (!cardRes[0]) {
+                card.createCard(userId);
+            }
+            const card = cardRes[0];
+
+            const newBalance = card.balance += (amount / 100);
+            const updateData = {
+                balance: newBalance
+            };
+
+            // Create a PaymentIntent with the order amount and currency
+            const result = await cards.updateCard(card.id, updateData);
+
+            console.log(result);
+            const saldo = result[0].saldo;
+
+            return res.json({ saldo: saldo });
+        } catch (err) {
+            console.error('Error creating Stripe payment intent: ', err);
+            res.status(500).json({ error: err.message });
+        }
+    });
+
+
+// USING STRIPES CLI IT WORKS ON LOCALHOST:
+// stripe listen --forward-to localhost:9091/api/v1/payments/webhook
+// Opens a secure tunnel for stripe.
 
 // // Replace this endpoint secret with your unique endpoint secret key
 // // If you're testing with the CLI, run 'stripe listen' to find the secret key

@@ -45,3 +45,4 @@ const trip = {
 };
 
 export default trip;
+
