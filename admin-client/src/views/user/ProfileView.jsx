@@ -58,7 +58,7 @@ export default function UserView() {
       setLoading(false);
     }
     fetchData();
-  }, []);
+  }, [userId]);
 
   /**
    * Delete user
