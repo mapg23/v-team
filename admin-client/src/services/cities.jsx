@@ -82,9 +82,6 @@ const cityService = {
    * @returns {Object} new city
    */
   deleteCity: async function deleteCity(cityId) {
-    const cityObject = {
-      id: `${cityId}`,
-    };
     try {
       const response = await fetch(`${API}/cities/${cityId}`, {
         // body: JSON.stringify(cityObject),

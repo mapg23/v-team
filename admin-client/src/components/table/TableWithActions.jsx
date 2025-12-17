@@ -1,4 +1,3 @@
-import styles from "./Table.module.css";
 /**
  * Create a Table based on a array of objects
  *
