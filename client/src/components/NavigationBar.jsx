@@ -9,7 +9,7 @@ export default function Navigation() {
     const location = useLocation();
 
     return (
-        <nav className="border-top d-flex justify-content-around py-2 bg-white">
+        <nav className="navigation border-top d-flex justify-content-around py-2 bg-white">
             <NavItem
                 icon={<Map size={20} />}
                 label="Karta"

@@ -1,0 +1,32 @@
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
+}
+
+.layout {
+    min-height: 200px;
+    width: 100%;
+    height: 90vh;
+}
+
+.map-wrapper {
+    width: 100%;
+    height: 80vh;
+    background-color: yellow;
+}
+
+.map-wrapper>div {
+    width: 100%;
+    height: 100%;
+}
+
+
+.panel {
+    background-color: blue;
+}
+
+.navigation {
+    background-color: yellow;
+}
