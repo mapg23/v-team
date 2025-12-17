@@ -123,7 +123,7 @@ export default function MapComponent({
         .addTo(map);
       markersRef.current.push(marker);
     });
-  }, [bikes]);
+  }, [bikes, scooterIcon]);
 
   /**
    * Render parkingZones
@@ -141,7 +141,7 @@ export default function MapComponent({
         [parking.min_lat, parking.min_long], // sydväst (min_lat, min_long)
       ];
       L.marker([parking.max_lat, parking.min_long], { icon: cutomParkingIcon })
-      .bindPopup(
+        .bindPopup(
           `
           <table>
           <tr>
@@ -175,7 +175,7 @@ export default function MapComponent({
         .addTo(map);
       L.polygon(polygonCoords, { color: "red" }).addTo(map);
     });
-  }, [parkingZones]);
+  }, [parkingZones, cutomParkingIcon]);
 
   /**
    * Render charginZones
@@ -223,7 +223,7 @@ export default function MapComponent({
         .openPopup()
         .addTo(map);
     });
-  }, [parkingZones]);
+  }, [parkingZones, cutomParkingIcon]);
 
   return <div id="map" className={styles.map}></div>;
 }
