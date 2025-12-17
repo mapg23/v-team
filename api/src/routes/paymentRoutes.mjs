@@ -1,11 +1,30 @@
 import express from 'express';
 // import * as validation from "../middleware/validation/validationMiddleware.mjs";
 import Stripe from "stripe";
-import cards from '../models/cards.mjs';
+import wallets from '../models/wallets.mjs';
 
 const stripe = new Stripe(`${process.env.STRIPE_SECRET}`);
 
 const router = express.Router();
+
+/**
+ * Get by user id
+ */
+router.get('/user/:id', async (req, res) => {
+    const userId = req.params.id;
+
+    const wallet = await wallets.getWalletByUserId(userId);
+
+    return res.json(wallet);
+});
+
+router.get('/user/:id', async (req, res) => {
+    const userId = req.params.id;
+
+    const wallet = await wallets.getWalletByUserId(userId);
+
+    return res.json(wallet);
+});
 
 /**
  * Create a Stripe payment intent
@@ -48,39 +67,43 @@ router.post(`/payment-success`,
     // validation.payment,
     // validation.checkValidationResult,
     async (req, res) => {
+        req.body.userId = 3;
         const { userId, intentId, status } = req.body;
 
         console.log("Status: ", status, ". For: ", intentId);
 
         try {
-            const intent = stripe.paymentIntents.retrieve(intentId);
-            const {amount, status} = intent;
+            const paymentIntent = await stripe.paymentIntents.retrieve(intentId);
+            const {amount, status} = paymentIntent;
             // Check currency?
             // const expectedAmounts = [10000, 25000, 50000];
 
+            console.log(paymentIntent, "*** status, amount: ", status, amount);
             if (status !== "succeeded") {
                 return res.json({ status: status, message: "Payment was not successfull." });
             }
 
-            let cardRes = await card.getCardById(userId);
+            let walletRes = await wallets.getWalletByUserId(userId);
 
-            if (!cardRes[0]) {
-                card.createCard(userId);
+            console.log("WalletRes: ", walletRes);
+            if (!walletRes[0]) {
+                walletRes = await wallets.createWallet(userId);
             }
-            const card = cardRes[0];
+            console.log("WalletRes: ", walletRes);
+            const userWallet = walletRes[0];
 
-            const newBalance = card.balance += (amount / 100);
+            const newBalance = userWallet.balance += (amount / 100);
             const updateData = {
                 balance: newBalance
             };
 
             // Create a PaymentIntent with the order amount and currency
-            const result = await cards.updateCard(card.id, updateData);
+            const result = await wallets.updateWallet(userWallet.id, updateData);
 
             console.log(result);
-            const saldo = result[0].saldo;
+            const balance = result[0].balance;
 
-            return res.json({ saldo: saldo });
+            return res.json({ balance: balance });
         } catch (err) {
             console.error('Error creating Stripe payment intent: ', err);
             res.status(500).json({ error: err.message });
