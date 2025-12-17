@@ -41,7 +41,7 @@ function App() {
           <Route path="/" element={<LoginView />} />
           <Route
             path="/login/github/callback"
-            element={<GithubCallback onLogin={login}/>}
+            element={<GithubCallback onLogin={login} />}
           />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
