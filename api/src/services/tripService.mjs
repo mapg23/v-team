@@ -1,50 +1,18 @@
 import tripsModel from "../models/trips.mjs";
 import createBikes from "../models/bikes.mjs";
-import createZones from "../models/zones.mjs";
-// const bikeModel = createBikes();
+import createParkings from "../models/parkings.mjs";
 
-/**
- * transactionData = {
-    id              int(11)
-	user_id	        int(11)
-	scooter_id      int(11)
-	cost	        decimal(10,2)
-	start_longitude decimal(9, 6)
-    start_latitude	decimal(9, 6)
-	end_longitude	decimal(9, 6)
-    end_latitude	decimal(9, 6)
-	start_time	    datetime
-	end_time	    datetime
-    }
-    parkingZones = [
-            {
-                id: 1,
-                min_lat: "59.1111",
-                min_long: "18.0000",
-                max_lat: "59.2222",
-                max_long: "18.1111"
-                }
-            },
-            {
-                id: 2,
-                min_lat: "59.3333",
-                min_long: "18.0000",
-                max_lat: "59.5555",
-                max_long: "18.1111"
-            }
-            }
-        ]
- */
+// const bikeModel = createBikes();
 
 
 class TripService {
-    constructor(tripModel = tripsModel, bikeModel = createBikes(), zoneModel = createZones()) {
+    constructor(tripModel = tripsModel, bikeModel = createBikes(), parkings = createParkings()) {
         /**
          * Inject the models class is depending on.
          */
         this.tripModel = tripModel,
         this.bikeModel = bikeModel,
-        this.zonesModel = zoneModel,
+        this.parkings = parkings,
         /**
          * A list of parking zones
          * @type {Array}
@@ -57,7 +25,7 @@ class TripService {
      */
     async getParkingZones() {
         if (this.parkingZones.length === 0) {
-            this.parkingZones = await this.zonesModel.getZones();
+            this.parkingZones = await this.parkings.getParkings();
         }
         if (this.parkingZones.length === 0) {
             throw new Error("Could not get parking zones");

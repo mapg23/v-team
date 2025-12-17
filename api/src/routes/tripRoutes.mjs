@@ -70,7 +70,9 @@ router.get(`/user/:id`,
     async (req, res) => {
         console.log("get by User ID");
         try {
-            const userList = await trips.getTransactionByUserId(req.params.id);
+            const userList = await trips.getTripsByUserId(req.params.id);
+
+            console.log(userList);
 
             return res.status(200).json(userList);
         } catch (err) {
@@ -90,7 +92,7 @@ router.get(`/:id`,
     async (req, res) => {
         console.log("get by ID");
         try {
-            const user = await trips.getTransactionById(req.params.id);
+            const user = await trips.getTripById(req.params.id);
 
             return res.status(200).json(user);
         } catch (err) {
