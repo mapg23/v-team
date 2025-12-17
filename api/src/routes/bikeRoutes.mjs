@@ -197,7 +197,7 @@ export default function createBikeRouter(bikes = createBikes()) {
 
             const bike = bikeArray[0];
 
-            console.log('Move bike:', bikeId, zoneType, zoneId, bike.city_id);
+            // console.log('Move bike:', bikeId, zoneType, zoneId, bike.city_id);
 
             // Validerar zonen mot staden
             const isValidZone = await validateZone(
