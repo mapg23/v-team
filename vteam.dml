@@ -4,9 +4,9 @@ INSERT INTO `users` (`username`, `password`, `email`) VALUES
 ('charlie', 'hashed_pw_3', 'charlie@example.com');
 
 INSERT INTO `cities` (`name`, `latitude`, `longitude`) VALUES 
-('Bankeryd', 14.130500, 57.860000),
-('Habo', 14.055000, 57.914000),
-('Jönköping', 14.168000, 57.781000);
+('Bankeryd', 57.860000, 14.130500),
+('Habo', 57.914000, 14.055000),
+('Jönköping', 57.781000, 14.168000);
 
 INSERT INTO `parking_zones` (`city_id`, `max_lat`, `max_long`, `min_lat`, `min_long`) VALUES
 -- Bankeryd
