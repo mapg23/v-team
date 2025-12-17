@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import {
     Elements,
     useStripe,
 } from "@stripe/react-stripe-js";
-
+import API from "../../config/api";
+const token = "Add access token";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC);
 
@@ -48,11 +49,35 @@ const STATUS_CONTENT_MAP = {
   }
 };
 
+// Proof of concept. If real money is involved https and a webhook would be used.
+// Function sends success info to api.
+function sendSuccessInfo(intentId, status) {
+    fetch(`${API}/payments/payment-success`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "authorization": `bearer ${token}`,
+        },
+        body: JSON.stringify({
+            intentId,
+            status,
+        }),
+    }) 
+    .then(res => res.json())
+    .then(data => {
+      console.log("Backend responded: ", data);
+    })
+    .catch(err => {
+      console.error("Payment update failed: ", err);
+    });
+};
+
 function SuccessContent() {
   const stripe = useStripe();
 
   const [status, setStatus] = useState("default");
   const [intentId, setIntentId] = useState(null);
+  const successSent = useRef(false);
 
   useEffect(() => {
     if (!stripe) {
@@ -76,6 +101,15 @@ function SuccessContent() {
       setIntentId(paymentIntent.id);
     });
   }, [stripe]);
+
+  // Proof of concept. If real money is involved https and a webhook would be used.
+  // listens for successfull payment, and passes info to fetch function.
+  // One time. successSent prevents doubble fetching.
+  useEffect(() => {
+    if(status !== "succeeded" || successSent.current) {return};
+    sendSuccessInfo(intentId, status);
+    successSent.current = true;
+  }, [status, intentId])
 
   return (
     <div id="payment-status">
@@ -108,6 +142,7 @@ function SuccessContent() {
   );
 };
 
+// the stripe logic has to be child of Elements
 export default function PaymentSuccessView() {
     return (
         <Elements stripe={stripePromise}>

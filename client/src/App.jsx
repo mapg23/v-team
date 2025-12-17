@@ -2,8 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // import { useState } from "react";
 
 import LoginView from "./views/LoginView";
-import PaymentView from "./views/PaymentView";
-import PaymentSuccessView from "./views/PaymentSuccessView";
+import PaymentView from "./views/payments/PaymentView";
+import PaymentSuccessView from "./views/payments/PaymentSuccessView";
 
 function App() {
   return (
