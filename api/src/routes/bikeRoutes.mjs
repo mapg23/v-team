@@ -5,7 +5,7 @@ import validateJsonBody from "../middleware/validateJsonBody.mjs";
 export default function createBikeRouter(bikes = createBikes()) {
     const route = express.Router();
 
-    // Sync bikes to simulator
+    // Synka bikes manuellt med simulatorn
     route.get(`/bikes/sync`, async (req, res) => {
         try {
             const bikesList = await bikes.getBikes();

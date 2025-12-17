@@ -1,4 +1,5 @@
 import createCities from '../../src/models/cities.mjs';
+import CityHelpers from '../../src/helpers/validateCity.mjs';
 
 const mockDb = {
     select: jest.fn(),
@@ -182,9 +183,9 @@ describe("cities model", () => {
         });
 
         test("getCityDetails returns city with bike, station, and parking counts", async () => {
-        // Mock city
+            // Mock city
             mockDb.select
-            // getCityById
+                // getCityById
                 .mockResolvedValueOnce([{ id: 1, name: "Test City", latitude: 0, longitude: 0 }])
                 .mockResolvedValueOnce([{ bike_count: 5 }])
                 .mockResolvedValueOnce([{ station_count: 2 }])
@@ -231,5 +232,50 @@ describe("cities model", () => {
                 'parking_count'
             );
         });
+    });
+});
+
+describe("CityHelpers", () => {
+    test("validateId returns error for invalid id", () => {
+        expect(CityHelpers.validateId(null)).toBe("Id is wrong");
+        expect(CityHelpers.validateId("abc")).toBe("Id is wrong");
+        expect(CityHelpers.validateId(5)).toBeNull();
+    });
+
+    test("getGeoCoordinates returns coordinates object", async () => {
+        global.fetch = jest.fn().mockResolvedValue({
+            json: jest.fn().mockResolvedValue([
+                {
+                    lat: "57.78",
+                    lon: "14.15"
+                }
+            ])
+        });
+
+        const result = await CityHelpers.getGeoCoordinates("Jönköping");
+
+        expect(result).toEqual(
+            {
+                latitude: 57.78,
+                longitude: 14.15
+            }
+        );
+        expect(global.fetch.mock.calls[0][0]).toContain("city=");
+        expect(global.fetch.mock.calls[0][0]).toContain(encodeURIComponent("Jönköping"));
+
+        global.fetch.mockRestore();
+    });
+
+    test("getGeoCoordinates returns null if city not found", async () => {
+        global.fetch = jest.fn().mockResolvedValue({
+            json: jest.fn().mockResolvedValue([])
+        });
+
+        const result = await CityHelpers.getGeoCoordinates("Nowhere");
+
+        expect(result).toBeNull();
+        expect(global.fetch.mock.calls[0][0]).toContain(encodeURIComponent("Nowhere"));
+
+        global.fetch.mockRestore();
     });
 });
