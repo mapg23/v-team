@@ -3,7 +3,7 @@ import API from "../config/api.js";
  * Parking services handling all routes regarding parkings
  * Based on endpoints: https://docs.google.com/spreadsheets/d/1Tza3ZSUOJJRQJeSquKQbE6fRy4d3zNGafAVQxUVNg9M/edit?gid=0#gid=0
  */
-export default parkeringService = {
+const parkingService = {
   /**
    * Get all parking zones
    * @return {JSON} array of objects
@@ -89,10 +89,10 @@ export default parkeringService = {
   },
 
   /**
-   * Delete parking zone 
+   * Delete parking zone
    * @return {JSON} array of objects
    */
-  updateParkingZone: async function updateParkingZone(parkId) {
+  deleteParkingZone: async function deleteParkingZone(parkId) {
     try {
       const response = await fetch(`${API}/parkings/${parkId}`, {
         method: "DELETE",
@@ -128,3 +128,5 @@ export default parkeringService = {
     }
   },
 };
+
+export default parkingService;
