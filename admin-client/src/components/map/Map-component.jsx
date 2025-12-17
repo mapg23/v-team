@@ -1,5 +1,5 @@
 /* global L */
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import styles from "./Map-component.module.css";
 import { FaChargingStation, FaParking } from "react-icons/fa";
 import { MdElectricScooter } from "react-icons/md";
@@ -13,25 +13,32 @@ export default function MapComponent({
 }) {
   const mapRef = useRef(null);
   const markersRef = useRef([]);
+  const parkingLayerRef = useRef(null);
+  const chargingLayerRef = useRef(null);
 
   // BIKE ICON
   // Color depends on usage
   const scooterIcon = renderToStaticMarkup(<MdElectricScooter />);
 
   // PARKING ICON
-  const parkingIcon = renderToStaticMarkup(<FaParking />);
-  const cutomParkingIcon = L.divIcon({
-    html: parkingIcon,
-    className: styles["parking-station"],
-  });
+  // Save in cache
+  const cutomParkingIcon = useMemo(() => {
+    const parkingIcon = renderToStaticMarkup(<FaParking />);
+    return L.divIcon({
+      html: parkingIcon,
+      className: styles["parking-station"],
+    });
+  }, []);
 
   // CHARGINGSTATION ICON
-  const chargingStationIcon = renderToStaticMarkup(<FaChargingStation />);
-  const customIcon = L.divIcon({
-    html: chargingStationIcon,
-    className: styles["charging-station"],
-  });
-
+  // Save in cache
+  const chargingStationIcon = useMemo(() => {
+    const chargingIcon = renderToStaticMarkup(<FaChargingStation />);
+    return L.divIcon({
+      html: chargingIcon,
+      className: styles["charging-station"],
+    });
+  }, []);
 
   /**
    * Renders the map if new city coordinates
@@ -132,6 +139,16 @@ export default function MapComponent({
     const map = mapRef.current;
     if (!map) return;
 
+    // Skapa lagret en gång
+    if (!parkingLayerRef.current) {
+      parkingLayerRef.current = L.layerGroup().addTo(map);
+    }
+
+    const layer = parkingLayerRef.current;
+
+    // Töm lager för att undvika att rektanglar ritas om och om igen
+    layer.clearLayers();
+
     // Lägg till nya parking rectangles
     parkingZones.forEach((parking) => {
       const polygonCoords = [
@@ -172,8 +189,10 @@ export default function MapComponent({
           `
         )
         .openPopup()
-        .addTo(map);
-      L.polygon(polygonCoords, { color: "red" }).addTo(map);
+        .addTo(layer); // lägg till lagret
+
+      // Rita rektangel
+      L.polygon(polygonCoords, { color: "red" }).addTo(layer); // lägg till lagret
     });
   }, [parkingZones, cutomParkingIcon]);
 
@@ -184,11 +203,21 @@ export default function MapComponent({
     const map = mapRef.current;
     if (!map) return;
 
+    // Skapa lagret en gång
+    if (!chargingLayerRef.current) {
+      chargingLayerRef.current = L.layerGroup().addTo(map);
+    }
+
+    const layer = chargingLayerRef.current;
+
+    // Töm lager för att undvika att rektanglar ritas om och om igen
+    layer.clearLayers();
+
     // Lägg till nya markers
     chargingZones.forEach((zone) => {
       // Markers must be in Latitude, Longitude - else wont show!!
       L.marker([zone.latitude, zone.longitude], {
-        icon: customIcon,
+        icon: chargingStationIcon,
       })
         .bindPopup(
           `
@@ -221,9 +250,9 @@ export default function MapComponent({
           `
         )
         .openPopup()
-        .addTo(map);
+        .addTo(layer);
     });
-  }, [parkingZones, cutomParkingIcon]);
+  }, [chargingZones, chargingStationIcon]);
 
   return <div id="map" className={styles.map}></div>;
 }
