@@ -1,14 +1,8 @@
 /**
  * Stops the simulator automatically when the API server stops.
- * Sends the current list of bikes from the simulator to the database.
- * This function runs only once when ther server stops.
+ * Updates the current list of bikes from the simulator into the database.
  */
 
-
-/**
- * Updates the current list of bikes in the database.
- * This function is intended to run once when the API server stops.
- */
 import createBikes from "./models/bikes.mjs";
 
 export default async function stopSimulator() {
@@ -22,16 +16,23 @@ export default async function stopSimulator() {
         const bikesList = (await response.json()).data;
 
         for (const bike of bikesList) {
-            await bikes.updateBike(bike.id, {
+            // Mappning från simulatorns fält till databasen
+            const updateData = {
                 status: bike.status,
                 battery: bike.battery,
-                location: bike.cords,
-                occupied: bike.occupied
-            });
+                latitude: bike.cords.y,
+                longitude: bike.cords.x,
+                occupied: bike.occupied,
+                city_id: bike.city_id
+            //     current_zone_type: bike.current_zone_type ?? null,
+            //     current_zone_id: bike.current_zone_id ?? null
+            };
+
+            await bikes.updateBike(bike.id, updateData);
         }
 
-        console.log(`Simulator stopped with ${bikesList.length} bikes`);
+        console.log(`Simulator stopped and ${bikesList.length} bikes saved to database`);
     } catch (err) {
-        console.error("Failed to start simulator:", err);
+        console.error("Failed to stop simulator and save bikes:", err);
     }
 }
