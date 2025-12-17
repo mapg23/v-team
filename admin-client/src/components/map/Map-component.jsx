@@ -1,10 +1,9 @@
 /* global L */
 import { useEffect, useRef } from "react";
 import styles from "./Map-component.module.css";
-import { FaChargingStation } from "react-icons/fa";
+import { FaChargingStation, FaParking } from "react-icons/fa";
 import { MdElectricScooter } from "react-icons/md";
 import { renderToStaticMarkup } from "react-dom/server";
-import { divIcon, DivIcon } from "leaflet";
 
 export default function MapComponent({
   coords,
@@ -20,14 +19,20 @@ export default function MapComponent({
   const scooterIcon = renderToStaticMarkup(<MdElectricScooter />);
 
   // PARKING ICON
+  const parkingIcon = renderToStaticMarkup(<FaParking />);
+  const cutomParkingIcon = L.divIcon({
+    html: parkingIcon,
+    className: styles["parking-station"],
+  });
 
   // CHARGINGSTATION ICON
   const chargingStationIcon = renderToStaticMarkup(<FaChargingStation />);
-
-  const customIcon = divIcon({
+  const customIcon = L.divIcon({
     html: chargingStationIcon,
     className: styles["charging-station"],
   });
+
+
   /**
    * Renders the map if new city coordinates
    */
@@ -74,7 +79,7 @@ export default function MapComponent({
 
     // Lägg till nya markers
     bikes.forEach((bike) => {
-      const customScooterIcon = divIcon({
+      const customScooterIcon = L.divIcon({
         html: scooterIcon,
         className:
           bike.occupied === 10 ? styles["bike-free"] : styles["bike-used"],
@@ -88,7 +93,7 @@ export default function MapComponent({
           `
           <table>
           <tr>
-            <th>ID:</th>
+            <th>Bike Id:</th>
             <td><a href="/bikes/${bike.id}">${bike.id}</td>
           </tr>
           <tr>
@@ -135,8 +140,8 @@ export default function MapComponent({
         [parking.min_lat, parking.max_long], // sydost (min_lat, max_long)
         [parking.min_lat, parking.min_long], // sydväst (min_lat, min_long)
       ];
-      L.polygon(polygonCoords, { color: "red" })
-        .bindPopup(
+      L.marker([parking.max_lat, parking.min_long], { icon: cutomParkingIcon })
+      .bindPopup(
           `
           <table>
           <tr>
@@ -168,6 +173,7 @@ export default function MapComponent({
         )
         .openPopup()
         .addTo(map);
+      L.polygon(polygonCoords, { color: "red" }).addTo(map);
     });
   }, [parkingZones]);
 
