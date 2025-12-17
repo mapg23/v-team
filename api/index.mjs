@@ -41,7 +41,7 @@ app.use(`/api/${version}`, createBikeRouter());
 app.use(`/api/${version}`, createStationRouter());
 app.use(`/api/${version}`, createParkingRouter());
 app.use(`/api/${version}/trip`, tripRoutes);
-app.use(`/api/${version}/payment`, paymentRoutes);
+app.use(`/api/${version}/payments`, paymentRoutes);
 
 // -------- Socket.io
 const server = createServer(app);
