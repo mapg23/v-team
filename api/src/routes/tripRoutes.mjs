@@ -13,7 +13,7 @@ const router = express.Router();
  * @returns {Array} an array with the trip object.
  */
 router.post(`/`,
-    validation.idBody,
+    validation.createTrip,
     validation.checkValidationResult,
     async (req, res) => {
         try {
@@ -40,9 +40,12 @@ router.put(`/:id`,
     validation.idParam,
     validation.checkValidationResult,
     async (req, res) => {
-        console.log("get by ID");
         try {
             const endedTrip = await tripService.endTrip(req.params.id);
+
+            if (endedTrip.length === 0) {
+                return res.status(404).json({ error: "Trip not found" });
+            }
 
             return res.status(200).json(endedTrip);
         } catch (err) {
@@ -53,14 +56,27 @@ router.put(`/:id`,
         }
     });
 
-router.get(`/hej`,
-    // validation.idParam,
-    // validation.checkValidationResult,
+router.delete(`/:id`,
+    validation.idParam,
+    validation.checkValidationResult,
     async (req, res) => {
-        console.log("get");
-        return res.status(200).json({yo: "hej"});
-    });
+        try {
+            const result = await trips.deleteTrip(req.params.id);
 
+            if (result.affectedRows === 0) {
+                return res.status(404).json({
+                    error: `Could not find trip with id: ${req.params.id}`
+                });
+            }
+
+            return res.sendStatus(204);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                error: `Could not delete trip with id: ${req.params.id}`
+            });
+        }
+    });
 /**
  * Returns all user trips
  */
@@ -78,7 +94,7 @@ router.get(`/user/:id`,
         } catch (err) {
             console.error(err);
             return res.status(500).json({
-                error: `Could not fetch trip for user ${req.params.id}`
+                error: `Could not fetch trips for user ${req.params.id}`
             });
         }
     });

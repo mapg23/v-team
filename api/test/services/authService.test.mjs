@@ -1,8 +1,8 @@
-import authService from "../../../src/services/authService.mjs";
+import authService from "../../src/services/authService.mjs";
 
 import bcrypt from "bcrypt";
-// import userModel from "../../../src/models/users.mjs";
-import jwtService from "../../../src/services/jwtService.mjs";
+// import userModel from "../../src/models/users.mjs";
+import jwtService from "../../src/services/jwtService.mjs";
 process.env.NODE_ENV = "test";
 
 jest.mock("bcrypt", () => ({
@@ -10,19 +10,19 @@ jest.mock("bcrypt", () => ({
     compare: jest.fn(),
 }));
 
-jest.mock("../../../src/services/jwtService.mjs", () => ({
+jest.mock("../../src/services/jwtService.mjs", () => ({
     createToken: jest.fn(),
 }));
 
 // Mock instance in authService. Returns mock functions.
-jest.mock("../../../src/models/users.mjs", () => {
+jest.mock("../../src/models/users.mjs", () => {
     return jest.fn(() => ({
         getUserByEmail: jest.fn(),
         createUser: jest.fn(),
     }));
 });
 // Import it here to run it:
-import { userModel } from "../../../src/services/authService.mjs";
+import { userModel } from "../../src/services/authService.mjs";
 
 describe("authService", () => {
     // beforeEach(() => {

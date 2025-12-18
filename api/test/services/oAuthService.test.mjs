@@ -1,15 +1,15 @@
-import oauthService from "../../../src/services/oAuthService.mjs";
-import jwtService from "../../../src/services/jwtService.mjs";
-// import userModel from "../../../src/models/users.mjs";
+import oauthService from "../../src/services/oAuthService.mjs";
+import jwtService from "../../src/services/jwtService.mjs";
+// import userModel from "../../src/models/users.mjs";
 process.env.NODE_ENV = "test";
 
-jest.mock("../../../src/services/jwtService.mjs", () => ({
+jest.mock("../../src/services/jwtService.mjs", () => ({
     verifyToken: jest.fn(),
     createToken: jest.fn(),
 }));
 
 // Mock instance in authService. Returns mock functions.
-jest.mock("../../../src/models/users.mjs", () => {
+jest.mock("../../src/models/users.mjs", () => {
     return jest.fn(() => ({
         getUserByEmail: jest.fn(),
         createUser: jest.fn(),
@@ -17,7 +17,7 @@ jest.mock("../../../src/models/users.mjs", () => {
     }));
 });
 // Import it here to run it:
-import { userModel } from "../../../src/services/oAuthService.mjs";
+import { userModel } from "../../src/services/oAuthService.mjs";
 
 describe("oAuthService", () => {
     afterEach(() => {

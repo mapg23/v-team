@@ -28,7 +28,7 @@ const trip = {
      * @returns {Array} An array containing the result from the db operation.
      * select(table, columns = '*', where = '', params = [])
      */
-    getTripsByUserId: async function getTripByUserId(userId) {
+    getTripsByUserId: async function getTripsByUserId(userId) {
         return await db.select("trips", "*", "user_id = ?", [userId]);
     },
 
@@ -41,6 +41,16 @@ const trip = {
      */
     updateTrip: async function updateTrip(id, data) {
         return await db.update("trips", data, "id = ?", [id]);
+    },
+
+    /**
+     * Delete a trip in the database by its ID.
+     *
+     * @param {number} id - The ID of the trip to delete.
+     * @returns {Array} An array containing the result from the db operation.
+     */
+    deleteTrip: async function deleteTrip(id) {
+        return await db.remove("trips", "id = ?", [id]);
     },
 };
 

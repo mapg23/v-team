@@ -30,6 +30,7 @@ DROP TABLE IF EXISTS `transactions`;
 DROP TABLE IF EXISTS `trips`;
 DROP TABLE IF EXISTS `scooter_in_use`;
 DROP TABLE IF EXISTS `cards`;
+DROP TABLE IF EXISTS `wallets`;
 DROP TABLE IF EXISTS `scooters`;
 DROP TABLE IF EXISTS `cities`;
 DROP TABLE IF EXISTS `users`;
@@ -38,16 +39,12 @@ DROP TABLE IF EXISTS `users`;
 -- --------------------------------------------------------
 
 --
--- Tabellstruktur `cards`
+-- Tabellstruktur `wallets`
 --
-CREATE TABLE `cards` (
+CREATE TABLE `wallets` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `card_holder` varchar(32) NOT NULL,
-  `card_number` int(11) NOT NULL,
-  `card_exp_date` int(11) NOT NULL,
-  `card_secret` int(11) NOT NULL,
-  `balance` int(11) NOT NULL
+  `balance` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -198,11 +195,12 @@ CREATE TABLE `users` (
 --
 
 --
--- Index för tabell `cards`
+-- Index för tabell `wallets`
 --
-ALTER TABLE `cards`
+ALTER TABLE `wallets`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD UNIQUE KEY `user_id` (`user_id`);
+  -- ADD UNIQUE(`user_id`);
 
 --
 -- Index för tabell `charging_zones`
@@ -275,9 +273,9 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT för tabell `cards`
+-- AUTO_INCREMENT för tabell `wallets`
 --
-ALTER TABLE `cards`
+ALTER TABLE `wallets`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -339,10 +337,10 @@ ALTER TABLE `users`
 --
 
 --
--- Restriktioner för tabell `cards`
+-- Restriktioner för tabell `wallets`
 --
-ALTER TABLE `cards`
-  ADD CONSTRAINT `fk_card_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `wallets`
+  ADD CONSTRAINT `fk_wallet_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Restriktioner för tabell `charging_zones`

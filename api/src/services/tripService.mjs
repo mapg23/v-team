@@ -10,9 +10,9 @@ class TripService {
         /**
          * Inject the models class is depending on.
          */
-        this.tripModel = tripModel,
-        this.bikeModel = bikeModel,
-        this.parkings = parkings,
+        this.tripModel = tripModel;
+        this.bikeModel = bikeModel;
+        this.parkings = parkings;
         /**
          * A list of parking zones
          * @type {Array}
@@ -118,7 +118,7 @@ class TripService {
     calculateRent(startTime, endTime) {
         const minutes = this.getDuration(startTime, endTime);
 
-        return minutes * 5;
+        return minutes * 2.5;
     }
 
     /**
@@ -251,5 +251,5 @@ class TripService {
         return newTrip;
     }
 }
-
+export { TripService };
 export default new TripService();

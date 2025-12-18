@@ -15,7 +15,6 @@ import startSimulator from "./src/startSimulator.mjs";
 import stopSimulator from "./src/stopSimulator.mjs";
 import tripRoutes from "./src/routes/tripRoutes.mjs";
 import paymentRoutes from "./src/routes/paymentRoutes.mjs";
-import stripeWebhookRoute from "./src/routes/stripeWebhookRoute.mjs";
 
 const app = express();
 const port = process.env.API_PORT || 9091;
@@ -24,23 +23,20 @@ const version = process.env.API_VERSION || "v1";
 // Middleware
 app.use(cors({ origin: "*" }));
 
-// Must be defined before express.JSON, stripe demands RAW response for webhook.
-app.use(`/api/${version}/payments`, stripeWebhookRoute);
-
 app.set("json spaces", 2);
 app.use(express.json());
 // Döljer Express-version
 app.disable("x-powered-by");
 
-// ----------- Routes
-// app.use(`/api/${version}`, authRoutes);
+// ----------- Routes -----------
+app.use(`/api/${version}/auth`, authRoutes);
+// if (process.env.NODE_ENV !== "test") {app.use(authMiddleware);} // Everything below gets secured
 app.use(`/api/${version}`, createUserRouter());
-app.use(`/api/v1/auth`, authRoutes);
 app.use(`/api/${version}`, createCityRouter());
 app.use(`/api/${version}`, createBikeRouter());
 app.use(`/api/${version}`, createStationRouter());
 app.use(`/api/${version}`, createParkingRouter());
-app.use(`/api/${version}/trip`, tripRoutes);
+app.use(`/api/${version}/trips`, tripRoutes);
 app.use(`/api/${version}/payments`, paymentRoutes);
 
 // -------- Socket.io
