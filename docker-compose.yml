@@ -93,6 +93,20 @@ services:
     networks:
        - app_network
 
+  client:
+    container_name: client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    restart: always
+    env_file: .env
+    depends_on:
+      - api
+    ports:
+      - "${USER_CLIENT_PORT:-5174}:5174"
+    networks:
+      - app_network
+
 networks:
   app_network:
     driver: bridge

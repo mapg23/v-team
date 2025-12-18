@@ -3,6 +3,11 @@ INSERT INTO `users` (`username`, `password`, `email`) VALUES
 ('bob', 'hashed_pw_2', 'bob@example.com'),
 ('charlie', 'hashed_pw_3', 'charlie@example.com');
 
+INSERT INTO `wallets` (`user_id`, `balance`) VALUES 
+(1, 57860000),
+(2, 57),
+(3, 0);
+
 INSERT INTO `cities` (`name`, `latitude`, `longitude`) VALUES 
 ('Bankeryd', 57.860000, 14.130500),
 ('Habo', 57.914000, 14.055000),

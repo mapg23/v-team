@@ -6,7 +6,10 @@ prototypes/
 
 api/node_modules
 bike/node_modules
+<<<<<<< HEAD
 admin-client/node_modules
+=======
+>>>>>>> cd30c78 (Added base for pwa)
 client/node_modules
 
 bike/coverage
