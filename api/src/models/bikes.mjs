@@ -158,3 +158,57 @@ export async function validateZone(
             return false;
     }
 }
+
+/**
+ * Get the coordinates for a given zone.
+ *
+ * For 'charging' zones, returns the zone's latitude and longitude.
+ * For 'parking' zones, returns the center point of the rectangular area.
+ *
+ * @param {string} zoneType - Type of the zone ('charging' or 'parking').
+ * @param {number} zoneId - ID of the zone to fetch coordinates for.
+ * @returns {Promise<object|null>} Coordinates object or null.
+ */
+export  async function getZoneCoordinates(zoneType, zoneId, db = dbDefault) {
+    switch (zoneType) {
+        case 'charging': {
+            const zone = await db.select(
+                'charging_zones',
+                ['latitude', 'longitude'],
+                'id = ?',
+                [zoneId]
+            );
+
+            if (!zone[0]) {
+                return null;
+            }
+            return {
+                latitude: Number(zone[0].latitude),
+                longitude: Number(zone[0].longitude)
+            };
+        }
+        case 'parking': {
+            const zone = await db.select(
+                'parking_zones',
+                ['min_lat', 'max_lat', 'min_long', 'max_long'],
+                'id = ?',
+                [zoneId]
+            );
+
+            if (!zone[0]) {
+                return null;
+            }
+            // Sätter lat/lon till mitten av fyrkanten
+            const lat = (parseFloat(zone[0].min_lat) + parseFloat(zone[0].max_lat)) / 2;
+
+            const lon = (parseFloat(zone[0].min_long) + parseFloat(zone[0].max_long)) / 2;
+
+            return {
+                latitude: lat,
+                longitude: lon
+            };
+        }
+        default:
+            return null;
+    }
+}

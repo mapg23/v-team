@@ -1,4 +1,4 @@
-import createBikes, { validateZone } from '../../src/models/bikes.mjs';
+import createBikes, { validateZone, getZoneCoordinates } from '../../src/models/bikes.mjs';
 
 const mockDb = {
     select: jest.fn(),
@@ -238,5 +238,56 @@ describe("validateZone", () => {
         const result = await validateZone('invalid', 1, 1, mockDb);
 
         expect(result).toBe(false);
+    });
+});
+
+describe("getZoneCoordinates", () => {
+    test("returns correct coordinates for charging zone", async () => {
+        mockDb.select.mockResolvedValue([{ latitude: "59.1", longitude: "18.2" }]);
+
+        const result = await getZoneCoordinates('charging', 1, mockDb);
+
+        expect(result).toEqual({ latitude: 59.1, longitude: 18.2 });
+        expect(mockDb.select).toHaveBeenCalledWith(
+            'charging_zones',
+            ['latitude', 'longitude'],
+            'id = ?',
+            [1]
+        );
+    });
+
+    test("returns center coordinates for parking zone", async () => {
+        mockDb.select.mockResolvedValue([{
+            min_lat: "57.0",
+            max_lat: "59.0",
+            min_long: "14.0",
+            max_long: "16.0"
+        }]);
+
+        const result = await getZoneCoordinates('parking', 2, mockDb);
+
+        expect(result).toEqual({ latitude: 58, longitude: 15 });
+        expect(mockDb.select).toHaveBeenCalledWith(
+            'parking_zones',
+            ['min_lat', 'max_lat', 'min_long', 'max_long'],
+            'id = ?',
+            [2]
+        );
+    });
+
+    test("returns null for unknown zone type", async () => {
+        const result = await getZoneCoordinates('invalid', 1, mockDb);
+
+        expect(result).toBeNull();
+    });
+
+    test("returns null if zone not found", async () => {
+        mockDb.select.mockResolvedValue([]);
+
+        const resultCharging = await getZoneCoordinates('charging', 99, mockDb);
+        expect(resultCharging).toBeNull();
+
+        const resultParking = await getZoneCoordinates('parking', 99, mockDb);
+        expect(resultParking).toBeNull();
     });
 });

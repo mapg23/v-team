@@ -254,10 +254,15 @@ describe("Bikes API - NOK (400), (404)", () => {
 });
 
 describe("PUT /bikes/:id/move - edge cases", () => {
+    let bikesModule;
+
+    beforeEach(async () => {
+        bikesModule = await import('../../src/models/bikes.mjs');
+    });
+
     test("should return 400 if zone does not exist for city", async () => {
         const bikeId = 4;
 
-        // Mocka att bike finns
         mockDb.select.mockResolvedValueOnce([{
             id: bikeId,
             status: 10,
@@ -270,9 +275,15 @@ describe("PUT /bikes/:id/move - edge cases", () => {
             current_zone_id: null
         }]);
 
-        // Mocka validateZone, false
-        jest.spyOn(await import('../../src/models/bikes.mjs'), 'validateZone')
-            .mockResolvedValue(false);
+        jest.spyOn(bikesModule, 'validateZone').mockResolvedValue(false);
+
+        // Mock getZoneCoordinates.
+        jest.spyOn(bikesModule, 'getZoneCoordinates').mockResolvedValue(
+            {
+                latitude: 0,
+                longitude: 0
+            }
+        );
 
         const res = await request(app)
             .put(`/bikes/${bikeId}/move`)
@@ -285,7 +296,6 @@ describe("PUT /bikes/:id/move - edge cases", () => {
     test("should return 404 if bike not found on update", async () => {
         const bikeId = 5;
 
-        // Mocka att bike finns
         mockDb.select.mockResolvedValueOnce([{
             id: bikeId,
             status: 10,
@@ -298,11 +308,14 @@ describe("PUT /bikes/:id/move - edge cases", () => {
             current_zone_id: null
         }]);
 
-        // Mocka validateZone, true
-        jest.spyOn(await import('../../src/models/bikes.mjs'), 'validateZone')
-            .mockResolvedValue(true);
+        jest.spyOn(bikesModule, 'validateZone').mockResolvedValue(true);
+        jest.spyOn(bikesModule, 'getZoneCoordinates').mockResolvedValue(
+            {
+                latitude: 59.0,
+                longitude: 18.0
+            }
+        );
 
-        // Mocka updateBike, ingen rad påverkas
         mockDb.update.mockResolvedValue({ affectedRows: 0 });
 
         const res = await request(app)
@@ -316,7 +329,6 @@ describe("PUT /bikes/:id/move - edge cases", () => {
     test("should return 500 on DB error", async () => {
         const bikeId = 6;
 
-        // Mocka att bike finns
         mockDb.select.mockResolvedValueOnce([{
             id: bikeId,
             status: 10,
@@ -329,10 +341,14 @@ describe("PUT /bikes/:id/move - edge cases", () => {
             current_zone_id: null
         }]);
 
-        jest.spyOn(await import('../../src/models/bikes.mjs'), 'validateZone')
-            .mockResolvedValue(true);
+        jest.spyOn(bikesModule, 'validateZone').mockResolvedValue(true);
+        jest.spyOn(bikesModule, 'getZoneCoordinates').mockResolvedValue(
+            {
+                latitude: 59.0,
+                longitude: 18.0
+            }
+        );
 
-        // Mocka updateBike, kastar fel
         mockDb.update.mockRejectedValue(new Error("DB error"));
 
         const res = await request(app)
