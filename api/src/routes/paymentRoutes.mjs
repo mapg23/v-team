@@ -37,7 +37,7 @@ router.post(`/create-intent`,
     async (req, res) => {
         const { amount } = req.body;
 
-        console.log("initializing create-intent for: ", amount);
+        // console.log("initializing create-intent for: ", amount);
         try {
         // Create a PaymentIntent with the order amount and currency
             const paymentIntent = await stripe.paymentIntents.create({
@@ -89,7 +89,7 @@ router.post(`/payment-success`,
             if (!walletRes[0]) {
                 walletRes = await wallets.createWallet(userId);
             }
-            console.log("WalletRes: ", walletRes);
+            // console.log("WalletRes: ", walletRes);
             const userWallet = walletRes[0];
 
             const newBalance = userWallet.balance += (amount / 100);
@@ -97,7 +97,7 @@ router.post(`/payment-success`,
                 balance: newBalance
             };
 
-            // Create a PaymentIntent with the order amount and currency
+            // Update balance in users wallet
             const result = await wallets.updateWallet(userWallet.id, updateData);
 
             console.log(result);
