@@ -172,13 +172,45 @@ const bikeService = {
   },
 
   /**
-   * Start sync for bikes
+   * Move bike to charging zone
    * @returns {JSON}
    */
-  moveBikeToZone: async function moveBikeToZone(bikeId, zoneId) {
+  moveBikeToChargingZone: async function moveBikeToChargingZone(
+    bikeId,
+    zoneId
+  ) {
     const moveObject = {
-      bike_id: `${bikeId}`,
-      zone_id: `${zoneId}`,
+      zoneType: "charging", //
+      zoneId: `${zoneId}`,
+    };
+
+    try {
+      const response = await fetch(`${API}/bikes/${bikeId}/move`, {
+        body: JSON.stringify(moveObject),
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error("MoveBikeToChargingZone error:", error);
+      return [];
+    }
+  },
+
+  /**
+   * Move bike to parking zone
+   * @returns {JSON}
+   */
+  moveBikeToParkingZone: async function moveBikeToParkingZone(
+    bikeId,
+    zoneId
+  ) {
+    const moveObject = {
+      zoneType: "parking", //
+      zoneId: `${zoneId}`,
     };
     try {
       const response = await fetch(`${API}/bikes/${bikeId}/move`, {
