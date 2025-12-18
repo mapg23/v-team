@@ -120,6 +120,14 @@ export default function MapComponent({
             <td>${bike.city_id}</td>
           </tr>
           <tr>
+            <th>Zone id:</th>
+            <td>${bike.current_zone_id}</td>
+          </tr>
+          <tr>
+            <th>Zone type:</th>
+            <td>${bike.current_zone_type}</td>
+          </tr>
+          <tr>
             <th>Speed:</th>
             <td>${bike.speed}</td>
           </tr>
