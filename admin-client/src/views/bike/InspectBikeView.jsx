@@ -1,16 +1,11 @@
-import Map from "@/components/map/Map-component";
 import { useEffect, useState } from "react";
 import CityService from "services/cities";
 import BikeService from "../../services/bikes";
-// import CityService from "../../services/cities";
 import { useNavigate, useParams } from "react-router";
-import CityDropDown from "../../components/input/CityDropDown";
-import TableWithActions from "../../components/table/TableWithActions";
 import DynamicTable from "../../components/table/DynamicTable";
 import styles from "./styles.module.css";
 import RadioForm from "components/forms/RadioForm";
 import Button from "@mui/material/Button";
-
 
 
 /**
@@ -22,7 +17,7 @@ export default function InspectBikeView() {
   const bikeId = param.id;
   const [bikeInfo, setBikeInfo] = useState(null);
   const [chargingStations, setChargingStations] = useState([]);
-  const [cityId, setCityId] = useState(null);
+  const [city, setCity] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,18 +25,21 @@ export default function InspectBikeView() {
       if (!bikeId) return;
       const bikeData = await BikeService.getSingleBike(bikeId);
       if (bikeData) {
-        setBikeInfo(bikeData);
-        setCityId(bikeData.city_id);
+        const cityData = await CityService.getCityDetailsById(bikeData.city_id);
         const stationData = await CityService.getChargingStationsInCity(
           bikeData.city_id
         );
+        if (cityData) {
+            setCity(cityData);
+            bikeData.city_name = cityData.name
+            setBikeInfo(bikeData);
+        }
         if (stationData) {
           setChargingStations(stationData);
         }
       }
       setLoading(false);
     }
-
     getData();
   }, [bikeId]);
 
@@ -61,35 +59,40 @@ export default function InspectBikeView() {
    * show bike on map => navigate city/id
    */
   async function viewOnmap(){
-    navigate(`/city/${cityId}`)
+    navigate(`/city/${city.id}`)
   }
-
-  // Visa stad cykel befinner sig i - check
-
-  // Ge möjlighet att flytta till parkering
 
   if (loading) return <p>Hämtar cykeldata..</p>;
 
   return (
     <>
-      <h1>Inspecting bike with id {bikeId}</h1>
-      <div className={styles["info-container"]}>
-        <div className="bike">
-          <DynamicTable data={bikeInfo} vertical={true} />
-        </div>
-        <div className="charging">
-          <h2>Tillgängliga laddstationer</h2>
-          <DynamicTable data={chargingStations} />
-          <RadioForm
-            title={"Laddstationer"}
-            data={chargingStations}
-            action={moveToChargingStation}
-          />
-        </div>
-        <div className="redirect">
-          <Button variant="contained" onClick={viewOnmap}>
-            Visa på karta
-          </Button>
+      <div className={styles.page}>
+        <h1>Bike #{bikeId}</h1>
+
+        <div className={styles.grid}>
+          {/* VÄNSTER KOLUMN */}
+          <section className={styles.card}>
+            <h2>Bike information</h2>
+            <DynamicTable data={bikeInfo} vertical />
+          </section>
+
+          {/* HÖGER KOLUMN */}
+          <section className={styles.card}>
+            <h2>Charging stations in {city.name}</h2>
+
+            <DynamicTable data={chargingStations} />
+            <h2>Flytta cykel till laddstation</h2>
+            <RadioForm
+              title="Välj laddstation"
+              data={chargingStations}
+              action={moveToChargingStation}
+            />
+            <div className={styles.actions}>
+              <Button variant="contained" onClick={viewOnmap}>
+                Visa på karta
+              </Button>
+            </div>
+          </section>
         </div>
       </div>
     </>

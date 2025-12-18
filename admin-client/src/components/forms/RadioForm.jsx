@@ -22,7 +22,7 @@ export default function RadioForm({ title, data, action }) {
   return (
     <>
       <FormControl component="form" onSubmit={handleAction}>
-        <FormLabel id="group-label">{title}</FormLabel>
+        {/* <FormLabel id="group-label">{title}</FormLabel> */}
         <RadioGroup
           aria-labelledby="demo-radio-buttons-group-label"
           name="radio-buttons-group"
