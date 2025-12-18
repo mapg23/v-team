@@ -53,7 +53,7 @@ export default function MapComponent({
     if (mapRef.current) {
       mapRef.current.setView(
         [Number(coords.latitude), Number(coords.longitude)],
-        13
+        14
       );
       return;
     }
