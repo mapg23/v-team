@@ -23,9 +23,9 @@ export default async function stopSimulator() {
                 latitude: bike.cords.y,
                 longitude: bike.cords.x,
                 occupied: bike.occupied,
-                city_id: bike.city_id
-            //     current_zone_type: bike.current_zone_type ?? null,
-            //     current_zone_id: bike.current_zone_id ?? null
+                city_id: bike.city_id,
+                current_zone_type: bike.current_zone_type ?? null,
+                current_zone_id: bike.current_zone_id ?? null
             };
 
             await bikes.updateBike(bike.id, updateData);

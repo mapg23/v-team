@@ -285,9 +285,11 @@ describe("getZoneCoordinates", () => {
         mockDb.select.mockResolvedValue([]);
 
         const resultCharging = await getZoneCoordinates('charging', 99, mockDb);
+
         expect(resultCharging).toBeNull();
 
         const resultParking = await getZoneCoordinates('parking', 99, mockDb);
+
         expect(resultParking).toBeNull();
     });
 });
