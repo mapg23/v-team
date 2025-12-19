@@ -7,7 +7,8 @@ import styles from "./Table.module.css";
  */
 export default function CityTable({ data, vertical }) {
   const _data = Array.isArray(data) ? data : [data];
-
+  if (_data.length === 0) return <p>Finns inga städer..</p>;
+  
   const headers = Object.keys(_data[0]);
   if (vertical) {
     return (

@@ -13,13 +13,14 @@ import cityService from "../../services/cities";
 export default function BikeView() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-
   const [bikes, setBikes] = useState([]);
   const [bikeFilter, setBikeFilter] = useState([]);
-
   const [result, setResult] = useState(null);
   const [resultType, setResultType] = useState("error");
 
+  /**
+   * Styles for response
+   */
   const resultClassMap = {
     success: style.success,
     error: style.error,
@@ -27,20 +28,28 @@ export default function BikeView() {
     info: style.info,
   };
 
+  // Get current response
   const resultClass = resultClassMap[resultType] || "";
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   /**
-   * Fetch all data
+   * Update all data
    */
-  async function fetchData() {
+  async function updateData() {
     setBikes(await BikeService.getAllBikes());
     setBikeFilter(await BikeService.getAllBikes());
-    setLoading(false);
   }
+
+  /**
+   * Run on mount
+   */
+  useEffect(() => {
+    async function fetchData() {
+      setBikes(await BikeService.getAllBikes());
+      setBikeFilter(await BikeService.getAllBikes());
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
 
   /**
    * Delete bike with id
@@ -54,7 +63,7 @@ export default function BikeView() {
       setResultType("success");
 
       // update bikes
-      fetchData();
+      await updateData();
       return;
     }
     setResult(response.error);
@@ -86,7 +95,7 @@ export default function BikeView() {
       setResult("Successfully created a new bike!");
       setResultType("success");
       // update bikes
-      fetchData();
+      await updateData();
       return;
     }
     setResult(response.error);
@@ -98,7 +107,6 @@ export default function BikeView() {
    * Filter bikes in table based on chosen City
    */
   async function filterBikes(value) {
-    console.log("filtered bikes", value);
     const previousFilter = bikeFilter;
     const filteredBikes = bikes.filter((bike) => bike.city_id === value);
     const cityObject = await cityService.getCityDetailsById(value);
@@ -117,7 +125,7 @@ export default function BikeView() {
    * Reset filter
    */
   function clearFilter() {
-    setBikeFilter(bikes)
+    setBikeFilter(bikes);
     setResult(`Filter cleared`);
     setResultType("info");
   }
@@ -137,9 +145,7 @@ export default function BikeView() {
       </button>
       {/* </div> */}
       {/* <p className={resultType === "error" ? style.error : style.success}> */}
-      <p className={resultClass}>
-        {result}
-      </p>
+      <p className={resultClass}>{result}</p>
       {/* Display bikes based on filter */}
       <div className="hideOverFlow">
         <p>Total bikes: {bikes.length}</p>

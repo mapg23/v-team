@@ -17,36 +17,41 @@ export default function GithubCallback({onLogin}) {
       const savedState = sessionStorage.getItem("oauth_state");
       const rawState = sessionStorage.getItem("oauth_state_raw");
       const codeVerifier = sessionStorage.getItem("pkce_verifier");
-    //   console.log("Stored verifier:", codeVerifier);
-
+      //   console.log("Stored verifier:", codeVerifier);
 
       if (encryptedState !== savedState) {
         console.error("Invalid OAuth state!");
         return;
       }
 
-      const response = await fetch("http://localhost:9091/api/v1/auth/oauth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code, encryptedState, rawState, code_verifier: codeVerifier }),
-      });
+      const response = await fetch(
+        "http://localhost:9091/api/v1/auth/oauth/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code,
+            encryptedState,
+            rawState,
+            code_verifier: codeVerifier,
+          }),
+        }
+      );
 
       const data = await response.json();
       // Empty session storage
-      sessionStorage.clear()
+      sessionStorage.clear();
 
       if (data.jwt) {
         // Token ska göra att jag är inloggad
-        console.log(data.jwt)
         sessionStorage.setItem("jwt", data.jwt);
-        console.log("logged in, navigating to /welcome")
         await onLogin();
         navigate("/welcome");
       }
     }
 
     handleCallback();
-  }, []);
+  }, [navigate, onLogin]);
 
   return <p>Logging in... </p>;
 } 

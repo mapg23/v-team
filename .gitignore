@@ -6,7 +6,10 @@ prototypes/
 
 api/node_modules
 bike/node_modules
+<<<<<<< HEAD
+=======
 admin-client/node_modules
+>>>>>>> cf6ab48df5b248b436a44a9c37fd156b47209e31
 client/node_modules
 
 bike/coverage

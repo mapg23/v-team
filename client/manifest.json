@@ -1,0 +1,15 @@
+{
+    "short_name": "pwa",
+    "name": "pwa-sample",
+    "icons": [
+        {
+            "src": "/wapp.png",
+            "sizes": "200x200",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "/",
+    "display": "fullscreen",
+    "background_color": "#ffffff",
+    "theme_color": "#ffffff"
+}
