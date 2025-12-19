@@ -1,5 +1,5 @@
 .Account-spacer {
-    height: 10vh;
+    height: 5vh;
 }
 
 .Account-info {}
@@ -14,7 +14,7 @@
     justify-content: space-between;
     align-items: center;
 
-    padding: 12px 16px;
+    padding: 12px 0px;
     margin-top: 12px;
     cursor: pointer;
 
@@ -48,4 +48,19 @@
 }
 
 
-.Account-Body {}
+.Account-body {
+    padding: 1rem;
+}
+
+.details-card {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border: 2px solid rgb(240, 240, 240);
+    border-radius: 10px;
+    /* background-color: pink; */
+}
+
+.details-card-saldo {
+    padding: 0;
+    margin: 0;
+}
