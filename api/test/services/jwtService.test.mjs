@@ -1,11 +1,11 @@
 // import jwtService from "../../../src/services/jwtService.mjs";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 
 describe("jwtService, functional tests", () => {
     test("created token can be validated", async () => {
         process.env.JWT_SECRET = "testsecret123";
         const { default: jwtService } = await import(
-            "../../../src/services/jwtService.mjs"
+            "../../src/services/jwtService.mjs"
         );
         const token = await jwtService.createToken({
             userId: "12",
@@ -19,7 +19,7 @@ describe("jwtService, functional tests", () => {
     test("expired token throws error", async () => {
         process.env.JWT_SECRET = "testsecret123";
         const { default: jwtService } = await import(
-            "../../../src/services/jwtService.mjs"
+            "../../src/services/jwtService.mjs"
         );
         const token2 = await jwtService.createToken(
             { userId: "12", userRole: "admin" },

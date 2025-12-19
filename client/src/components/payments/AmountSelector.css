@@ -1,0 +1,60 @@
+:root {
+    --col-text: #083a44;
+    --col-pop: #f4574f;
+    --col-grey: #a4babe;
+    
+    --space-s: 0.5rem;
+    --space-m: 1rem;
+
+    --trans-dur: 0.3s;
+	--trans-timing1: cubic-bezier(0.37,0,0.63,1);
+	--trans-timing2: cubic-bezier(0.34,1.56,0.64,1);
+}
+
+
+.amount-container {
+    padding: var(--space-m);
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    box-shadow: 0px 0px 0px 0.5px rgba(50, 50, 93, 0.1),
+    0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07);
+}
+
+.amount-label {
+ display: flex;
+ flex-direction: column;
+ border: 2px solid var(--col-grey);
+ border-radius: var(--space-s);
+ margin: var(--space-s);
+}
+
+.amount-label:has(input:checked) {
+    border-color: var(--col-pop);
+}
+
+.amount-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin: var(--space-s);
+}
+
+.amount-input {
+    accent-color: var(--col-text);
+    height: 1.4rem;
+    width: 1.4rem;
+}
+
+.amount-input:checked {
+    accent-color: var(--col-pop);
+}
+
+.amount-info {
+    margin: var(--space-s);
+}
+
+.amount-total {
+    margin: var(--space-s);
+ }
