@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import CityService from "services/cities";
 import CityTable from "components/table/CityTable";
 import PieChart from "components/chart/PieChart";
-import BikeSocket from "components/socket/BikeSocket";
-import bikeService from "../../services/bikes";
 import { useParams } from "react-router";
 import CityDropDown from "../../components/input/CityDropDown";
 import { useNavigate } from "react-router-dom";
@@ -48,14 +46,6 @@ export default function InspectCityView() {
   });
 
   // -----------------------------
-  // Update Chart for bikes in City
-  // -----------------------------
-  useEffect(() => {
-    const bikesInCity = bikes.filter((bike) => bike.city_id === Number(cityId));
-    updateBikeStatus(bikesInCity);
-  }, [cityId]);
-
-  // -----------------------------
   // Update bikes from socket
   // -----------------------------
   useEffect(() => {
@@ -90,6 +80,14 @@ export default function InspectCityView() {
       };
     });
   }
+
+  // -----------------------------
+  // Update Chart for bikes in City
+  // -----------------------------
+  useEffect(() => {
+    const bikesInCity = bikes.filter((bike) => bike.city_id === Number(cityId));
+    updateBikeStatus(bikesInCity);
+  }, [cityId, bikes]);
 
   // -----------------------------
   // Fetch initial data
