@@ -78,7 +78,8 @@ router.post(`/payment-success`,
             // Check currency?
             // const expectedAmounts = [10000, 25000, 50000];
 
-            console.log(paymentIntent, "*** status, amount: ", status, amount);
+            // console.log(paymentIntent, "*** status, amount: ", status, amount);
+
             if (status !== "succeeded") {
                 return res.json({ status: status, message: "Payment was not successfull." });
             }
@@ -100,10 +101,12 @@ router.post(`/payment-success`,
             // Update balance in users wallet
             const result = await wallets.updateWallet(userWallet.id, updateData);
 
-            console.log(result);
-            const balance = result[0].balance;
+            // console.log(result); // OkPacket { affectedRows: 1, insertId: 0n, warningStatus: 0 }
+            if (result.affectedRows === 0) {
+                throw new Error("balance was not updated");
+            }
 
-            return res.json({ balance: balance });
+            return res.json({ balance: newBalance });
         } catch (err) {
             console.error('Error creating Stripe payment intent: ', err);
             res.status(500).json({ error: err.message });
