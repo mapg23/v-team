@@ -52,16 +52,22 @@ export default function AccountView() {
                         </div>
 
                         <div className="Account-body">
-
                             <div className="details-card">
-                                <h1>Ditt saldo</h1>
+                                <div>
+                                    <h1>Ditt saldo <Wallet /></h1>
+                                </div>
 
+                                <div className="details-card-saldo">
+                                    <p>123 000:-</p>
+                                </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
 
+                <div className="account-logout">
+                    <h1>Logout</h1>
+                </div>
 
                 <div className="navigation">
                     <Navigation />

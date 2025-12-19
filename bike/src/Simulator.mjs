@@ -194,21 +194,21 @@ class Simulator {
         }
     }
 
-    moveSpecific(bike) {
-        if (this.bikes.length == 0) {
-            this.start();
+
+    /**
+     * 
+     * 
+     * @param {*} payload 
+     * @returns 
+     */
+    moveSpecific(payload) {
+        try {
+            this.cordinates[Number(payload.id)] = payload.cords;
+            return { event: 'succesfully Moved a bike', data: payload };
+        } catch (error) {
+            console.error('Invalid Payload');
+            return { event: 'Invalid Payload' };
         }
-        const prevX = this.bikes[bike.id].cords.x;
-        const prevY = this.bikes[bike.id].cords.y;
-
-        const returnMsg = { event: `Changed bike: ${bike.id} from {x:${prevX}, y:${prevY}} to: {x: ${bike.x}, y: ${bike.y}} ` }
-
-        this.bikes[bike.id].move({
-            x: Number(bike.x),
-            y: Number(bike.y)
-        });
-
-        return returnMsg;
     }
 };
 
