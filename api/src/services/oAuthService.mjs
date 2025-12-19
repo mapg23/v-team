@@ -12,7 +12,6 @@ const oauthService = {
    * @returns {string} access_token Access token from Oatuh provider
    */
     getAccessToken: async function (code, codeVerifier) {
-        console.log(codeVerifier);
         const res = await fetch("https://github.com/login/oauth/access_token", {
             method: "POST",
             headers: { Accept: "application/json" },
@@ -24,9 +23,10 @@ const oauthService = {
                 code_verifier: codeVerifier,
             }),
         });
-        const { access_token, error } = await res.json();
 
-        console.log("access or error: ", access_token, error);
+        const { access_token: accessToken, error } = await res.json();
+
+        console.log("access or error: ", accessToken, error);
 
         if (error) {
             const err = new Error(`Failed getting Github token: ${error}`);
@@ -36,7 +36,7 @@ const oauthService = {
             throw err;
         }
 
-        return access_token;
+        return accessToken;
     },
 
     /**
@@ -44,10 +44,10 @@ const oauthService = {
    * @param   {string} access_token token provided by GitHub
    * @returns {string} Users email
    */
-    getUserEmail: async function (access_token) {
+    getUserEmail: async function (accessToken) {
         const emailsResponse = await fetch("https://api.github.com/user/emails", {
             headers: {
-                Authorization: `Bearer ${access_token}`,
+                Authorization: `Bearer ${accessToken}`,
                 Accept: "application/vnd.github+json",
                 "X-GitHub-Api-Version": "2022-11-28",
             },

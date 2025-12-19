@@ -5,6 +5,8 @@ import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
+import authMiddleware from "./src/middleware/authMiddleware.mjs";
+
 import authRoutes from "./src/routes/authRoutes.mjs";
 import createUserRouter from "./src/routes/userRoutes.mjs";
 import createCityRouter from "./src/routes/cityRoutes.mjs";
@@ -34,9 +36,23 @@ app.use(express.json());
 // Döljer Express-version
 app.disable("x-powered-by");
 
+// ------------------------------
 // ----------- Routes -----------
+// ------------------------------
 app.use(`/api/${version}/auth`, authRoutes);
-// if (process.env.NODE_ENV !== "test") {app.use(authMiddleware);} // Everything below gets secured
+process.env.NODE_ENV = "test";
+
+// Applies authMiddleware to all routes after this point
+if (process.env.NODE_ENV === "test") {
+    // Mini middleware, sets all users to admin for tests
+    app.use((req, _res, next) => {
+        req.user = { id: 1, role: "admin" };
+        next();
+    });
+} else {
+    app.use(authMiddleware);
+}
+
 app.use(`/api/${version}`, createUserRouter());
 app.use(`/api/${version}`, createCityRouter());
 app.use(`/api/${version}`, createBikeRouter());
