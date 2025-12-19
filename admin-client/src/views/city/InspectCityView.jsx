@@ -8,6 +8,7 @@ import bikeService from "../../services/bikes";
 import { useParams } from "react-router";
 import CityDropDown from "../../components/input/CityDropDown";
 import { useNavigate } from "react-router-dom";
+import { socket } from "../../socket";
 
 /**
  * View for showing a city based on url
@@ -47,16 +48,27 @@ export default function InspectCityView() {
   });
 
   // -----------------------------
+  // Update Chart for bikes in City
+  // -----------------------------
+  useEffect(() => {
+    const bikesInCity = bikes.filter((bike) => bike.city_id === Number(cityId));
+    updateBikeStatus(bikesInCity);
+  }, [cityId]);
+
+  // -----------------------------
   // Update bikes from socket
   // -----------------------------
-  function updateBikes(bikeData) {
-    const bikesInCity = bikeData.filter(
-      (bike) => bike.city_id === Number(cityId)
-    );
-    // console.log(bikesInCity)
-    setBikes(bikesInCity);
-    updateBikeStatus(bikesInCity);
-  }
+  useEffect(() => {
+    function bikeEvent(bikeData) {
+      setBikes(bikeData);
+    }
+
+    socket.on("bikes", bikeEvent);
+
+    return () => {
+      socket.off("bikes", bikeEvent);
+    };
+  }, [cityId]);
 
   /**
    * Filter different status
@@ -87,9 +99,6 @@ export default function InspectCityView() {
       // get city details based on params
       setcityDetails(await CityService.getCityDetailsById(cityId));
 
-      // Start Bike Sync
-      await bikeService.startBikeSync();
-
       // Get parking zones
       setParkingZones(await CityService.getParkingZonesInCity(cityId));
 
@@ -114,7 +123,6 @@ export default function InspectCityView() {
 
   return (
     <>
-      <BikeSocket paramId={cityId} onUpdate={updateBikes} />
       <CityDropDown action={redirectToCity} />
       <h1>{cityDetails.name}</h1>
       <div style={{ display: "flex", justifyContent: "space-around" }}>
