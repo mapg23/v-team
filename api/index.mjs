@@ -13,27 +13,37 @@ import createStationRouter from "./src/routes/stationRoutes.mjs";
 import createParkingRouter from "./src/routes/parkingRoutes.mjs";
 import startSimulator from "./src/startSimulator.mjs";
 import stopSimulator from "./src/stopSimulator.mjs";
+import tripRoutes from "./src/routes/tripRoutes.mjs";
+import paymentRoutes from "./src/routes/paymentRoutes.mjs";
 
 const app = express();
 const port = process.env.API_PORT || 9091;
 const version = process.env.API_VERSION || "v1";
-const jwtSecret = process.env.JWT_SECRET;
 
 // Middleware
-app.use(cors({ origin: "*" }));
+
+// Viktigt för att IOS ska fungera
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
 app.set("json spaces", 2);
 app.use(express.json());
 // Döljer Express-version
 app.disable("x-powered-by");
 
-// ----------- Routes
-// app.use(`/api/${version}`, authRoutes);
+// ----------- Routes -----------
+app.use(`/api/${version}/auth`, authRoutes);
+// if (process.env.NODE_ENV !== "test") {app.use(authMiddleware);} // Everything below gets secured
 app.use(`/api/${version}`, createUserRouter());
-app.use(`/api/v1/auth`, authRoutes);
 app.use(`/api/${version}`, createCityRouter());
 app.use(`/api/${version}`, createBikeRouter());
 app.use(`/api/${version}`, createStationRouter());
 app.use(`/api/${version}`, createParkingRouter());
+app.use(`/api/${version}/trips`, tripRoutes);
+app.use(`/api/${version}/payments`, paymentRoutes);
 
 // -------- Socket.io
 const server = createServer(app);
@@ -42,6 +52,10 @@ const io = new Server(server, {
         origin: "*",
         methods: ["GET", "POST"],
     },
+
+    // Viktigt för att IOS ska fungera
+    transports: ["polling"],
+    allowUpgrades: false,
 });
 
 // Om godkänd klient
@@ -67,7 +81,7 @@ app.post("/telemetry", (req, res) => {
 });
 
 // Startar server med Socket.IO
-server.listen(port, async () => {
+server.listen(port, "0.0.0.0", async () => {
     console.log(`Server is listening on port: ${port}`);
 
     // Här startas simulatorn direkt när servern är igång.

@@ -224,3 +224,53 @@ describe("Parkings API - NOK (500)", () => {
         expect(res.body).toHaveProperty('error', 'Could not delete parking zone');
     });
 });
+
+describe("GET /parkings/:id/bikes", () => {
+    test("should return all bikes for a parking zone", async () => {
+        const parkingId = 1;
+
+        // parking finns
+        mockDb.select.mockResolvedValueOnce([{ id: parkingId }]);
+        // bikes i parkeringen
+        mockDb.select.mockResolvedValueOnce([
+            { id: 1, status: 10 },
+            { id: 2, status: 10 }
+        ]);
+
+        const res = await request(app).get(`/parkings/${parkingId}/bikes`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.bikeCount).toBe(2);
+        expect(res.body.bikes).toHaveLength(2);
+        expect(res.body.bikes[0]).toHaveProperty("id", 1);
+        expect(res.body.bikes[1]).toHaveProperty("id", 2);
+    });
+
+    test("should return 404 if parking zone not found", async () => {
+        mockDb.select.mockResolvedValueOnce([]);
+
+        const res = await request(app).get('/parkings/99/bikes');
+
+        expect(res.status).toBe(404);
+        expect(res.body).toHaveProperty("error", "Parking zone not found");
+    });
+
+    test("should return 400 if parking id invalid", async () => {
+        const res = await request(app).get('/parkings/abc/bikes');
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty("error", "Invalid parking id");
+    });
+
+    test("should return 500 on DB error", async () => {
+        mockDb.select.mockRejectedValue(new Error("DB error"));
+
+        const res = await request(app).get('/parkings/1/bikes');
+
+        expect(res.status).toBe(500);
+        expect(res.body).toHaveProperty(
+            "error",
+            "Could not fetch bikes for parking zone"
+        );
+    });
+});

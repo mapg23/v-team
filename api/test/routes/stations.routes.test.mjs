@@ -240,3 +240,70 @@ describe("Stations API - NOK (400/404)", () => {
         expect(res.body).toHaveProperty("error");
     });
 });
+
+describe("GET /stations/:id/bikes", () => {
+    test("should return all bikes for a station", async () => {
+        const stationId = 1;
+
+        // Mocka att station finns
+        mockStationsDb.select.mockResolvedValueOnce([{ id: stationId, name: "Station A" }]);
+        // Mocka bikes för station
+        mockStationsDb.select.mockResolvedValueOnce([
+            {
+                id: 1,
+                status: 10,
+                battery: 80,
+                latitude: 59.0,
+                longitude: 18.0,
+                occupied: 0,
+                station_id: stationId
+            },
+            {
+                id: 2,
+                status: 10,
+                battery: 60,
+                latitude: 59.01,
+                longitude: 18.01,
+                occupied: 0,
+                station_id: stationId }
+        ]);
+
+        const res = await request(app).get(`/stations/${stationId}/bikes`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.bikeCount).toBe(2);
+        expect(res.body.bikes).toHaveLength(2);
+        expect(res.body.bikes[0]).toHaveProperty("id", 1);
+        expect(res.body.bikes[1]).toHaveProperty("id", 2);
+    });
+
+    test("should return 404 if station not found", async () => {
+        const stationId = 99;
+        // Station finns ej
+
+        mockStationsDb.select.mockResolvedValueOnce([]);
+
+        const res = await request(app).get(`/stations/${stationId}/bikes`);
+
+        expect(res.status).toBe(404);
+        expect(res.body).toHaveProperty("error", "Station not found");
+    });
+
+    test("should return 400 if station id invalid", async () => {
+        const res = await request(app).get(`/stations/abc/bikes`);
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty("error", "Invalid station id");
+    });
+
+    test("should return 500 on DB error", async () => {
+        const stationId = 1;
+
+        mockStationsDb.select.mockRejectedValueOnce(new Error("DB error"));
+
+        const res = await request(app).get(`/stations/${stationId}/bikes`);
+
+        expect(res.status).toBe(500);
+        expect(res.body).toHaveProperty("error", "Could not fetch bikes for station");
+    });
+});
