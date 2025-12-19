@@ -13,33 +13,51 @@ export default function validateToken(req, res, next) {
 
     if (!token) {
         return res.status(401).json({
-            errors: {
+            error: {
                 status: 401,
-                source: req.path,
+                path: req.path,
                 title: "No token",
                 message: "No token provided in request headers",
             },
         });
     }
 
-    if (token.startsWith("Bearer ")) {
-        token = token.replace("Bearer ", "");
+    if (!token.startsWith("Bearer ")) {
+        return res.status(401).json({
+            error: {
+                status: 401,
+                title: "Invalid token format",
+                message: "Authorization header must use Bearer token"
+            }
+        });
     }
+
+    token = token.replace("Bearer ", "");
 
     jwt.verify(token, jwtSecret, function (err, decoded) {
         if (err) {
             return res.status(401).json({
                 error: {
                     status: 401,
-                    source: req.path,
+                    path: req.path,
                     title: "Failed authentication",
                     message: err.message,
                 },
             });
         }
-
-        req.userId = decoded.sub.userId;
-        req.userRole = decoded.sub.userRole;
+        if (!decoded?.sub?.userId || !decoded?.sub?.userRole) {
+            return res.status(401).json({
+                error: {
+                    status: 401,
+                    title: "Invalid token payload",
+                    message: "Token payload is malformed"
+                }
+            });
+        }
+        req.user = {
+            id: decoded.sub.userId,
+            role: decoded.sub.userRole,
+        };
 
         return next();
     });
