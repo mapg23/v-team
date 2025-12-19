@@ -30,8 +30,6 @@ export default async function stopSimulator() {
 
             await bikes.updateBike(bike.id, updateData);
         }
-
-        console.log(`Simulator stopped and ${bikesList.length} bikes saved to database`);
     } catch (err) {
         console.error("Failed to stop simulator and save bikes:", err);
     }
