@@ -1,18 +1,25 @@
 import tripsModel from "../models/trips.mjs";
 import createBikes from "../models/bikes.mjs";
 import createParkings from "../models/parkings.mjs";
+import walletsModel from "../models/wallets.mjs";
 
 // const bikeModel = createBikes();
 
 
 class TripService {
-    constructor(tripModel = tripsModel, bikeModel = createBikes(), parkings = createParkings()) {
+    constructor(
+        tripModel = tripsModel,
+        bikeModel = createBikes(),
+        parkings = createParkings(),
+        wallets = walletsModel
+    ) {
         /**
          * Inject the models class is depending on.
          */
-        this.tripModel = tripModel;
-        this.bikeModel = bikeModel;
+        this.trips = tripModel;
+        this.bikes = bikeModel;
         this.parkings = parkings;
+        this.wallets = wallets;
         /**
          * A list of parking zones
          * @type {Array}
@@ -34,25 +41,43 @@ class TripService {
         return this.parkingZones;
     }
 
+    async getBikeById(bikeId) {
+        const bikeResult = await this.bikes.getBikeById(bikeId);
+        const bike = bikeResult[0];
+
+        if (!bike) {
+            throw new Error(`Bike with id: ${bikeId} was not found`);
+        }
+        return bike;
+    }
+
+    async getWalletByUserId(userId) {
+        const walletResult = await this.wallets.getWalletByUserId(userId);
+        const wallet = walletResult[0];
+
+        if (!wallet) {
+            throw new Error(`User ${userId}s wallet was not found`);
+        }
+        return wallet;
+    };
+
     /**
      * Start a rent of a bike, and set bikes status to 40 (occupied).
      * @param {Object} data An object containing customers user id and bikes id.
      * @returns {object} The inserted transaction object.
      */
     async startTrip(data) {
-        console.log("starting transaction");
         const userId = data.userId;
         const bikeId = data.bikeId;
         const now = this.getDbDate();
 
-        const bikeResult = await this.bikeModel.getBikeById(bikeId);
-        const bike = bikeResult[0];
+        const bike = await this.getBikeById(bikeId);
+        const wallet = await this.getWalletByUserId(userId);
 
-        if (!bike) {
-            throw new Error(`Bike with id: ${bikeId} was not found`);
+        if (wallet.balance <= 0) {
+            throw new Error(`Users wallet ${wallet.id} has insufficiant funds`);
         }
 
-        console.log("bike: ", bike);
         const tripData = {
             user_id: userId,
             scooter_id: bike.id,
@@ -64,21 +89,21 @@ class TripService {
             start_time:  now,
             end_time: 0,
         };
-        const result = await this.tripModel.createTrip(tripData);
+        const result = await this.trips.createTrip(tripData);
 
         // console.log(result);
         if (!result.affectedRows) {
             throw new Error("Ride could not be created");
         }
 
-        const statusUpdate = await this.bikeModel.updateBike(bike.id, {"status": 40});
+        const statusUpdate = await this.bikes.updateBike(bike.id, {"status": 40});
 
         if (!statusUpdate.affectedRows) {
             console.error("ERROR: Unable to change status to Occupied");
             throw new Error("Unable to change status to Occupied");
         }
 
-        return await this.tripModel.getTripById(result.insertId);
+        return await this.trips.getTripById(result.insertId);
     }
 
     /**
@@ -130,7 +155,7 @@ class TripService {
      * @returns {boolean}
      */
     isInZone(zone, lat, long) {
-        console.log(lat, zone.max_lat, zone.min_lat, long, zone.max_long, zone.min_long);
+        // console.log(lat, zone.max_lat, zone.min_lat, long, zone.max_long, zone.min_long);
         return (
             lat < zone.max_lat &&
             lat > zone.min_lat &&
@@ -148,14 +173,11 @@ class TripService {
     async isInParking(lat, long) {
         const zones = await this.getParkingZones();
 
-        console.log(zones);
         for (const zone of zones) {
             if (this.isInZone(zone, lat, long)) {
-                console.log("true");
                 return true;
             }
         }
-        console.log("false");
         return false;
     }
 
@@ -171,17 +193,16 @@ class TripService {
         const rentCost = this.calculateRent(trip.start_time, now);
         const parkingFee = parkedOK ? 0 : 80;
 
-        const startFee = 35;
+        const startFee = 30;
         let discount = 1;
 
         if (parkedOK) {
             // this.bikeStatus = 10;
-            console.log(bike);
             const rentedFromParking = await this.isInParking(
                 trip.start_latitude, trip.start_longitude
             );
 
-            discount = rentedFromParking ? 1 : 0.8;
+            discount = rentedFromParking ? 1 : 0.5;
         }
 
         const totalCost = (rentCost + parkingFee) + (startFee * discount);
@@ -195,7 +216,7 @@ class TripService {
 
         bikeStatus = bike.battery > 20 ? bikeStatus : 50;
 
-        await this.bikeModel.updateBike(bike.id, {status: bikeStatus});
+        await this.bikes.updateBike(bike.id, {status: bikeStatus});
     }
 
     /**
@@ -206,28 +227,24 @@ class TripService {
      * @returns {Promise<Array>} Result from db update.
      */
     async endTrip(tripId) {
-        const tripRes = await this.tripModel.getTripById(tripId);
+        const tripRes = await this.trips.getTripById(tripId);
         const trip = tripRes?.[0];
 
         if (!trip) {
             throw new Error(`Could not find trip with id ${tripId}`);
         }
 
-        console.log("trip: ", trip);
-        const bikeRes = await this.bikeModel.getBikeById(trip.scooter_id);
-        const bike = bikeRes?.[0];
-
-        if (!bike) {
-            throw new Error(`Could not find trip with id ${trip.scooter_id}`);
+        if (trip.cost > 0 && trip.end_time > 0) {
+            throw new Error(`Trip with id ${tripId} already ended.`);
         }
 
+        const bike = await this.getBikeById(trip.scooter_id);
 
-        console.log("bike: ", bike);
         const parkedOK = await this.isInParking(bike.latitude, bike.longitude);
         const totalCost = await this.calculateCost(bike, trip, parkedOK);
         const endTime = this.getDbDate();
 
-        const result = await this.tripModel.updateTrip(trip.id, {
+        const result = await this.trips.updateTrip(trip.id, {
             cost: totalCost,
             end_longitude: bike.longitude,
             end_latitude: bike.latitude,
@@ -238,10 +255,18 @@ class TripService {
             throw new Error("Could not end trip");
         }
 
-        console.log("setting status... ");
+        const wallet = await this.getWalletByUserId(trip.user_id);
+        const newBalance = wallet.balance - totalCost;
+        const walletResult = await this.wallets.updateWallet(wallet.id, {balance: newBalance});
+
+        // console.log(walletResult);
+        if (!walletResult?.affectedRows) {
+            throw new Error("Could not update balance");
+        }
+
         await this.setBikeStatus(bike, parkedOK);
 
-        const newTripRes = await this.tripModel.getTripById(tripId);
+        const newTripRes = await this.trips.getTripById(tripId);
         const newTrip = newTripRes?.[0];
 
         if (!newTrip) {

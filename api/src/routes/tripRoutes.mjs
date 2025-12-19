@@ -22,7 +22,7 @@ router.post(`/`,
             return res.status(201).json(newTrip);
         } catch (err) {
             console.error(err);
-            return res.status(500).json({ error: 'Could not create trip' });
+            return res.status(500).json({ error: 'Could not create trip', message: err.message });
         }
     });
 
@@ -51,7 +51,8 @@ router.put(`/:id`,
         } catch (err) {
             console.error(err);
             return res.status(500).json({
-                error: `Could not end trip with id: ${req.params.id}`
+                error: `Could not end trip with id: ${req.params.id}`,
+                message: err.message
             });
         }
     });
@@ -73,7 +74,8 @@ router.delete(`/:id`,
         } catch (err) {
             console.error(err);
             return res.status(500).json({
-                error: `Could not delete trip with id: ${req.params.id}`
+                error: `Could not delete trip with id: ${req.params.id}`,
+                message: err.message
             });
         }
     });
@@ -84,7 +86,6 @@ router.get(`/user/:id`,
     validation.idParam,
     validation.checkValidationResult,
     async (req, res) => {
-        console.log("get by User ID");
         try {
             const userList = await trips.getTripsByUserId(req.params.id);
 
@@ -94,7 +95,8 @@ router.get(`/user/:id`,
         } catch (err) {
             console.error(err);
             return res.status(500).json({
-                error: `Could not fetch trips for user ${req.params.id}`
+                error: `Could not fetch trips for user ${req.params.id}`,
+                message: err.message
             });
         }
     });
@@ -106,7 +108,6 @@ router.get(`/:id`,
     validation.idParam,
     validation.checkValidationResult,
     async (req, res) => {
-        console.log("get by ID");
         try {
             const user = await trips.getTripById(req.params.id);
 
@@ -114,7 +115,8 @@ router.get(`/:id`,
         } catch (err) {
             console.error(err);
             return res.status(500).json({
-                error: `Could not fetch trip with id: ${req.params.id}`
+                error: `Could not fetch trip with id: ${req.params.id}`,
+                message: err.message
             });
         }
     });

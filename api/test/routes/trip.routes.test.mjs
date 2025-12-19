@@ -90,12 +90,15 @@ describe('Trips routes', () =>{
     });
 
     test("POST / creates a trip Fail: backend Error thrown", async () => {
-        tripService.startTrip.mockRejectedValue(new Error("Ride could not be created"));
+        tripService.startTrip.mockRejectedValue(new Error("Trip could not be created"));
 
 
         const res = await request(app).post("/trips").send({userId: 999, bikeId: 3});
 
-        expect(res.body).toEqual({"error": "Could not create trip"});
+        expect(res.body).toEqual({
+            "error": "Could not create trip",
+            message: "Trip could not be created"
+        });
         expect(res.status).toEqual(500);
     });
 
@@ -116,12 +119,15 @@ describe('Trips routes', () =>{
     });
 
     test("PUT / end a trip Fail: backend Error thrown", async () => {
-        tripService.endTrip.mockRejectedValue(new Error("Could not end trip"));
+        tripService.endTrip.mockRejectedValue(new Error("Could not end trip with id: 999"));
 
 
         const res = await request(app).put("/trips/999");
 
-        expect(res.body).toEqual({error: `Could not end trip with id: 999`});
+        expect(res.body).toEqual({
+            error: "Could not end trip with id: 999",
+            "message": "Could not end trip with id: 999",
+        });
         expect(res.status).toEqual(500);
     });
 

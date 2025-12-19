@@ -21,7 +21,13 @@ const port = process.env.API_PORT || 9091;
 const version = process.env.API_VERSION || "v1";
 
 // Middleware
-app.use(cors({ origin: "*" }));
+
+// Viktigt för att IOS ska fungera
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}));
 
 app.set("json spaces", 2);
 app.use(express.json());
@@ -46,6 +52,10 @@ const io = new Server(server, {
         origin: "*",
         methods: ["GET", "POST"],
     },
+
+    // Viktigt för att IOS ska fungera
+    transports: ["polling"],
+    allowUpgrades: false,
 });
 
 // Om godkänd klient
@@ -71,7 +81,7 @@ app.post("/telemetry", (req, res) => {
 });
 
 // Startar server med Socket.IO
-server.listen(port, async () => {
+server.listen(port, "0.0.0.0", async () => {
     console.log(`Server is listening on port: ${port}`);
 
     // Här startas simulatorn direkt när servern är igång.

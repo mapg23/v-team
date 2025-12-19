@@ -1,120 +1,116 @@
-import createParkings from '../../src/models/parkings.mjs';
+import { jest } from "@jest/globals";
+jest.mock("../../src/database.mjs", () => ({
+    select: jest.fn(),
+    insert: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn()
+}));
 
-describe('Parkings Model', () => {
-    const mockDb = {
-        select: jest.fn(),
-        insert: jest.fn(),
-        update: jest.fn(),
-        remove: jest.fn()
-    };
+import db from "../../src/database.mjs";
+import trips from '../../src/models/trips.mjs';
 
-    const parkings = createParkings(mockDb);
-
+describe('Trips Model', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        jest.resetAllMocks();
     });
 
-    test('getParkings returns all parking zones', async () => {
-        mockDb.select.mockResolvedValue([
-            {
-                id: 1,
-                city_id: 2,
-                max_lat: 59,
-                max_long: 18,
-                min_lat: 58,
-                min_long: 17
-            }
-        ]);
-        const res = await parkings.getParkings();
+    test('createTrip', async () => {
+        db.insert.mockResolvedValue([{insertId: 1}]);
+        const body = {
+            user_id: 1,
+            scooter_id: 2
+        };
+        const res = await trips.createTrip(body);
 
-        expect(res[0]).toHaveProperty('id', 1);
-        expect(mockDb.select).toHaveBeenCalledWith(
-            'parking_zones',
-            ['id', 'city_id', 'max_lat', 'max_long', 'min_lat', 'min_long']
-        );
-    });
-
-    test('createParking inserts a parking zone', async () => {
-        mockDb.insert.mockResolvedValue({ insertId: 10 });
-        const res = await parkings.createParking(
+        expect(res).toEqual([{'insertId': 1}]);
+        expect(db.insert).toHaveBeenCalledWith(
+            'trips',
             {
-                city_id: 1,
-                max_lat: 59,
-                max_long: 18,
-                min_lat: 58,
-                min_long: 17
+                user_id: 1,
+                scooter_id: 2
             }
         );
-
-        expect(res).toHaveProperty('insertId', 10);
-        expect(mockDb.insert).toHaveBeenCalledWith('parking_zones',
-            {
-                city_id: 1,
-                max_lat: 59,
-                max_long: 18,
-                min_lat: 58,
-                min_long: 17
-            });
     });
 
-    test('getParkingById returns a parking zone by ID', async () => {
-        mockDb.select.mockResolvedValue([
+    test('getTripById returns a trip by ID', async () => {
+        db.select.mockResolvedValue([
             {
                 id: 5,
-                city_id: 2,
-                max_lat: 59,
-                max_long: 18,
-                min_lat: 58,
-                min_long: 17
+                start_lat: 59,
+                start_long: 18,
+                end_lat: 58,
+                end_long: 17,
+                start_time: "1234 12 12 00:12:12",
+                end_time: "1234 12 12 00:12:13",
+                cost: 1,
             }
         ]);
-        const res = await parkings.getParkingById(5);
+        const res = await trips.getTripById(5);
 
         expect(res[0]).toHaveProperty('id', 5);
-        expect(mockDb.select).toHaveBeenCalledWith(
-            'parking_zones',
-            ['id', 'city_id', 'max_lat', 'max_long', 'min_lat', 'min_long'],
+        expect(db.select).toHaveBeenCalledWith(
+            'trips',
+            "*",
             'id = ?',
             [5]
         );
     });
 
-    test('getParkingsByCityId returns parking zones for a city', async () => {
-        mockDb.select.mockResolvedValue([
-            {
-                id: 1,
-                city_id: 2,
-                max_lat: 59,
-                max_long: 18,
-                min_lat: 58,
-                min_long: 17
-            }
-        ]);
-        const res = await parkings.getParkingsByCityId(2);
+    test('getTripsByUserId returns trips for a user', async () => {
+        const data = [{
+            id: 5,
+            user_id: 2,
+            start_lat: 59,
+            start_long: 18,
+            end_lat: 58,
+            end_long: 17,
+            start_time: "1234 12 12 00:12:12",
+            end_time: "1234 12 12 00:12:13",
+            cost: 1,
+        },
+        {
+            id: 6,
+            user_id: 2,
+            start_lat: 59,
+            start_long: 18,
+            end_lat: 58,
+            end_long: 17,
+            start_time: "1234 12 24 00:12:12",
+            end_time: "1234 12 24 00:12:13",
+            cost: 1,
+        }];
 
-        expect(res[0]).toHaveProperty('city_id', 2);
-        expect(mockDb.select).toHaveBeenCalledWith(
-            'parking_zones',
-            ['id', 'city_id', 'max_lat', 'max_long', 'min_lat', 'min_long'],
-            'city_id = ?',
+        db.select.mockResolvedValue(data);
+        const res = await trips.getTripsByUserId(2);
+
+        expect(res[0] && res[1]).toHaveProperty('user_id', 2);
+        expect(db.select).toHaveBeenCalledWith(
+            'trips',
+            "*",
+            'user_id = ?',
             [2]
         );
     });
 
-    test('updateParking updates a parking zone', async () => {
-        mockDb.update.mockResolvedValue({ affectedRows: 1 });
-        const res = await parkings.updateParking(5, { max_lat: 60 });
+    // test('updateTrip updates a trip', async () => {
+    //     db.update.mockResolvedValueOnce({ affectedRows: 1 });
 
-        expect(res).toHaveProperty('affectedRows', 1);
-        expect(mockDb.update).toHaveBeenCalledWith('parking_zones',
-            { max_lat: 60 }, 'id = ?', [5]);
-    });
+    //     const res = await trips.updateTrip(5, { cost: 60 });
+
+    //     expect(res).toHaveProperty('affectedRows', 1);
+    //     expect(db.update).toHaveBeenCalledWith(
+    //         'trips',
+    //         { cost: 60 },
+    //         'id = ?',
+    //         [5]
+    //     );
+    // });
 
     test('deleteParking deletes a parking zone', async () => {
-        mockDb.remove.mockResolvedValue({ affectedRows: 1 });
-        const res = await parkings.deleteParking(5);
+        db.remove.mockResolvedValue({ affectedRows: 1 });
+        const res = await trips.deleteTrip(5);
 
         expect(res).toHaveProperty('affectedRows', 1);
-        expect(mockDb.remove).toHaveBeenCalledWith('parking_zones', 'id = ?', [5]);
+        expect(db.remove).toHaveBeenCalledWith('trips', 'id = ?', [5]);
     });
 });
