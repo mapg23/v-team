@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 
-import './LoginView.css'
 import AuthForm from '../components/AuthForm';
 
 export default function LoginView() {

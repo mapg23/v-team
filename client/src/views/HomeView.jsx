@@ -2,16 +2,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import Map from "../components/Map-component";
 import MapModel from "../models/MapModel";
-import Navigation from "../components/NavigationBar";
 
+import Map from "../components/Map-component";
 import TopBar from "../components/TopBar";
-
-import BikeSocket from "../components/BikeSocket";
+import Navigation from "../components/NavigationBar";
 import { socket } from "../components/socket";
-
-import "../all.css";
 
 export default function HomeView() {
     const navigate = useNavigate();

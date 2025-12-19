@@ -1,11 +1,11 @@
 import { useEffect, useRef, useMemo } from "react";
-import styles from "./Map-component.module.css";
 import { FaChargingStation, FaParking } from "react-icons/fa";
 import { MdElectricScooter } from "react-icons/md";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import styles from "../assets/Map-component.module.css";
 
 export default function MapComponent({
   coords,

@@ -15,10 +15,6 @@ body,
 @supports (-webkit-touch-callout: none) {
 
     /* IOS */
-    .top-bar {
-        background-color: yellow;
-    }
-
     .top-bar>h1 {
         margin: 0;
         padding: 0;
@@ -29,13 +25,11 @@ body,
     .map-wrapper {
         width: 100%;
         height: 80vh;
-        background-color: yellow;
     }
 
     .content-wrapper {
         width: 100%;
         height: 80vh;
-        background-color: yellowgreen;
     }
 }
 
@@ -43,7 +37,6 @@ body,
     /* Android */
 
     .top-bar {
-        background-color: yellow;
         padding: 0;
     }
 
@@ -56,13 +49,11 @@ body,
     .map-wrapper {
         width: 100%;
         height: 73vh;
-        background-color: yellow;
     }
 
     .content-wrapper {
         width: 100%;
         height: 73vh;
-        background-color: yellowgreen;
     }
 }
 
