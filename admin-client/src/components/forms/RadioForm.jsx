@@ -6,11 +6,10 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 
-export default function RadioForm({ title, data, action }) {
+export default function RadioForm({ data, action }) {
   const [value, setValue] = useState("");
   const _data = Array.isArray(data) ? data : [data];
   if (_data.length === 0) return <p>Saknar data...</p>;
