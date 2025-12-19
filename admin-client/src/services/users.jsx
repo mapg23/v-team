@@ -212,11 +212,11 @@ const userService = {
    * @returns {JSON}
    */
   getUserRentalDetails: async function getUserRentalDetails(userId) {
-    return [
-      {
-        id: 1,
-      },
-    ];
+    // return [
+    //   {
+    //     id: 1,
+    //   },
+    // ];
     try {
       const response = await fetch(`${API}/users/${userId}/rentals`, {
         method: "GET",
@@ -337,9 +337,9 @@ const userService = {
    * @returns {JSON}
    */
   getUserBalanceDetails: async function getUserBalanceDetails(userId) {
-    return {
-      balance: 100,
-    };
+    // return {
+    //   balance: 100,
+    // };
     try {
       const response = await fetch(`${API}/users/${userId}/balance`, {
         method: "GET",

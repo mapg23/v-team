@@ -12,6 +12,7 @@ import BikeView from "./views/bike/BikeView";
 import InspectCityView from "./views/city/InspectCityView";
 import InspectBikeView from "./views/bike/InspectBikeView";
 import ProfileView from "./views/user/ProfileView";
+import UsersView from "./views/user/UsersView";
 import Navbar from "./components/nav/Nav";
 import { useState } from "react";
 import GithubCallback from "./components/auth/GithubCallback";
@@ -55,6 +56,7 @@ function App() {
             <Routes>
               <Route path="/welcome" element={<HomeView />} />
               <Route path="/user/:id" element={<ProfileView />} />
+              <Route path="/users" element={<UsersView />} />
               <Route path="/city/:id" element={<InspectCityView />} />
               <Route path="/cities" element={<CityView />} />
               <Route path="/bikes/:id" element={<InspectBikeView />} />
