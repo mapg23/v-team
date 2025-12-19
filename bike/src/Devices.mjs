@@ -16,6 +16,8 @@ class Device {
     occupied = false,
     speed = 0,
     city_id = null,
+    current_zone_type = null,
+    current_zone_id = null,
   ) {
     // Object-style constructor (preferred)
     if (typeof idOrOptions === "object" && idOrOptions !== null) {
@@ -27,6 +29,8 @@ class Device {
         occupied = false,
         speed = 0,
         city_id = null,
+        current_zone_type = null,
+        current_zone_id = null,
       } = idOrOptions;
 
       this.id = id;
@@ -36,6 +40,8 @@ class Device {
       this.occupied = occupied;
       this.speed = speed;
       this.city_id = city_id;
+      this.current_zone_type = current_zone_type;
+      this.current_zone_id = current_zone_id;
 
       // Positional constructor (legacy)
     } else {
@@ -46,6 +52,8 @@ class Device {
       this.occupied = occupied;
       this.speed = speed;
       this.city_id = city_id;
+      this.current_zone_type = current_zone_type;
+      this.current_zone_id = current_zone_id;
     }
   }
 

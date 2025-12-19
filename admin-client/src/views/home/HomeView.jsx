@@ -35,6 +35,19 @@ function HomeView() {
   // Active users
   const [activeUsers, setActiveUsers] = useState([]);
 
+  /**
+   * Get all city details based from cities
+   * @param {Array} arrayOfCities array of city objects
+   */
+  async function getAllCityDetails(arrayOfCities) {
+    const promises = arrayOfCities.map((city) =>
+      CityService.getCityDetailsById(city.id)
+    );
+    // Vänta tills ALLA är klara
+    const allCityDetails = await Promise.all(promises);
+    setAllCityDetails(allCityDetails);
+  }
+
   // -----------------------------
   // Fetch initial data
   // -----------------------------
@@ -50,19 +63,6 @@ function HomeView() {
     }
     fetchData();
   }, []);
-
-  /**
-   * Get all city details based from cities
-   * @param {Array} arrayOfCities array of city objects
-   */
-  async function getAllCityDetails(arrayOfCities) {
-    const promises = arrayOfCities.map((city) =>
-      CityService.getCityDetailsById(city.id)
-    );
-    // Vänta tills ALLA är klara
-    const allCityDetails = await Promise.all(promises);
-    setAllCityDetails(allCityDetails);
-  }
 
   /**
    * Method for handling the selectionChange

@@ -6,11 +6,30 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: "0.0.0.0",
-    port: process.env.USER_CLIENT_PORT || 5174,
-    hmr: {
-      clientPort: process.env.USER_CLIENT_PORT || 5174
+    host: true,
+    // port: process.env.USER_CLIENT_PORT || 5174
+    watch: {
+      usePolling: true,
     },
+    port: 5174,
+
+    proxy: {
+      "/api": {
+        target: "http://api:9091",
+        changeOrigin: true
+      },
+
+      "/socket.io": {
+        target: "http://api:9091",
+        ws: false,
+        changeOrigin: true,
+      }
+    },
+
+    allowedHosts: [
+      "localhost",
+      ".ngrok-free.app"
+    ],
   },
   resolve: {
     alias: {

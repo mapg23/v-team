@@ -13,7 +13,7 @@ import InspectCityView from "./views/city/InspectCityView";
 import InspectBikeView from "./views/bike/InspectBikeView";
 import ProfileView from "./views/user/ProfileView";
 import Navbar from "./components/nav/Nav";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import GithubCallback from "./components/auth/GithubCallback";
 
 function App() {
@@ -21,15 +21,9 @@ function App() {
 
   const [isLoggedin, setIsLoggedIn] = useState(jwt);
 
-  useEffect(() => {
-    const state = sessionStorage.getItem("jwt") ? true : false;
-    setIsLoggedIn(Boolean(state));
-  }, []);
-
   async function login() {
     const jwt = sessionStorage.getItem("jwt") ? true : false;
-    console.log(jwt);
-    setIsLoggedIn(true);
+    setIsLoggedIn(jwt);
   }
 
   async function logout() {

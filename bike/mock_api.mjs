@@ -1,44 +1,52 @@
 "use strict";
 
 async function start() {
-    let heartbeatTimer = 5000;
+  let heartbeatTimer = 5000;
 
-    let cordinates = {
-        cordinates: {
-            0: [
-                { x: 1, y: 1 },
-                { x: 5, y: 5 },
-                { x: 10, y: 10 },
-                { x: 100, y: 120 },
-            ],
-            1: [],
-            2: []
-        },
-    };
-    let bikes = [
-        { id: 1, location: { x: 0, y: 0 }, battery: 100, status: 10, occupied: false },
-        { id: 5, location: { x: 0, y: 0 }, battery: 100, status: 10, occupied: false },
-        { id: 234, location: { x: 0, y: 0 }, battery: 100, status: 10, occupied: false },
-        { id: 4, location: { x: 0, y: 0 }, battery: 100, status: 10, occupied: false },
-    ];
+  let cordinates = {
+    cordinates: {
+      1: [
+        { x: 57.863800, y: 14.128300 },
+        { x: 57.863800, y: 14.128400 },
+        { x: 57.863800, y: 14.128500 },
+        { x: 57.863800, y: 14.128600 },
+        { x: 57.863800, y: 14.128700 },
+      ],
+      2: [
+        { x: 57.863900, y: 14.128300 },
+        { x: 57.864000, y: 14.128300 },
+        { x: 57.864100, y: 14.128300 },
+        { x: 57.864200, y: 14.128300 },
+        { x: 57.864300, y: 14.127100 },
 
-    const start = await fetch('http://localhost:7071/start', {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ bikes: bikes })
-    });
-    let startJSON = await start.json();
+      ],
+      3: [
+        { x: 57.864000, y: 14.128600 },
+        { x: 57.864200, y: 14.128900 },
+        { x: 57.864400, y: 14.123200 },
+        { x: 57.864600, y: 14.128500 },
+        { x: 57.915000, y: 14.059800 },
+      ]
+    },
+  };
 
-    console.log(`[LOG]: ${startJSON.msg}`);
+  const start = await fetch('http://localhost:7071/start', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ bikes: bikes })
+  });
+  let startJSON = await start.json();
 
-    const setRoutes = await fetch('http://localhost:7071/setRoute', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(cordinates)
-    });
-    let routesJson = await setRoutes.json();
+  console.log(`[LOG]: ${startJSON.msg}`);
+
+  const setRoutes = await fetch('http://localhost:7071/setRoute', {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(cordinates)
+  });
+  let routesJson = await setRoutes.json();
 
   console.log(`[LOG]: ${routesJson.event}`);
 
@@ -60,24 +68,19 @@ async function start() {
 async function startBikes(params) {
   let cordinates = {
     cordinates: {
-      12: [
-        { x: 57.8602, y: 14.1240 },
-        { x: 57.8608, y: 14.1240 },
-        { x: 57.8612, y: 14.1240 },
-        { x: 57.8618, y: 14.1240 },
-        { x: 57.8624, y: 14.1240 },
-        { x: 57.8630, y: 14.1240 },
-        { x: 57.8636, y: 14.1240 },
-        { x: 57.8642, y: 14.1240 },
-        { x: 57.8648, y: 14.1240 },
-        { x: 57.8654, y: 14.1240 },
-        { x: 57.8660, y: 14.1240 },
-        { x: 57.8666, y: 14.1240 },
-        { x: 57.8672, y: 14.1240 },
-        { x: 57.8678, y: 14.1240 },
-        { x: 57.8684, y: 14.1240 },
-        { x: 57.8690, y: 14.1240 },
-        { x: 57.8696, y: 14.1240 },
+      1: [
+        { x: 57.863800, y: 14.128300 },
+        { x: 57.863800, y: 14.128310 },
+        { x: 57.863800, y: 14.128320 },
+        { x: 57.863800, y: 14.128330 },
+        { x: 57.863800, y: 14.128340 },
+      ],
+      2: [
+        { x: 57.862900, y: 14.127100 },
+        { x: 57.863500, y: 14.129200 },
+        { x: 57.862900, y: 14.127100 },
+        { x: 57.863500, y: 14.129200 },
+        { x: 57.862900, y: 14.127100 },
       ],
     },
   };

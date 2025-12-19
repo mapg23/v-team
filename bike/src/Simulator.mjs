@@ -97,7 +97,9 @@ class Simulator {
             status: b.status,
             occupied: b.occupied,
             city_id: b.city_id,
-            speed: b.speed
+            speed: b.speed,
+            current_zone_type: b.current_zone_type,
+            current_zone_id: b.current_zone_id,
         }));
 
 
@@ -118,15 +120,27 @@ class Simulator {
         this.bikes = [];
         for (let bike of payload) {
             let parsedCords = { x: Number(bike.longitude), y: Number(bike.latitude) };
-            this.bikes.push(new Device(
-                bike.id,
-                parsedCords,
-                bike.battery,
-                bike.status,
-                bike.occupied,
-                0,
-                bike.city_id,
-            ));
+            this.bikes.push(new Device({
+                id: bike.id,
+                cords: parsedCords,
+                battery: bike.battery,
+                status: bike.status,
+                occupied: bike.occupied,
+                speed: 0,
+                city_id: bike.city_id,
+                current_zone_type: bike.current_zone_type,
+                current_zone_id: bike.current_zone_id
+            }));
+            // this.bikes.push(new Device(
+            //     bike.id,
+            //     parsedCords,
+            //     bike.battery,
+            //     bike.status,
+            //     bike.occupied,
+            //     0,
+            //     bike.city_id,
+            //     bike
+            // ));
         }
         this.startMovement();
         return { event: `Bikes: ${this.bikes.length}`, data: this.bikes }
@@ -194,21 +208,21 @@ class Simulator {
         }
     }
 
-    moveSpecific(bike) {
-        if (this.bikes.length == 0) {
-            this.start();
+
+    /**
+     * 
+     * 
+     * @param {*} payload 
+     * @returns 
+     */
+    moveSpecific(payload) {
+        try {
+            this.cordinates[Number(payload.id)] = payload.cords;
+            return { event: 'succesfully Moved a bike', data: payload };
+        } catch (error) {
+            console.error('Invalid Payload');
+            return { event: 'Invalid Payload' };
         }
-        const prevX = this.bikes[bike.id].cords.x;
-        const prevY = this.bikes[bike.id].cords.y;
-
-        const returnMsg = { event: `Changed bike: ${bike.id} from {x:${prevX}, y:${prevY}} to: {x: ${bike.x}, y: ${bike.y}} ` }
-
-        this.bikes[bike.id].move({
-            x: Number(bike.x),
-            y: Number(bike.y)
-        });
-
-        return returnMsg;
     }
 };
 

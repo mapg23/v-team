@@ -1,9 +1,11 @@
-/* global L */
 import { useEffect, useRef, useMemo } from "react";
-import styles from "./Map-component.module.css";
 import { FaChargingStation, FaParking } from "react-icons/fa";
 import { MdElectricScooter } from "react-icons/md";
 import { renderToStaticMarkup } from "react-dom/server";
+
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import styles from "../assets/Map-component.module.css";
 
 export default function MapComponent({
   coords,
@@ -11,7 +13,9 @@ export default function MapComponent({
   parkingZones,
   chargingZones,
 }) {
-  const mapRef = useRef(null);
+  console.log("MapComponent rendered");
+  const containerRef = useRef(null); // DOM NODE
+  const mapRef = useRef(null); // Leaflet map instance
   const markersRef = useRef([]);
   const parkingLayerRef = useRef(null);
   const chargingLayerRef = useRef(null);
@@ -44,8 +48,11 @@ export default function MapComponent({
    * Renders the map if new city coordinates
    */
   useEffect(() => {
-    if (!coords.latitude || !coords.longitude) {
-      console.log("missing coordinates for map");
+    if (
+      coords?.latitude == null ||
+      coords?.longitude == null
+    ) {
+      console.log("missing coordinates for map", coords);
       return;
     }
 
@@ -58,8 +65,9 @@ export default function MapComponent({
       return;
     }
 
+    if (!containerRef.current) return;
     // Annars skapa ny karta
-    const map = L.map("map").setView(
+    const map = L.map(containerRef.current).setView(
       [Number(coords.latitude), Number(coords.longitude)],
       13
     );
@@ -71,6 +79,11 @@ export default function MapComponent({
     }).addTo(map);
 
     mapRef.current = map;
+
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 0);
+
   }, [coords]);
 
   /**
@@ -254,5 +267,5 @@ export default function MapComponent({
     });
   }, [chargingZones, chargingStationIcon]);
 
-  return <div id="map" className={styles.map}></div>;
+  return <div ref={containerRef} className={styles.map}></div>;
 }

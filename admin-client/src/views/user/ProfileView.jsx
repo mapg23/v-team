@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import UserService from "../../services/users";
-import { useParams, Navigate, useNavigate } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import Profile from "../../components/user/Profile";
 import Balance from "../../components/user/Balance";
 import History from "../../components/user/History";
@@ -42,10 +42,6 @@ export default function UserView() {
     },
   ]);
 
-  if (!params.id) {
-    return <p>no userid provided...</p>;
-  }
-
   /**
    * Fetch all data and set loading = false when done
    *
@@ -62,7 +58,7 @@ export default function UserView() {
       setLoading(false);
     }
     fetchData();
-  }, []);
+  }, [userId]);
 
   /**
    * Delete user
@@ -71,6 +67,10 @@ export default function UserView() {
     event.preventDefault();
     const success = await UserService.deleteUser(userId);
     if (success) navigate("/welcome");
+  }
+
+  if (!params.id) {
+    return <p>no userid provided...</p>;
   }
 
   if (!loading) {

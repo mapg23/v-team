@@ -1,4 +1,3 @@
-import navstyles from "./Nav.module.css";
 import styles from "../button/Button.module.css"
 
 /**

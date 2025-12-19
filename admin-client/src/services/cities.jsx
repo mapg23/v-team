@@ -48,7 +48,7 @@ const cityService = {
 
       return await response.json();
     } catch (error) {
-        console.error(error);
+      console.error(error);
       return [];
     }
   },
@@ -82,9 +82,6 @@ const cityService = {
    * @returns {Object} new city
    */
   deleteCity: async function deleteCity(cityId) {
-    const cityObject = {
-      id: `${cityId}`,
-    };
     try {
       const response = await fetch(`${API}/cities/${cityId}`, {
         // body: JSON.stringify(cityObject),
@@ -102,11 +99,11 @@ const cityService = {
   },
 
   /**
-   * Get stations in city by id
-   * 
+   * Get charging stations in city by id
+   *
    * @return {Json} array of objects
    */
-  getStationsInCity: async function getStationsInCity(cityId) {
+  getChargingStationsInCity: async function getChargingStationsInCity(cityId) {
     try {
       const response = await fetch(`${API}/cities/${cityId}/stations`, {
         method: "GET",
@@ -115,32 +112,30 @@ const cityService = {
         },
       });
 
-      return await response.json()
-
+      return await response.json();
     } catch (error) {
-        console.error(error);
+      console.error(error);
       return [];
     }
   },
 
   /**
-   * Get stations in city by id
-   * 
+   * Get parking zones in city by id
+   *
    * @return {Json} array of objects
    */
-  getParkingsInCity: async function getParkingsInCity(cityId) {
+  getParkingZonesInCity: async function getParkingZonesInCity(cityId) {
     try {
-      const response = await fetch(`${API}/cities/${cityId}/parkerings`, {
+      const response = await fetch(`${API}/cities/${cityId}/parkings`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      return await response.json()
-
+      return await response.json();
     } catch (error) {
-        console.error(error);
+      console.error(error);
       return [];
     }
   },
@@ -163,9 +158,8 @@ const cityService = {
       });
 
       return await response.json();
-      
     } catch (error) {
-        console.error(error);
+      console.error(error);
       return [];
     }
   },

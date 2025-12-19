@@ -1,12 +1,12 @@
-import styles from "./Table.module.css";
 /**
  * Create a Table based on a array of objects
  *
  * @param {Array} data array of objects
  * @returns
  */
-export default function CityTable({ data, action, inspect }) {
+export default function TableWithActions({ data, action, inspect }) {
   const _data = Array.isArray(data) ? data : [data];
+  if (_data.length === 0) return <p>Finns inga städer..</p>
 
   const headers = Object.keys(_data[0]);
 

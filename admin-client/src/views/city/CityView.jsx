@@ -13,33 +13,28 @@ export default function CityView() {
   const [newCity, setNewCity] = useState("");
   const [result, setResult] = useState(null);
   const [resultType, setResultType] = useState("error");
-
   const [loading, setLoading] = useState(true);
+  const [cities, setCities] = useState([]);
 
-  const [cities, setCities] = useState([
-    {
-      id: null,
-      name: null,
-      latitude: null,
-      longitude: null,
-    },
-  ]);
+  /**
+   * update all cityData
+   */
+  async function updateData() {
+    const cities = await CityService.getAllCities();
+    setCities(cities);
+  }
 
   /**
    * Call fetchData
    */
   useEffect(() => {
+    async function fetchData() {
+      const cities = await CityService.getAllCities();
+      setCities(cities);
+      setLoading(false);
+    }
     fetchData();
   }, []);
-
-  /**
-   * Fetch all cityData
-   */
-  async function fetchData() {
-    const cities = await CityService.getAllCities();
-    setCities(cities);
-    setLoading(false);
-  }
 
   /**
    * Create a new City
@@ -55,12 +50,12 @@ export default function CityView() {
       setResult(result.error);
       setResultType("error");
     } else {
-       setResult(result[0].name + " skapat!");
-       setResultType("success");
-       setNewCity("");
+      setResult(result[0].name + " skapat!");
+      setResultType("success");
+      setNewCity("");
     }
     // update data
-    fetchData();
+    await updateData();
     return;
   }
 
@@ -75,7 +70,7 @@ export default function CityView() {
       setResultType("error");
     }
     // update data
-    fetchData();
+    await updateData();
     return;
   }
 
