@@ -1,7 +1,11 @@
 "use strict";
 import { useEffect } from "react";
-import Navigation from "../components/NavigationBar";
 import { useNavigate } from "react-router-dom";
+
+import TopBar from "../components/TopBar";
+import Navigation from "../components/NavigationBar";
+
+import "../all.css";
 
 export default function AccountView() {
     const navigate = useNavigate();
@@ -10,17 +14,31 @@ export default function AccountView() {
         navigate('/');
     }
 
+    const handleTopBarCallback = () => {
+
+    }
+
     return (
-        <div className="d-flex flex-column min-vh-100 bg-white">
-            {/* content */}
-            <main className="flex-grow-1 px-3 pt-4">
-                <button onClick={handleHome}>
-                    Gå till home
-                </button>
-                <Navigation />
-            </main>
+        <>
+            <div className="layout">
+
+                <TopBar
+                    title="Konto"
+                    callback={handleTopBarCallback}
+                    canCallback="yes"
+                />
+
+                <div className="content-wrapper">
+
+                </div>
 
 
-        </div>
+                <div className="navigation">
+                    <Navigation />
+                </div>
+            </div>
+
+
+        </>
     );
 }

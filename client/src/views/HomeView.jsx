@@ -2,12 +2,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import BikeSocket from "../components/BikeSocket";
 import Map from "../components/Map-component";
 import MapModel from "../models/MapModel";
 import Navigation from "../components/NavigationBar";
 
-import "./HomeView.css"
+import TopBar from "../components/TopBar";
+
+import BikeSocket from "../components/BikeSocket";
+import { socket } from "../components/socket";
+
+import "../all.css";
 
 export default function HomeView() {
     const navigate = useNavigate();
@@ -55,6 +59,20 @@ export default function HomeView() {
         });
     }
 
+    function topBarCallback() {
+
+    }
+
+    // socket useEffect.
+    useEffect(() => {
+        socket.on("bikes", (data) => {
+            updateBikes(data);
+        });
+
+        return () => {
+            socket.disconnect();
+        };
+    }, [updateBikes]);
 
 
     useEffect(() => {
@@ -89,11 +107,14 @@ export default function HomeView() {
 
     return (
         <>
-            <BikeSocket
-                paramId={cityId}
-                onUpdate={updateBikes}
-            />
             <div className="layout">
+
+                <TopBar
+                    title="Karta"
+                    callback={topBarCallback}
+                    canCallback="no"
+                />
+
                 <div className="map-wrapper">
                     <Map
                         coords={cityDetails}

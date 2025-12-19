@@ -14,19 +14,19 @@ export default function Navigation() {
                 icon={<Map size={20} />}
                 label="Karta"
                 active={location.pathname === "/map"}
-                path="/map"
+                path="/"
             />
 
             <NavItem
                 icon={<QrCode size={20} />}
-                label="Skanna"
+                label="Historik?"
                 active={location.pathname === "/scan"}
                 path="/scan"
             />
 
             <NavItem
                 icon={<User size={20} />}
-                label="Profil"
+                label="Konto"
                 active={location.pathname === "/account"}
                 path="/account"
             />
