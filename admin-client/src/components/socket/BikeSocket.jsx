@@ -1,3 +1,6 @@
+/**
+ * DEPRECATED - USE SOCKET.JS INSTED
+ */
 import { useEffect } from "react";
 import { io } from "socket.io-client";
 
