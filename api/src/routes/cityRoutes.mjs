@@ -15,6 +15,22 @@ export default function createCityRouter(
 ) {
     const route = express.Router();
 
+    /**
+     * POST /cities
+     * Creates a new city.
+     *
+     * Request Body:
+     * {
+     *   name: string
+     * }
+     *
+     * Returns:
+     * 201: city created successfully
+     * 400: name is missing
+     * 404: city not found via geocoding
+     * 409: city already exists
+     * 500: server error
+     */
     route.post(`/cities`, validateJsonBody, async (req, res) => {
         const name  = req.body.name;
 
@@ -50,6 +66,17 @@ export default function createCityRouter(
         }
     });
 
+    /**
+     * GET /cities/:id
+     * Fetches details of a city by its ID, including counts of bikes,
+     * stations, and parking zones.
+     *
+     * Returns:
+     * 200: city details
+     * 400: invalid city ID
+     * 404: city not found
+     * 500: server error
+     */
     route.get(`/cities/:id`, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
 
@@ -77,6 +104,18 @@ export default function createCityRouter(
         }
     });
 
+    /**
+     * GET /cities
+     * Fetches all cities, or a specific city if a `name`
+     * query parameter is provided.
+     *
+     * Query Parameters:
+     *   name?: string - optional city name to filter by
+     *
+     * Returns:
+     * 200: list of cities or single city
+     * 500: server error
+     */
     route.get(`/cities`, async (req, res) => {
         try {
             if (req.query.name) {
@@ -95,6 +134,21 @@ export default function createCityRouter(
     });
 
 
+    /**
+     * PUT /cities/:id
+     * Updates a city's name by its ID.
+     *
+     * Request Body:
+     * {
+     *   name: string
+     * }
+     *
+     * Returns:
+     * 200: city updated successfully
+     * 400: invalid city ID or name missing
+     * 404: city not found
+     * 500: server error
+     */
     route.put(`/cities/:id`, validateJsonBody, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
 
@@ -123,6 +177,15 @@ export default function createCityRouter(
         }
     });
 
+    /**
+     * DELETE /cities/:id
+     * Deletes a city by its ID.
+     *
+     * Returns:
+     * 204: city deleted successfully
+     * 400: invalid city ID
+     * 500: server error
+     */
     route.delete(`/cities/:id`, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
 
@@ -140,6 +203,15 @@ export default function createCityRouter(
         }
     });
 
+    /**
+     * GET /cities/:id/bikes
+     * Fetches all bikes in a specific city by city ID.
+     *
+     * Returns:
+     * 200: list of bikes
+     * 404: city not found
+     * 500: server error
+     */
     route.get(`/cities/:id/bikes`, async (req, res) => {
         try {
             const cityId = Number(req.params.id);
@@ -161,6 +233,16 @@ export default function createCityRouter(
         }
     });
 
+    /**
+     * GET /cities/:id/stations
+     * Fetches all stations in a specific city by city ID.
+     *
+     * Returns:
+     * 200: list of stations
+     * 400: invalid city ID
+     * 404: city not found
+     * 500: server error
+     */
     route.get('/cities/:id/stations', async (req, res) => {
         try {
             const cityId = Number(req.params.id);
@@ -184,6 +266,16 @@ export default function createCityRouter(
         }
     });
 
+    /**
+     * GET /cities/:id/parkings
+     * Fetches all parking zones in a specific city by city ID.
+     *
+     * Returns:
+     * 200: list of parking zones
+     * 400: invalid city ID
+     * 404: city not found
+     * 500: server error
+     */
     route.get('/cities/:id/parkings', async (req, res) => {
         try {
             const cityId = Number(req.params.id);
@@ -207,6 +299,15 @@ export default function createCityRouter(
         }
     });
 
+    /**
+     * GET /cities/:id/bike/:bikeId
+     * Fetches a specific bike in a specific city by city ID and bike ID.
+     *
+     * Returns:
+     * 200: bike found
+     * 404: city or bike not found
+     * 500: server error
+     */
     route.get(`/cities/:id/bike/:bikeId`, async (req, res) => {
         try {
             const cityId = Number(req.params.id);
