@@ -26,7 +26,7 @@ export default function validateToken(req, res, next) {
         token = token.replace("Bearer ", "");
     }
 
-    const decoded = jwt.verify(token, jwtSecret, function (err, decoded) {
+    jwt.verify(token, jwtSecret, function (err, decoded) {
         if (err) {
             return res.status(401).json({
                 error: {

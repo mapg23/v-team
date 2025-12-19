@@ -222,7 +222,7 @@ export default function createCityRouter(
             // Hämtar cykeln och kolla att den tillhör staden
             const bike = await bikes.getBikeById(bikeId);
 
-            if (!bike[0] || bike[0].cityId !== cityId) {
+            if (!bike[0] || bike[0].city_id !== cityId) {
                 return res.status(404).json({ error: "Bike not found in this city" });
             }
 

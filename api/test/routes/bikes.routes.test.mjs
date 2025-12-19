@@ -252,3 +252,110 @@ describe("Bikes API - NOK (400), (404)", () => {
         expect(res.body).toHaveProperty("error", "Bike not found");
     });
 });
+
+describe("PUT /bikes/:id/move - edge cases", () => {
+    let bikesModule;
+
+    beforeEach(async () => {
+        bikesModule = await import('../../src/models/bikes.mjs');
+    });
+
+    test("should return 400 if zone does not exist for city", async () => {
+        const bikeId = 4;
+
+        mockDb.select.mockResolvedValueOnce([{
+            id: bikeId,
+            status: 10,
+            battery: 50,
+            latitude: 59.0,
+            longitude: 18.0,
+            occupied: 0,
+            city_id: 1,
+            current_zone_type: null,
+            current_zone_id: null
+        }]);
+
+        jest.spyOn(bikesModule, 'validateZone').mockResolvedValue(false);
+
+        // Mock getZoneCoordinates.
+        jest.spyOn(bikesModule, 'getZoneCoordinates').mockResolvedValue(
+            {
+                latitude: 0,
+                longitude: 0
+            }
+        );
+
+        const res = await request(app)
+            .put(`/bikes/${bikeId}/move`)
+            .send({ zoneType: "parking", zoneId: 99 });
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty("error", "Zone does not exist for this city");
+    });
+
+    test("should return 404 if bike not found on update", async () => {
+        const bikeId = 5;
+
+        mockDb.select.mockResolvedValueOnce([{
+            id: bikeId,
+            status: 10,
+            battery: 50,
+            latitude: 59.0,
+            longitude: 18.0,
+            occupied: 0,
+            city_id: 1,
+            current_zone_type: null,
+            current_zone_id: null
+        }]);
+
+        jest.spyOn(bikesModule, 'validateZone').mockResolvedValue(true);
+        jest.spyOn(bikesModule, 'getZoneCoordinates').mockResolvedValue(
+            {
+                latitude: 59.0,
+                longitude: 18.0
+            }
+        );
+
+        mockDb.update.mockResolvedValue({ affectedRows: 0 });
+
+        const res = await request(app)
+            .put(`/bikes/${bikeId}/move`)
+            .send({ zoneType: "parking", zoneId: 2 });
+
+        expect(res.status).toBe(404);
+        expect(res.body).toHaveProperty("error", "Bike not found");
+    });
+
+    test("should return 500 on DB error", async () => {
+        const bikeId = 6;
+
+        mockDb.select.mockResolvedValueOnce([{
+            id: bikeId,
+            status: 10,
+            battery: 50,
+            latitude: 59.0,
+            longitude: 18.0,
+            occupied: 0,
+            city_id: 1,
+            current_zone_type: null,
+            current_zone_id: null
+        }]);
+
+        jest.spyOn(bikesModule, 'validateZone').mockResolvedValue(true);
+        jest.spyOn(bikesModule, 'getZoneCoordinates').mockResolvedValue(
+            {
+                latitude: 59.0,
+                longitude: 18.0
+            }
+        );
+
+        mockDb.update.mockRejectedValue(new Error("DB error"));
+
+        const res = await request(app)
+            .put(`/bikes/${bikeId}/move`)
+            .send({ zoneType: "parking", zoneId: 2 });
+
+        expect(res.status).toBe(500);
+        expect(res.body).toHaveProperty("error", "Could not move bike");
+    });
+});
