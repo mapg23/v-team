@@ -9,7 +9,7 @@ const jwtSecret = process.env.JWT_SECRET;
  *
  */
 export default function validateToken(req, res, next) {
-    let token = req.headers["authorization"];
+    let token = req?.headers?.authorization;
 
     if (!token) {
         return res.status(401).json({
@@ -72,7 +72,8 @@ export default function validateToken(req, res, next) {
  */
 export function restrictTo(allowedRoles) {
     return (req, res, next) => {
-        const userRole = req.userRole;
+        console.log(req.user);
+        const userRole = req?.user?.role;
 
         if (!userRole || !allowedRoles.includes(userRole)) {
             return res.status(403).json({

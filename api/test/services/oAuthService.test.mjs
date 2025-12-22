@@ -1,4 +1,4 @@
-import oauthService from "../../src/services/oAuthService.mjs";
+import oAuthService from "../../src/services/oAuthService.mjs";
 import jwtService from "../../src/services/jwtService.mjs";
 // import userModel from "../../src/models/users.mjs";
 process.env.NODE_ENV = "test";
@@ -35,7 +35,7 @@ describe("oAuthService", () => {
             })
         );
 
-        await expect(oauthService.getAccessToken("bad code")).rejects.toThrow(
+        await expect(oAuthService.getAccessToken("bad code")).rejects.toThrow(
             `Failed getting Github token: Invalid code`
         );
     });
@@ -47,7 +47,7 @@ describe("oAuthService", () => {
                 status: 200,
             })
         );
-        const accessToken = await oauthService.getAccessToken("test code");
+        const accessToken = await oAuthService.getAccessToken("test code");
 
         await expect(fetch).toHaveBeenCalledWith(
             "https://github.com/login/oauth/access_token",
@@ -69,7 +69,7 @@ describe("oAuthService", () => {
             })
         );
 
-        await expect(oauthService.getUserEmail("access_token")).rejects.toThrow(
+        await expect(oAuthService.getUserEmail("access_token")).rejects.toThrow(
             "Failed to fetch user emails from GitHub"
         );
     });
@@ -86,7 +86,7 @@ describe("oAuthService", () => {
             })
         );
 
-        await expect(oauthService.getUserEmail("access_token")).rejects.toThrow(
+        await expect(oAuthService.getUserEmail("access_token")).rejects.toThrow(
             "No verified primary email found on GitHub"
         );
     });
@@ -103,7 +103,7 @@ describe("oAuthService", () => {
             })
         );
 
-        const userEmail = await oauthService.getUserEmail("access_token");
+        const userEmail = await oAuthService.getUserEmail("access_token");
 
         expect(userEmail).toBe("test@test.test");
     });
@@ -111,20 +111,20 @@ describe("oAuthService", () => {
         jwtService.verifyToken.mockResolvedValue("bad value");
 
         await expect(
-            oauthService.oAuthLogin("real value", "encrypted value", "code")
+            oAuthService.oAuthLogin("real value", "encrypted value", "code")
         ).rejects.toThrow("Failed to authenticate state");
     });
 
     test("oAuthLogin, success", async () => {
         jwtService.verifyToken.mockResolvedValue("real value");
-        jest.spyOn(oauthService, "getAccessToken").mockResolvedValue("test token");
-        jest.spyOn(oauthService, "getUserEmail").mockResolvedValue("test email");
+        jest.spyOn(oAuthService, "getAccessToken").mockResolvedValue("test token");
+        jest.spyOn(oAuthService, "getUserEmail").mockResolvedValue("test email");
         jest
-            .spyOn(oauthService, "findOrCreateOauthUser")
+            .spyOn(oAuthService, "findOrCreateOauthUser")
             .mockResolvedValue("test user");
         jwtService.createToken.mockResolvedValue("test token");
 
-        const token = await oauthService.oAuthLogin(
+        const token = await oAuthService.oAuthLogin(
             "real value",
             "encrypted value",
             "code"
@@ -141,7 +141,7 @@ describe("oAuthService", () => {
         ]);
 
         await expect(
-            oauthService.findOrCreateOauthUser("test@test.test")
+            oAuthService.findOrCreateOauthUser("test@test.test")
         ).rejects.toThrow("User did not exist, and could not be created");
     });
 
@@ -152,7 +152,7 @@ describe("oAuthService", () => {
             { id: 1, email: "test@test.test" },
         ]);
 
-        const user = await oauthService.findOrCreateOauthUser("test@test.test");
+        const user = await oAuthService.findOrCreateOauthUser("test@test.test");
 
         await expect(user).toStrictEqual({ id: 1, email: "test@test.test" });
     });
@@ -162,7 +162,7 @@ describe("oAuthService", () => {
             { id: 1, email: "test@test.test" },
         ]);
 
-        const user = await oauthService.findOrCreateOauthUser("test@test.test");
+        const user = await oAuthService.findOrCreateOauthUser("test@test.test");
 
         await expect(user).toStrictEqual({ id: 1, email: "test@test.test" });
     });

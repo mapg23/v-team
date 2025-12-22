@@ -3,13 +3,14 @@ import createUsers from "../models/users.mjs";
 
 export const userModel = createUsers();
 
-const oauthService = {
+const oAuthService = {
     /**
-   * Takes a unique code, used to get an access token from Github.
-   * The access token gives us right to see the data defined in
-   * our scope on the initial request from frontend.
+   * Takes a unique code and a code verifier, used to get an access token from Github.
+   * The access token combined with the code verifier gives us right to see the
+   * data defined in our scope on the initial request from frontend.
    * @param   {string} code         Code from Oatuh provider
-   * @returns {string} access_token Access token from Oatuh provider
+   * @param   {string} codeVerifier The PKCE code verifyer is sent again from backend
+   * @returns {string} accessToken  Access token from Oatuh provider
    */
     getAccessToken: async function (code, codeVerifier) {
         const res = await fetch("https://github.com/login/oauth/access_token", {
@@ -139,4 +140,4 @@ const oauthService = {
     },
 };
 
-export default oauthService;
+export default oAuthService;

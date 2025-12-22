@@ -3,6 +3,7 @@ import authService from "../services/authService.mjs";
 import oAuthService from "../services/oAuthService.mjs";
 import jwtService from "../services/jwtService.mjs";
 import * as validation from "../middleware/validation/validationMiddleware.mjs";
+import { restrictTo } from "../middleware/authMiddleware.mjs";
 
 const router = express.Router();
 
@@ -15,12 +16,6 @@ router.post(
     validation.checkValidationResult,
     async (req, res) => {
         const { email, password, username } = req.body;
-
-        // if (!email || !password) {
-        //   return res.status(400).json({
-        //     message: "Missing email or password",
-        //   });
-        // }
 
         try {
             const user = await authService.registerUser(email, password, username);
@@ -62,21 +57,21 @@ router.post(
     validation.checkValidationResult,
     async (req, res) => {
         try {
-            const { rawState, encryptedState, code, code_verifier } = req.body;
+            const { rawState, encryptedState, code, code_verifier: codeVerifier } = req.body;
 
             console.log(
                 "logging in.. .",
                 rawState,
                 encryptedState,
                 code,
-                code_verifier
+                codeVerifier
             );
 
             const token = await oAuthService.oAuthLogin(
                 rawState,
                 encryptedState,
                 code,
-                code_verifier
+                codeVerifier
             );
 
             return res.json({ jwt: token });
@@ -103,5 +98,19 @@ router.post(
         return res.json({ encryptedState: encryptedState });
     }
 );
+
+router.post('/test/open',
+    async (req, res) => {
+        return res.json({access: "open route"});
+    }
+);
+
+router.post('/test/user',
+    restrictTo(['user']),
+    async (req, res) => {
+        return res.json({access: "users allowed"});
+    }
+);
+
 
 export default router;
