@@ -40,6 +40,8 @@ app.disable("x-powered-by");
 // ----------- Routes -----------
 // ------------------------------
 app.use(`/api/${version}/auth`, authRoutes);
+
+// while making the rbac-systemn work
 process.env.NODE_ENV = "test";
 
 // Applies authMiddleware to all routes after this point
