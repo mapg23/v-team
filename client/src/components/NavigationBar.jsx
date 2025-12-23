@@ -20,7 +20,7 @@ export default function Navigation() {
             <NavItem
                 icon={<QrCode size={20} />}
                 label="Historik?"
-                active={location.pathname === "/scan"}
+                active={location.pathname === "/transactions"}
                 path="/scan"
             />
 

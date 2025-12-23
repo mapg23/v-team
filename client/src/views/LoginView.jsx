@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../components/AuthProvider";
 
+
 export default function LoginView() {
   const navigate = useNavigate(); // redirect på React vis
   const { login } = useAuth();
@@ -10,7 +11,7 @@ export default function LoginView() {
     e.preventDefault();
     console.log("Login");
     login();
-    navigate("/account", { replace: true });
+    navigate("/", { replace: true });
   }
 
   return (

@@ -9,6 +9,7 @@ import TopBar from "../components/TopBar";
 import Navigation from "../components/NavigationBar";
 import { socket } from "../components/socket";
 
+
 export default function HomeView() {
     const navigate = useNavigate();
     const params = useParams();
