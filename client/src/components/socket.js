@@ -1,7 +1,7 @@
 "use strict";
 import { io } from "socket.io-client";
 
-export const socket = io("api/v1", {
+export const socket = io("/", {
     path: "/socket.io",
     transports: ["polling"],
 });

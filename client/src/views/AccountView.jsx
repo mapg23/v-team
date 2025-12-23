@@ -7,6 +7,8 @@ import { CreditCard, Wallet } from "lucide-react";
 import TopBar from "../components/TopBar";
 import Navigation from "../components/NavigationBar";
 
+import { useAuth } from "../components/AuthProvider";
+
 import "../assets/accountView.css";
 
 export default function AccountView() {
@@ -23,6 +25,16 @@ export default function AccountView() {
     const handlePaymentMethod = () => {
         console.log("payment")
     }
+
+    const handleAddBalanceMethod = () => {
+
+    }
+
+    const logout = () => {
+        const auth = useAuth().logout();
+        navigate('/login', { replace: true });
+    }
+
 
     return (
         <>
@@ -63,11 +75,14 @@ export default function AccountView() {
                             </div>
                         </div>
                     </div>
+                    <div className="account-buttons">
+                        <div className="account-buttons-body">
+                            <button className="logout-button" onClick={handleAddBalanceMethod}>Lägg till i saldo</button>
+                            <button className="logout-button">Logout</button>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="account-logout">
-                    <h1>Logout</h1>
-                </div>
 
                 <div className="navigation">
                     <Navigation />

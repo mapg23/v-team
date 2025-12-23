@@ -4,6 +4,7 @@ prototypes/
 .DS_STORE
 .DS_Store
 
+node_modules/
 api/node_modules
 bike/node_modules
 admin-client/node_modules

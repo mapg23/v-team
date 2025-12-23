@@ -34,7 +34,7 @@ export default function HomeView() {
     });
 
     function updateBikes(allBikes) {
-        const bikesInCity = allBikes.filter((bike) => bike.city_id === Number(cityId));
+        // const bikesInCity = allBikes.filter((bike) => bike.city_id === Number(cityId));
         setBikes(bikesInCity);
         updateBikeStatus(bikesInCity);
     }
@@ -62,6 +62,8 @@ export default function HomeView() {
     // socket useEffect.
     useEffect(() => {
         socket.on("bikes", (data) => {
+
+            console.log(`DATA: ${data}`);
             updateBikes(data);
         });
 
@@ -74,12 +76,6 @@ export default function HomeView() {
     useEffect(() => {
         async function fetchData() {
             setcityDetails(await MapModel.getCityDetailsByID(cityId));
-
-            await MapModel.startBikeSync();
-
-            setParkingZones(await MapModel.getParkingZonesInCity(cityId));
-
-            setChargingZones(await MapModel.getChargingStationsInCity(cityId));
 
             setLoading(false);
         }
