@@ -186,7 +186,9 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(64) NOT NULL,
   `password` varchar(256) NOT NULL,
-  `email` varchar(64) NOT NULL
+  `email` varchar(64) NOT NULL,
+  `oauth` tinyint(1) NOT NULL DEFAULT 0,
+  `role` enum('admin','user') DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 
