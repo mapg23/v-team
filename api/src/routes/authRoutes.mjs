@@ -22,7 +22,7 @@ router.post(
 
             return res.json(user);
         } catch (err) {
-            return res.status(400).json(err);
+            return res.status(400).json(err.message);
         }
     }
 );
@@ -37,12 +37,11 @@ router.post(
     async (req, res) => {
         try {
             const { email, password, username } = req.body;
-
             const token = await authService.loginUser(email, password, username);
 
             return res.json({ jwt: token });
         } catch (err) {
-            return res.status(401).json(err);
+            return res.status(401).json(err.message);
         }
     }
 );
@@ -58,15 +57,6 @@ router.post(
     async (req, res) => {
         try {
             const { rawState, encryptedState, code, code_verifier: codeVerifier } = req.body;
-
-            console.log(
-                "logging in.. .",
-                rawState,
-                encryptedState,
-                code,
-                codeVerifier
-            );
-
             const token = await oAuthService.oAuthLogin(
                 rawState,
                 encryptedState,
