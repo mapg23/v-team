@@ -27,8 +27,6 @@ const oAuthService = {
 
         const { access_token: accessToken, error } = await res.json();
 
-        console.log("access or error: ", accessToken, error);
-
         if (error) {
             const err = new Error(`Failed getting Github token: ${error}`);
 
@@ -80,14 +78,12 @@ const oAuthService = {
     oAuthLogin: async function (rawState, encryptedState, code, codeVerifier) {
         const decryptedState = await jwtService.verifyToken(encryptedState);
 
-        console.log("state compare: ", decryptedState, rawState);
         if (decryptedState !== rawState) {
             throw new Error("Failed to authenticate state");
         }
 
         const accessToken = await this.getAccessToken(code, codeVerifier);
 
-        console.log(accessToken);
         const userEmail = await this.getUserEmail(accessToken);
         const user = await this.findOrCreateOauthUser(userEmail);
         const token = await jwtService.createToken(user.id);
@@ -105,13 +101,6 @@ const oAuthService = {
    * @returns {object} A user object
    */
     findOrCreateOauthUser: async function (email) {
-        if (process.env.NODE_ENV !== "test") {
-            // To see working functionality
-            console.log("Find or create: ", email);
-            const data = { id: 1, email: email };
-
-            return data;
-        }
         let user;
 
         const result = await userModel.getUserByEmail(email);
@@ -122,9 +111,9 @@ const oAuthService = {
             const created = await userModel.createUser({
                 username: email,
                 email: email,
-                password: null,
+                password: "none",
                 oauth: true,
-                role: user,
+                // role: 'user',
             });
 
             if (created.insertId) {
