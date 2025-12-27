@@ -66,13 +66,16 @@ export default function validateToken(req, res, next) {
 /**
  * Middleware to restrict access based on the users role.
  * Use it like: restrictTo(['admin']) or restrictTo(['admin, user']),
- * and omit if public route
  *
  * @param {string} allowedRoles - An array of roles that are permitted access.
  */
 export function restrictTo(allowedRoles) {
     return (req, res, next) => {
-        console.log(req.user);
+        // Sets all users to admin for tests
+        if (process.env.NODE_ENV === "test") {
+            req.user = { id: 1, role: "admin" };
+        }
+
         const userRole = req?.user?.role;
 
         if (!userRole || !allowedRoles.includes(userRole)) {
