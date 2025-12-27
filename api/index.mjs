@@ -41,14 +41,11 @@ app.disable("x-powered-by");
 // ------------------------------
 app.use(`/api/${version}/auth`, authRoutes);
 
-// while making the rbac-systemn work
-process.env.NODE_ENV = "test";
-
-// Applies authMiddleware to all routes after this point
+// - Applies authMiddleware to all routes after this point -
 if (process.env.NODE_ENV === "test") {
     // Mini middleware, sets all users to admin for tests
     app.use((req, _res, next) => {
-        req.user = { id: 1, role: "admin" };
+        req.user = { id: 1, role: "user" };
         next();
     });
 } else {
@@ -60,6 +57,7 @@ app.use(`/api/${version}`, createCityRouter());
 app.use(`/api/${version}`, createBikeRouter());
 app.use(`/api/${version}`, createStationRouter());
 app.use(`/api/${version}`, createParkingRouter());
+
 app.use(`/api/${version}/trips`, tripRoutes);
 app.use(`/api/${version}/payments`, paymentRoutes);
 

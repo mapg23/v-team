@@ -54,13 +54,7 @@ export const userRules = [
         .withMessage("Password is required.")
         .isLength({ min: 3 })
         .withMessage("Password must be at least 3 characters."),
-    body("password")
-        .notEmpty()
-        .withMessage("Password is required.")
-        .isLength({ min: 3 })
-        .withMessage("Password must be at least 3 characters."),
 
-    body("username").optional(), // NULL enabled
     body("username").optional(), // NULL enabled
 ];
 
