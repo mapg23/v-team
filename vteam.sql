@@ -184,7 +184,7 @@ CREATE TABLE `trips` (
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `username` varchar(64) NOT NULL,
+  `username` varchar(64) NULL,
   `password` varchar(256) NOT NULL,
   `email` varchar(64) NOT NULL,
   `oauth` tinyint(1) NOT NULL DEFAULT 0,
