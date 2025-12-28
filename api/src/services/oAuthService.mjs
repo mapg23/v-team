@@ -116,7 +116,6 @@ const oAuthService = {
                 email: email,
                 password: "-",
                 oauth: true,
-                // role: 'user',
             });
 
             if (created.insertId) {

@@ -60,25 +60,14 @@ export const userRules = [
 
 export const oAuthLoginRules = [
     body("rawState").notEmpty().withMessage("Raw State is required."),
-    body("rawState").notEmpty().withMessage("Raw State is required."),
 
-    body("encryptedState")
-        .notEmpty()
-        .withMessage("Encrypted state is required.")
-        .isJWT(),
     body("encryptedState")
         .notEmpty()
         .withMessage("Encrypted state is required.")
         .isJWT(),
 
     body("code").notEmpty().withMessage("Code is required."),
-    body("code").notEmpty().withMessage("Code is required."),
 
-    body("code_verifier")
-        .notEmpty()
-        .withMessage("Code is required.")
-        .isAlphanumeric()
-        .withMessage("Code verifier has to be alphanumeric."),
     body("code_verifier")
         .notEmpty()
         .withMessage("Code is required.")
@@ -87,7 +76,6 @@ export const oAuthLoginRules = [
 ];
 
 export const getStateRules = [
-    body("state").notEmpty().withMessage("State is required"),
     body("state").notEmpty().withMessage("State is required"),
 ];
 
