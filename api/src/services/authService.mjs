@@ -51,13 +51,14 @@ const auth = {
     loginUser: async function (email, password) {
         const userResult = await userModel.getUserByEmail(email);
 
-        if (!userResult) {
-            const err = new Error("Invalid username or password. Try again.");
-
-            err.status = 400;
-            throw err;
+        if (!userResult[0]) {
+            throw new Error("Invalid username or password. Try again.");
         }
         const user = userResult[0];
+
+        if (user.oauth) {
+            throw new Error("User is registred via OAuth and does not have. apassword");
+        }
         const match = await bcrypt.compare(password, user.password);
 
         if (!match) {

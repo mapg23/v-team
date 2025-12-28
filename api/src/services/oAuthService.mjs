@@ -86,7 +86,10 @@ const oAuthService = {
 
         const userEmail = await this.getUserEmail(accessToken);
         const user = await this.findOrCreateOauthUser(userEmail);
-        const token = await jwtService.createToken(user.id);
+        const token = await jwtService.createToken({
+            userId: user.id,
+            userRole: user.role,
+        });
 
         return token;
     },
@@ -111,7 +114,7 @@ const oAuthService = {
             const created = await userModel.createUser({
                 username: email,
                 email: email,
-                password: "none",
+                password: "-",
                 oauth: true,
                 // role: 'user',
             });
