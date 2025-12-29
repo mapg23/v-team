@@ -9,7 +9,7 @@ import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 
-export default function RadioForm({ data, action }) {
+export default function RadioForm({ data, action, type }) {
   const [value, setValue] = useState("");
   const _data = Array.isArray(data) ? data : [data];
   if (_data.length === 0) return <p>Saknar data...</p>;
@@ -28,16 +28,16 @@ export default function RadioForm({ data, action }) {
         >
           {data.map((obj) => (
             <FormControlLabel
-              key={obj.name}
-              value={obj.name}
+              key={obj.name ? obj.name : obj.id}
+              value={obj.name ? obj.name : obj.id}
               control={<Radio />}
-              label={obj.name}
+              label={obj.name ? obj.name : `Parkering: ${obj.id}`}
               onChange={(e) => setValue(e.target.value)}
             />
           ))}
         </RadioGroup>
         <Button variant="contained" type="submit">
-          Flytta till station
+          Flytta till {type}
         </Button>
       </FormControl>
     </>
