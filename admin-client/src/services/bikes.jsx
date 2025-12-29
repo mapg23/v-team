@@ -204,10 +204,7 @@ const bikeService = {
    * Move bike to parking zone
    * @returns {JSON}
    */
-  moveBikeToParkingZone: async function moveBikeToParkingZone(
-    bikeId,
-    zoneId
-  ) {
+  moveBikeToParkingZone: async function moveBikeToParkingZone(bikeId, zoneId) {
     const moveObject = {
       zoneType: "parking", //
       zoneId: `${zoneId}`,
@@ -226,6 +223,82 @@ const bikeService = {
       console.error("fetchDocuments error:", error);
       return [];
     }
+  },
+
+  /**
+   * Get inital renting cost
+   */
+  getInitialCost: async function getInitialCost() {
+    return { initialCost: 10 };
+    try {
+      const response = await fetch(`${API}/bikes/initialCost`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json();
+    } catch (error) {}
+  },
+
+  /**
+   * Set inital renting cost
+   */
+  setInitialCost: async function setInitialCost(amount) {
+    return { Success: "initial cost updated!" };
+    const costObj = {
+      initialCost: `${amount}`,
+    };
+    try {
+      const response = await fetch(`${API}/bikes/initialCost`, {
+        body: JSON.stringify(costObj),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json();
+    } catch (error) {}
+  },
+
+  /**
+   * Set inital renting cost
+   */
+  getVariableCost: async function getVariableCost() {
+    return { variableCost: 10 };
+    try {
+      const response = await fetch(`${API}/bikes/initialCost`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json();
+    } catch (error) {}
+  },
+
+  /**
+   * Set variable renting cost
+   */
+  setVariableCost: async function setVariableCost(amount) {
+    return { Success: "initial cost updated!" };
+    const costObj = {
+      initialCost: `${amount}`,
+    };
+    try {
+      const response = await fetch(`${API}/bikes/initialCost`, {
+        body: JSON.stringify(costObj),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json();
+    } catch (error) {}
   },
 };
 

@@ -17,6 +17,8 @@ export default function BikeView() {
   const [bikeFilter, setBikeFilter] = useState([]);
   const [result, setResult] = useState(null);
   const [resultType, setResultType] = useState("error");
+  const [initialCost, setInitialCost] = useState(0);
+  const [variableCost, setVariableCost] = useState(0);
 
   /**
    * Styles for response
@@ -46,10 +48,14 @@ export default function BikeView() {
     async function fetchData() {
       setBikes(await BikeService.getAllBikes());
       setBikeFilter(await BikeService.getAllBikes());
+      const initialCostResponse = await BikeService.getInitialCost();
+      setInitialCost(initialCostResponse.initialCost);
+      const variableCostResponse = await BikeService.getVariableCost();
+      setVariableCost(variableCostResponse.variableCost);
       setLoading(false);
     }
     fetchData();
-  }, []);
+  }, [initialCost, variableCost]);
 
   /**
    * Delete bike with id
@@ -135,6 +141,14 @@ export default function BikeView() {
   return (
     <>
       <h1>BikeView</h1>
+      <div className="container">
+        <div className="card-one">
+          <h3>Kostnad för att hyra en cykel:</h3>
+          <p>Startkostnad {initialCost} kr</p>
+          <p>Rörlig kostnad {variableCost} kr/minut</p>
+        </div>
+        <div className="card-two"></div>
+      </div>
       <h2>Chose a city and create a new bike</h2>
       <CreateBikeForm action={createNewBike}></CreateBikeForm>
       {/* {Filter by city} */}
