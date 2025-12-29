@@ -40,6 +40,11 @@ export default function MapComponent({
     });
   }, []);
 
+  // Disable a bike that runs outside of allowed zone
+  async function stopBike(bikeId) {
+    console.log("stopping bike:", bikeId)
+  }
+
   /**
    * Renders the map if new city coordinates
    */
@@ -134,6 +139,7 @@ export default function MapComponent({
             <td>${bike.speed}</td>
           </tr>
           </table>
+          <button><a className="noStyling" href="/bikes/${bike.id}">Inspect Bike</button>
           `
         )
         .openPopup()

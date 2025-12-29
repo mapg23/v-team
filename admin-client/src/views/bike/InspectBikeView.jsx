@@ -83,6 +83,14 @@ export default function InspectBikeView() {
     navigate(`/city/${city.id}`);
   }
 
+  /**
+   * Stop a bike from running - useful if user is stealing bike
+   */
+  async function stopBike() {
+    const tripId = "";
+    console.log("stopping bike:", bikeId)
+  }
+
   if (loading) return <p>Hämtar cykeldata..</p>;
 
   return (
@@ -95,6 +103,10 @@ export default function InspectBikeView() {
           <section className={styles.card}>
             <h2>Bike information</h2>
             <DynamicTable data={bikeInfo} vertical />
+            <br />
+            <Button variant="contained" onClick={stopBike}>
+              Stoppa cykel {bikeId}
+            </Button>
           </section>
 
           {/* CHARGING KOLUMN */}
