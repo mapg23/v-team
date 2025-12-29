@@ -212,7 +212,7 @@ const bikeService = {
     try {
       const response = await fetch(`${API}/bikes/${bikeId}/move`, {
         body: JSON.stringify(moveObject),
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -220,7 +220,7 @@ const bikeService = {
 
       return await response.json();
     } catch (error) {
-      console.error("fetchDocuments error:", error);
+      console.error("Move bike to parking zone:", error);
       return [];
     }
   },
