@@ -21,7 +21,7 @@ SET time_zone = "+00:00";
 -- Databas: `vteam`
 --
 
-
+DROP TABLE IF EXISTS `prices`;
 DROP TABLE IF EXISTS `cities_to_charging`;
 DROP TABLE IF EXISTS `cities_to_parking`;
 DROP TABLE IF EXISTS `charging_zones`;
@@ -184,11 +184,24 @@ CREATE TABLE `trips` (
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `username` varchar(64) NOT NULL,
+  `username` varchar(64) NULL,
   `password` varchar(256) NOT NULL,
-  `email` varchar(64) NOT NULL
+  `email` varchar(64) NOT NULL,
+  `oauth` tinyint(1) NOT NULL DEFAULT 0,
+  `role` enum('admin','user') DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
+--
+-- Tabellstruktur `prices`
+--
+CREATE TABLE `prices` (
+    `id` int(11) NOT NULL,
+    `city_id` int(11) NOT NULL,
+    `start_fee` decimal(5,2) NOT NULL,
+    `minute_fee` decimal(5,2) NOT NULL,
+    `parking_fee` decimal(5,2) NOT NULL,
+    `discount_multiplier` decimal(2,1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 --
 -- Index för dumpade tabeller
@@ -269,6 +282,12 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index för tabell `prices`
+--
+ALTER TABLE `prices`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT för dumpade tabeller
 --
 
@@ -333,6 +352,12 @@ ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT för tabell `users`
+--
+ALTER TABLE `prices`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- Restriktioner för dumpade tabeller
 --
 
@@ -388,6 +413,13 @@ ALTER TABLE `trips`
   ADD CONSTRAINT `fk_trips_scooter` FOREIGN KEY (`scooter_id`) REFERENCES `scooters` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_trips_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
+
+--
+-- Restriktioner för tabell `prices`
+--
+ALTER TABLE `prices`
+  ADD CONSTRAINT `fk_prices_city` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
