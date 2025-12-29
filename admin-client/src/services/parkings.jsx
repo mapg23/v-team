@@ -8,21 +8,21 @@ const parkingService = {
    * Get all parking zones
    * @return {JSON} array of objects
    */
-  getAllParkingZones: async function getAllParkingZones() {
-    try {
-      const response = await fetch(`${API}/parkings`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+  // getAllParkingZones: async function getAllParkingZones() {
+  //   try {
+  //     const response = await fetch(`${API}/parkings`, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
 
-      return await response.json();
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  },
+  //     return await response.json();
+  //   } catch (error) {
+  //     console.error(error);
+  //     return [];
+  //   }
+  // },
 
   /**
    * Add a new parking zone
@@ -48,25 +48,25 @@ const parkingService = {
     }
   },
 
-  /**
-   * Get parking zone details
-   * @return {JSON} array of objects
-   */
-  getParkingZoneDetails: async function getAllParkingZones(parkId) {
-    try {
-      const response = await fetch(`${API}/parkings/${parkId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+  // /**
+  //  * Get parking zone details
+  //  * @return {JSON} array of objects
+  //  */
+  // getParkingZoneDetails: async function getAllParkingZones(parkId) {
+  //   try {
+  //     const response = await fetch(`${API}/parkings/${parkId}`, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
 
-      return await response.json();
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  },
+  //     return await response.json();
+  //   } catch (error) {
+  //     console.error(error);
+  //     return [];
+  //   }
+  // },
 
   /**
    * Update parking zone details
@@ -112,9 +112,9 @@ const parkingService = {
    * Get all parking zones
    * @return {JSON} array of objects
    */
-  getAllBikesInParkingZone: async function getAllParkingZones() {
+  getAllBikesInParkingZone: async function getAllBikesInParkingZone(parkingId) {
     try {
-      const response = await fetch(`${API}/bikes`, {
+      const response = await fetch(`${API}/parkings/${parkingId}/bikes`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
