@@ -1,6 +1,7 @@
 import Map from "@/components/map/Map-component";
 import { useEffect, useState } from "react";
 import CityService from "services/cities";
+import parkingService from "../../services/parkings";
 import CityTable from "components/table/CityTable";
 import PieChart from "components/chart/PieChart";
 import { useParams } from "react-router";
@@ -39,6 +40,12 @@ export default function InspectCityView() {
   // Sync charging zones from database
   const [chargingZones, setChargingZones] = useState([]);
 
+  // Get bikes in all parking zones
+  const [parkingZonesWithBikes, setParkingZonesWithBikes] = useState([])
+  
+  // Get bikes in all charging zones
+  const [chargingZonesWithBikes, setChargingZonesWithBikes] = useState([])
+
   // Map different bike status
   const [bikeStatusMap, setBikeStatusMap] = useState({
     available: null,
@@ -64,7 +71,9 @@ export default function InspectCityView() {
   // Update Chart with bike status in City
   // -----------------------------
   useEffect(() => {
-    const bikeObjectsInCity = bikes.filter((bike) => bike.city_id === Number(cityId));
+    const bikeObjectsInCity = bikes.filter(
+      (bike) => bike.city_id === Number(cityId)
+    );
     const bikesAvailableCount = bikeObjectsInCity.filter(
       (bike) => bike.status === 10
     ).length;
@@ -107,6 +116,26 @@ export default function InspectCityView() {
     fetchData();
   }, [cityId]);
 
+  // -----------------------------
+  // Get number of bikes in parking zone
+  // -----------------------------
+  useEffect(() => {
+    async function getBikesInParkingZone() {
+      const parkingZonesWithBikes = parkingZones.map(
+        async (parkingZone) => {
+          const bikesInZone = await parkingService.getAllBikesInParkingZone(
+            parkingZone.id
+          );
+          const newZone = {...parkingZone, bikes: bikesInZone.bikeCount}
+          return newZone
+        }
+      );
+      const updatedZones = await Promise.all(parkingZonesWithBikes);
+      setParkingZonesWithBikes(updatedZones);
+    }
+    getBikesInParkingZone();
+  }, [parkingZones]);
+
   /**
    * Method for handling the selectionChange
    * @param {id} cityId redirect to city/:id
@@ -128,7 +157,7 @@ export default function InspectCityView() {
       <Map
         coords={cityDetails}
         bikes={bikes}
-        parkingZones={parkingZones}
+        parkingZones={parkingZonesWithBikes}
         chargingZones={chargingZones}
       />
     </>

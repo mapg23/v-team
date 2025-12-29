@@ -180,20 +180,8 @@ export default function MapComponent({
             <td>${parking.city_id}</td>
           </tr>
           <tr>
-            <th>Max_lat :</th>
-            <td>${parking.max_lat}</td>
-          </tr>
-          <tr>
-            <th>Max_long:</th>
-            <td>${parking.max_long}</td>
-          </tr>
-          <tr>
-            <th>Min_lat</th>
-            <td>${parking.min_lat}</td>
-          </tr>
-          <tr>
-            <th>Min_long:</th>
-            <td>${parking.min_long}</td>
+            <th>Bikes in zone :</th>
+            <td>${parking.bikes}</td>
           </tr>
           </table>
           `
