@@ -85,11 +85,13 @@ export default function MapComponent({
     markersRef.current = [];
 
     // Lägg till nya markers
+    // Om en cykel har status 10 - cykel är redo för användning
+    // Annars är cykeln hyrd alt på service, dvs inte tillgänglig
     bikes.forEach((bike) => {
       const customScooterIcon = L.divIcon({
         html: scooterIcon,
         className:
-          bike.occupied === 10 ? styles["bike-free"] : styles["bike-used"],
+          bike.status === 10 ? styles["bike-free"] : styles["bike-used"],
       });
 
       // Markers must be in Latitude, Longitude - else wont show!!

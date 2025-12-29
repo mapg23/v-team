@@ -60,34 +60,32 @@ export default function InspectCityView() {
     };
   }, [cityId]);
 
-  /**
-   * Filter different status
-   */
-  function updateBikeStatus(bikes) {
-    const availableCount = bikes.filter((bike) => bike.occupied === 10).length;
-    const usedCount = bikes.length - availableCount;
+  // -----------------------------
+  // Update Chart with bike status in City
+  // -----------------------------
+  useEffect(() => {
+    const bikeObjectsInCity = bikes.filter((bike) => bike.city_id === Number(cityId));
+    const bikesAvailableCount = bikeObjectsInCity.filter(
+      (bike) => bike.status === 10
+    ).length;
+    const bikesUsedCount = bikeObjectsInCity.length - bikesAvailableCount;
 
+    // Prev är befintliga värdet, om inget ändras, returna samma
     setBikeStatusMap((prev) => {
-      // Prev är befintliga värdet, om inget ändras, returna samma
-      if (prev.available === availableCount && prev.used === usedCount) {
+      if (
+        prev.available === bikesAvailableCount &&
+        prev.used === bikesUsedCount
+      ) {
         return prev;
       }
 
       // Annars ersätt
       return {
-        available: availableCount,
-        used: usedCount,
+        available: bikesAvailableCount,
+        used: bikesUsedCount,
       };
     });
-  }
-
-  // -----------------------------
-  // Update Chart for bikes in City
-  // -----------------------------
-  useEffect(() => {
-    const bikesInCity = bikes.filter((bike) => bike.city_id === Number(cityId));
-    updateBikeStatus(bikesInCity);
-  }, [cityId, bikes]);
+  }, [bikes, cityId]);
 
   // -----------------------------
   // Fetch initial data
