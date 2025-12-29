@@ -7,7 +7,6 @@ import styles from "./styles.module.css";
 import RadioForm from "components/forms/RadioForm";
 import Button from "@mui/material/Button";
 
-
 /**
  * View a specific bike
  */
@@ -17,6 +16,7 @@ export default function InspectBikeView() {
   const bikeId = param.id;
   const [bikeInfo, setBikeInfo] = useState(null);
   const [chargingStations, setChargingStations] = useState([]);
+  const [parkingStations, setParkingStations] = useState([]);
   const [city, setCity] = useState(null);
   const navigate = useNavigate();
 
@@ -29,13 +29,19 @@ export default function InspectBikeView() {
         const stationData = await CityService.getChargingStationsInCity(
           bikeData.city_id
         );
+        const parkingData = await CityService.getParkingZonesInCity(
+          bikeData.city_id
+        );
         if (cityData) {
-            setCity(cityData);
-            bikeData.city_name = cityData.name
-            setBikeInfo(bikeData);
+          setCity(cityData);
+          bikeData.city_name = cityData.name;
+          setBikeInfo(bikeData);
         }
         if (stationData) {
           setChargingStations(stationData);
+        }
+        if (parkingData) {
+          setParkingStations(parkingData);
         }
       }
       setLoading(false);
@@ -45,21 +51,36 @@ export default function InspectBikeView() {
 
   /**
    * Move bike to selected charging station
-   * 
+   *
    */
   async function moveToChargingStation(data) {
     const station = chargingStations.find((station) => station.name === data);
-    const bikeObj = await BikeService.moveBikeToChargingZone(bikeId, station.id)
+    const bikeObj = await BikeService.moveBikeToChargingZone(
+      bikeId,
+      station.id
+    );
     if (bikeObj.id) {
-        setBikeInfo(bikeObj);
+      setBikeInfo(bikeObj);
+    }
+  }
+
+  /**
+   * Move bike to selected parking station
+   *
+   */
+  async function moveToParkingStation(data) {
+    const parking = parkingStations.find((parking) => parking.id === Number(data));
+    const bikeObj = await BikeService.moveBikeToParkingZone(bikeId, parking.id);
+    if (bikeObj.id) {
+      setBikeInfo(bikeObj);
     }
   }
 
   /**
    * show bike on map => navigate city/id
    */
-  async function viewOnmap(){
-    navigate(`/city/${city.id}`)
+  async function viewOnmap() {
+    navigate(`/city/${city.id}`);
   }
 
   if (loading) return <p>Hämtar cykeldata..</p>;
@@ -76,7 +97,7 @@ export default function InspectBikeView() {
             <DynamicTable data={bikeInfo} vertical />
           </section>
 
-          {/* HÖGER KOLUMN */}
+          {/* CHARGING KOLUMN */}
           <section className={styles.card}>
             <h2>Charging stations in {city.name}</h2>
 
@@ -86,6 +107,26 @@ export default function InspectBikeView() {
               title="Välj laddstation"
               data={chargingStations}
               action={moveToChargingStation}
+              type="Laddstation"
+            />
+            <div className={styles.actions}>
+              <Button variant="contained" onClick={viewOnmap}>
+                Visa på karta
+              </Button>
+            </div>
+          </section>
+
+          {/* PARKERINGS KOLUMN */}
+          <section className={styles.card}>
+            <h2>Parking stations in {city.name}</h2>
+
+            <DynamicTable data={parkingStations} />
+            <h2>Flytta cykel till parkering</h2>
+            <RadioForm
+              title="Välj Parkering"
+              data={parkingStations}
+              action={moveToParkingStation}
+              type="parkering"
             />
             <div className={styles.actions}>
               <Button variant="contained" onClick={viewOnmap}>
