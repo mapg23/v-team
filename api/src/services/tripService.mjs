@@ -1,46 +1,53 @@
 import tripsModel from "../models/trips.mjs";
 import createBikes from "../models/bikes.mjs";
-import createParkings from "../models/parkings.mjs";
+// import createParkings from "../models/parkings.mjs";
 import walletsModel from "../models/wallets.mjs";
-
-// const bikeModel = createBikes();
+import pricingServices from "./pricingService.mjs";
 
 
 class TripService {
     constructor(
         tripModel = tripsModel,
         bikeModel = createBikes(),
-        parkings = createParkings(),
-        wallets = walletsModel
+        // parkings = createParkings(),
+        wallets = walletsModel,
+        pricingService = pricingServices
     ) {
         /**
          * Inject the models class is depending on.
          */
         this.trips = tripModel;
         this.bikes = bikeModel;
-        this.parkings = parkings;
+        // this.parkings = parkings;
         this.wallets = wallets;
-        /**
-         * A list of parking zones
-         * @type {Array}
-         */
-        this.parkingZones = [];
+        this.pricingService = pricingService;
+        // /**
+        //  * A list of parking zones
+        //  * @type {Array}
+        //  */
+        // this.parkingZones = [];
     }
-    /**
-     * Fetch and cache parking zones.
-     * @returns {Promise<Array<Object>>} Parking zones.
-     */
-    async getParkingZones() {
-        if (this.parkingZones.length === 0) {
-            this.parkingZones = await this.parkings.getParkings();
-        }
-        if (this.parkingZones.length === 0) {
-            throw new Error("Could not get parking zones");
-        }
-        // console.log(this.parkingZones);
-        return this.parkingZones;
-    }
+    // /**
+    //  * Fetch and cache parking zones.
+    //  * @returns {<Array<Object>>} Parking zones.
+    //  */
+    // async getParkingZones() {
+    //     if (this.parkingZones.length === 0) {
+    //         this.parkingZones = await this.parkings.getParkings();
+    //     }
+    //     if (this.parkingZones.length === 0) {
+    //         throw new Error("Could not get parking zones");
+    //     }
 
+    //     return this.parkingZones;
+    // }
+
+    /**
+     * Checks that a bike with the corresponding id exists and returns it.
+     *
+     * @param {string} bikeId A numeric value in string format.
+     * @returns {Object} bike The bike with the argumented id.
+     */
     async getBikeById(bikeId) {
         const bikeResult = await this.bikes.getBikeById(bikeId);
         const bike = bikeResult[0];
@@ -49,6 +56,22 @@ class TripService {
             throw new Error(`Bike with id: ${bikeId} was not found`);
         }
         return bike;
+    }
+
+    /**
+     * Checks that a trip with the corresponding id exists and returns it.
+     *
+     * @param {string} tripId A numeric value in string format.
+     * @returns {Object} trip The trip with the argumented id.
+     */
+    async getTripById(tripId) {
+        const tripResult = await this.trips.getTripById(tripId);
+        const trip = tripResult[0];
+
+        if (!trip) {
+            throw new Error(`Trip with id: ${tripId} was not found`);
+        }
+        return trip;
     }
 
     async getWalletByUserId(userId) {
@@ -84,18 +107,20 @@ class TripService {
             cost: 0,
             start_latitude: bike.latitude,
 	        start_longitude: bike.longitude,
+            start_zone: bike.current_zone_type,
 	        end_latitude: null,
 	        end_longitude: null,
+            end_zone: null,
             start_time:  now,
-            end_time: 0,
+            end_time: null,
         };
         const result = await this.trips.createTrip(tripData);
 
-        // console.log(result);
         if (!result.affectedRows) {
             throw new Error("Ride could not be created");
         }
 
+        // Other class responsibillity?
         const statusUpdate = await this.bikes.updateBike(bike.id, {"status": 40});
 
         if (!statusUpdate.affectedRows) {
@@ -118,99 +143,6 @@ class TripService {
         return datetimeFormat;
     }
 
-    /**
-     * Calculate duration between two timestamps in minutes.
-     *
-     * @param {string} startTime Datetime for start
-     * @param {string} endTime Datetime for end
-     * @returns {number} Duration in minutes
-     */
-    getDuration(startTime, endTime) {
-        const start = new Date(startTime);
-        const end = new Date(endTime);
-
-        return (end - start) / (1000 * 60);
-    }
-
-    /**
-     * Calculate rent-cost based on duration
-     *
-     * @param {Object} data Trip data
-     * @param {string} data.start_time Start timestamp
-     * @param {string} data.end_time End timestamp
-     * @returns {number} Cost of rent
-     */
-    calculateRent(startTime, endTime) {
-        const minutes = this.getDuration(startTime, endTime);
-
-        return minutes * 2.5;
-    }
-
-    /**
-     * Determine if a location/position is inside a given zone
-     *
-     * @param {Object} zone The coordinates for top left and bottom right corners of a zone
-     * @param {Object} lat The latitude of the position to compare
-     * @param {Object} long The longitude of the position to compare
-     * @returns {boolean}
-     */
-    isInZone(zone, lat, long) {
-        // console.log(lat, zone.max_lat, zone.min_lat, long, zone.max_long, zone.min_long);
-        return (
-            lat < zone.max_lat &&
-            lat > zone.min_lat &&
-            long < zone.max_long &&
-            long > zone.min_long
-        );
-    }
-
-    /**
-     * Check whether a location is inside any of our parking zones
-     *
-     * @param {Object} location {lat: <xx.xxxx>, long: <xx.xxxx>}
-     * @returns {Promise<boolean>}
-     */
-    async isInParking(lat, long) {
-        const zones = await this.getParkingZones();
-
-        for (const zone of zones) {
-            if (this.isInZone(zone, lat, long)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     *
-     * @param {Object} bike A bike object.
-     * @param {Object} trip A trip object
-     * @param {Boolean} parkedOK Tells if bike is parked in a parking zone.
-     * @returns {Number} totalCost The total cost of the trip.
-     */
-    async calculateCost(bike, trip, parkedOK) {
-        const now = this.getDbDate();
-        const rentCost = this.calculateRent(trip.start_time, now);
-        const parkingFee = parkedOK ? 0 : 80;
-
-        const startFee = 30;
-        let discount = 1;
-
-        if (parkedOK) {
-            // this.bikeStatus = 10;
-            const rentedFromParking = await this.isInParking(
-                trip.start_latitude, trip.start_longitude
-            );
-
-            discount = rentedFromParking ? 1 : 0.5;
-        }
-
-        const totalCost = (rentCost + parkingFee) + (startFee * discount);
-
-        // Returns number with two decimal places: 1 = 1.00.
-        return (+totalCost).toFixed(2);
-    }
-
     async setBikeStatus(bike, parkedOK) {
         let bikeStatus = parkedOK ? 10 : 20;
 
@@ -219,42 +151,7 @@ class TripService {
         await this.bikes.updateBike(bike.id, {status: bikeStatus});
     }
 
-    /**
-     * End a scooter rental trip and calculating final cost.
-     *
-     * @param {Object} data Trip data
-     *
-     * @returns {Promise<Array>} Result from db update.
-     */
-    async endTrip(tripId) {
-        const tripRes = await this.trips.getTripById(tripId);
-        const trip = tripRes?.[0];
-
-        if (!trip) {
-            throw new Error(`Could not find trip with id ${tripId}`);
-        }
-
-        if (trip.cost > 0 && trip.end_time > 0) {
-            throw new Error(`Trip with id ${tripId} already ended.`);
-        }
-
-        const bike = await this.getBikeById(trip.scooter_id);
-
-        const parkedOK = await this.isInParking(bike.latitude, bike.longitude);
-        const totalCost = await this.calculateCost(bike, trip, parkedOK);
-        const endTime = this.getDbDate();
-
-        const result = await this.trips.updateTrip(trip.id, {
-            cost: totalCost,
-            end_longitude: bike.longitude,
-            end_latitude: bike.latitude,
-            end_time: endTime,
-        });
-
-        if (!result?.affectedRows) {
-            throw new Error("Could not end trip");
-        }
-
+    async chargeForTrip(trip, totalCost) {
         const wallet = await this.getWalletByUserId(trip.user_id);
         const newBalance = wallet.balance - totalCost;
         const walletResult = await this.wallets.updateWallet(wallet.id, {balance: newBalance});
@@ -263,15 +160,51 @@ class TripService {
         if (!walletResult?.affectedRows) {
             throw new Error("Could not update balance");
         }
+    }
 
-        await this.setBikeStatus(bike, parkedOK);
+    /**
+     * End a scooter rental trip and calculating final cost.
+     *
+     * @param {Object} data Trip data
+     *
+     * @returns {Array} Result from db update.
+     */
+    async endTrip(tripId) {
+        const trip = await this.getTripById(tripId);
 
-        const newTripRes = await this.trips.getTripById(tripId);
-        const newTrip = newTripRes?.[0];
-
-        if (!newTrip) {
-            throw new Error(`Could not find trip with id ${tripId}`);
+        if (trip.cost > 0 && trip.end_time > 0) {
+            throw new Error(`Trip with id ${tripId} already ended.`);
         }
+
+        const bike = await this.getBikeById(trip.scooter_id);
+        const parkedOk =
+            bike.current_zone_type === "parking" ||
+            bike.current_zone_type === "charging";
+        const endTime = this.getDbDate();
+        const totalCost = await this.pricingService.calculateTripCost(
+            bike,
+            trip,
+            parkedOk,
+            endTime
+        );
+        const result = await this.trips.updateTrip(trip.id, {
+            cost: totalCost,
+            end_longitude: bike.longitude,
+            end_latitude: bike.latitude,
+            end_zone: bike.current_zone_type,
+            end_time: endTime,
+        });
+
+        if (!result?.affectedRows) {
+            throw new Error("Could not end trip");
+        }
+
+        await this.chargeForTrip(trip, totalCost);
+
+        // Not this services job?
+        await this.setBikeStatus(bike, parkedOk);
+
+        const newTrip = await this.getTripById(tripId);
 
         return newTrip;
     }
