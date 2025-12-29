@@ -2,6 +2,7 @@ import Map from "@/components/map/Map-component";
 import { useEffect, useState } from "react";
 import CityService from "services/cities";
 import parkingService from "../../services/parkings";
+import stationService from "../../services/stations";
 import CityTable from "components/table/CityTable";
 import PieChart from "components/chart/PieChart";
 import { useParams } from "react-router";
@@ -136,6 +137,26 @@ export default function InspectCityView() {
     getBikesInParkingZone();
   }, [parkingZones]);
 
+  // -----------------------------
+  // Get number of bikes in charging zone
+  // -----------------------------
+  useEffect(() => {
+    async function getBikesInChargingZone() {
+      const chargingZonesWithBikes = chargingZones.map(
+        async (chargingZone) => {
+          const bikesInZone = await stationService.getBikesInChargingStation(
+            chargingZone.id
+          );
+          const newZone = { ...chargingZone, bikes: bikesInZone.bikeCount };
+          return newZone
+        }
+      );
+      const updatedZones = await Promise.all(chargingZonesWithBikes);
+      setChargingZonesWithBikes(updatedZones);
+    }
+    getBikesInChargingZone();
+  }, [chargingZones]);
+
   /**
    * Method for handling the selectionChange
    * @param {id} cityId redirect to city/:id
@@ -158,7 +179,7 @@ export default function InspectCityView() {
         coords={cityDetails}
         bikes={bikes}
         parkingZones={parkingZonesWithBikes}
-        chargingZones={chargingZones}
+        chargingZones={chargingZonesWithBikes}
       />
     </>
   );

@@ -232,17 +232,12 @@ export default function MapComponent({
             <th>Name:</th>
             <td>${zone.name}</td>
           </tr>
-          <tr>
-            <th>Latitude:</th>
-            <td>${zone.latitude}</td>
-          </tr>
-          <tr>
-            <th>Longitude:</th>
-            <td>${zone.longitude}</td>
-          </tr>
-          <tr>
             <th>Capacity:</th>
             <td>${zone.capacity}</td>
+          </tr>
+          <tr>
+            <th>Bikes in Zone:</th>
+            <td>${zone.bikes}</td>
           </tr>
           </table>
           `

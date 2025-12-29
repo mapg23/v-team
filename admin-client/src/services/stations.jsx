@@ -59,18 +59,23 @@ const stationService = {
   },
 
   /**
-   * Get stations in city by id
+   * Get number of bikes currently in charging station <id>
    *
    * @return {Json} array of objects
    */
-  getBikesInStation: async function getBikesInStation(stationId) {
+  getBikesInChargingStation: async function getBikesInChargingStation(
+    charingStationId
+  ) {
     try {
-      const response = await fetch(`${API}/stations/${stationId}/bikes`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${API}/stations/${charingStationId}/bikes`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       return await response.json();
     } catch (error) {
