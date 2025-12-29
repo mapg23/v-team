@@ -4,6 +4,7 @@ import createBikes from "../models/bikes.mjs";
 import walletsModel from "../models/wallets.mjs";
 import pricingServices from "./pricingService.mjs";
 
+//potential refactor: controller gets bike & wallet.
 
 class TripService {
     constructor(
