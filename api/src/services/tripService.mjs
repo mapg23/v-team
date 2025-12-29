@@ -107,10 +107,10 @@ class TripService {
             cost: 0,
             start_latitude: bike.latitude,
 	        start_longitude: bike.longitude,
-            start_zone: bike.current_zone_type,
+            start_zone_type: bike.current_zone_type,
 	        end_latitude: null,
 	        end_longitude: null,
-            end_zone: null,
+            end_zone_type: null,
             start_time:  now,
             end_time: null,
         };
@@ -191,7 +191,7 @@ class TripService {
             cost: totalCost,
             end_longitude: bike.longitude,
             end_latitude: bike.latitude,
-            end_zone: bike.current_zone_type,
+            end_zone_type: bike.current_zone_type,
             end_time: endTime,
         });
 

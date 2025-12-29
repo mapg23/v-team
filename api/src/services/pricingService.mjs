@@ -47,7 +47,7 @@ class PricingService {
         let discountMultiplier = 1;
 
         if (parkedOK) {
-            const rentedFromParking = (trip.start_zone !== null);
+            const rentedFromParking = (trip.start_zone_type !== null);
 
             discountMultiplier = rentedFromParking ? 1 : prices.discount_multiplier;
         }
