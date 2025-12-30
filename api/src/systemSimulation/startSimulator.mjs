@@ -1,15 +1,16 @@
 /**
- * Starts the simulator automatically when the API server starts.
+ * This module cintain a function that Starts the simulator
+ * automatically when the API server starts.
  * Sends the current list of bikes to the simulator.
  * This function runs only once during server startup.
  */
 
+import createBikes from "../models/bikes.mjs";
 
 /**
  * Starts the simulator by sending the current list of bikes from the API server.
  * This function is intended to run once when the API server starts.
  */
-import createBikes from "./models/bikes.mjs";
 
 export default async function startSimulator() {
     const bikes = createBikes();
