@@ -24,3 +24,11 @@
   margin-bottom: 0.5rem;
   border-radius: 10px;
 }
+
+.successDiv {
+  background-color: rgb(78, 152, 78);
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 10px;
+}

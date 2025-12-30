@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import CostForm from "../../components/forms/CostForm";
+import styles from "../../components/forms/Form.module.css";
 import cityService from "../../services/cities";
 cityService;
 import CityDropDown from "../../components/input/CityDropDown";
 
 export default function CostView() {
-  const [initialCost, setInitialCost] = useState(0);
-  const [variableCost, setVariableCost] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+//   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState(null);
   const [messageStyle, setMessageStyle] = useState("");
   const [cityId, setCityId] = useState(0);
-  const [priceDetails, setPriceDetails] = useState();
+  const [priceDetails, setPriceDetails] = useState(null);
 
   /**
    * Price depends on current city
@@ -20,8 +19,10 @@ export default function CostView() {
   useEffect(() => {
     async function fetchCityData() {
       if (cityId) {
+        // reset to force rerender on form
+        setPriceDetails(null);
+        setMessage(null);
         const priceData = await cityService.getPriceDetailsByCityId(cityId);
-        console.log(priceData);
         setPriceDetails(priceData);
       }
     }
@@ -44,30 +45,35 @@ export default function CostView() {
       cityId,
       newPriceDetails
     );
-    console.log(costResult);
 
-    // if (!updateInitialCost && !updateVariableCost) {
-    //     setMessage("Cost could not be updated");
-    //     setMessageStyle("error");
-    // }
-    //  setMessage("Cost updated!");
-    //  setMessageStyle("sucess");
+    if (!costResult.ok) {
+        setMessage("Price could not be updated");
+        setMessageStyle("errorDiv");
+    }
+     setMessage("Price updated successfully!");
+     setMessageStyle("successDiv");
   }
 
-  if (loading) return <p>laddar..</p>;
   return (
     <>
       <h1>CostView</h1>
+      <h2>Chose a city to handle costs regarding renting a scooter</h2>
       <CityDropDown action={updateCityId} />
       <div className="container">
         <div className="card-one">
-          <h3>Kostnad för att hyra en cykel i :</h3>
-          <div className={message ? messageStyle : ""}>
+          <div
+            className={message ? styles[messageStyle] : ""}
+          >
             <p>{message}</p>
           </div>
-          <p>Startkostnad {initialCost} kr</p>
-          <p>Rörlig kostnad {variableCost} kr/minut</p>
-          {priceDetails ? <CostForm onFormSubmit={updateCost} priceDetails={priceDetails}></CostForm> : ""}
+          {priceDetails ? (
+            <>
+              <h2>Current renting cost</h2>
+              <CostForm onFormSubmit={updateCost} priceDetails={priceDetails} />
+            </>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </>

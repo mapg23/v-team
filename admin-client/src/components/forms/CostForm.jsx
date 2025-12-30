@@ -13,7 +13,6 @@ export default function CostForm({ onFormSubmit, priceDetails }) {
   const [minuteFee, setMinuteFee] = useState(priceDetails.minute_fee);
   const [parkingFee, setParkingFee] = useState(priceDetails.parking_fee);
   const [discountMultiplier, setDiscountMultiplier] = useState(priceDetails.discount_multiplier);
-  const [loading, setLoading] = useState(false);
 
   /**
    * Call parent function onSubmit
@@ -29,24 +28,7 @@ export default function CostForm({ onFormSubmit, priceDetails }) {
       discountMultiplier,
     };
     onFormSubmit(updatedPriceDetails);
-    // cityId,
-    // startFee,
-    // minuteFee,
-    // parkingFee,
-    // discountMultiplier
-    // Reset input
-    // resetInput();
   }
-
-  /**
-   * Reset all user input
-   */
-  function resetInput() {
-    setInitialCost("");
-    setVariableCost("");
-  }
-
-  if (loading) return <p>loading..</p>
 
   return (
     <form onSubmit={handleSubmit} className={formstyle.form}>
@@ -86,7 +68,7 @@ export default function CostForm({ onFormSubmit, priceDetails }) {
         className={inputstyle.input}
       />
 
-      <button type="submit">Uppdatera priser</button>
+      <button type="submit">Update cost!</button>
     </form>
   );
 }
