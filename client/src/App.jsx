@@ -13,6 +13,8 @@ import TransactionsView from "./views/TransactionsView";
 // Web views
 import WebAccountView from "./views/WebAccountview";
 
+import PaymentView from "./views/payments/PaymentView";
+
 
 // CSS
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -52,6 +54,14 @@ function App() {
               </MobileView>
             </MiddleWare>
           } />
+
+          <Route path="/pay" element={
+            <MiddleWare>
+              <PaymentView />
+            </MiddleWare>
+          }
+
+          />
 
           <Route path="/login" element={<LoginView />} />
         </Routes>
