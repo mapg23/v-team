@@ -8,9 +8,11 @@ import { useState } from "react";
  * logic 
  * @returns 
  */
-export default function CostForm({ onFormSubmit }) {
-  const [initialCost, setInitialCost] = useState(10);
-  const [variableCost, setVariableCost] = useState(2);
+export default function CostForm({ onFormSubmit, priceDetails }) {
+  const [startFee, setStartFee] = useState(priceDetails.start_fee);
+  const [minuteFee, setMinuteFee] = useState(priceDetails.minute_fee);
+  const [parkingFee, setParkingFee] = useState(priceDetails.parking_fee);
+  const [discountMultiplier, setDiscountMultiplier] = useState(priceDetails.discount_multiplier);
   const [loading, setLoading] = useState(false);
 
   /**
@@ -20,9 +22,20 @@ export default function CostForm({ onFormSubmit }) {
    */
   function handleSubmit(e) {
     e.preventDefault();
-    onFormSubmit({ initialCost, variableCost});
+    const updatedPriceDetails = {
+      startFee,
+      minuteFee,
+      parkingFee,
+      discountMultiplier,
+    };
+    onFormSubmit(updatedPriceDetails);
+    // cityId,
+    // startFee,
+    // minuteFee,
+    // parkingFee,
+    // discountMultiplier
     // Reset input
-    resetInput();
+    // resetInput();
   }
 
   /**
@@ -37,29 +50,43 @@ export default function CostForm({ onFormSubmit }) {
 
   return (
     <form onSubmit={handleSubmit} className={formstyle.form}>
+      <label>Start fee</label>
       <input
         type="Number"
-        min="10"
-        max="50"
-        placeholder="Startkostnad"
-        value={initialCost} // use for validation
-        onChange={(e) => setInitialCost(e.target.value)}
+        placeholder="Starting fee"
+        value={startFee} // use for validation
+        onChange={(e) => setStartFee(e.target.value)}
         className={inputstyle.input}
       />
 
+      <label>Price per minute fee</label>
       <input
         type="Number"
-        min="2"
-        max="10"
-        placeholder="Kostnad per minut"
-        value={variableCost} // use for validation
-        onChange={(e) => setVariableCost(e.target.value)}
+        placeholder="Price per minute fee"
+        value={minuteFee} // use for validation
+        onChange={(e) => setMinuteFee(e.target.value)}
         className={inputstyle.input}
       />
 
-      <button type="submit">
-        Uppdatera priser
-      </button>
+      <label>Ticket fee for invalid parking</label>
+      <input
+        type="Number"
+        placeholder="Ticket fee for invalid parking"
+        value={parkingFee} // use for validation
+        onChange={(e) => setParkingFee(e.target.value)}
+        className={inputstyle.input}
+      />
+
+      <label>Discount if correct parking</label>
+      <input
+        type="Number"
+        placeholder="Discount if correct parking"
+        value={discountMultiplier} // use for validation
+        onChange={(e) => setDiscountMultiplier(e.target.value)}
+        className={inputstyle.input}
+      />
+
+      <button type="submit">Uppdatera priser</button>
     </form>
   );
 }

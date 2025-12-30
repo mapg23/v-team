@@ -194,6 +194,52 @@ const cityService = {
       return [];
     }
   },
+
+  /**
+   * Get all price details for renting a bike in city based on <cityId>
+   * @returns {Object} Price details for curreny city
+   */
+  getPriceDetailsByCityId: async function getPriceDetailsByCityId(cityId) {
+    try {
+      const response = await fetch(`${API}/prices/${cityId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json();
+    } catch (error) {}
+  },
+
+  /**
+   * Update price details in city
+   */
+  updatePriceDetailsInCity: async function updatePriceDetailsInCity(
+    cityId,
+    data
+  ) {
+    
+    // Map dataObj to match price sevice in API
+    const dataObj = {
+      city_id: cityId,
+      start_fee: data.startFee,
+      minute_fee: data.minuteFee,
+      parking_fee: data.parkingFee,
+      discount_multiplier: data.discountMultiplier,
+    }
+    try {
+      const response = await fetch(`${API}/prices/${cityId}`, {
+        body: JSON.stringify(dataObj),
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return await response.json();
+    } catch (error) {}
+  },
 };
 
 export default cityService;
