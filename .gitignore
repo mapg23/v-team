@@ -11,3 +11,4 @@ client/node_modules
 
 bike/coverage
 api/coverage
+node_modules/
