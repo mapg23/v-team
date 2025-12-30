@@ -1,6 +1,8 @@
 import { generateRandomString, createPKCE } from "services/crypto";
 const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const redirectUri = "http://localhost:5173/login/github/callback";
+import { FaGithub } from "react-icons/fa";
+import btnstyle from "../button/Button.module.css";
 
 
 export default function LoginWithGithub() {
@@ -42,5 +44,9 @@ export default function LoginWithGithub() {
     window.location.href = `https://github.com/login/oauth/authorize?${params}`;
   }
 
-  return <button onClick={login}>Login with GitHub</button>;
+  return (
+    <button
+      onClick={login}><FaGithub size={25}/> Login with GitHub
+    </button>
+  );
 }

@@ -8,17 +8,19 @@ const authObject = {
   /**
    * Login user
    * Return status 200 if success
+   * @param {string} email
    * @param {string} username
    * @param {string} password
    */
-  login: async function login({ email, password }) {
+  login: async function login({ email, password, username }) {
     const userObject = {
       email: `${email}`,
       password: `${password}`,
+      username: `${username}`
     };
 
     try {
-      const response = await fetch(`${API}/login`, {
+      const response = await fetch(`${API}/auth/login`, {
         body: JSON.stringify(userObject),
         method: "POST",
         headers: {
@@ -26,17 +28,16 @@ const authObject = {
         },
       });
 
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on fetchDocuments! Status: ${response.status}`
-        );
-      }
+      // if (!response.ok) {
+      //   throw new Error(
+      //     `HTTP error on Login! Status: ${response.status}`
+      //   );
+      // }
 
-      const responseData = await response.json();
-      return responseData;
+      return await response.json();
     } catch (error) {
-      console.error("fetchDocuments error:", error);
-      return [];
+      console.error("Login error:", error);
+      return {error: "Invalid credentials"};
     }
   },
 

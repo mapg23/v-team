@@ -1,13 +1,18 @@
 .btn {
-  background-color: transparent;
+  /* background-color: transparent; */
   border-radius: 10px;
   border: 1px solid grey;
   padding: 0.5rem;
   color: white;
   font-size: 1.2rem;
   width: 100%;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
 }
 
 .delete:hover {
   background-color: red;
 }
+
+.btn:hover {}
