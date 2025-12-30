@@ -8,6 +8,7 @@ export default function createBikeRouter(bikes = createBikes()) {
     /**
      * GET /bikes/sync
      * Fetches bikes from the database and sends them to the simulator.
+     * Good for testing code when developing.
      * Returns 200 on success, otherwise 500.
      */
     route.get(`/bikes/sync`, async (req, res) => {

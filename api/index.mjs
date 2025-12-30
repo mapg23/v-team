@@ -11,8 +11,8 @@ import createCityRouter from "./src/routes/cityRoutes.mjs";
 import createBikeRouter from "./src/routes/bikeRoutes.mjs";
 import createStationRouter from "./src/routes/stationRoutes.mjs";
 import createParkingRouter from "./src/routes/parkingRoutes.mjs";
-import startSimulator from "./src/startSimulator.mjs";
-import stopSimulator from "./src/stopSimulator.mjs";
+import startSimulator from "./src/systemSimulation/startSimulator.mjs";
+import stopSimulator from "./src/systemSimulation/stopSimulator.mjs";
 import tripRoutes from "./src/routes/tripRoutes.mjs";
 import paymentRoutes from "./src/routes/paymentRoutes.mjs";
 
