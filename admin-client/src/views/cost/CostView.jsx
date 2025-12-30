@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import BikeService from "../../services/bikes";
+import CostForm from "../../components/forms/CostForm";
 
 export default function CostView() {
   const [initialCost, setInitialCost] = useState(0);
@@ -18,19 +19,23 @@ export default function CostView() {
       setLoading(false);
     }
     fetchData();
-  }, [initialCost, variableCost]);
+  }, []);
 
-  if (loading) return <p>laddar..</p>
+  async function updateCost({ initialCost, variableCost }) {
+    console.log(initialCost, variableCost);
+  }
+
+  if (loading) return <p>laddar..</p>;
   return (
     <>
-    <h1>CostView</h1>
+      <h1>CostView</h1>
       <div className="container">
         <div className="card-one">
           <h3>Kostnad för att hyra en cykel:</h3>
           <p>Startkostnad {initialCost} kr</p>
           <p>Rörlig kostnad {variableCost} kr/minut</p>
+          <CostForm onFormSubmit={updateCost}></CostForm>
         </div>
-        <div className="card-two"></div>
       </div>
     </>
   );
