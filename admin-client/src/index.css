@@ -76,7 +76,7 @@ button:focus-visible {
   }
 }
 
-/* LIST STYLES */
+/* LIST STYLES
 ul {
   list-style-type: none;
   margin: 0;
@@ -93,8 +93,8 @@ li a {
   text-decoration: none;
 }
 
-/* Change the link and background color on hover */
+/* Change the link and background color on hover 
 li a:hover {
   background-color: #555555;
   color: white;
-}
+}*/
