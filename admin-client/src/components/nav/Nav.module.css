@@ -1,4 +1,4 @@
- ul {
+.navList {
    list-style-type: none;
    margin: 0;
    padding: 0;
@@ -7,7 +7,7 @@
    border-radius: 10px;
  }
 
- li a {
+.navList a{
    display: block;
    color: white;
    padding: 8px 16px;
@@ -15,7 +15,7 @@
  }
 
  /* Change the link and background color on hover */
- li a:hover {
+.navList a:hover {
    background-color: #555555;
    color: white;
  }

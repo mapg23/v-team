@@ -1,4 +1,6 @@
-import styles from "../button/Button.module.css"
+import btnStyles from "../button/Button.module.css";
+import navStyles from "../nav/Nav.module.css";
+
 
 /**
  *
@@ -10,7 +12,7 @@ function Navigation({ logout }) {
   }
   return (
     <>
-      <ul>
+      <ul className={navStyles.navList}>
         <li>
           <a href="/welcome">Översikt</a>
         </li>
@@ -33,7 +35,9 @@ function Navigation({ logout }) {
           <a href="/bikes">Elsparkcyklar</a>
         </li>
         <li>
-          <button className={`${styles.delete}`} onClick={handleLogout}>Logout</button>
+          <button className={`${btnStyles.delete}`} onClick={handleLogout}>
+            Logout
+          </button>
         </li>
       </ul>
     </>
