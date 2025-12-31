@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import UserService from "../../services/users";
+import TripService from "../../services/trips";
 import { useParams, useNavigate } from "react-router";
 import Profile from "../../components/user/Profile";
 import Balance from "../../components/user/Balance";
@@ -48,12 +49,13 @@ export default function UserView() {
    */
   useEffect(() => {
     async function fetchData() {
-      const userDetails = await UserService.getUserDetails(userId);
-      const balance = await UserService.getUserBalanceDetails(userId);
-      const history = await UserService.getUserRentalDetails(userId);
+      // const userDetails = await UserService.getUserDetails(userId);
+      // const balance = await UserService.getUserBalanceDetails(userId);
+      const tripHistory = await TripService.getTripsByUserId(userId);
+      console.log(tripHistory);
       setUserDetails(userDetails);
       setBalance(balance);
-      setHistory(history);
+      setHistory(tripHistory);
       // data is fetched, render
       setLoading(false);
     }
