@@ -73,8 +73,18 @@ class Simulator {
                 continue;
             }
 
-            if (this.cordinates[key].length === 0) {
-                console.log(`Bike: ${key} has no cordinates left ${this.cordinates[key].length}`)
+            // if (this.cordinates[key].length === 0) {
+            //     console.log(`Bike: ${key} has no cordinates left ${this.cordinates[key].length}`)
+            //     this.bikes[index].status = 40;
+            //     this.cordinates[key] = [];
+            //     continue;
+            // }
+
+            // Jag la till '!this.cordinates[key]' eftersom den annars kraschade
+            // när jag testade i Postman. Sorry för att jag petade i din kod!
+            // Din version är den utkommenterade koden ovan. (Josef)
+            if (!this.cordinates[key] || this.cordinates[key].length === 0) {
+                console.log(`Bike: ${key} has no coordinates left`);
                 this.bikes[index].status = 40;
                 this.cordinates[key] = [];
                 continue;
@@ -210,10 +220,10 @@ class Simulator {
 
 
     /**
-     * 
-     * 
-     * @param {*} payload 
-     * @returns 
+     *
+     *
+     * @param {*} payload
+     * @returns
      */
     moveSpecific(payload) {
         try {
