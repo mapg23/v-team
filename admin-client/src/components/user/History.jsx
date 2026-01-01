@@ -21,14 +21,14 @@ export default function History({ tripHistory }) {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={styles.historyContainer}>
       <div className={styles.avatar}>
         <GoHistory size={50} />
       </div>
       {/* <div className={styles.info}>
        */}
       <div>
-        <table>
+        <table className={styles.alignedTable}>
           <thead>
             <tr>
               <th>Travel Id</th>
@@ -42,17 +42,19 @@ export default function History({ tripHistory }) {
             {tripHistory.map((story) => {
               return (
                 <tr key={story.id}>
-                  <td>{story.id}</td>
-                  <td>
+                  <td className={styles.center}>{story.id}</td>
+                  <td className={styles.left}>
                     {story.startAdress
                       ? story.startAdress
                       : story.start_latitude}
                   </td>
-                  <td>
+                  <td className={styles.left}>
                     {story.endAdress ? story.endAdress : story.end_latitude}
                   </td>
-                  <td>{calculateTime(story.start_time, story.end_time)}</td>
-                  <td>{story.cost} kr</td>
+                  <td className={styles.right}>
+                    {calculateTime(story.start_time, story.end_time)}
+                  </td>
+                  <td className={styles.right}>{story.cost} kr</td>
                 </tr>
               );
             })}

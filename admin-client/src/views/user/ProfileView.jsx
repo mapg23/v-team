@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import UserService from "../../services/users";
 import TripService from "../../services/trips";
-import { useParams, useNavigate } from "react-router";
+import { useParams } from "react-router";
 import Profile from "../../components/user/Profile";
 import Balance from "../../components/user/Balance";
 import History from "../../components/user/History";
-import styles from "../../components/button/Button.module.css";
+import styles from "../../components/user/Styles.module.css";
 
 /**
  * View for viewing a profile
  */
 export default function UserView() {
-  const navigate = useNavigate();
 
   // Get params
   const params = useParams();
@@ -45,16 +44,20 @@ export default function UserView() {
    */
   useEffect(() => {
     async function fetchData() {
-      // const userDetails = await UserService.getUserDetails(userId);
+      const userDetails = await UserService.getUserDetails(userId);
+      console.log(userDetails)
+      setUserDetails(userDetails);
       // const balance = await UserService.getUserBalanceDetails(userId);
+      // console.log(balance)
       const userTrips = await TripService.getTripsByUserId(userId);
       setTripHistory(userTrips);
+
+      // render component asap
+      // dont wait for addreses, slow api
       setLoading(false);
+
+      // Try get adresses 
       fetchAdress(userTrips);
-      // setUserDetails(userDetails);
-      // setBalance(balance);
-      // data is fetched, render
-      // setLoading(false);
     }
     fetchData();
   }, [userId]);
@@ -87,15 +90,6 @@ export default function UserView() {
     setTripHistory(result);
   }
 
-  /**
-   * Delete user
-   */
-  async function handleSubmit(event) {
-    event.preventDefault();
-    const success = await UserService.deleteUser(userId);
-    if (success) navigate("/welcome");
-  }
-
   if (!params.id) {
     return <p>no userid provided...</p>;
   }
@@ -103,18 +97,16 @@ export default function UserView() {
   if (!loading) {
     return (
       <>
-        <h2>Profilepage</h2>
-        <Profile userDetails={userDetails} />
-        <Balance balance={balance} />
-        <History tripHistory={tripHistory} />
-        <form onSubmit={handleSubmit}>
-          <button
-            className={`${styles.buttuon} ${styles.delete}`}
-            type="submit"
-          >
-            Delete user
-          </button>
-        </form>
+        <div className={styles.profileWrapper}>
+          {/* {USER PROFILE} */}
+          <h2>{userDetails[0].username ? userDetails[0].username + " profile" : "Profilepage"}</h2>
+          <Profile userDetails={userDetails} />
+          {/* {USER BALANCE} */}
+          <Balance balance={balance} />
+
+          {/* {USER TRIPS} */}
+          <History tripHistory={tripHistory} />
+        </div>
       </>
     );
   }
