@@ -39,10 +39,10 @@ class Simulator {
      * @returns Void
      */
     startMovement() {
-        if (this.movementInterval) return;
+        if (this.movementInterval) {return;}
 
         this.movementInterval = setInterval(() => {
-            this.heartbeat()
+            this.heartbeat();
             this.sendUpdates();
         }, 3000);
         console.log("Movement started");
@@ -66,7 +66,7 @@ class Simulator {
     heartbeat() {
         for (let key in this.cordinates) {
             let index = this.bikes.findIndex(function (device) {
-                return device.getId() === Number(key)
+                return device.getId() === Number(key);
             });
 
             if (index === -1) {
@@ -80,9 +80,10 @@ class Simulator {
             //     continue;
             // }
 
+            /////// J
             // Jag la till '!this.cordinates[key]' eftersom den annars kraschade
-            // när jag testade i Postman. Sorry för att jag petade i din kod!
-            // Din version är den utkommenterade koden ovan. (Josef)
+            // när jag testade i Postman.
+            // Gamla versionen är den utkommenterade koden ovan.
             if (!this.cordinates[key] || this.cordinates[key].length === 0) {
                 console.log(`Bike: ${key} has no coordinates left`);
                 this.bikes[index].status = 40;
@@ -92,6 +93,7 @@ class Simulator {
 
             this.bikes[index].status = 10;
             const nextCordinate = this.cordinates[key].shift();
+
             this.bikes[index].move(nextCordinate);
         }
         return { event: 'Heartbeat updated' };
@@ -130,6 +132,7 @@ class Simulator {
         this.bikes = [];
         for (let bike of payload) {
             let parsedCords = { x: Number(bike.longitude), y: Number(bike.latitude) };
+
             this.bikes.push(new Device({
                 id: bike.id,
                 cords: parsedCords,
@@ -153,7 +156,7 @@ class Simulator {
             // ));
         }
         this.startMovement();
-        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes }
+        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes };
     }
 
     /**
@@ -162,14 +165,16 @@ class Simulator {
      */
     start() {
         if (this.bikes.length >= this.totalBikes) {
-            return { event: `Bikes already at max capacity: ${this.bikes.length}/${this.totalBikes}` };
+            return {
+                event: `Bikes already at max capacity: ${this.bikes.length}/${this.totalBikes}`
+            };
         }
 
         for (let i = 0; i < this.totalBikes; i++) {
-            this.bikes.push(new Device(i, { x: 0, y: 0 }, i.city_id))
+            this.bikes.push(new Device(i, { x: 0, y: 0 }, i.city_id));
         }
         this.startMovement();
-        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes }
+        return { event: `Bikes: ${this.bikes.length}`, data: this.bikes };
     }
 
     /**
@@ -181,7 +186,6 @@ class Simulator {
         // Save all bike positions to database
         this.bikes = [];
         return { event: 'stopping worker' };
-
     }
 
     /**
@@ -198,7 +202,7 @@ class Simulator {
      * @returns {Array} - Device
      */
     getBike(payload) {
-        return { event: 'Retriving bike', data: this.bikes[payload.id] }
+        return { event: 'Retriving bike', data: this.bikes[payload.id] };
     }
 
     /**
@@ -234,6 +238,37 @@ class Simulator {
             return { event: 'Invalid Payload' };
         }
     }
+    /**
+     * Method to update a bike's properties and position in the simulator.
+     * @param {*} payload - Object containing bikeId, status, battery,
+     * occupied, zoneType, zoneId, longitude, latitude
+     * @returns {Object} - Event with result and updated bike data if
+     * successful, or error message if not
+     */
+    updateBike(payload) { ///// J
+        try {
+            const bike = this.bikes.find(b => b.id === Number(payload.bikeId));
+
+            if (!bike) {
+                console.error('Bike not found');
+                return { event: 'Bike not found' };
+            }
+
+            bike.status = Number(payload.status);
+            bike.battery = Number(payload.battery);
+            bike.occupied = payload.occupied;
+            bike.current_zone_type = payload.zoneType;
+            bike.current_zone_id = Number(payload.zoneId);
+
+            bike.move({ x: payload.longitude, y: payload.latitude });
+            this.sendUpdates();
+
+            return { event: 'Bike updated', data: bike };
+        } catch (error) {
+            console.error('Invalid Payload', error.message);
+            return { event: 'Invalid Payload' };
+        }
+    }
 };
 
 export function createSimulator(options) {
@@ -261,6 +296,7 @@ export async function handleWorkerMessage(msg, simm) {
         'move-specific': () => simm.moveSpecific(payload),
 
         'get-bike': () => simm.getBike(payload),
+        'update-bike': () => simm.updateBike(payload), ///// J
         'heartbeat': () => simm.heartbeat(),
     };
 
@@ -274,6 +310,7 @@ export async function handleWorkerMessage(msg, simm) {
     try {
         const res = await callFunction();
         // parentPort.postMessage({ id, ...res});
+
         return { id, ...res };
     } catch (error) {
         // parentPort.postMessage({id, error: error.message});
@@ -283,6 +320,7 @@ export async function handleWorkerMessage(msg, simm) {
 
 parentPort?.on("message", async (msg) => {
     const response = await handleWorkerMessage(msg, simm);
+
     parentPort.postMessage(response);
 });
 

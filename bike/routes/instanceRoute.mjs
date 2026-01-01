@@ -21,12 +21,14 @@ router.get('/heartbeat', async (req, res) => {
 
 /**
  * GET /setRoute
- * Route to set a pre-defined route 
+ * Route to set a pre-defined route
  */
 router.post('/setRoute', async (req, res) => {
     let cordinates = req.body.cordinates || null;
+
     try {
         const response = await callWorker('setRoute', cordinates);
+
         res.json(response);
     } catch (error) {
         console.error(error);
@@ -62,6 +64,7 @@ router.post('/start', async (req, res) => {
     try {
         let bikes = req.body.bikes;
         const response = await callWorker('start-job-memory', bikes);
+
         res.json({
             ok: true,
             msg: 'started-job-memory',
