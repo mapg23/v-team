@@ -110,7 +110,16 @@ describe("Bikes API - OK", () => {
 
         const res = await request(app)
             .put('/bikes/3')
-            .send({ battery: 50 });
+            .send({
+                status: 10,
+                battery: 50,
+                latitude: 59.0,
+                longitude: 18.0,
+                occupied: 0,
+                cityId: 1,
+                currentZoneType: null,
+                currentZoneId: null
+            });
 
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty("id", 3);
@@ -168,11 +177,30 @@ describe("Bikes API - NOK (500)", () => {
     });
 
     test("PUT /bikes/:id returns 500 on DB error", async () => {
+        mockDb.select.mockResolvedValue([{
+            id: 5,
+            status: 10,
+            battery: 10,
+            latitude: 59.0,
+            longitude: 18.0,
+            occupied: 0,
+            city_id: 1
+        }]);
+
         mockDb.update.mockRejectedValue(new Error("DB error"));
 
         const res = await request(app)
             .put('/bikes/5')
-            .send({ battery: 10 });
+            .send({
+                status: 10,
+                battery: 10,
+                latitude: 59.0,
+                longitude: 18.0,
+                occupied: 0,
+                cityId: 1,
+                currentZoneType: null,
+                currentZoneId: null
+            });
 
         expect(res.status).toBe(500);
         expect(res.body).toHaveProperty("error", "Could not update bike");
@@ -228,10 +256,30 @@ describe("Bikes API - NOK (400), (404)", () => {
     });
 
     test("PUT /bikes/:id returns 404 if bike does not exist", async () => {
+        mockDb.select.mockResolvedValue([{
+            id: 99,
+            status: 10,
+            battery: 50,
+            latitude: 59.0,
+            longitude: 18.0,
+            occupied: 0,
+            city_id: 1
+        }]);
+
         mockDb.update.mockResolvedValue({ affectedRows: 0 });
+
         const res = await request(app)
             .put('/bikes/99')
-            .send({ battery: 50 });
+            .send({
+                status: 10,
+                battery: 50,
+                latitude: 59.0,
+                longitude: 18.0,
+                occupied: 0,
+                cityId: 1,
+                currentZoneType: null,
+                currentZoneId: null
+            });
 
         expect(res.status).toBe(404);
         expect(res.body).toHaveProperty("error", "Bike not found");
@@ -277,7 +325,6 @@ describe("PUT /bikes/:id/move - edge cases", () => {
 
         jest.spyOn(bikesModule, 'validateZone').mockResolvedValue(false);
 
-        // Mock getZoneCoordinates.
         jest.spyOn(bikesModule, 'getZoneCoordinates').mockResolvedValue(
             {
                 latitude: 0,
