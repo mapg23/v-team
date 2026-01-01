@@ -1,5 +1,5 @@
 /**
- * This module cintain a function that Starts the simulator
+ * This module contain a function that Starts the simulator
  * automatically when the API server starts.
  * Sends the current list of bikes to the simulator.
  * This function runs only once during server startup.
