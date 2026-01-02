@@ -12,6 +12,15 @@ const trip = {
     },
 
     /**
+     * Fetch all trips.
+     *
+     * @returns {Array} An array containing the result from the db operation.
+     */
+    getTrips: function getTrips() {
+        return db.select("trips", "*", "", []);
+    },
+
+    /**
      * Fetch a single trip by its ID.
      *
      * @param {number} id - ID of the transaction.
@@ -37,7 +46,7 @@ const trip = {
      *
      * @param {number} id - The ID of the trip to update.
      * @param {Object} body - An object containing the trip data to insert.
-     * @returns {Array} An array containing the result from the db operation.
+     * @returns {Promise<Array>} An array containing the result from the db operation.
      */
     updateTrip: function updateTrip(id, data) {
         return db.update("trips", data, "id = ?", [id]);
