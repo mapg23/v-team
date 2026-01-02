@@ -3,6 +3,7 @@ import BikeService from "../../services/bikes";
 import { useNavigate } from "react-router";
 import CityDropDown from "../../components/input/CityDropDown";
 import TableWithActions from "../../components/table/TableWithActions";
+import BikesTable from "../../components/table/BikesTable";
 import style from "../../components/forms/Form.module.css";
 import CreateBikeForm from "../../components/forms/CreateBikeForm";
 import cityService from "../../services/cities";
@@ -159,8 +160,7 @@ export default function BikeView() {
           <p className={resultClass}>{result}</p>
           {/* Display bikes based on filter */}
           <div className="hideOverFlow">
-            <p>Total bikes: {bikes.length}</p>
-            <TableWithActions
+            <BikesTable
               data={bikeFilter}
               action={deleteBike}
               inspect={inspectBike}
