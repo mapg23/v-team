@@ -2,12 +2,11 @@
   list-style-type: none;
   margin: 0;
   padding: 0;
-  /* width: 200px; */
   background: #1e1e1e;
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  width: 100%;
+  width: 20%;
 }
 
 .navList a {

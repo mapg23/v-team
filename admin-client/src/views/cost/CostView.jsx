@@ -56,24 +56,29 @@ export default function CostView() {
 
   return (
     <>
-      <h1>CostView</h1>
-      <h2>Chose a city to handle costs regarding renting a scooter</h2>
-      <CityDropDown action={updateCityId} />
-      <div className="container">
-        <div className="card-one">
-          <div
-            className={message ? styles[messageStyle] : ""}
-          >
-            <p>{message}</p>
+      <div className="wrapper">
+        <h1>CostView</h1>
+        <div className="card">
+          <h2>Chose a city to handle costs regarding renting a scooter</h2>
+          <CityDropDown action={updateCityId} />
+          <div className="container">
+            <div className="card-one">
+              <div className={message ? styles[messageStyle] : ""}>
+                <p>{message}</p>
+              </div>
+              {priceDetails ? (
+                <>
+                  <h2>Current renting cost</h2>
+                  <CostForm
+                    onFormSubmit={updateCost}
+                    priceDetails={priceDetails}
+                  />
+                </>
+              ) : (
+                ""
+              )}
+            </div>
           </div>
-          {priceDetails ? (
-            <>
-              <h2>Current renting cost</h2>
-              <CostForm onFormSubmit={updateCost} priceDetails={priceDetails} />
-            </>
-          ) : (
-            ""
-          )}
         </div>
       </div>
     </>

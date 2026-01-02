@@ -34,10 +34,12 @@ function HomeView() {
   if (loading) return <h1>Loading...</h1>;
 
   return (
-    <>
-      <h2>Users</h2>
-      <UserTable data={activeUsers} />
-    </>
+    <div className="wrapper">
+      <div className="card">
+        <h2>Users</h2>
+        <UserTable data={activeUsers} />
+      </div>
+    </div>
   );
 }
 
