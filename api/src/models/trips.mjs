@@ -7,8 +7,8 @@ const trip = {
      * @param {Object} body - An object containing the trip data to insert.
      * @returns {Array} An array containing the result from the db operation.
      */
-    createTrip: async function createTrip(body) {
-        return await db.insert("trips", body);
+    createTrip: function createTrip(body) {
+        return db.insert("trips", body);
     },
 
     /**
@@ -17,8 +17,8 @@ const trip = {
      * @param {number} id - ID of the transaction.
      * @returns {Array} An array containing the result from the db operation.
      */
-    getTripById: async function getTripById(id) {
-        return await db.select("trips", "*", "id = ?", [id]);
+    getTripById: function getTripById(id) {
+        return db.select("trips", "*", "id = ?", [id]);
     },
 
     /**
@@ -28,8 +28,8 @@ const trip = {
      * @returns {Array} An array containing the result from the db operation.
      * select(table, columns = '*', where = '', params = [])
      */
-    getTripsByUserId: async function getTripsByUserId(userId) {
-        return await db.select("trips", "*", "user_id = ?", [userId]);
+    getTripsByUserId: function getTripsByUserId(userId) {
+        return db.select("trips", "*", "user_id = ?", [userId]);
     },
 
     /**
@@ -39,8 +39,8 @@ const trip = {
      * @param {Object} body - An object containing the trip data to insert.
      * @returns {Array} An array containing the result from the db operation.
      */
-    updateTrip: async function updateTrip(id, data) {
-        return await db.update("trips", data, "id = ?", [id]);
+    updateTrip: function updateTrip(id, data) {
+        return db.update("trips", data, "id = ?", [id]);
     },
 
     /**
@@ -49,8 +49,8 @@ const trip = {
      * @param {number} id - The ID of the trip to delete.
      * @returns {Array} An array containing the result from the db operation.
      */
-    deleteTrip: async function deleteTrip(id) {
-        return await db.remove("trips", "id = ?", [id]);
+    deleteTrip: function deleteTrip(id) {
+        return db.remove("trips", "id = ?", [id]);
     },
 };
 

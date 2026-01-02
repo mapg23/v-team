@@ -1,16 +1,17 @@
 import tripsModel from "../models/trips.mjs";
 import createBikes from "../models/bikes.mjs";
 // import createParkings from "../models/parkings.mjs";
-import walletsModel from "../models/wallets.mjs";
+import walletsServices from "../services/walletService.mjs";
 import pricingServices from "./pricingService.mjs";
 
+//potential refactor: controller gets bike & wallet.
 
 class TripService {
     constructor(
         tripModel = tripsModel,
         bikeModel = createBikes(),
         // parkings = createParkings(),
-        wallets = walletsModel,
+        walletsService = walletsServices,
         pricingService = pricingServices
     ) {
         /**
@@ -19,7 +20,7 @@ class TripService {
         this.trips = tripModel;
         this.bikes = bikeModel;
         // this.parkings = parkings;
-        this.wallets = wallets;
+        this.walletsService = walletsService;
         this.pricingService = pricingService;
         // /**
         //  * A list of parking zones
@@ -74,16 +75,6 @@ class TripService {
         return trip;
     }
 
-    async getWalletByUserId(userId) {
-        const walletResult = await this.wallets.getWalletByUserId(userId);
-        const wallet = walletResult[0];
-
-        if (!wallet) {
-            throw new Error(`User ${userId}s wallet was not found`);
-        }
-        return wallet;
-    };
-
     /**
      * Start a rent of a bike, and set bikes status to 40 (occupied).
      * @param {Object} data An object containing customers user id and bikes id.
@@ -95,7 +86,7 @@ class TripService {
         const now = this.getDbDate();
 
         const bike = await this.getBikeById(bikeId);
-        const wallet = await this.getWalletByUserId(userId);
+        const wallet = await this.walletsService.getWalletByUserId(userId);
 
         if (wallet.balance <= 0) {
             throw new Error(`Users wallet ${wallet.id} has insufficiant funds`);
@@ -151,17 +142,6 @@ class TripService {
         await this.bikes.updateBike(bike.id, {status: bikeStatus});
     }
 
-    async chargeForTrip(trip, totalCost) {
-        const wallet = await this.getWalletByUserId(trip.user_id);
-        const newBalance = wallet.balance - totalCost;
-        const walletResult = await this.wallets.updateWallet(wallet.id, {balance: newBalance});
-
-        // console.log(walletResult);
-        if (!walletResult?.affectedRows) {
-            throw new Error("Could not update balance");
-        }
-    }
-
     /**
      * End a scooter rental trip and calculating final cost.
      *
@@ -199,7 +179,7 @@ class TripService {
             throw new Error("Could not end trip");
         }
 
-        await this.chargeForTrip(trip, totalCost);
+        await this.walletsService.debit(trip.user_id, totalCost);
 
         // Not this services job?
         await this.setBikeStatus(bike, parkedOk);
