@@ -9,6 +9,7 @@ import LoginView from "./views/LoginView";
 import HomeView from "./views/HomeView";
 import AccountView from "./views/AccountView";
 import TransactionsView from "./views/TransactionsView";
+import HistoryView from "./views/HistoryView";
 
 // Web views
 import WebAccountView from "./views/WebAccountview";
@@ -44,6 +45,18 @@ function App() {
               <MobileView>
                 <AccountView />
               </MobileView>
+            </MiddleWare>
+          } />
+
+          <Route path="/history" element={
+            <MiddleWare>
+              <MobileView>
+                <HistoryView />
+              </MobileView>
+
+              <BrowserView>
+                <HistoryView />
+              </BrowserView>
             </MiddleWare>
           } />
 
