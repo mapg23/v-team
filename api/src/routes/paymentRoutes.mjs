@@ -1,7 +1,8 @@
 import express from 'express';
-// import * as validation from "../middleware/validation/validationMiddleware.mjs";
+import * as validation from "../middleware/validation/validationMiddleware.mjs";
 import Stripe from "stripe";
 import wallets from '../models/wallets.mjs';
+import tripService from '../services/tripService.mjs';
 
 const stripe = new Stripe(`${process.env.STRIPE_SECRET}`);
 
@@ -97,3 +98,22 @@ router.post(`/payment-success`,
     });
 
 export default router;
+/**
+ * Returns user balance
+*/
+router.get(`/user/:id`,
+    validation.idParam,
+    validation.checkValidationResult,
+    async (req, res) => {
+        try {
+            const userWallet = await tripService.getWalletByUserId(req.params.id);
+
+            return res.status(200).json(userWallet);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                error: `Could not fetch wallet for user ${req.params.id}`,
+                message: err.message
+            });
+        }
+    });
