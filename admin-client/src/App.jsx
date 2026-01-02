@@ -52,7 +52,9 @@ function App() {
         // LOGGED IN
         // --------------------------------------------
         <div className="app-layout">
-          <Navbar logout={logout} />
+          <div className="navContainer">
+            <Navbar logout={logout} />
+          </div>
           <div className="app-content">
             <Routes>
               <Route path="/welcome" element={<HomeView />} />

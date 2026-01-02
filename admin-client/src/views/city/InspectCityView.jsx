@@ -168,19 +168,27 @@ export default function InspectCityView() {
   if (loading) return <h1>Loading...</h1>;
 
   return (
-    <>
-      <CityDropDown action={redirectToCity} />
-      <h1>{cityDetails.name}</h1>
-      <div style={{ display: "flex", justifyContent: "space-around" }}>
-        <CityTable data={cityDetails} vertical={true} />
-        <PieChart bikeStatusMap={bikeStatusMap} />
+    <div className="wrapper">
+      <div className="card">
+        <CityDropDown action={redirectToCity} />
+        <h1>{cityDetails.name}</h1>
+        <div className="cardWrapper">
+          <div className="card">
+            <CityTable data={cityDetails} vertical={true} />
+          </div>
+          <div className="card">
+            <PieChart bikeStatusMap={bikeStatusMap} />
+          </div>
+        </div>
       </div>
-      <Map
-        coords={cityDetails}
-        bikes={bikes}
-        parkingZones={parkingZonesWithBikes}
-        chargingZones={chargingZonesWithBikes}
-      />
-    </>
+      <div className="map">
+        <Map
+          coords={cityDetails}
+          bikes={bikes}
+          parkingZones={parkingZonesWithBikes}
+          chargingZones={chargingZonesWithBikes}
+        />
+      </div>
+    </div>
   );
 }
