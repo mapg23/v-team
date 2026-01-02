@@ -12,12 +12,6 @@
   "dependencies": {
     "@stripe/react-stripe-js": "^5.4.1",
     "@stripe/stripe-js": "^8.5.3",
-<<<<<<< HEAD
-=======
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-router-dom": "^7.10.1",
->>>>>>> ac2c8555702985fb25e3646e73a9f966fa058e0a
     "bootstrap": "^5.3.8",
     "framer-motion": "^12.23.26",
     "leaflet": "^1.9.4",
