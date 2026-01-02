@@ -3,9 +3,7 @@ import CityService from "services/cities";
 import BikeService from "../../services/bikes";
 import { useNavigate, useParams } from "react-router";
 import DynamicTable from "../../components/table/DynamicTable";
-import styles from "./styles.module.css";
 import RadioForm from "components/forms/RadioForm";
-import Button from "@mui/material/Button";
 
 /**
  * View a specific bike
@@ -69,7 +67,9 @@ export default function InspectBikeView() {
    *
    */
   async function moveToParkingStation(data) {
-    const parking = parkingStations.find((parking) => parking.id === Number(data));
+    const parking = parkingStations.find(
+      (parking) => parking.id === Number(data)
+    );
     const bikeObj = await BikeService.moveBikeToParkingZone(bikeId, parking.id);
     if (bikeObj.id) {
       setBikeInfo(bikeObj);
@@ -88,29 +88,30 @@ export default function InspectBikeView() {
    */
   async function stopBike() {
     const tripId = "";
-    console.log("stopping bike:", bikeId)
+    console.log("stopping bike:", bikeId);
   }
 
   if (loading) return <p>Hämtar cykeldata..</p>;
 
   return (
-    <>
-      <div className={styles.page}>
-        <h1>Bike #{bikeId}</h1>
+    <div className="wrapper">
+      <h1>Bike #{bikeId}</h1>
 
-        <div className={styles.grid}>
-          {/* VÄNSTER KOLUMN */}
-          <section className={styles.card}>
-            <h2>Bike information</h2>
-            <DynamicTable data={bikeInfo} vertical />
-            <br />
-            <Button variant="contained" onClick={stopBike}>
-              Stoppa cykel {bikeId}
-            </Button>
-          </section>
+      {/* VÄNSTER KOLUMN */}
+      <div className="card">
+        <section>
+          <h2>Bike information</h2>
+          <DynamicTable data={bikeInfo} vertical />
+          <br />
 
-          {/* CHARGING KOLUMN */}
-          <section className={styles.card}>
+          <button onClick={stopBike}>Stoppa cykel {bikeId}</button>
+        </section>
+      </div>
+
+      {/* CHARGING KOLUMN */}
+      <div className="cardWrapper">
+        <div className="card">
+          <section>
             <h2>Charging stations in {city.name}</h2>
 
             <DynamicTable data={chargingStations} />
@@ -121,15 +122,15 @@ export default function InspectBikeView() {
               action={moveToChargingStation}
               type="Laddstation"
             />
-            <div className={styles.actions}>
-              <Button variant="contained" onClick={viewOnmap}>
-                Visa på karta
-              </Button>
+            <div>
+              <button onClick={viewOnmap}>Visa på karta</button>
             </div>
           </section>
+        </div>
 
-          {/* PARKERINGS KOLUMN */}
-          <section className={styles.card}>
+        {/* PARKERINGS KOLUMN */}
+        <div className="card">
+          <section>
             <h2>Parking stations in {city.name}</h2>
 
             <DynamicTable data={parkingStations} />
@@ -140,14 +141,10 @@ export default function InspectBikeView() {
               action={moveToParkingStation}
               type="parkering"
             />
-            <div className={styles.actions}>
-              <Button variant="contained" onClick={viewOnmap}>
-                Visa på karta
-              </Button>
-            </div>
+            <button onClick={viewOnmap}>Visa på karta</button>
           </section>
         </div>
       </div>
-    </>
+    </div>
   );
 }

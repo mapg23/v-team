@@ -6,7 +6,6 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import Button from "@mui/material/Button";
 import { useState } from "react";
 
 export default function RadioForm({ data, action, type }) {
@@ -36,9 +35,9 @@ export default function RadioForm({ data, action, type }) {
             />
           ))}
         </RadioGroup>
-        <Button variant="contained" type="submit">
+        <button type="submit">
           Flytta till {type}
-        </Button>
+        </button>
       </FormControl>
     </>
   );
