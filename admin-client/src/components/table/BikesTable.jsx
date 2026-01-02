@@ -1,3 +1,4 @@
+import styles from "./Table.module.css";
 /**
  * Create a more intuitive table for bikes Data
  *
@@ -35,18 +36,18 @@ export default function BikesTable({ data, action, inspect }) {
   }
 
   return (
-    <table>
+    <table className={styles.bikeTable}>
       <thead>
         <tr>
           {headers.map((key) => (
-            <th key={key}>{key.toUpperCase()}</th>
+            <th key={key}>{key}</th>
           ))}
         </tr>
       </thead>
 
       <tbody>
         {_data.map((obj) => (
-          <tr key={obj.id}>
+          <tr onClick={() => handleInspect(obj.id)} key={obj.id}>
             <td>{obj.id}</td>
             <td>{obj.status}</td>
             <td>{obj.battery}</td>
@@ -54,8 +55,7 @@ export default function BikesTable({ data, action, inspect }) {
             <td>{obj.city_id}</td>
             <td>{obj.current_zone_type ? obj.current_zone_type : "none"}</td>
             <td key={obj.id}>
-              <button onClick={() => handleAction(obj.id)}>delete</button>
-              <button onClick={() => handleInspect(obj.id)}>Inspect</button>
+              <button onClick={() => handleAction(obj.id)}>Delete Bike</button>
             </td>
           </tr>
         ))}

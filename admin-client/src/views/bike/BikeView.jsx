@@ -159,13 +159,11 @@ export default function BikeView() {
         <div className="card">
           <p className={resultClass}>{result}</p>
           {/* Display bikes based on filter */}
-          <div className="hideOverFlow">
             <BikesTable
               data={bikeFilter}
               action={deleteBike}
               inspect={inspectBike}
             />
-          </div>
         </div>
       </div>
     </>
