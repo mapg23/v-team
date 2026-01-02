@@ -114,7 +114,6 @@ class Simulator {
             current_zone_id: b.current_zone_id,
         }));
 
-
         parentPort?.postMessage({
             type: "telemetry",
             data,
@@ -222,9 +221,20 @@ class Simulator {
         }
     }
 
+    getBikeStatus(payload) {
+        return {
+            event: 'retriving bike status',
+            data: this.bikes[Number(payload.id)].getStatus()
+        };
+    }
+
+    setBikeStatus(payload) {
+        this.bikes[Number(payload.id).setStatus(payload.status)]
+        return { event: `id for bike ${payload.id} set to status ${payload.status}` };
+    }
+
 
     /**
-     *
      *
      * @param {*} payload
      * @returns
@@ -297,6 +307,8 @@ export async function handleWorkerMessage(msg, simm) {
 
         'get-bike': () => simm.getBike(payload),
         'update-bike': () => simm.updateBike(payload), ///// J
+        'get-bike-status': () => simm.getBikeStatus(payload),
+        'set-bike-status': () => simm.setBikeStatus(payload),
         'heartbeat': () => simm.heartbeat(),
     };
 
