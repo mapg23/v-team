@@ -1,63 +1,41 @@
 import tripsModel from "../models/trips.mjs";
-import createBikes from "../models/bikes.mjs";
-// import createParkings from "../models/parkings.mjs";
-import walletsServices from "../services/walletService.mjs";
-import pricingServices from "./pricingService.mjs";
+import BikeService from "../services/bikeService.mjs";
+import WalletsService from "../services/walletService.mjs";
+import PricingService from "./pricingService.mjs";
 
 //potential refactor: controller gets bike & wallet.
 
 class TripService {
     constructor(
         tripModel = tripsModel,
-        bikeModel = createBikes(),
-        // parkings = createParkings(),
-        walletsService = walletsServices,
-        pricingService = pricingServices
+        bikeService = BikeService,
+        walletsService = WalletsService,
+        pricingService = PricingService
     ) {
         /**
          * Inject the models class is depending on.
          */
-        this.trips = tripModel;
-        this.bikes = bikeModel;
-        // this.parkings = parkings;
+        this.tripsModel = tripModel;
+        this.bikeService = bikeService;
         this.walletsService = walletsService;
         this.pricingService = pricingService;
-        // /**
-        //  * A list of parking zones
-        //  * @type {Array}
-        //  */
-        // this.parkingZones = [];
     }
+
     // /**
-    //  * Fetch and cache parking zones.
-    //  * @returns {<Array<Object>>} Parking zones.
+    //  * Checks that a bike with the corresponding id exists and returns it.
+    //  *
+    //  * @param {string} bikeId A numeric value in string format.
+    //  * @returns {Object} bike The bike with the argumented id.
     //  */
-    // async getParkingZones() {
-    //     if (this.parkingZones.length === 0) {
-    //         this.parkingZones = await this.parkings.getParkings();
-    //     }
-    //     if (this.parkingZones.length === 0) {
-    //         throw new Error("Could not get parking zones");
-    //     }
+    // async getBikeById(bikeId) {
+    //     const bikeResult = await this.bikesModel.getBikeById(bikeId);
+    //     const bike = bikeResult[0];
 
-    //     return this.parkingZones;
+    //     if (!bike) {
+    //         throw new Error(`Bike with id: ${bikeId} was not found`);
+    //     }
+    //     return bike;
     // }
-
-    /**
-     * Checks that a bike with the corresponding id exists and returns it.
-     *
-     * @param {string} bikeId A numeric value in string format.
-     * @returns {Object} bike The bike with the argumented id.
-     */
-    async getBikeById(bikeId) {
-        const bikeResult = await this.bikes.getBikeById(bikeId);
-        const bike = bikeResult[0];
-
-        if (!bike) {
-            throw new Error(`Bike with id: ${bikeId} was not found`);
-        }
-        return bike;
-    }
 
     /**
      * Checks that a trip with the corresponding id exists and returns it.
@@ -66,7 +44,7 @@ class TripService {
      * @returns {Object} trip The trip with the argumented id.
      */
     async getTripById(tripId) {
-        const tripResult = await this.trips.getTripById(tripId);
+        const tripResult = await this.tripsModel.getTripById(tripId);
         const trip = tripResult[0];
 
         if (!trip) {
@@ -85,7 +63,7 @@ class TripService {
         const bikeId = data.bikeId;
         const now = this.getDbDate();
 
-        const bike = await this.getBikeById(bikeId);
+        const bike = await this.bikeService.getBikeById(bikeId);
         const wallet = await this.walletsService.getWalletByUserId(userId);
 
         if (wallet.balance <= 0) {
@@ -105,21 +83,15 @@ class TripService {
             start_time:  now,
             end_time: null,
         };
-        const result = await this.trips.createTrip(tripData);
+        const result = await this.tripsModel.createTrip(tripData);
 
         if (!result.affectedRows) {
             throw new Error("Ride could not be created");
         }
 
-        // Other class responsibillity?
-        const statusUpdate = await this.bikes.updateBike(bike.id, {"status": 40});
+        await this.bikeService.updateBike(bike.id, {"status": 40});
 
-        if (!statusUpdate.affectedRows) {
-            console.error("ERROR: Unable to change status to Occupied");
-            throw new Error("Unable to change status to Occupied");
-        }
-
-        return await this.trips.getTripById(result.insertId);
+        return await this.tripsModel.getTripById(result.insertId);
     }
 
     /**
@@ -139,7 +111,7 @@ class TripService {
 
         bikeStatus = bike.battery > 20 ? bikeStatus : 50;
 
-        await this.bikes.updateBike(bike.id, {status: bikeStatus});
+        await this.bikeService.updateBike(bike.id, {status: bikeStatus});
     }
 
     /**
@@ -156,7 +128,7 @@ class TripService {
             throw new Error(`Trip with id ${tripId} already ended.`);
         }
 
-        const bike = await this.getBikeById(trip.scooter_id);
+        const bike = await this.bikeService.getBikeById(trip.scooter_id);
         const parkedOk =
             bike.current_zone_type === "parking" ||
             bike.current_zone_type === "charging";
@@ -167,7 +139,7 @@ class TripService {
             parkedOk,
             endTime
         );
-        const result = await this.trips.updateTrip(trip.id, {
+        const result = await this.tripsModel.updateTrip(trip.id, {
             cost: totalCost,
             end_longitude: bike.longitude,
             end_latitude: bike.latitude,
