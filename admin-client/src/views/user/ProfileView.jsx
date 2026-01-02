@@ -11,7 +11,6 @@ import styles from "../../components/user/Styles.module.css";
  * View for viewing a profile
  */
 export default function UserView() {
-
   // Get params
   const params = useParams();
   const userId = params.id;
@@ -45,18 +44,23 @@ export default function UserView() {
   useEffect(() => {
     async function fetchData() {
       const userDetails = await UserService.getUserDetails(userId);
-      console.log(userDetails)
-      setUserDetails(userDetails);
-      // const balance = await UserService.getUserBalanceDetails(userId);
-      // console.log(balance)
+      if (Array.isArray(userDetails) && userDetails.length !== 0) {
+        setUserDetails(userDetails);
+      }
+      const balance = await UserService.getUserBalanceDetails(userId);
+      if (balance.balance) {
+        setBalance(balance.balance);
+      }
       const userTrips = await TripService.getTripsByUserId(userId);
-      setTripHistory(userTrips);
+      if (Array.isArray(userTrips) && userTrips.length !== 0) {
+        setTripHistory(userTrips);
+      }
 
       // render component asap
       // dont wait for addreses, slow api
       setLoading(false);
 
-      // Try get adresses 
+      // Try get adresses
       fetchAdress(userTrips);
     }
     fetchData();
@@ -64,7 +68,7 @@ export default function UserView() {
 
   /**
    * Fetch all adresses from lat long
-   * @param {Json} trips Array of trip Objects 
+   * @param {Json} trips Array of trip Objects
    */
   async function fetchAdress(trips) {
     let result = [];
@@ -99,7 +103,11 @@ export default function UserView() {
       <>
         <div className={styles.profileWrapper}>
           {/* {USER PROFILE} */}
-          <h2>{userDetails[0].username ? userDetails[0].username + " profile" : "Profilepage"}</h2>
+          <h2>
+            {userDetails[0].username
+              ? userDetails[0].username + " profile"
+              : "Profilepage"}
+          </h2>
           <Profile userDetails={userDetails} />
           {/* {USER BALANCE} */}
           <Balance balance={balance} />

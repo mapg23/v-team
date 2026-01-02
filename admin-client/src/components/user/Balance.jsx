@@ -14,10 +14,7 @@ export default function Balance({ balance }) {
       </div>
       <div className={styles.info}>
         <p>
-          <strong>Betalmetod:</strong> {balance.method || "card"}
-        </p>
-        <p>
-          <strong>Balans:</strong> {balance.balance || "0kr"}
+          <strong>Wallet balance:</strong> {balance + " kr" || "0kr"}
         </p>
       </div>
     </div>

@@ -192,7 +192,7 @@ const userService = {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error on patchUser! Status: ${response.status}`);
+        throw new Error(`HTTP error on deleteUser! Status: ${response.status}`);
       }
 
       // return response
@@ -212,11 +212,6 @@ const userService = {
    * @returns {JSON}
    */
   getUserRentalDetails: async function getUserRentalDetails(userId) {
-    // return [
-    //   {
-    //     id: 1,
-    //   },
-    // ];
     try {
       const response = await fetch(`${API}/users/${userId}/rentals`, {
         method: "GET",
@@ -293,7 +288,7 @@ const userService = {
 
       if (!response.ok) {
         throw new Error(
-          `HTTP error on getUserRentalDetails! Status: ${response.status}`
+          `HTTP error on patchUserRental! Status: ${response.status}`
         );
       }
 
@@ -337,46 +332,9 @@ const userService = {
    * @returns {JSON}
    */
   getUserBalanceDetails: async function getUserBalanceDetails(userId) {
-    // return {
-    //   balance: 100,
-    // };
     try {
-      const response = await fetch(`${API}/users/${userId}/balance`, {
+      const response = await fetch(`${API}/wallets/user/${userId}`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on getUserBalanceDetails! Status: ${response.status}`
-        );
-      }
-
-      const responseData = await response.json();
-      return responseData;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  },
-
-  /**
-   * Edit User balance
-   * @param {number|string} userId - ID för användaren som ska uppdateras
-   * @param {Object} balance - Objekt med keys och values att uppdatera
-   * @returns {JSON}
-   */
-  editUserBalance: async function editUserBalance(userId, balance) {
-    const balanceObject = {
-      ...balance,
-    };
-
-    try {
-      const response = await fetch(`${API}/users/${userId}/balance`, {
-        body: JSON.stringify(balanceObject),
-        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
