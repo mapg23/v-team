@@ -1,8 +1,10 @@
 import createBikes from "../models/bikes.mjs";
+import BikesInUse from "../models/bikesInUse.mjs";
 
 class BikeService {
-    constructor(bikesModel = createBikes()) {
+    constructor(bikesModel = createBikes(), bikesInUse = BikesInUse) {
         this.bikesModel = bikesModel;
+        this.bikesInUseModel = bikesInUse;
     }
 
     /**
@@ -22,22 +24,53 @@ class BikeService {
     }
 
     /**
-     * Update a bike.
-     *
+     * Update a bikes status.
+     * Check that bike exists, and updates it.
      * @param {string} bikeId A numeric value in string format.
-     * @param {object} data The data tu update.
-     * @returns {Object} bike The bike with the argumented id.
+     * @param {object} data The data tu update ex: {status: 30}
+     * @returns {Object} res The result of the update.
      */
-    async updateBike(bikeId, data) {
-        await this.bikesModel.getBikeById(bikeId);
-        const res = await this.bikesModel.updateBike(bikeId, data);
+    async updateBikeStatus(bikeId, status) {
+        await this.getBikeById(bikeId);
+        const apiRes = await this.bikesModel.updateBike(bikeId, {status: `${status}`});
 
-        if (res.warningStatus > 0) {
+        if (apiRes.warningStatus > 0) {
             throw new Error(`Bike with id: ${bikeId} Could not be updated`);
         }
-        const bike = this.getBikeById(bikeId);
 
-        return bike;
+        const bikeRes = await fetch('http://localhost:7071/bike/setStatus',
+            {
+                method: "POST",
+                body: JSON.stringify({ id: `${bikeId}`, status: `${status}`, msg: "fralla" }),
+            });
+
+        console.log(bikeRes);
+
+        // if (bikeRes === "") {
+        //     throw new Error("Jajaja");
+        // }
+
+        return apiRes;
+    }
+
+    async createBikeInUse(data) {
+        const res = await this.bikesInUseModel.createBikeInUse(data);
+
+        if (!res.affectedRows) {
+            throw new Error("Ride could not be created");
+        }
+        return "OK";
+    }
+
+    async getBikeInUse(bikeId) {
+        const res = await this.bikesInUseModel.getBikeInUseByBikeId(bikeId);
+        const bikeInUse = res[0];
+
+        if (!bikeInUse) {
+            throw new Error(`Bike in use with id: ${bikeId} was not found`);
+        }
+
+        return bikeInUse;
     }
 }
 

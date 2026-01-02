@@ -21,22 +21,6 @@ class TripService {
         this.pricingService = pricingService;
     }
 
-    // /**
-    //  * Checks that a bike with the corresponding id exists and returns it.
-    //  *
-    //  * @param {string} bikeId A numeric value in string format.
-    //  * @returns {Object} bike The bike with the argumented id.
-    //  */
-    // async getBikeById(bikeId) {
-    //     const bikeResult = await this.bikesModel.getBikeById(bikeId);
-    //     const bike = bikeResult[0];
-
-    //     if (!bike) {
-    //         throw new Error(`Bike with id: ${bikeId} was not found`);
-    //     }
-    //     return bike;
-    // }
-
     /**
      * Checks that a trip with the corresponding id exists and returns it.
      *
@@ -70,28 +54,19 @@ class TripService {
             throw new Error(`Users wallet ${wallet.id} has insufficiant funds`);
         }
 
-        const tripData = {
+        const bikeData = {
             user_id: userId,
             scooter_id: bike.id,
-            cost: 0,
+            start_time: now,
             start_latitude: bike.latitude,
 	        start_longitude: bike.longitude,
             start_zone_type: bike.current_zone_type,
-	        end_latitude: null,
-	        end_longitude: null,
-            end_zone_type: null,
-            start_time:  now,
-            end_time: null,
         };
-        const result = await this.tripsModel.createTrip(tripData);
 
-        if (!result.affectedRows) {
-            throw new Error("Ride could not be created");
-        }
+        await this.bikeService.createBikeInUse(bikeData);
+        await this.bikeService.updateBikeStatus(bike.id, 40);
 
-        await this.bikeService.updateBike(bike.id, {"status": 40});
-
-        return await this.tripsModel.getTripById(result.insertId);
+        return await this.bikeService.getBikeInUse(bike.id);
     }
 
     /**
