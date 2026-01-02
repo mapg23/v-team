@@ -1,8 +1,7 @@
 .verticalTable {
-  width: 100%;
+  /* width: 100%; */
   border-collapse: collapse;
   font-family: Arial, sans-serif;
-  display: flex;
 }
 
 .verticalTable th,

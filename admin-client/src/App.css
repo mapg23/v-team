@@ -24,19 +24,26 @@
   gap: 1rem;
 }
 
-.card,
-.map {
+.card {
   background: #1e1e1e;
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem;
 }
 
 .map {
   width: 800px;
   height: 600px;
   padding: 0;
+  background: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .wrapper {
