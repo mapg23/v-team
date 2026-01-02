@@ -229,7 +229,7 @@ class Simulator {
     }
 
     setBikeStatus(payload) {
-        this.bikes[Number(payload.id).setStatus(payload.status)]
+        this.bikes[Number(payload.id).setStatus(payload.status)];
         return { event: `id for bike ${payload.id} set to status ${payload.status}` };
     }
 

@@ -49,7 +49,7 @@ router.post('bike/setStatus', async (req, res) => {
 });
 
 /**
- * PUT URL:PORT/bike/move/:id/:x/:y 
+ * PUT URL:PORT/bike/move/:id/:x/:y
  * GET /move/id/x/y - Moves a specific bike based on x and y.
  * X = Longitude.
  * Y = Latitued.
