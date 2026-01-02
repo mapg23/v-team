@@ -82,14 +82,30 @@ router.delete(`/:id`,
 /**
  * Returns all user trips
  */
+router.get(`/`,
+    async (req, res) => {
+        try {
+            const tripList = await trips.getTrips();
+
+            return res.status(200).json(tripList);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                error: `Could not fetch trips for user ${req.params.id}`,
+                message: err.message
+            });
+        }
+    });
+
+/**
+ * Returns a trip by trip id.
+ */
 router.get(`/user/:id`,
     validation.idParam,
     validation.checkValidationResult,
     async (req, res) => {
         try {
             const userList = await trips.getTripsByUserId(req.params.id);
-
-            console.log(userList);
 
             return res.status(200).json(userList);
         } catch (err) {
@@ -109,9 +125,9 @@ router.get(`/:id`,
     validation.checkValidationResult,
     async (req, res) => {
         try {
-            const user = await trips.getTripById(req.params.id);
+            const trip = await trips.getTripById(req.params.id);
 
-            return res.status(200).json(user);
+            return res.status(200).json(trip);
         } catch (err) {
             console.error(err);
             return res.status(500).json({
