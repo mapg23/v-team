@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import CityService from "../../services/cities";
 import BikeService from "../../services/bikes";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import DynamicTable from "../../components/table/DynamicTable";
 import BikeParking from "./BikeParking";
 import BikeCharging from "./BikeCharging";
+import { MdElectricScooter } from "react-icons/md";
+import { BsFillSignStopFill } from "react-icons/bs";
 
 /**
  * Component for viewing information about a abike
@@ -65,6 +67,15 @@ export default function BikeInfo({ bikeId }) {
         <h2>Information</h2>
         <DynamicTable data={bikeInfo} vertical={true} />
         <button onClick={viewOnmap}>Visa på karta</button>
+        {/* {Boolean(bikeInfo.occupied) ? (
+          <MdElectricScooter size={50} color="red"></MdElectricScooter>
+        ) : (
+          <MdElectricScooter size={50} color="red"></MdElectricScooter>
+        )} */}
+        <button onClick={viewOnmap}>
+          <BsFillSignStopFill size={50} color="red" />
+          Stoppa cykel
+        </button>
       </div>
       <div className="card">
         <BikeParking bikeData={bikeInfo} updateState={updateBikeState} />

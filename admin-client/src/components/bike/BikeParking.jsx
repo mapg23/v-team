@@ -17,14 +17,12 @@ export default function BikeParking({ bikeData, updateState }) {
    * Get data based on bikeData Object
    */
   useEffect(() => {
-    console.log(bikeData);
     async function getData() {
       if (!bikeData.id) return;
       const parkingData = await CityService.getParkingZonesInCity(
         bikeData.city_id
       );
       if (Array.isArray(parkingData)) setParkingData(parkingData);
-      console.log(parkingData);
       setLoading(false);
     }
     getData();
