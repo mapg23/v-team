@@ -1,6 +1,7 @@
 import express from 'express';
 import trips from "../models/trips.mjs";
 import tripService from "../services/tripService.mjs";
+import bikesInUseModel from '../models/bikesInUse.mjs';
 import * as validation from "../middleware/validation/validationMiddleware.mjs";
 
 const router = express.Router();
@@ -10,7 +11,7 @@ const router = express.Router();
  * Request body needs:
  * ID for the user
  * ID for the bike
- * @returns {Array} an array with the trip object.
+ * @returns {Array} an array with the bike-in-use object.
  */
 router.post(`/`,
     validation.createTrip,
@@ -29,14 +30,10 @@ router.post(`/`,
 /**
  * End a trip.
  * Request body needs:
- * id: id for the trip
- * userID: the users id
- * bikeID: the bikes id
- * location: Location when button clicked
- *  (to avoid race condition(?) if heartbeat not recent?) SKIPPA?
+ * id: id for the bike used
  * @returns {Array} an array with the trip object.
  */
-router.put(`/:id`,
+router.post(`/:id`,
     validation.idParam,
     validation.checkValidationResult,
     async (req, res) => {
@@ -51,7 +48,7 @@ router.put(`/:id`,
         } catch (err) {
             console.error(err);
             return res.status(500).json({
-                error: `Could not end trip with id: ${req.params.id}`,
+                error: `Could not end trip for bike with id: ${req.params.id}`,
                 message: err.message
             });
         }
@@ -79,6 +76,25 @@ router.delete(`/:id`,
             });
         }
     });
+
+/**
+ * Returns all started trips, all bikes in use.
+ */
+router.get(`/bikes-in-use`,
+    async (req, res) => {
+        try {
+            const startedTripsList = await bikesInUseModel.getBikesInUse();
+
+            return res.status(200).json(startedTripsList);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                error: `Could not fetch all bikes in use`,
+                message: err.message
+            });
+        }
+    });
+
 /**
  * Returns all user trips
  */
