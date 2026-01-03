@@ -78,6 +78,16 @@ class BikeService {
 
         return bikeInUse;
     }
+
+    async deleteBikeInUse(id) {
+        const res = await this.bikesInUseModel.deleteBikeInUse(id);
+
+        if (res.affectedRows < 1) {
+            throw new Error(`Bike in use with id: ${id} was not stopped`);
+        }
+
+        return res;
+    }
 }
 
 const bikeService = new BikeService;

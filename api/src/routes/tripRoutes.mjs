@@ -1,6 +1,7 @@
 import express from 'express';
 import trips from "../models/trips.mjs";
 import tripService from "../services/tripService.mjs";
+import bikesInUseModel from '../models/bikesInUse.mjs';
 import * as validation from "../middleware/validation/validationMiddleware.mjs";
 
 const router = express.Router();
@@ -79,6 +80,25 @@ router.delete(`/:id`,
             });
         }
     });
+
+/**
+ * Returns all started trips, all bikes in use.
+ */
+router.get(`/bikes-in-use`,
+    async (req, res) => {
+        try {
+            const startedTripsList = await bikesInUseModel.getBikesInUse();
+
+            return res.status(200).json(startedTripsList);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                error: `Could not fetch all bikes in use`,
+                message: err.message
+            });
+        }
+    });
+
 /**
  * Returns all user trips
  */

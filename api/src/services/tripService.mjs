@@ -130,8 +130,8 @@ class TripService {
         }
 
         await this.walletsService.debit(bikeInUse.user_id, totalCost);
+        await this.bikeService.deleteBikeInUse(bikeInUse.id);
 
-        // Not this services job?
         await this.setBikeStatus(bike, parkedOk);
 
         const newTrip = await this.getTripById(result.insertId);

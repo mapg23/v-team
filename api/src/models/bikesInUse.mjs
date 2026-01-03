@@ -60,7 +60,7 @@ const bikesInUse = {
     },
 
     /**
-     * Delete a bike.
+     * Delete a bikeInUse.
      *
      * @param {number} id - BikeInUse ID.
      * @returns {Promise<Array>} Delete result.
