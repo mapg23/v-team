@@ -35,7 +35,7 @@ export default function HomeView() {
     });
 
     function updateBikes(allBikes) {
-        // const bikesInCity = allBikes.filter((bike) => bike.city_id === Number(cityId));
+        const bikesInCity = allBikes.filter((bike) => bike.city_id === Number(cityId));
         setBikes(bikesInCity);
         updateBikeStatus(bikesInCity);
     }
@@ -62,16 +62,21 @@ export default function HomeView() {
 
     // socket useEffect.
     useEffect(() => {
-        socket.on("bikes", (data) => {
-
-            console.log(`DATA: ${data}`);
+        const onBikes = (data) => {
             updateBikes(data);
+        };
+
+        socket.on("connect", () => {
+            console.log("socket connected", socket.id);
         });
 
+        socket.on("bikes", onBikes);
+
         return () => {
-            socket.disconnect();
+            socket.off("bikes", onBikes); // cleanup listener only
         };
     }, [updateBikes]);
+
 
 
     useEffect(() => {
