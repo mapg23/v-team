@@ -2,7 +2,6 @@ import { generateRandomString, createPKCE } from "services/crypto";
 const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
 const redirectUri = "http://localhost:5173/login/github/callback";
 import { FaGithub } from "react-icons/fa";
-import btnstyle from "../button/Button.module.css";
 
 
 export default function LoginWithGithub() {
@@ -15,7 +14,6 @@ export default function LoginWithGithub() {
     });
 
     const result = await response.json();
-    // console.log(response, result);
     const encryptedState = result.encryptedState;
 
     return encryptedState;
@@ -24,10 +22,7 @@ export default function LoginWithGithub() {
   async function login() {
     const rawState = generateRandomString(50);
     const encryptedState = await getEncryptedState(rawState);
-    // console.log(rawState, encryptedState);
     const { verifier, challenge } = await createPKCE();
-    // console.log("PKCE verifier:", verifier);
-    // console.log("PKCE challenge:", challenge);
     sessionStorage.setItem("pkce_verifier", verifier)
     sessionStorage.setItem("oauth_state", encryptedState);
     sessionStorage.setItem("oauth_state_raw", rawState);

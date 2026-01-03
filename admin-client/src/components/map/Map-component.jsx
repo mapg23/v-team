@@ -40,10 +40,6 @@ export default function MapComponent({
     });
   }, []);
 
-  // Disable a bike that runs outside of allowed zone
-  async function stopBike(bikeId) {
-    console.log("stopping bike:", bikeId)
-  }
 
   /**
    * Renders the map if new city coordinates

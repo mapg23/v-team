@@ -209,7 +209,10 @@ const cityService = {
       });
 
       return await response.json();
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
   },
 
   /**
@@ -238,7 +241,10 @@ const cityService = {
       });
 
       return await response.json();
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
   },
 };
 
