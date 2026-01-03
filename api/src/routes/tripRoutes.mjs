@@ -11,7 +11,7 @@ const router = express.Router();
  * Request body needs:
  * ID for the user
  * ID for the bike
- * @returns {Array} an array with the trip object.
+ * @returns {Array} an array with the bike-in-use object.
  */
 router.post(`/`,
     validation.createTrip,
