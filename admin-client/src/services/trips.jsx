@@ -57,6 +57,33 @@ const TripService = {
       return [];
     }
   },
+
+  /**
+   * Stop a currently running trip
+   * @param {num} bikeId the id of the bike to be stopped
+   * @returns json
+   */
+  stopCurrentTrip: async function stopCurrentTrip(bikeId) {
+    try {
+      const response = await fetch(`${API}/trips/${bikeId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error on stopCurrentTrip! Status: ${response.status}`
+        );
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  },
 };
 
 export default TripService;

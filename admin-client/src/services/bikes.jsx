@@ -101,48 +101,48 @@ const bikeService = {
    * Get bikes renetal details
    * @returns {JSON}
    */
-  getRentedBikeDetails: async function getRentedBikeDetails(bikeId) {
-    try {
-      const response = await fetch(`${API}/bikes/${bikeId}/rental`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+  // getRentedBikeDetails: async function getRentedBikeDetails(bikeId) {
+  //   try {
+  //     const response = await fetch(`${API}/bikes/${bikeId}/rental`, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
 
-      return await response.json();
-    } catch (error) {
-      console.error("fetchDocuments error:", error);
-      return null;
-    }
-  },
+  //     return await response.json();
+  //   } catch (error) {
+  //     console.error("fetchDocuments error:", error);
+  //     return null;
+  //   }
+  // },
 
   /**
    * Get bikes renetal details
    * @returns {JSON}
    */
-  endBikeRental: async function endBikeRental(bikeId) {
-    try {
-      const response = await fetch(`${API}/bikes/${bikeId}/rental/end`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+  // endBikeRental: async function endBikeRental(bikeId) {
+  //   try {
+  //     const response = await fetch(`${API}/bikes/${bikeId}/rental/end`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
 
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on fetchDocuments! Status: ${response.status}`
-        );
-      }
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         `HTTP error on fetchDocuments! Status: ${response.status}`
+  //       );
+  //     }
 
-      const responseData = await response.json();
-      return responseData;
-    } catch (error) {
-      console.error("fetchDocuments error:", error);
-      return [];
-    }
-  },
+  //     const responseData = await response.json();
+  //     return responseData;
+  //   } catch (error) {
+  //     console.error("fetchDocuments error:", error);
+  //     return [];
+  //   }
+  // },
 
   /**
    * Start sync for bikes
@@ -223,7 +223,26 @@ const bikeService = {
       console.error("Move bike to parking zone:", error);
       return [];
     }
-  }
+  },
+
+  /**
+   * Get all bikes currently being used
+   * @returns {JSON}
+   */
+  getAllBikesInUse: async function getAllBikesInUse() {
+    try {
+      const response = await fetch(`${API}/trips/bikes-in-use`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("Get All bikes in use:", error);
+      return [];
+    }
+  },
 };
 
 export default bikeService;

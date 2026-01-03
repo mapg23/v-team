@@ -17,11 +17,7 @@ const trip = {
      * @returns {Array} An array containing the result from the db operation.
      */
     getTrips: function getTrips() {
-<<<<<<< HEAD
-        return db.select("trips", "*", "", []);
-=======
         return db.select("trips", "*");
->>>>>>> origin/feature/rent
     },
 
     /**

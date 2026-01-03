@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import CityService from "../../services/cities";
 import BikeService from "../../services/bikes";
+import TripService from "../../services/trips";
 import { useNavigate } from "react-router";
 import DynamicTable from "../../components/table/DynamicTable";
 import BikeParking from "./BikeParking";
 import BikeCharging from "./BikeCharging";
-import { MdElectricScooter } from "react-icons/md";
 import { BsFillSignStopFill } from "react-icons/bs";
+import BikeStyle from "./BikeStyle.module.css";
 
 /**
  * Component for viewing information about a abike
@@ -16,6 +17,7 @@ import { BsFillSignStopFill } from "react-icons/bs";
 export default function BikeInfo({ bikeId }) {
   const [loading, setLoading] = useState(true);
   const [bikeInfo, setBikeInfo] = useState(null);
+  // const [bikeTrip, setBikeTrip] = useState(null);
   const navigate = useNavigate();
 
   /**
@@ -26,12 +28,17 @@ export default function BikeInfo({ bikeId }) {
       if (!bikeId) return;
       const bikeData = await BikeService.getSingleBike(bikeId);
       if (bikeData.id) {
-        const bikeInCity = await CityService.getCityDetailsById(bikeId);
+        const bikeInCity = await CityService.getCityDetailsById(bikeData.city_id);
         if (bikeInCity.name) {
           bikeData.city_name = bikeInCity.name;
         }
         setBikeInfo(bikeData);
       }
+      // if (bikeData.occupied) {
+      //   const allBikesInUse = await BikeService.getAllBikesInUse();
+      //   const currentBikeTrip = allBikesInUse.find((bike) => bike.id === bikeData.id);
+      //   setBikeTrip(currentBikeTrip)
+      // }
       setLoading(false);
     }
     getData();
@@ -48,8 +55,8 @@ export default function BikeInfo({ bikeId }) {
    * Stop a bike from running - useful if user is stealing bike
    */
   async function stopBike() {
-    const tripId = "";
-    console.log("stopping bike:", bikeId);
+    const stopBike = await TripService.stopCurrentTrip(bikeInfo.id)
+    console.log(stopBike)
   }
 
   /**
@@ -72,8 +79,8 @@ export default function BikeInfo({ bikeId }) {
         ) : (
           <MdElectricScooter size={50} color="red"></MdElectricScooter>
         )} */}
-        <button onClick={viewOnmap}>
-          <BsFillSignStopFill size={50} color="red" />
+        <button className={bikeInfo.occupied ? BikeStyle["show"] : BikeStyle["hidden"]}onClick={stopBike}>
+          <BsFillSignStopFill size={35} color="red" title="Stop bike from getting stolen!"/>
           Stoppa cykel
         </button>
       </div>
