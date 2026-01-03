@@ -1,6 +1,8 @@
 import createBikes from "../models/bikes.mjs";
 import BikesInUse from "../models/bikesInUse.mjs";
-
+/**
+ * @method getBikeById
+ */
 class BikeService {
     constructor(bikesModel = createBikes(), bikesInUse = BikesInUse) {
         this.bikesModel = bikesModel;
@@ -30,9 +32,15 @@ class BikeService {
      * @param {object} data The data tu update ex: {status: 30}
      * @returns {Object} res The result of the update.
      */
-    async updateBikeStatus(bikeId, status) {
+    async updateBikeStatus(bikeId, status, occupied) {
         await this.getBikeById(bikeId);
-        const apiRes = await this.bikesModel.updateBike(bikeId, {status: `${status}`});
+        const apiRes = await this.bikesModel.updateBike(
+            bikeId,
+            {
+                status,
+                occupied
+            }
+        );
 
         if (apiRes.warningStatus > 0) {
             throw new Error(`Bike with id: ${bikeId} Could not be updated`);
@@ -57,6 +65,26 @@ class BikeService {
         }
 
         return apiRes;
+    }
+
+    /**
+     * A user starts a trip.
+     * @param {object} bikeData An object With info about the bike about to start.
+     * @returns bikeInUse - An object with information of the started bike.
+     */
+    async startBike(bikeData) {
+        await this.createBikeInUse(bikeData);
+        const bikeInUse = await this.getBikeInUse(bikeData.scooter_id);
+
+
+        console.log(bikeInUse);
+        await this.updateBikeStatus(bikeInUse.scooter_id, 40, 1);
+
+        return bikeInUse;
+    }
+
+    stopBike() {
+        return "";
     }
 
     async createBikeInUse(data) {

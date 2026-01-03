@@ -63,8 +63,9 @@ class TripService {
             start_zone_type: bike.current_zone_type,
         };
 
-        await this.bikeService.createBikeInUse(bikeData);
-        await this.bikeService.updateBikeStatus(bike.id, 40);
+        await this.bikeService.startBike(bikeData);
+        // await this.bikeService.createBikeInUse(bikeData);
+        // await this.bikeService.updateBikeStatus(bike.id, 40);
 
         return await this.bikeService.getBikeInUse(bike.id);
     }
@@ -86,7 +87,7 @@ class TripService {
 
         bikeStatus = bike.battery > 20 ? bikeStatus : 50;
 
-        await this.bikeService.updateBikeStatus(bike.id, bikeStatus);
+        await this.bikeService.updateBikeStatus(bike.id, bikeStatus, 0);
     }
 
     /**
