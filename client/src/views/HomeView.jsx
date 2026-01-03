@@ -34,6 +34,10 @@ export default function HomeView() {
         used: null
     });
 
+    function rentBike(id) {
+        console.log(`Hyr cykel med id: ${id}`)
+    }
+
     function updateBikes(allBikes) {
         const bikesInCity = allBikes.filter((bike) => bike.city_id === Number(cityId));
         setBikes(bikesInCity);
@@ -119,6 +123,7 @@ export default function HomeView() {
                         bikes={bikes}
                         parkingZones={parkingZones}
                         chargingZones={chargingZones}
+                        bikeRentCallback={rentBike}
                     />
                 </div>
 
