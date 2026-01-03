@@ -38,16 +38,16 @@ class PricingService {
      * @param {string} endTime a datetime string.
      * @returns {Number} totalCost The total cost of the trip.
      */
-    async calculateTripCost(bike, trip, parkedOK, endTime) {
+    async calculateTripCost(bike, bikeInUse, parkedOK, endTime) {
         const prices = await this.getPricesForCity(bike.city_id);
-        const minutes = this.calculateDuration(trip.start_time, endTime);
+        const minutes = this.calculateDuration(bikeInUse.start_time, endTime);
         const rentCost = minutes * prices.minute_fee;
         const parkingFee = parkedOK ? 0 : prices.parking_fee;
 
         let discountMultiplier = 1;
 
         if (parkedOK) {
-            const rentedFromParking = (trip.start_zone_type !== null);
+            const rentedFromParking = (bikeInUse.start_zone_type !== null);
 
             discountMultiplier = rentedFromParking ? 1 : prices.discount_multiplier;
         }

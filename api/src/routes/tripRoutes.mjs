@@ -36,7 +36,7 @@ router.post(`/`,
  *  (to avoid race condition(?) if heartbeat not recent?) SKIPPA?
  * @returns {Array} an array with the trip object.
  */
-router.put(`/:id`,
+router.post(`/:id`,
     validation.idParam,
     validation.checkValidationResult,
     async (req, res) => {

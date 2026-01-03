@@ -86,7 +86,7 @@ class TripService {
 
         bikeStatus = bike.battery > 20 ? bikeStatus : 50;
 
-        await this.bikeService.updateBike(bike.id, {status: bikeStatus});
+        await this.bikeService.updateBikeStatus(bike.id, bikeStatus);
     }
 
     /**
@@ -96,29 +96,32 @@ class TripService {
      *
      * @returns {Array} Result from db update.
      */
-    async endTrip(tripId) {
-        const trip = await this.getTripById(tripId);
-
-        if (trip.cost > 0 && trip.end_time > 0) {
-            throw new Error(`Trip with id ${tripId} already ended.`);
-        }
-
-        const bike = await this.bikeService.getBikeById(trip.scooter_id);
+    async endTrip(bikeId) {
+        const bikeInUse = await this.bikeService.getBikeInUse(bikeId);
+        const bike = await this.bikeService.getBikeById(bikeInUse.scooter_id);
         const parkedOk =
             bike.current_zone_type === "parking" ||
             bike.current_zone_type === "charging";
         const endTime = this.getDbDate();
+
         const totalCost = await this.pricingService.calculateTripCost(
             bike,
-            trip,
+            bikeInUse,
             parkedOk,
             endTime
         );
-        const result = await this.tripsModel.updateTrip(trip.id, {
+
+        const result = await this.tripsModel.createTrip({
+            user_id: bikeInUse.user_id,
+            scooter_id: bikeInUse.scooter_id,
             cost: totalCost,
+            start_latitude: bikeInUse.start_latitude,
+            start_longitude: bikeInUse.start_longitude,
+            start_zone_type: bikeInUse.start_zone_type,
             end_longitude: bike.longitude,
             end_latitude: bike.latitude,
             end_zone_type: bike.current_zone_type,
+            start_time: bikeInUse.start_time,
             end_time: endTime,
         });
 
@@ -126,12 +129,12 @@ class TripService {
             throw new Error("Could not end trip");
         }
 
-        await this.walletsService.debit(trip.user_id, totalCost);
+        await this.walletsService.debit(bikeInUse.user_id, totalCost);
 
         // Not this services job?
         await this.setBikeStatus(bike, parkedOk);
 
-        const newTrip = await this.getTripById(tripId);
+        const newTrip = await this.getTripById(result.insertId);
 
         return newTrip;
     }
