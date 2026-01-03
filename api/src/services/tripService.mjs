@@ -92,8 +92,7 @@ class TripService {
     /**
      * End a scooter rental trip and calculating final cost.
      *
-     * @param {Object} data Trip data
-     *
+     * @param {Object} bikeId Bike id
      * @returns {Array} Result from db update.
      */
     async endTrip(bikeId) {

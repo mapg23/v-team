@@ -30,11 +30,7 @@ router.post(`/`,
 /**
  * End a trip.
  * Request body needs:
- * id: id for the trip
- * userID: the users id
- * bikeID: the bikes id
- * location: Location when button clicked
- *  (to avoid race condition(?) if heartbeat not recent?) SKIPPA?
+ * id: id for the bike used
  * @returns {Array} an array with the trip object.
  */
 router.post(`/:id`,
@@ -52,7 +48,7 @@ router.post(`/:id`,
         } catch (err) {
             console.error(err);
             return res.status(500).json({
-                error: `Could not end trip with id: ${req.params.id}`,
+                error: `Could not end trip for bike with id: ${req.params.id}`,
                 message: err.message
             });
         }
