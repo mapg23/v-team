@@ -38,6 +38,34 @@ export default function UserView() {
   const [tripHistory, setTripHistory] = useState([]);
 
   /**
+   * Fetch all adresses from lat long
+   * @param {Json} trips Array of trip Objects
+   */
+  async function fetchAdress(trips) {
+    let result = [];
+    for (const trip of trips) {
+      const urlStart = `https://nominatim.openstreetmap.org/reverse?lat=${trip.start_latitude}&lon=${trip.start_longitude}&format=json`;
+      const responseStart = await fetch(urlStart);
+      const dataStart = await responseStart.json();
+      const urlEnd = `https://nominatim.openstreetmap.org/reverse?lat=${trip.end_latitude}&lon=${trip.end_longitude}&format=json`;
+      const responseEnd = await fetch(urlEnd);
+      const dataEnd = await responseEnd.json();
+
+      // sett adress, if any
+      const startAdress = dataStart?.address?.road;
+      if (startAdress) {
+        trip.startAdress = startAdress;
+      }
+      const endAdress = dataEnd?.address?.road;
+      if (endAdress) {
+        trip.endAdress = endAdress;
+      }
+      result.push(trip);
+    }
+    setTripHistory(result);
+  }
+
+  /**
    * Fetch all data and set loading = false when done
    *
    */
@@ -65,34 +93,6 @@ export default function UserView() {
     }
     fetchData();
   }, [userId]);
-
-  /**
-   * Fetch all adresses from lat long
-   * @param {Json} trips Array of trip Objects
-   */
-  async function fetchAdress(trips) {
-    let result = [];
-    for (const trip of trips) {
-      const urlStart = `https://nominatim.openstreetmap.org/reverse?lat=${trip.start_latitude}&lon=${trip.start_longitude}&format=json`;
-      const responseStart = await fetch(urlStart);
-      const dataStart = await responseStart.json();
-      const urlEnd = `https://nominatim.openstreetmap.org/reverse?lat=${trip.end_latitude}&lon=${trip.end_longitude}&format=json`;
-      const responseEnd = await fetch(urlEnd);
-      const dataEnd = await responseEnd.json();
-
-      // sett adress, if any
-      const startAdress = dataStart?.address?.road;
-      if (startAdress) {
-        trip.startAdress = startAdress;
-      }
-      const endAdress = dataEnd?.address?.road;
-      if (endAdress) {
-        trip.endAdress = endAdress;
-      }
-      result.push(trip);
-    }
-    setTripHistory(result);
-  }
 
   if (!params.id) {
     return <p>no userid provided...</p>;

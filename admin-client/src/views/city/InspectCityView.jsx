@@ -81,6 +81,7 @@ export default function InspectCityView() {
     const bikesUsedCount = bikeObjectsInCity.length - bikesAvailableCount;
 
     // Prev är befintliga värdet, om inget ändras, returna samma
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setBikeStatusMap((prev) => {
       if (
         prev.available === bikesAvailableCount &&
