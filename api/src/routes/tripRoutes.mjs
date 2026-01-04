@@ -13,7 +13,7 @@ const router = express.Router();
  * ID for the bike
  * @returns {Array} an array with the bike-in-use object.
  */
-router.post(`/`,
+router.post(`/start`,
     validation.createTrip,
     validation.checkValidationResult,
     async (req, res) => {
@@ -29,11 +29,12 @@ router.post(`/`,
 
 /**
  * End a trip.
+ * stops bike and creates new trip data in db.
  * Request body needs:
  * id: id for the bike used
  * @returns {Array} an array with the trip object.
  */
-router.post(`/:id`,
+router.post(`/bike/:id/end`,
     validation.idParam,
     validation.checkValidationResult,
     async (req, res) => {

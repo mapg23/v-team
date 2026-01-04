@@ -1,12 +1,20 @@
 import createBikes from "../models/bikes.mjs";
 import BikesInUse from "../models/bikesInUse.mjs";
+import LocationService from "./locationService.mjs";
 /**
+ * Handles logic for bikes.
+ * Start and stop bike, set status.
  * @method getBikeById
  */
 class BikeService {
-    constructor(bikesModel = createBikes(), bikesInUse = BikesInUse) {
+    constructor(
+        bikesModel = createBikes(),
+        bikesInUse = BikesInUse,
+        locationService = LocationService
+    ) {
         this.bikesModel = bikesModel;
         this.bikesInUseModel = bikesInUse;
+        this.locationService = locationService;
     }
 
     /**
@@ -15,7 +23,7 @@ class BikeService {
      * @param {string} bikeId A numeric value in string format.
      * @returns {Object} bike The bike with the argumented id.
      */
-    async getBikeById(bikeId) {
+    async findBikeById(bikeId) {
         const bikeResult = await this.bikesModel.getBikeById(bikeId);
         const bike = bikeResult[0];
 
@@ -26,6 +34,21 @@ class BikeService {
     }
 
     /**
+     * Sets status in relation to battery and parking
+     * @param {object} bike The bike object.
+     * @param {boolean} parkedOK True or false.
+     * @param {boolean} occupied True or false.
+     */
+    async setBikeStatus(bike, parkedOK, occupied) {
+        console.log("Set status with booleans", bike.id, parkedOK, occupied);
+        let bikeStatus = parkedOK ? 10 : 20;
+
+        bikeStatus = bike.battery > 20 ? bikeStatus : 50;
+
+        await this.updateBikeStatus(bike.id, bikeStatus, occupied);
+    }
+
+    /**
      * Update a bikes status in api and device.
      * Check that bike exists, and updates it.
      * @param {string} bikeId A numeric value in string format.
@@ -33,7 +56,7 @@ class BikeService {
      * @returns {Object} res The result of the update.
      */
     async updateBikeStatus(bikeId, status, occupied) {
-        await this.getBikeById(bikeId);
+        await this.findBikeById(bikeId);
         const apiRes = await this.bikesModel.updateBike(
             bikeId,
             {
@@ -68,13 +91,15 @@ class BikeService {
     }
 
     /**
-     * A user starts a trip.
+     * Starts a bike.
+     * It creates a scooter_in_use row with who, hwere, when info.
+     * Sets bike to occupied, status to 40 in database and on bike.
      * @param {object} bikeData An object With info about the bike about to start.
      * @returns bikeInUse - An object with information of the started bike.
      */
     async startBike(bikeData) {
         await this.createBikeInUse(bikeData);
-        const bikeInUse = await this.getBikeInUse(bikeData.scooter_id);
+        const bikeInUse = await this.findBikeInUseByBikeId(bikeData.scooter_id);
 
 
         console.log(bikeInUse);
@@ -82,10 +107,37 @@ class BikeService {
 
         return bikeInUse;
     }
+    /**
+     * Stops the bike by removing it from scooter_in_use
+     * and updating status and setting occupied to false.
+     *
+     * @param {object} bike A bike object.
+     * @param {string} bikeInUseId Bike in use id.
+     * @param {bool} parkedOk Parking status.
+     */
+    async stopBike(bike, bikeInUseId, parkedOk) {
+        let bikeIsOccupied = true;
 
-    stopBike() {
-        return "";
+        await this.removeBikeInUse(bikeInUseId);
+
+        bikeIsOccupied = false;
+
+        await this.setBikeStatus(bike, parkedOk, bikeIsOccupied);
     }
+
+    // Can be called from bikeRoute and start/end trip.
+    async updateBike(bikeId, data) {
+        const zone = await this.locationService.determineZone(data.latitude, data.longitude);
+
+        console.log(data);
+        data.current_zone_type = zone.type,
+        data.current_zone_id = zone.id;
+        console.log(data);
+        const res = await this.bikesModel.updateBike(bikeId, data);
+
+        return res;
+    }
+
 
     async createBikeInUse(data) {
         const res = await this.bikesInUseModel.createBikeInUse(data);
@@ -96,7 +148,7 @@ class BikeService {
         return "OK";
     }
 
-    async getBikeInUse(bikeId) {
+    async findBikeInUseByBikeId(bikeId) {
         const res = await this.bikesInUseModel.getBikeInUseByBikeId(bikeId);
         const bikeInUse = res[0];
 
@@ -107,7 +159,7 @@ class BikeService {
         return bikeInUse;
     }
 
-    async deleteBikeInUse(id) {
+    async removeBikeInUse(id) {
         const res = await this.bikesInUseModel.deleteBikeInUse(id);
 
         if (res.affectedRows < 1) {
@@ -120,4 +172,5 @@ class BikeService {
 
 const bikeService = new BikeService;
 
+export { BikeService };
 export default bikeService;
