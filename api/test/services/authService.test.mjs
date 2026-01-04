@@ -86,7 +86,7 @@ describe("authService", () => {
     });
 
     test("loginUser, fail: not registred", async () => {
-        userModel.getUserByEmail.mockResolvedValue(null);
+        userModel.getUserByEmail.mockResolvedValue([]);
         await expect(
             authService.loginUser("test@test.test", "passw0rd")
         ).rejects.toThrow("Invalid username or password. Try again");

@@ -15,8 +15,6 @@ export default function validateToken(req, res, next) {
         return res.status(401).json({
             error: {
                 status: 401,
-                path: req.path,
-                title: "No token",
                 message: "No token provided in request headers",
             },
         });
@@ -26,7 +24,6 @@ export default function validateToken(req, res, next) {
         return res.status(401).json({
             error: {
                 status: 401,
-                title: "Invalid token format",
                 message: "Authorization header must use Bearer token"
             }
         });
@@ -39,7 +36,6 @@ export default function validateToken(req, res, next) {
             return res.status(401).json({
                 error: {
                     status: 401,
-                    path: req.path,
                     title: "Failed authentication",
                     message: err.message,
                 },
@@ -64,7 +60,7 @@ export default function validateToken(req, res, next) {
 }
 
 /**
- * Middleware to restrict access based on the users role.
+ * Middleware creator to restrict access based on the users role.
  * Use it like: restrictTo(['admin']) or restrictTo(['admin, user']),
  *
  * @param {string} allowedRoles - An array of roles that are permitted access.
@@ -83,7 +79,6 @@ export function restrictTo(allowedRoles) {
                 errors: {
                     status: 403,
                     source: req.path,
-                    title: "Forbidden",
                     message: "You do not have permission to access this route.",
                 },
             });
