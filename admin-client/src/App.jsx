@@ -17,6 +17,7 @@ import CostView from "./views/cost/CostView";
 import Navbar from "./components/nav/Nav";
 import { useState } from "react";
 import GithubCallback from "./components/auth/GithubCallback";
+import ParkingView from "./views/parking/ParkingView";
 
 function App() {
   const jwt = sessionStorage.getItem("jwt") ? true : false;
@@ -64,6 +65,7 @@ function App() {
               <Route path="/cities" element={<CityView />} />
               <Route path="/bikes/:id" element={<InspectBikeView />} />
               <Route path="/bikes" element={<BikeView />} />
+              <Route path="/parkings" element={<ParkingView />} />
               <Route path="/cost" element={<CostView />} />
               <Route path="*" element={<Navigate to="/welcome" />} />
             </Routes>
