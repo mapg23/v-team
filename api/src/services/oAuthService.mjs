@@ -91,8 +91,7 @@ const oAuthService = {
             userRole: user.role,
         });
 
-        console.log(user);
-        return {token, id: user.id};
+        return {token, userId: user.id};
     },
 
     /**

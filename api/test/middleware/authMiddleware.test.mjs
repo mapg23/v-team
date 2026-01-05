@@ -192,7 +192,7 @@ describe("restrictTo", () => {
             role: "user"
         });
         expect(res.status).toHaveBeenCalledWith(403);
-        console.log(req.path);
+
         expect(res.json).toHaveBeenCalledWith({
             errors: {
                 status: 403,

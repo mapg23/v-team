@@ -121,16 +121,16 @@ describe("oAuthService", () => {
         jest.spyOn(oAuthService, "getUserEmail").mockResolvedValue("test email");
         jest
             .spyOn(oAuthService, "findOrCreateOauthUser")
-            .mockResolvedValue("test user");
+            .mockResolvedValue({id: 1, username: test});
         jwtService.createToken.mockResolvedValue("test token");
 
-        const token = await oAuthService.oAuthLogin(
+        const userData = await oAuthService.oAuthLogin(
             "real value",
             "encrypted value",
             "code"
         );
 
-        await expect(token).toBe("test token");
+        await expect(userData).toStrictEqual({token: "test token", userId: 1});
     });
 
     test("findOrCreateOauthUser, fail: could not create user", async () => {
