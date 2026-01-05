@@ -52,7 +52,7 @@ router.post(`/payment-success`,
     // validation.payment,
     // validation.checkValidationResult,
     async (req, res) => {
-        req.body.userId = 3;
+        // req.body.userId = 3;
         const { userId, intentId, status } = req.body;
 
         console.log("Status: ", status, ". For: ", intentId);
@@ -96,8 +96,6 @@ router.post(`/payment-success`,
             res.status(500).json({ error: err.message });
         }
     });
-
-export default router;
 /**
  * Returns user balance
 */
@@ -117,3 +115,5 @@ router.get(`/user/:id`,
             });
         }
     });
+
+export default router;
