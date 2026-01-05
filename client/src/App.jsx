@@ -10,6 +10,9 @@ import HomeView from "./views/HomeView";
 import AccountView from "./views/AccountView";
 import TransactionsView from "./views/TransactionsView";
 import HistoryView from "./views/HistoryView";
+import BikeView from "./views/BikeView";
+
+import GithubCallback from "./components/GithubCallback"
 
 // Web views
 import WebAccountView from "./views/WebAccountview";
@@ -21,64 +24,88 @@ import PaymentView from "./views/payments/PaymentView";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/all.css";
 
+import { jwtDecode } from "jwt-decode";
+
 function App() {
+  const { login, logout } = useAuth();
+
+  const jwt = sessionStorage.getItem("jwt") ? true : false;
+
+  const [isLoggedin, setIsLoggedIn] = useState(jwt);
+
+  const handleLogin = () => {
+    const jwt = sessionStorage.getItem("jwt") ? true : false;
+
+    const token = sessionStorage.getItem("jwt");
+    const payload = jwtDecode(token);
+    console.log(payload)
+  }
+
+
   return (
     <Router>
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={
-            <MiddleWare>
+      <Routes>
+        <Route path="/" element={
+          <MiddleWare>
 
-              <MobileView>
-                <HomeView />
-              </MobileView>
+            <MobileView>
+              <HomeView />
+            </MobileView>
 
-              <BrowserView>
-                <WebAccountView />
-              </BrowserView>
+            <BrowserView>
+              <WebAccountView />
+            </BrowserView>
 
-            </MiddleWare>
-          } />
+          </MiddleWare>
+        } />
 
-          <Route path="/account" element={
-            <MiddleWare>
-              <MobileView>
-                <AccountView />
-              </MobileView>
-            </MiddleWare>
-          } />
+        <Route path="/account" element={
+          <MiddleWare>
+            <MobileView>
+              <AccountView />
+            </MobileView>
+          </MiddleWare>
+        } />
 
-          <Route path="/history" element={
-            <MiddleWare>
-              <MobileView>
-                <HistoryView />
-              </MobileView>
+        <Route path="/history" element={
+          <MiddleWare>
+            <MobileView>
+              <HistoryView />
+            </MobileView>
 
-              <BrowserView>
-                <HistoryView />
-              </BrowserView>
-            </MiddleWare>
-          } />
+            <BrowserView>
+              <HistoryView />
+            </BrowserView>
+          </MiddleWare>
+        } />
 
-          <Route path="/transactions" element={
-            <MiddleWare>
-              <MobileView>
-                <TransactionsView />
-              </MobileView>
-            </MiddleWare>
-          } />
+        <Route path="/transactions" element={
+          <MiddleWare>
+            <MobileView>
+              <TransactionsView />
+            </MobileView>
+          </MiddleWare>
+        } />
 
-          <Route path="/pay" element={
-            <MiddleWare>
-              <PaymentView />
-            </MiddleWare>
-          }
+        <Route path="/pay" element={
+          <MiddleWare>
+            <PaymentView />
+          </MiddleWare>
+        } />
 
-          />
+        <Route path="/bike/:id" element={
+          <MiddleWare>
+            <BikeView />
+          </MiddleWare>
+        } />
 
-          <Route path="/login" element={<LoginView />} />
-        </Routes>
-      </AuthProvider>
+        <Route path="/login" element={<LoginView />} />
+
+        <Route
+          path="/login/github/callback"
+          element={<GithubCallback onLogin={handleLogin} />}
+        />
+      </Routes>
     </Router>
   );
 }

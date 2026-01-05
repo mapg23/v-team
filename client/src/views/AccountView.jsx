@@ -13,6 +13,7 @@ import "../assets/accountView.css";
 
 export default function AccountView() {
     const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const handleHome = () => {
         navigate('/', { replace: true })
@@ -30,8 +31,8 @@ export default function AccountView() {
 
     }
 
-    const logout = () => {
-        const auth = useAuth().logout();
+    const handleLogout = () => {
+        logout();
         navigate('/login', { replace: true });
     }
 
@@ -78,18 +79,14 @@ export default function AccountView() {
                     <div className="account-buttons">
                         <div className="account-buttons-body">
                             <button className="logout-button" onClick={handleAddBalanceMethod}>Lägg till i saldo</button>
-                            <button className="logout-button">Logout</button>
+                            <button className="logout-button" onClick={handleLogout}>Logout</button>
                         </div>
                     </div>
                 </div>
-
-
                 <div className="navigation">
                     <Navigation />
                 </div>
             </div>
-
-
         </>
     );
 }

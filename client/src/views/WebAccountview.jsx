@@ -2,9 +2,17 @@ import "../assets/webAccountView.css";
 import avatar from "../assets/avatar.png";
 
 import TopBar from "../components/TopBar";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../components/AuthProvider";
 
 export default function WebAccountView() {
+    const navigate = useNavigate();
+    const { logout } = useAuth();
 
+    const handleLogout = () => {
+        logout();
+        navigate('/login', { replace: true });
+    }
 
     return (
         <>
@@ -42,7 +50,7 @@ export default function WebAccountView() {
                                 </div>
                             </form>
 
-
+                            <button onClick={handleLogout}>Logga ut</button>
                         </div>
 
                     </div>

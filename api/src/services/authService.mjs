@@ -21,7 +21,8 @@ const auth = {
         const userExists = await userModel.getUserByEmail(email);
         // let user;
 
-        if (userExists) {
+        if (userExists.length != 0) {
+            console.log("HERE")
             const error = new Error("Email already registred");
 
             error.status = 409;
@@ -50,6 +51,9 @@ const auth = {
     loginUser: async function (email, password) {
         const user = await userModel.getUserByEmail(email);
 
+        console.log("HERE")
+
+        console.log(user)
         if (!user) {
             const err = new Error("Invalid username or password. Try again.");
 
@@ -58,6 +62,9 @@ const auth = {
         }
 
         const match = await bcrypt.compare(password, user.password);
+
+        console.log("HERE")
+        console.log(match);
 
         if (!match) {
             throw new Error("Invalid username or password. Try again.");

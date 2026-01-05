@@ -35,7 +35,7 @@ export default function HomeView() {
     });
 
     function rentBike(id) {
-        console.log(`Hyr cykel med id: ${id}`)
+        navigate(`/bike/${id}`, { replace: true });
     }
 
     function updateBikes(allBikes) {
