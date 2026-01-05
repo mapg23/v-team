@@ -9,38 +9,41 @@ import {
 import { EditControl } from "react-leaflet-draw";
 import MapController from "./MapController";
 import BikeMarkers from "./BikeMarkers";
+import ParkingZones from "./ParkingZones";
 import { useState } from "react";
 import { FaBeer } from "react-icons/fa";
 
 /**
  * This is the main component for leaftlet-map
- * @param {Object} coords Contains info about current city
+ * @param {Object} coords Renders map based on lat long coordinates
  * @param {Array}  bikes Array of bikeobjects
  * @returns
  */
-export default function MapDrawComponent({ coords, bikes }) {
+export default function MapDrawComponent({
+  coords,
+  action,
+  parkingZones,
+  bikes,
+}) {
   // Only render elements when loading is false
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log(bikes);
     setLoading(false);
   }, []);
 
   /**
+   * Call provided action method with the coordinates from Rectangle
    * Circlar: e.layer => _mRadius, lat, lng
    * Polygon: e.layer => [_latlngs]
-   * @param {layer} e
+   * @param {layer} e layer of the draw object
    */
   function onCreate(e) {
     var layer = e.layer;
-    console.log(e.layer);
-    console.log(layer.toGeoJSON());
+    action(e.layer.getLatLngs());
   }
 
   if (loading) return <p>laddar karta..</p>;
-
-
 
   return (
     // ------ MÅSTE FINNAS
@@ -49,30 +52,26 @@ export default function MapDrawComponent({ coords, bikes }) {
       center={[coords.latitude, coords.longitude]}
       zoom={13}
       scrollWheelZoom={true}
-      style={{ height: "100%", width: "100%" }}
+      style={{ height: "800px", width: "1000px" }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {/* <Marker position={[57.863142, 14.127853]}>
-        <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
-        </Popup>
-      </Marker> */}
-
       ;{/* CHILD Components */}
-      
       <MapController center={coords} />
-      <BikeMarkers bikes={bikes} />
-        
+      {/* {ParkingZones} */}
+      <ParkingZones zones={parkingZones} />
       {/* SKAPA GEOMETRI */}
       <FeatureGroup>
         <EditControl
           position="topright"
           onCreated={onCreate}
           draw={{
-            rectangle: false,
+            rectangle: false, // bug with undeclared variable type
+            circle: false,
+            circlemarker: false,
+            polyline: false,
           }}
         />
       </FeatureGroup>

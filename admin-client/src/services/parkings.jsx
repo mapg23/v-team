@@ -26,15 +26,21 @@ const parkingService = {
 
   /**
    * Add a new parking zone
+   * @param {Object} zoneObj
+   *
+   * {
+   *   cityId: number,
+   *   maxLat: number,
+   *   maxLong: number,
+   *   minLat: number,
+   *   minLong: number
+   * }
    * @return {JSON} array of objects
    */
-  addNewParkingZone: async function addNewParkingZone(cityId) {
-    const parkObj = {
-      city_id: `${cityId}`,
-    };
+  addNewParkingZone: async function addNewParkingZone(zoneObj) {
     try {
       const response = await fetch(`${API}/parkings`, {
-        body: JSON.stringify(parkObj),
+        body: JSON.stringify(zoneObj),
         method: "POST",
         headers: {
           "Content-Type": "application/json",
