@@ -18,6 +18,7 @@ jest.mock("../../src/services/jwtService.mjs", () => ({
 jest.mock("../../src/models/users.mjs", () => {
     return jest.fn(() => ({
         getUserByEmail: jest.fn(),
+        getUserById: jest.fn(),
         createUser: jest.fn(),
     }));
 });
@@ -34,11 +35,11 @@ describe("authService", () => {
     });
 
     test("registerUser, fail: same email error", async () => {
-        userModel.getUserByEmail.mockResolvedValue({
+        userModel.getUserByEmail.mockResolvedValue([{
             id: 1,
             email: "test@test.test",
             password: "passw0rd",
-        });
+        }]);
 
         await expect(
             authService.registerUser("test@test.test", "passw0rd")
@@ -46,16 +47,22 @@ describe("authService", () => {
     });
 
     test("registerUser, success", async () => {
-        userModel.getUserByEmail.mockResolvedValue(null);
+        userModel.getUserByEmail.mockResolvedValue([]);
 
         bcrypt.hash.mockResolvedValue("hashed password");
 
-        userModel.createUser.mockResolvedValue({
+        userModel.getUserById.mockResolvedValue([{
+            id: 2,
+            email: "test2@test.test",
+            username: "username",
+        }]);
+
+        userModel.createUser.mockResolvedValue([{
             id: 2,
             email: "test2@test.test",
             password: "hashed password",
             username: "username",
-        });
+        }]);
 
         const user = await authService.registerUser(
             "test2@test.test",
@@ -71,27 +78,26 @@ describe("authService", () => {
             username: "username",
         });
 
-        await expect(user).toEqual({
+        await expect(user).toEqual([{
             id: 2,
             email: "test2@test.test",
-            password: "hashed password",
             username: "username",
-        });
+        }]);
     });
 
     test("loginUser, fail: not registred", async () => {
-        userModel.getUserByEmail.mockResolvedValue(null);
+        userModel.getUserByEmail.mockResolvedValue([]);
         await expect(
             authService.loginUser("test@test.test", "passw0rd")
         ).rejects.toThrow("Invalid username or password. Try again");
     });
 
     test("loginUser, fail: wrong password", async () => {
-        userModel.getUserByEmail.mockResolvedValue({
+        userModel.getUserByEmail.mockResolvedValue([{
             id: 1,
             email: "test@test.test",
             password: "passwordHash",
-        });
+        }]);
         bcrypt.compare.mockResolvedValue(false);
 
         await expect(
@@ -101,11 +107,11 @@ describe("authService", () => {
 
     test("loginUser, success", async () => {
         jwtService.createToken.mockResolvedValue("Token");
-        userModel.getUserByEmail.mockResolvedValue({
+        userModel.getUserByEmail.mockResolvedValue([{
             id: 1,
             email: "test@test.test",
             password: "passwordHash",
-        });
+        }]);
         bcrypt.compare.mockResolvedValue(true);
 
         const token = await authService.loginUser("test@test.test", "passwordHash");
