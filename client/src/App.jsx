@@ -29,16 +29,15 @@ import { jwtDecode } from "jwt-decode";
 function App() {
   const { login, logout } = useAuth();
 
-  const jwt = sessionStorage.getItem("jwt") ? true : false;
-
-  const [isLoggedin, setIsLoggedIn] = useState(jwt);
-
   const handleLogin = () => {
     const jwt = sessionStorage.getItem("jwt") ? true : false;
 
-    const token = sessionStorage.getItem("jwt");
-    const payload = jwtDecode(token);
-    console.log(payload)
+    if (jwt) {
+      const token = sessionStorage.getItem("jwt");
+      const payload = jwtDecode(token);
+      const userId = payload.sub.userId;
+      login(userId);
+    }
   }
 
 

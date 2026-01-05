@@ -86,7 +86,7 @@ export default function HomeView() {
     useEffect(() => {
         async function fetchData() {
             setcityDetails(await MapModel.getCityDetailsByID(cityId));
-
+            console.log(cityDetails)
             setLoading(false);
         }
         fetchData();

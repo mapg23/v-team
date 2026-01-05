@@ -19,10 +19,10 @@ export default function LoginView() {
     e.preventDefault();
     console.log("Login");
 
-    await UserModel.loginUser(email, password)
+    let id = await UserModel.loginUser(email, password);
 
-    // login();
-    // navigate("/", { replace: true });
+    login(id);
+    navigate("/", { replace: true });
   }
 
   return (

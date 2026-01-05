@@ -4,15 +4,37 @@ import avatar from "../assets/avatar.png";
 import TopBar from "../components/TopBar";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../components/AuthProvider";
+import { useEffect, useState } from "react";
+
+import UserModel from "../models/UserModel";
 
 export default function WebAccountView() {
     const navigate = useNavigate();
-    const { logout } = useAuth();
+    const { logout, userId } = useAuth();
+    const [loading, setLoading] = useState(true);
+
+    const [user, setUser] = useState([]);
 
     const handleLogout = () => {
         logout();
         navigate('/login', { replace: true });
     }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (user.length === 0) {
+                setUser(await UserModel.getUserById(userId));
+                setLoading(false);
+            }
+        }
+        fetchData();
+    })
+
+    if (loading) return (
+        <>
+            <h1>Loading...</h1>
+        </>
+    );
 
     return (
         <>
@@ -36,12 +58,20 @@ export default function WebAccountView() {
                             <form className="web-form">
                                 <div className="form-field g-1">
                                     <label htmlFor="username">Username</label>
-                                    <input id="username" type="text" />
+                                    <input
+                                        id="username"
+                                        type="text"
+                                        value={user[0].username}
+                                    />
                                 </div>
 
                                 <div className="form-field g-2">
                                     <label htmlFor="email">Email</label>
-                                    <input id="email" type="email" />
+                                    <input
+                                        id="email"
+                                        type="email"
+                                        value={user[0].email}
+                                    />
                                 </div>
 
                                 <div className="form-field g-norm">

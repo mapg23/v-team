@@ -1,5 +1,7 @@
 "use strict";
 import { getApiBase } from "../apiUrl";
+import { jwtDecode } from "jwt-decode";
+
 
 const API = getApiBase();
 
@@ -8,8 +10,35 @@ const UserModel = {
         try {
             const response = await fetch(`${API}${url}`, {
                 method: 'GET',
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(
+                    `(${response.status}) Response not ok url: ${API}${url}`
+                );
+            }
+
+            return await response.json();
+
+        } catch (error) {
+            console.error(`Basic GET fetch failed url: ${url}`);
+            console.error(error);
+            return { error: true };
+        }
+    },
+
+    protectedGet: async function protectedGet(url) {
+        const token = sessionStorage.getItem("jwt");
+        try {
+            const response = await fetch(`${API}${url}`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
             });
 
@@ -69,7 +98,14 @@ const UserModel = {
             "username": "",
         })
 
-        console.log(response);
+        const payload = jwtDecode(response["jwt"]);
+        const userId = payload.sub.userId;
+
+        return userId;
+    },
+
+    getUserById: async function getUserById(id) {
+        return await this.protectedGet(`/users/${id}`);
     }
 }
 
