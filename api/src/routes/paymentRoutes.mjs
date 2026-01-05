@@ -2,7 +2,7 @@ import express from 'express';
 import * as validation from "../middleware/validation/validationMiddleware.mjs";
 import Stripe from "stripe";
 import wallets from '../models/wallets.mjs';
-import tripService from '../services/tripService.mjs';
+import walletService from '../services/walletService.mjs';
 
 const stripe = new Stripe(`${process.env.STRIPE_SECRET}`);
 
@@ -104,7 +104,7 @@ router.get(`/user/:id`,
     validation.checkValidationResult,
     async (req, res) => {
         try {
-            const userWallet = await tripService.getWalletByUserId(req.params.id);
+            const userWallet = await walletService.findWalletByUserId(req.params.id);
 
             return res.status(200).json(userWallet);
         } catch (err) {
