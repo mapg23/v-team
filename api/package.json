@@ -6,7 +6,7 @@
     "scripts": {
         "start": "nodemon index.mjs",
         "eslint": "eslint .",
-        "test:raw": "jestjest --detectOpenHandles",
+        "test:raw": "jest",
         "test:ci": "jest --passWithNoTests",
         "test": "c8 --reporter=lcov --reporter=text npm run test:raw"
     },
