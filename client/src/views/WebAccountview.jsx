@@ -10,7 +10,7 @@ import UserModel from "../models/UserModel";
 
 export default function WebAccountView() {
     const navigate = useNavigate();
-    const { logout, userId } = useAuth();
+    const { logout, userId, checkLoggedin, isLoggedIn } = useAuth();
     const [loading, setLoading] = useState(true);
 
     const [user, setUser] = useState([]);
@@ -21,13 +21,26 @@ export default function WebAccountView() {
     }
 
     useEffect(() => {
+
+        // if (!isLoggedIn) {
+        //     navigate('/login', { replace: true })
+
+        // }
+        // if (!checkLoggedin) {
+        //     navigate('/login', { replace: true })
+        // }
+
         const fetchData = async () => {
+            console.log(userId);
             if (user.length === 0) {
                 setUser(await UserModel.getUserById(userId));
-                setLoading(false);
             }
         }
         fetchData();
+
+        if (user.length >= 1) {
+            setLoading(false);
+        }
     })
 
     if (loading) return (

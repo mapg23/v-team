@@ -1,6 +1,6 @@
 "use strict";
 import { Navigate } from "react-router-dom";
-import { createContext, useContext, useState } from "react";
+import { createContext, use, useContext, useState } from "react";
 
 const AuthContext = createContext(null);
 
@@ -12,6 +12,17 @@ export const AuthProvider = ({ children }) => {
     const [userId, setUserId] = useState(
         () => localStorage.getItem("userId")
     );
+
+    const checkLoggedin = () => {
+        let jwt = localStorage.getItem("jwt") ? false : true;
+        let userId = localStorage.getItem("userId") ? false : true;
+
+        if (!jwt || !userId) {
+            return false;
+        }
+
+        return true;
+    }
 
     const login = (id) => {
         setIsLoggedIn(true);

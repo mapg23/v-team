@@ -11,7 +11,6 @@ const UserModel = {
         try {
             const response = await fetch(`${API}${url}`, {
                 method: 'GET',
-                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
