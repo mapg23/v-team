@@ -10,6 +10,25 @@ export default function createStationRouter(
 ) {
     const route = express.Router();
 
+    /**
+     * POST /stations
+     * Creates a new station.
+     *
+     * Request Body:
+     * {
+     *   cityId: number,
+     *   name: string,
+     *   latitude: number,
+     *   longitude: number,
+     *   capacity: number
+     * }
+     *
+     * Returns:
+     * 201: station created successfully
+     * 400: missing required fields
+     * 404: city or station not found
+     * 500: server error
+     */
     route.post(`/stations`, validateJsonBody, async (req, res) => {
         const { cityId, name, latitude, longitude, capacity } = req.body;
 
@@ -54,7 +73,14 @@ export default function createStationRouter(
         }
     });
 
-
+    /**
+     * GET /stations
+     * Fetches all stations, optionally filtered by cityId.
+     *
+     * Returns:
+     * 200: list of stations
+     * 500: server error
+     */
     route.get(`/stations`, async (req, res) => {
         try {
             let list;
@@ -81,6 +107,16 @@ export default function createStationRouter(
         }
     });
 
+    /**
+     * GET /stations/:id
+     * Fetches a specific station by its ID.
+     *
+     * Returns:
+     * 200: station found
+     * 400: invalid station ID
+     * 404: station not found
+     * 500: server error
+     */
     route.get(`/stations/:id`, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
 
@@ -107,6 +143,25 @@ export default function createStationRouter(
         }
     });
 
+    /**
+     * PUT /stations/:id
+     * Updates a station by its ID.
+     *
+     * Request Body:
+     * {
+     *   cityId: number,
+     *   name: string,
+     *   latitude: number,
+     *   longitude: number,
+     *   capacity: number
+     * }
+     *
+     * Returns:
+     * 200: station updated successfully
+     * 400: invalid station ID
+     * 404: station not found
+     * 500: server error
+     */
     route.put(`/stations/:id`, validateJsonBody, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
 
@@ -151,6 +206,16 @@ export default function createStationRouter(
         }
     });
 
+    /**
+     * DELETE /stations/:id
+     * Deletes a station by its ID.
+     *
+     * Returns:
+     * 204: station deleted successfully
+     * 400: invalid station ID
+     * 404: station not found
+     * 500: server error
+     */
     route.delete(`/stations/:id`, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
 
@@ -170,7 +235,16 @@ export default function createStationRouter(
         }
     });
 
-    // Hämtar alla cyklar i en specifik station
+    /**
+     * GET /stations/:id/bikes
+     * Fetches all bikes in a specific station.
+     *
+     * Returns:
+     * 200: list of bikes
+     * 400: invalid station ID
+     * 404: station not found
+     * 500: server error
+     */
     route.get('/stations/:id/bikes', async (req, res) => {
         try {
             const stationId = Number(req.params.id);

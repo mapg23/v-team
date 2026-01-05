@@ -5,11 +5,16 @@ import validateJsonBody from "../middleware/validateJsonBody.mjs";
 export default function createBikeRouter(bikes = createBikes()) {
     const route = express.Router();
 
-    // Synka bikes manuellt med simulatorn
+    /**
+     * GET /bikes/sync
+     * Fetches bikes from the database and sends them to the simulator.
+     * Returns 200 on success, otherwise 500.
+     */
     route.get(`/bikes/sync`, async (req, res) => {
         try {
             const bikesList = await bikes.getBikes();
 
+            // Synkar bikes manuellt med simulatorn
             await fetch("http://bike:7071/start", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -23,7 +28,27 @@ export default function createBikeRouter(bikes = createBikes()) {
         }
     });
 
-    // Skapar cykel manuellt - Admin
+    /**
+     * POST /bikes
+     * Creates a bike manually (admin only).
+     *
+     * Request Body:
+     * {
+     *   status: number,
+     *   battery: number,
+     *   latitude: number,
+     *   longitude: number,
+     *   occupied: number,
+     *   cityId: number,
+     *   currentZoneId?: number | null,
+     *   currentZoneType?: string | null
+     * }
+     *
+     * Returns:
+     * 201: created bike
+     * 400: missing or invalid fields
+     * 500: server error
+     */
     route.post("/bikes", validateJsonBody, async (req, res) => {
         try {
             const {
@@ -74,7 +99,28 @@ export default function createBikeRouter(bikes = createBikes()) {
         }
     });
 
-    // Uppdaterar cykel
+    /**
+     * PUT /bikes/:id
+     * Updates a bike by ID.
+     *
+     * Request Body:
+     * {
+     *   status?: number,
+     *   battery?: number,
+     *   latitude?: number,
+     *   longitude?: number,
+     *   occupied?: number,
+     *   cityId?: number,
+     *   currentZoneId?: number | null,
+     *   currentZoneType?: string | null
+     * }
+     *
+     * Returns:
+     * 200: updated bike
+     * 400: invalid id or zone
+     * 404: bike not found
+     * 500: server error
+     */
     route.put(`/bikes/:id`, validateJsonBody, async (req, res) => {
         try {
             const id = Number(req.params.id);
@@ -116,7 +162,14 @@ export default function createBikeRouter(bikes = createBikes()) {
     });
 
 
-    // Hämtar alla cyklar
+    /**
+     * GET /bikes
+     * Fetches all bikes.
+     *
+     * Returns:
+     * 200: list of bikes
+     * 500: server error
+     */
     route.get(`/bikes`, async (req, res) => {
         try {
             const list = await bikes.getBikes();
@@ -128,7 +181,16 @@ export default function createBikeRouter(bikes = createBikes()) {
         }
     });
 
-    // Hämtar cykel per ID
+    /**
+     * GET /bikes/:id
+     * Fetches a bike by its ID.
+     *
+     * Returns:
+     * 200: bike found
+     * 400: invalid bike ID
+     * 404: bike not found
+     * 500: server error
+     */
     route.get(`/bikes/:id`, async (req, res) => {
         try {
             const id = Number(req.params.id);
@@ -150,7 +212,16 @@ export default function createBikeRouter(bikes = createBikes()) {
         }
     });
 
-    // Tar bort cykel
+    /**
+     * DELETE /bikes/:id
+     * Deletes a bike by its ID.
+     *
+     * Returns:
+     * 204: bike deleted successfully
+     * 400: invalid bike ID
+     * 404: bike not found
+     * 500: server error
+     */
     route.delete(`/bikes/:id`, async (req, res) => {
         try {
             const id = Number(req.params.id);
@@ -172,6 +243,22 @@ export default function createBikeRouter(bikes = createBikes()) {
         }
     });
 
+    /**
+     * PUT /bikes/:id/move
+     * Moves a bike to a different zone.
+     *
+     * Request Body:
+     * {
+     *   zoneType: string, "charging" or "parking".
+     *   zoneId: number, the id of the chosen zone.
+     * }
+     *
+     * Returns:
+     * 200: bike moved successfully
+     * 400: invalid zone type, zone ID, or coordinates
+     * 404: bike not found
+     * 500: server error
+     */
     route.put('/bikes/:id/move', validateJsonBody, async (req, res) => {
         const bikeId = Number(req.params.id);
         const { zoneType, zoneId } = req.body;

@@ -6,6 +6,22 @@ import createUsers from "../models/users.mjs";
 export default function createUserRouter(users = createUsers()) {
     const route = express.Router();
 
+    /**
+     * POST /users
+     * Creates a new user.
+     *
+     * Request Body:
+     * {
+     *   username: string,
+     *   email: string,
+     *   password: string
+     * }
+     *
+     * Returns:
+     * 201: user created successfully
+     * 400: validation error (missing fields or invalid email)
+     * 500: server error
+     */
     route.post(`/users`, validateJsonBody, async (req, res) => {
         // Fältspecifik validering
         const error = helpers.validateBody(req.body);
@@ -32,6 +48,18 @@ export default function createUserRouter(users = createUsers()) {
         }
     });
 
+    /**
+     * GET /users/:id
+     * Fetches a user by their ID.
+     *
+     * Parameters:
+     * id: number, the ID of the user to fetch.
+     *
+     * Returns:
+     * 200: user found
+     * 400: invalid user ID
+     * 500: server error
+     */
     route.get(`/users/:id`, async (req, res) => {
         const idError = helpers.validateId(req.params.id);
 
@@ -48,6 +76,19 @@ export default function createUserRouter(users = createUsers()) {
         }
     });
 
+    /**
+     * GET /users
+     * Fetches all users, or a single user if `email`
+     * query parameter is provided.
+     *
+     * Query Parameters:
+     * email?: string - optional email to filter user by.
+     *
+     * Returns:
+     * 200: list of users or single user
+     * 400: invalid email format
+     * 500: server error
+     */
     route.get(`/users`, async (req, res) => {
         try {
             if (req.query.email) {
@@ -70,6 +111,22 @@ export default function createUserRouter(users = createUsers()) {
         }
     });
 
+    /**
+     * PUT /users/:id
+     * Updates a user by ID.
+     *
+     * Request Body:
+     * {
+     *   username?: string
+     *   email?: string,
+     *   password?: string,
+     * }
+     *
+     * Returns:
+     * 200: updated user
+     * 400: invalid user ID
+     * 500: server error
+     */
     route.put(`/users/:id`, validateJsonBody, async (req, res) => {
         const idError = helpers.validateId(req.params.id);
 
@@ -90,7 +147,22 @@ export default function createUserRouter(users = createUsers()) {
         }
     });
 
-    // Uppdaterar en del av användarens uppgifter.
+    /**
+     * PATCH /users/:id
+     * Partially updates a user's details by ID.
+     *
+     * Request Body:
+     * {
+     *   username?: string,
+     *   email?: string,
+     *   password?: string
+     * }
+     *
+     * Returns:
+     * 200: updated user
+     * 400: invalid user ID
+     * 500: server error
+     */
     route.patch(`/users/:id`, validateJsonBody, async (req, res) => {
         const idError = helpers.validateId(req.params.id);
 
@@ -109,6 +181,15 @@ export default function createUserRouter(users = createUsers()) {
         }
     });
 
+    /**
+     * DELETE /users/:id
+     * Deletes a user by ID.
+     *
+     * Returns:
+     * 204: user deleted successfully
+     * 400: invalid user ID
+     * 500: server error
+     */
     route.delete(`/users/:id`, async (req, res) => {
         const idError = helpers.validateId(req.params.id);
 

@@ -6,6 +6,25 @@ import createParkings from "../models/parkings.mjs";
 export default function createParkingRouter(parkings = createParkings()) {
     const route = express.Router();
 
+    /**
+     * POST /parkings
+     * Creates a new parking zone.
+     *
+     * Request Body:
+     * {
+     *   cityId: number,
+     *   maxLat: number,
+     *   maxLong: number,
+     *   minLat: number,
+     *   minLong: number
+     * }
+     *
+     * Returns:
+     * 201: parking zone created successfully
+     * 400: missing required fields
+     * 404: parking zone not found
+     * 500: server error
+     */
     route.post(`/parkings`, validateJsonBody, async (req, res) => {
         const { cityId, maxLat, maxLong, minLat, minLong } = req.body;
 
@@ -46,6 +65,14 @@ export default function createParkingRouter(parkings = createParkings()) {
         }
     });
 
+    /**
+     * GET /parkings
+     * Fetches all parking zones, optionally filtered by cityId.
+     *
+     * Returns:
+     * 200: list of parking zones
+     * 500: server error
+     */
     route.get(`/parkings`, async (req, res) => {
         try {
             let list;
@@ -72,6 +99,16 @@ export default function createParkingRouter(parkings = createParkings()) {
         }
     });
 
+    /**
+     * GET /parkings/:id
+     * Fetches a specific parking zone by its ID.
+     *
+     * Returns:
+     * 200: parking zone found
+     * 400: invalid parking ID
+     * 404: parking zone not found
+     * 500: server error
+     */
     route.get(`/parkings/:id`, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
 
@@ -102,6 +139,25 @@ export default function createParkingRouter(parkings = createParkings()) {
         }
     });
 
+    /**
+     * PUT /parkings/:id
+     * Updates a parking zone by its ID.
+     *
+     * Request Body:
+     * {
+     *   cityId: number,
+     *   maxLat: number,
+     *   maxLong: number,
+     *   minLat: number,
+     *   minLong: number
+     * }
+     *
+     * Returns:
+     * 200: parking zone updated successfully
+     * 400: invalid parking ID
+     * 404: parking zone not found
+     * 500: server error
+     */
     route.put(`/parkings/:id`, validateJsonBody, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
 
@@ -147,6 +203,16 @@ export default function createParkingRouter(parkings = createParkings()) {
         }
     });
 
+    /**
+     * DELETE /parkings/:id
+     * Deletes a parking zone by its ID.
+     *
+     * Returns:
+     * 204: parking zone deleted successfully
+     * 400: invalid parking ID
+     * 404: parking zone not found
+     * 500: server error
+     */
     route.delete(`/parkings/:id`, async (req, res) => {
         const idError = cityHelpers.validateId(req.params.id);
 
@@ -168,7 +234,16 @@ export default function createParkingRouter(parkings = createParkings()) {
         }
     });
 
-    // Hämtar alla cyklar i en specifik parkeringszon
+    /**
+     * GET /parkings/:id/bikes
+     * Fetches all bikes in a specific parking zone by parking ID.
+     *
+     * Returns:
+     * 200: list of bikes
+     * 400: invalid parking ID
+     * 404: parking zone not found
+     * 500: server error
+     */
     route.get('/parkings/:id/bikes', async (req, res) => {
         try {
             const parkingId = Number(req.params.id);
