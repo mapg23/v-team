@@ -2,7 +2,7 @@ import express from "express";
 import createBikes, { validateZone, getZoneCoordinates } from "../models/bikes.mjs";
 import validateJsonBody from "../middleware/validateJsonBody.mjs";
 import updateSimulator from "../systemSimulation/updateSimulator.mjs";
-import handleZoneUpdate from "../helpers/zoneUpdata.mjs";
+import handleZoneUpdate from "../helpers/zoneUpdate.mjs";
 
 
 export default function createBikeRouter(bikes = createBikes()) {
@@ -355,7 +355,7 @@ export default function createBikeRouter(bikes = createBikes()) {
             const updatedBike = await bikes.getBikeById(bikeId);
 
             // Skicka uppdateringar till simulatorn.
-            let simulatorStatus = 'ok';
+
             // Värden från befintliga cykelobjektet skickas till simulatorn för att undvika null.
             const { status, battery, occupied } = bike;
 
@@ -372,14 +372,10 @@ export default function createBikeRouter(bikes = createBikes()) {
                 });
             } catch (simErr) {
                 console.error('Simulator update failed:', simErr);
-                simulatorStatus = 'failed';
             }
 
 
-            return res.status(200).json({
-                bike: updatedBike[0],
-                simulator: simulatorStatus
-            });
+            return res.status(200).json(updatedBike[0]);
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: 'Could not move bike' });
