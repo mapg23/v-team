@@ -28,7 +28,6 @@ app.use('/', bikeRoute);
 // Priorities telemetry messages.
 worker.on('message', (msg) => {
     if (msg.type === "telemetry") {
-        console.log("inside worker messages");
         forwardToMain(msg.data);
         return;
     }
