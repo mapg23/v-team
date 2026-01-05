@@ -10,6 +10,8 @@ bike/node_modules
 admin-client/node_modules
 client/node_modules
 
+client/.env
+
 bike/coverage
 api/coverage
 node_modules/
