@@ -20,12 +20,7 @@ const auth = {
     registerUser: async function (email, password, username = null) {
         const userExists = await userModel.getUserByEmail(email);
 
-<<<<<<< HEAD
-        if (userExists.length != 0) {
-            console.log("HERE")
-=======
         if (userExists.length > 0) {
->>>>>>> e2df84b0f08ed9043201aa6362b035f5f394b4a8
             const error = new Error("Email already registred");
 
             error.status = 409;
@@ -56,19 +51,8 @@ const auth = {
     loginUser: async function (email, password) {
         const userResult = await userModel.getUserByEmail(email);
 
-<<<<<<< HEAD
-        console.log("HERE")
-
-        console.log(user)
-        if (!user) {
-            const err = new Error("Invalid username or password. Try again.");
-
-            err.status = 400;
-            throw err;
-=======
         if (!userResult[0]) {
             throw new Error("Invalid username or password. Try again.");
->>>>>>> e2df84b0f08ed9043201aa6362b035f5f394b4a8
         }
         const user = userResult[0];
 
@@ -83,7 +67,7 @@ const auth = {
         if (!match) {
             throw new Error("Invalid username or password. Try again.");
         }
-        const token = await jwtService.createToken({userId: user.id, userRole: user.role});
+        const token = await jwtService.createToken({ userId: user.id, userRole: user.role });
 
         return token;
     },
