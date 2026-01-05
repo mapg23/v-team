@@ -19,9 +19,8 @@ const auth = {
    */
     registerUser: async function (email, password, username = null) {
         const userExists = await userModel.getUserByEmail(email);
-        // let user;
 
-        if (userExists) {
+        if (userExists.length > 0) {
             const error = new Error("Email already registred");
 
             error.status = 409;
@@ -36,7 +35,9 @@ const auth = {
             email: email,
         };
 
-        const user = await userModel.createUser(userData);
+        const userResult = await userModel.createUser(userData);
+        const userId = userResult.insertId;
+        const user = await userModel.getUserById(userId);
 
         return user;
     },
@@ -48,21 +49,22 @@ const auth = {
    * @returns {Object} A user object
    */
     loginUser: async function (email, password) {
-        const user = await userModel.getUserByEmail(email);
+        const userResult = await userModel.getUserByEmail(email);
 
-        if (!user) {
-            const err = new Error("Invalid username or password. Try again.");
-
-            err.status = 400;
-            throw err;
+        if (!userResult[0]) {
+            throw new Error("Invalid username or password. Try again.");
         }
+        const user = userResult[0];
 
+        if (user.oauth) {
+            throw new Error("User is registred via OAuth and does not have. apassword");
+        }
         const match = await bcrypt.compare(password, user.password);
 
         if (!match) {
             throw new Error("Invalid username or password. Try again.");
         }
-        const token = await jwtService.createToken(user.id);
+        const token = await jwtService.createToken({userId: user.id, userRole: user.role});
 
         return token;
     },
