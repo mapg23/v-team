@@ -68,21 +68,22 @@ export default function HomeView() {
 
     }
 
-    // socket useEffect.
     useEffect(() => {
         const onBikes = (data) => {
-            console.log(`BIKES: ${data}`);
+            console.log("BIKES EVENT DATA:", data);
             updateBikes(data);
         };
 
-        socket.on("connect", () => {
+        const onConnect = () => {
             console.log("socket connected", socket.id);
-        });
+        };
 
+        socket.on("connect", onConnect);
         socket.on("bikes", onBikes);
 
         return () => {
-            socket.off("bikes", onBikes); // cleanup listener only
+            socket.off("connect", onConnect);
+            socket.off("bikes", onBikes);
         };
     }, [updateBikes]);
 
