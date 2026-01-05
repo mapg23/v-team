@@ -6,12 +6,20 @@ import Navigation from "../components/NavigationBar";
 
 import BikeModel from "../models/BikeModel";
 
+import { useAuth } from "../components/AuthProvider";
+
+import TripsModel from "../models/TripsModel";
+
 export default function BikeView() {
     const navigate = useNavigate();
     const params = useParams();
-    const bikeId = 0;
+    const [bike, setBike] = useState(null);
+
+    const { userId } = useAuth();
 
     const [loading, setLoading] = useState(true);
+    const [inProgress, setInProgress] = useState(false);
+
 
     function topBarCallback() {
         navigate('/', { replace: true })
@@ -19,10 +27,25 @@ export default function BikeView() {
 
 
     useEffect(() => {
-        console.log(params.id);
+        if (!bike) {
+            setBike(params.id);
+            setLoading(false)
+        }
     })
 
-    if (!loading) return (
+    async function HandlestartTrip() {
+        let res = await TripsModel.startTrip(userId, bike);
+
+        if (res[0]['id'] !== null) {
+            setInProgress(true);
+        }
+    }
+
+    async function HandleStopTrip() {
+        setInProgress(false)
+    }
+
+    if (loading) return (
         <>
             <h1>Loading...</h1>
         </>
@@ -39,6 +62,25 @@ export default function BikeView() {
                 />
 
                 <div className="map-wrapper">
+
+
+                    {inProgress ? (
+                        <>
+                            <h1>In progress (Timer här) </h1>
+
+                            <p>ID och annat här</p>
+
+                            <button onClick={HandleStopTrip}>
+                                Stop
+                            </button>
+                        </>
+                    ) : (
+                        <button onClick={HandlestartTrip}>
+                            Start
+                        </button>
+                    )}
+
+
                 </div>
 
                 <div className="navigation">

@@ -109,6 +109,10 @@ const UserModel = {
 
     getUserById: async function getUserById(id) {
         return await this.protectedGet(`/users/${id}`);
+    },
+
+    getUserBalance: async function getUserBalance(id) {
+        // TODO: KOPPLA TILL API
     }
 }
 

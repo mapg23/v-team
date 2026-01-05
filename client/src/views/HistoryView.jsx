@@ -7,6 +7,9 @@ import Navigation from "../components/NavigationBar";
 
 import TripsModel from "../models/TripsModel";
 
+import { useAuth } from "../components/AuthProvider";
+
+
 import "../assets/historyView.css";
 
 
@@ -14,6 +17,7 @@ export default function HistoryView() {
     const navigate = useNavigate();
     const [trips, setTrips] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { userId } = useAuth();
 
 
     const topBarCallback = () => {
@@ -73,36 +77,6 @@ export default function HistoryView() {
                 />
 
                 <div className="history-wrapper">
-                    {trips.map(trip => (
-                        <div className="History-body" key={trip.id}>
-                            <button
-                                className="history-button"
-                                onClick={() => navigateToTrip(trip.id)}
-                                tabIndex={0}
-                                role="button"
-                            >
-
-                                <div className="History-card">
-                                    <div>
-                                        <h1 className="history-title">Trip: #{trip.id} <em className="history-date"> {
-                                            formatDate(trip.start_time)
-                                        }</em>
-                                        </h1>
-                                    </div>
-
-                                    <div className="History-card-body">
-                                        <p>
-                                            Duration: {calcDuration(trip.start_time, trip.end_time)}
-                                            <br />
-                                            Cost: {trip.cost} Kr
-                                            <br />
-                                            <span className="history-">Click for more information.</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </button>
-                        </div>
-                    ))}
 
                     {trips.map(trip => (
                         <div className="History-body" key={trip.id}>

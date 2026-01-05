@@ -65,6 +65,13 @@ const TripsModel = {
     getTripsByTripsID: async function getTripsByID(id) {
         return await this.basicGet(`/trips/${id}`);
     },
+
+    startTrip: async function startTrip(userId, bikeId) {
+        return await this.basicPOST(`/trips`, {
+            "userId": userId,
+            "bikeId": bikeId
+        });
+    }
 }
 
 

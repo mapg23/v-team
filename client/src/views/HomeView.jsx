@@ -70,7 +70,6 @@ export default function HomeView() {
 
     useEffect(() => {
         const onBikes = (data) => {
-            console.log("BIKES EVENT DATA:", data);
             updateBikes(data);
         };
 

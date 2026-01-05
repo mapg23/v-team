@@ -1,5 +1,5 @@
 "use strict";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { CreditCard, Wallet } from "lucide-react";
@@ -13,7 +13,8 @@ import "../assets/accountView.css";
 
 export default function AccountView() {
     const navigate = useNavigate();
-    const { logout } = useAuth();
+    const { logout, userId } = useAuth();
+    const [balance, setBalance] = useState(null);
 
     const handleHome = () => {
         navigate('/', { replace: true })
@@ -35,6 +36,10 @@ export default function AccountView() {
         logout();
         navigate('/login', { replace: true });
     }
+
+    useEffect(() => {
+
+    })
 
 
     return (
@@ -71,7 +76,7 @@ export default function AccountView() {
                                 </div>
 
                                 <div className="details-card-saldo">
-                                    <p>123 000:-</p>
+                                    <p>{balance}:-</p>
                                 </div>
                             </div>
                         </div>
