@@ -7,12 +7,14 @@ const API = getApiBase();
 
 const UserModel = {
     basicGet: async function basicGet(url) {
+        const token = sessionStorage.getItem("jwt");
         try {
             const response = await fetch(`${API}${url}`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
             });
 
@@ -98,6 +100,7 @@ const UserModel = {
             "username": "",
         })
 
+        sessionStorage.setItem("jwt", response["jwt"]);
         const payload = jwtDecode(response["jwt"]);
         const userId = payload.sub.userId;
 

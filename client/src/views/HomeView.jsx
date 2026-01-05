@@ -9,6 +9,8 @@ import TopBar from "../components/TopBar";
 import Navigation from "../components/NavigationBar";
 import { socket } from "../components/socket";
 
+import { useAuth } from "../components/AuthProvider";
+
 
 export default function HomeView() {
     const navigate = useNavigate();
@@ -35,6 +37,8 @@ export default function HomeView() {
     });
 
     function rentBike(id) {
+        console.log(`Hyr cykel med id: ${id}`)
+
         navigate(`/bike/${id}`, { replace: true });
     }
 
@@ -67,6 +71,7 @@ export default function HomeView() {
     // socket useEffect.
     useEffect(() => {
         const onBikes = (data) => {
+            console.log(`BIKES: ${data}`);
             updateBikes(data);
         };
 
@@ -85,9 +90,12 @@ export default function HomeView() {
 
     useEffect(() => {
         async function fetchData() {
-            setcityDetails(await MapModel.getCityDetailsByID(cityId));
-            console.log(cityDetails)
-            setLoading(false);
+            let details = await MapModel.getCityDetailsByID(cityId);
+
+            if (details.id = cityId) {
+                setcityDetails(details)
+                setLoading(false);
+            }
         }
         fetchData();
 

@@ -5,11 +5,14 @@ const API = getApiBase();
 
 const MapModel = {
     basicGet: async function basicGet(url) {
+        const token = sessionStorage.getItem("jwt");
+
         try {
             const response = await fetch(`${API}${url}`, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
             });
 
@@ -29,12 +32,14 @@ const MapModel = {
     },
 
     basicPOST: async function basicPOST(url, data) {
+        const token = sessionStorage.getItem("jwt");
         try {
             const response = await fetch(
                 `${API}${url}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(data)
             });
