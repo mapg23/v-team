@@ -61,10 +61,13 @@ const auth = {
         }
         const match = await bcrypt.compare(password, user.password);
 
+        console.log("HERE")
+        console.log(match);
+
         if (!match) {
             throw new Error("Invalid username or password. Try again.");
         }
-        const token = await jwtService.createToken({userId: user.id, userRole: user.role});
+        const token = await jwtService.createToken({ userId: user.id, userRole: user.role });
 
         return token;
     },
