@@ -57,14 +57,17 @@ router.post(
     async (req, res) => {
         try {
             const { rawState, encryptedState, code, code_verifier: codeVerifier } = req.body;
-            const token = await oAuthService.oAuthLogin(
+            const data = await oAuthService.oAuthLogin(
                 rawState,
                 encryptedState,
                 code,
                 codeVerifier
             );
 
-            return res.json({ jwt: token });
+            return res.json({
+                jwt: data.token,
+                userId: data.id
+            });
         } catch (err) {
             return res.status(401).json(err);
         }

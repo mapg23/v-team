@@ -91,18 +91,19 @@ const oAuthService = {
             userRole: user.role,
         });
 
-        return token;
+        console.log(user);
+        return {token, id: user.id};
     },
 
     /**
-   * Will find a user in our database by email, or create one.
-   * Username: <email>
-   * password: null
-   * email: <email>
-   * oauth: true
-   * @param   {string} email
-   * @returns {object} A user object
-   */
+     * Will find a user in our database by email, or create one.
+     * Username: <email>
+     * password: null
+     * email: <email>
+     * oauth: true
+     * @param   {string} email
+     * @returns {object} A user object
+     */
     findOrCreateOauthUser: async function (email) {
         let user;
 
