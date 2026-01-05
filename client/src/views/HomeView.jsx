@@ -15,7 +15,7 @@ import { useAuth } from "../components/AuthProvider";
 export default function HomeView() {
     const navigate = useNavigate();
     const params = useParams();
-    const cityId = 1 // Change to param
+    const cityId = 1; // Change to param
 
     const [loading, setLoading] = useState(true);
 
