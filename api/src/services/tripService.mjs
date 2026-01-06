@@ -55,7 +55,7 @@ class TripService {
         if (wallet.balance <= 0) {
             throw new Error(`Users wallet ${wallet.id} has insufficiant funds`);
         }
-        await this.bikeService.updateBikeZones(bikeId, bike);
+        await this.bikeService.updateBikeZone(bikeId, bike);
 
         const bikeData = {
             user_id: userId,
@@ -95,7 +95,7 @@ class TripService {
         const bikeInUse = await this.bikeService.findBikeInUseByBikeId(bikeId);
         const bike = await this.bikeService.findBikeById(bikeInUse.scooter_id);
 
-        await this.bikeService.updateBikeZones(bikeId, bike);
+        await this.bikeService.updateBikeZone(bikeId, bike);
 
         const parkedOk =
             bike.current_zone_type === "parking" ||

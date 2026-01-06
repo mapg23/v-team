@@ -38,7 +38,6 @@ class LocationService {
      * @returns {boolean}
      */
     isInZone(zone, lat, long) {
-        // console.log(lat, zone.max_lat, zone.min_lat, long, zone.max_long, zone.min_long);
         return (
             lat <= zone.max_lat &&
             lat >= zone.min_lat &&
@@ -110,7 +109,6 @@ class LocationService {
             zone.type = "parking";
             zone.id = isParked;
         }
-        console.log(zone);
         return zone;
     }
 }

@@ -39,8 +39,7 @@ class BikeService {
      * @param {boolean} parkedOK True or false.
      * @param {boolean} occupied True or false.
      */
-    async setBikeStatus(bike, parkedOK, occupied) {
-        // console.log("Set status with booleans", bike.id, parkedOK, occupied);
+    async calculateAndUpdateBikeStatus(bike, parkedOK, occupied) {
         let bikeStatus = parkedOK ? 10 : 20;
 
         bikeStatus = bike.battery > 20 ? bikeStatus : 50;
@@ -81,8 +80,6 @@ class BikeService {
                 }),
             });
 
-        // console.log(bikeRes);
-
         if (bikeRes.status != 200) {
             throw new Error("Could not set new status in bike brain");
         }
@@ -122,11 +119,11 @@ class BikeService {
 
         occupied = false;
 
-        await this.setBikeStatus(bike, parkedOk, occupied);
+        await this.calculateAndUpdateBikeStatus(bike, parkedOk, occupied);
     }
 
     // Can be called from bikeRoute and start/end trip.
-    async updateBikeZones(bikeId, data) {
+    async updateBikeZone(bikeId, data) {
         const zone = await this.locationService.determineZone(data.latitude, data.longitude);
 
         if (!zone) {throw new Error("Could not determine bikes zone.");};
