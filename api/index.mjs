@@ -100,6 +100,8 @@ app.use(`/api/${version}`, createParkingRouter());
 
 app.use(`/api/${version}/trips`, tripRoutes);
 app.use(`/api/${version}/payments`, paymentRoutes);
+app.use(`/api/${version}/prices`, priceRoutes);
+app.use(`/api/${version}/wallets`, walletRoutes);
 
 // Startar server med Socket.IO
 server.listen(port, "0.0.0.0", async () => {
