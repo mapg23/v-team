@@ -1,5 +1,7 @@
 import API from "../config/api.js";
 
+const token = sessionStorage.getItem("jwt");
+
 /**
  * TripService handling all routes regarding trips made by users
  * Based on endpoints: https://docs.google.com/spreadsheets/d/1Tza3ZSUOJJRQJeSquKQbE6fRy4d3zNGafAVQxUVNg9M/edit?gid=0#gid=0
@@ -16,6 +18,7 @@ const TripService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -42,6 +45,7 @@ const TripService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -69,6 +73,7 @@ const TripService = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 

@@ -1,5 +1,7 @@
 import API from "../config/api.js";
 
+const token = sessionStorage.getItem("jwt");
+
 /**
  * Bike services handling all routes regarding bikes
  * based on endpoints: https://docs.google.com/spreadsheets/d/1Tza3ZSUOJJRQJeSquKQbE6fRy4d3zNGafAVQxUVNg9M/edit?gid=0#gid=0
@@ -15,6 +17,7 @@ const bikeService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -35,6 +38,7 @@ const bikeService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -63,6 +67,7 @@ const bikeService = {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -87,6 +92,7 @@ const bikeService = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -97,52 +103,6 @@ const bikeService = {
     }
   },
 
-  /**
-   * Get bikes renetal details
-   * @returns {JSON}
-   */
-  // getRentedBikeDetails: async function getRentedBikeDetails(bikeId) {
-  //   try {
-  //     const response = await fetch(`${API}/bikes/${bikeId}/rental`, {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-
-  //     return await response.json();
-  //   } catch (error) {
-  //     console.error("fetchDocuments error:", error);
-  //     return null;
-  //   }
-  // },
-
-  /**
-   * Get bikes renetal details
-   * @returns {JSON}
-   */
-  // endBikeRental: async function endBikeRental(bikeId) {
-  //   try {
-  //     const response = await fetch(`${API}/bikes/${bikeId}/rental/end`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error(
-  //         `HTTP error on fetchDocuments! Status: ${response.status}`
-  //       );
-  //     }
-
-  //     const responseData = await response.json();
-  //     return responseData;
-  //   } catch (error) {
-  //     console.error("fetchDocuments error:", error);
-  //     return [];
-  //   }
-  // },
 
   /**
    * Start sync for bikes
@@ -155,6 +115,7 @@ const bikeService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -166,7 +127,7 @@ const bikeService = {
 
       return await response.json();
     } catch (error) {
-      console.error("fetchDocuments error:", error);
+      console.error("startBikeSync error:", error);
       return [];
     }
   },
@@ -190,6 +151,7 @@ const bikeService = {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -215,6 +177,7 @@ const bikeService = {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -235,6 +198,7 @@ const bikeService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
       return await response.json();

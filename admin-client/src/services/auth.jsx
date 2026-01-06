@@ -1,5 +1,7 @@
 import API from "../config/api.js";
 
+const token = sessionStorage.getItem("jwt");
+
 /**
  * Auth Service handling all routes regarding authentication
  * Based on endpoints: https://docs.google.com/spreadsheets/d/1Tza3ZSUOJJRQJeSquKQbE6fRy4d3zNGafAVQxUVNg9M/edit?gid=0#gid=0
@@ -25,6 +27,7 @@ const authObject = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 

@@ -1,29 +1,12 @@
 import API from "../config/api.js";
+
+const token = sessionStorage.getItem("jwt");
+
 /**
  * Parking services handling all routes regarding parkings
  * Based on endpoints: https://docs.google.com/spreadsheets/d/1Tza3ZSUOJJRQJeSquKQbE6fRy4d3zNGafAVQxUVNg9M/edit?gid=0#gid=0
  */
 const parkingService = {
-  /**
-   * Get all parking zones
-   * @return {JSON} array of objects
-   */
-  // getAllParkingZones: async function getAllParkingZones() {
-  //   try {
-  //     const response = await fetch(`${API}/parkings`, {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-
-  //     return await response.json();
-  //   } catch (error) {
-  //     console.error(error);
-  //     return [];
-  //   }
-  // },
-
   /**
    * Add a new parking zone
    * @param {Object} zoneObj
@@ -44,6 +27,7 @@ const parkingService = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -53,26 +37,6 @@ const parkingService = {
       return [];
     }
   },
-
-  // /**
-  //  * Get parking zone details
-  //  * @return {JSON} array of objects
-  //  */
-  // getParkingZoneDetails: async function getAllParkingZones(parkId) {
-  //   try {
-  //     const response = await fetch(`${API}/parkings/${parkId}`, {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-
-  //     return await response.json();
-  //   } catch (error) {
-  //     console.error(error);
-  //     return [];
-  //   }
-  // },
 
   /**
    * Update parking zone details
@@ -84,6 +48,7 @@ const parkingService = {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -104,6 +69,7 @@ const parkingService = {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -124,6 +90,7 @@ const parkingService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
