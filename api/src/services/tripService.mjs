@@ -134,6 +134,15 @@ class TripService {
 
         return newTrip;
     }
+
+    async getCurrentTripCost(bikeId) {
+        const bikeInUse = await this.bikeService.findBikeInUseByBikeId(bikeId);
+        const bike = await this.bikeService.findBikeById(bikeInUse.scooter_id);
+        const currTime = this._getDbDate();
+        const currPrice = this.pricingService.calculateTripCost(bike, bikeInUse, true, currTime);
+
+        return currPrice;
+    }
 }
 export { TripService };
 export default new TripService();

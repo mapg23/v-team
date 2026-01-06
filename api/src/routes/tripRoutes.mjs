@@ -28,9 +28,35 @@ router.post(`/start`,
     });
 
 /**
+ * Get current cost for a trip
+ * Param required:
+ * bike id: id for the bike used
+ * @returns {Array} an array with the trip object.
+ */
+router.get(`/bike/:id/current-cost`,
+    validation.idParam,
+    validation.checkValidationResult,
+    async (req, res) => {
+        try {
+            const tripCost = await tripService.getCurrentTripCost(req.params.id);
+
+            if (!tripCost) {
+                return res.status(404).json({ error: "Cost for trip not found" });
+            }
+
+            return res.status(200).json(tripCost);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                error: `Could not get cost for trip with bike # ${req.params.id}`,
+                message: err.message
+            });
+        }
+    });
+/**
  * End a trip.
  * stops bike and creates new trip data in db.
- * Request body needs:
+ * Param required:
  * id: id for the bike used
  * @returns {Array} an array with the trip object.
  */
