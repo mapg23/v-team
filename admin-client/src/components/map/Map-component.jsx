@@ -114,7 +114,7 @@ export default function MapComponent({
       const customScooterIcon = L.divIcon({
         html: scooterIcon,
         className:
-          bike.status === 10 ? styles["bike-free"] : styles["bike-used"],
+          bike.occupied ? styles["bike-used"] : styles["bike-free"],
       });
 
       // Markers must be in Latitude, Longitude - else wont show!!
