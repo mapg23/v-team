@@ -12,7 +12,7 @@ class WalletService {
      * @param {string} userId A numeric value in string format.
      * @returns {Promise<Array>} trip The trip with the argumented id.
      */
-    async getWalletByUserId(userId) {
+    async findWalletByUserId(userId) {
         const walletResult = await this.wallets.getWalletByUserId(userId);
         const wallet = walletResult[0];
 
@@ -29,9 +29,9 @@ class WalletService {
      * @returns The wallets new balance.
      */
     async credit(userId, amount) {
-        const wallet = await this.getWalletByUserId(userId);
+        const wallet = await this.findWalletByUserId(userId);
 
-        const newBalance = wallet.balance + amount;
+        const newBalance = Number(wallet.balance) + Number(amount);
 
 
         const res = await this.wallets.updateWallet(
@@ -54,8 +54,8 @@ class WalletService {
      * @returns The wallets new balance.
      */
     async debit(userId, amount) {
-        const wallet = await this.getWalletByUserId(userId);
-        const newBalance = wallet.balance - amount;
+        const wallet = await this.findWalletByUserId(userId);
+        const newBalance = Number(wallet.balance) - Number(amount);
 
 
         const res = await this.wallets.updateWallet(
@@ -68,6 +68,14 @@ class WalletService {
         }
 
         return newBalance;
+    }
+    async createWalletForUser(userId) {
+        const res = await walletsModel.createWallet({user_id: userId});
+
+        if (!res.insertId) {
+            throw new Error(`Could not create wallet for User ${userId}`);
+        }
+        return res;
     }
 }
 export { WalletService };

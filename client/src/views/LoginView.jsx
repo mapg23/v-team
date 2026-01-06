@@ -1,16 +1,28 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 import { useAuth } from "../components/AuthProvider";
+
+import LoginWithGithub from "../components/LoginWithGithub";
+
+import UserModel from "../models/UserModel";
+
 
 export default function LoginView() {
   const navigate = useNavigate(); // redirect på React vis
   const { login } = useAuth();
 
-  function handleLogin(e) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function handleLogin(e) {
     e.preventDefault();
     console.log("Login");
-    login();
-    navigate("/account", { replace: true });
+
+    let id = await UserModel.loginUser(email, password);
+
+    login(id);
+    navigate("/", { replace: true });
   }
 
   return (
@@ -27,6 +39,8 @@ export default function LoginView() {
             <input
               type="email"
               className="form-control"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder=""
             />
           </div>
@@ -36,6 +50,8 @@ export default function LoginView() {
             <input
               type="password"
               className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder=""
             />
           </div>
@@ -50,10 +66,8 @@ export default function LoginView() {
 
         <div className="text-center text-muted my-3">eller</div>
 
-        <button className="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center gap-2 mb-4">
-          <i className="bi bi-github"></i>
-          Logga in med Github
-        </button>
+        <LoginWithGithub></LoginWithGithub>
+
       </div>
     </div>
   );

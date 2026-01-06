@@ -2,7 +2,7 @@ import express from 'express';
 import * as validation from "../middleware/validation/validationMiddleware.mjs";
 import Stripe from "stripe";
 import wallets from '../models/wallets.mjs';
-import tripService from '../services/tripService.mjs';
+import walletService from '../services/walletService.mjs';
 
 const stripe = new Stripe(`${process.env.STRIPE_SECRET}`);
 
@@ -52,7 +52,7 @@ router.post(`/payment-success`,
     // validation.payment,
     // validation.checkValidationResult,
     async (req, res) => {
-        req.body.userId = 3;
+        // req.body.userId = 3;
         const { userId, intentId, status } = req.body;
 
         console.log("Status: ", status, ". For: ", intentId);
@@ -96,8 +96,6 @@ router.post(`/payment-success`,
             res.status(500).json({ error: err.message });
         }
     });
-
-export default router;
 /**
  * Returns user balance
 */
@@ -106,7 +104,7 @@ router.get(`/user/:id`,
     validation.checkValidationResult,
     async (req, res) => {
         try {
-            const userWallet = await tripService.getWalletByUserId(req.params.id);
+            const userWallet = await walletService.findWalletByUserId(req.params.id);
 
             return res.status(200).json(userWallet);
         } catch (err) {
@@ -117,3 +115,5 @@ router.get(`/user/:id`,
             });
         }
     });
+
+export default router;

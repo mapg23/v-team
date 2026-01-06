@@ -3,10 +3,9 @@ import { getApiBase } from "../apiUrl";
 
 const API = getApiBase();
 
-const MapModel = {
+const TripsModel = {
     basicGet: async function basicGet(url) {
         const token = sessionStorage.getItem("jwt");
-
         try {
             const response = await fetch(`${API}${url}`, {
                 method: 'GET',
@@ -59,25 +58,21 @@ const MapModel = {
         }
     },
 
-    getCityDetailsByID: async function getCityDetailsByID(id) {
-        return await this.basicGet(`/cities/${id}`);
+    getTripsByID: async function getTripsByID(id) {
+        return await this.basicGet(`/trips/user/${id}`);
     },
 
-    getParkingZonesInCity: async function getParkingZonesInCity(cityId) {
-        return await this.basicGet(`/cities/${cityId}/parkings`);
+    getTripsByTripsID: async function getTripsByID(id) {
+        return await this.basicGet(`/trips/${id}`);
     },
 
-    getChargingStationsInCity: async function getChargingStationsInCity(cityId) {
-        return await this.basicGet(`/cities/${cityId}/stations`);
-    },
-
-    startBikeSync: async function startBikeSync() {
-        console.log("Bike services has been called!");
-
-        return await this.basicGet(`/bikes/sync`);
+    startTrip: async function startTrip(userId, bikeId) {
+        return await this.basicPOST(`/trips`, {
+            "userId": userId,
+            "bikeId": bikeId
+        });
     }
-
 }
 
 
-export default MapModel;
+export default TripsModel;
