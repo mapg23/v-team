@@ -1,0 +1,32 @@
+.bike-in-progress {
+    display: flex;
+    flex-direction: column;
+
+    padding: 1rem;
+    gap: 10px;
+}
+
+.bike-in-progress-header {
+    text-align: center;
+    padding: 1rem;
+    border: 2px solid rgb(240, 240, 240);
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    color: black;
+}
+
+.bike-in-progress>button {
+    padding: 1rem;
+    border: 2px solid rgb(240, 240, 240);
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    color: black;
+}
+
+.account-buttons-body>button {
+    padding: 1rem;
+    border: 2px solid rgb(240, 240, 240);
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    color: black;
+}
