@@ -3,7 +3,7 @@
  * Updates the current list of bikes from the simulator into the database.
  */
 
-import createBikes from "./models/bikes.mjs";
+import createBikes from "../models/bikes.mjs";
 
 export default async function stopSimulator() {
     const bikes = createBikes();
