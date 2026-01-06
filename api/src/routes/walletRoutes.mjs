@@ -1,6 +1,6 @@
 import express from 'express';
 import * as validation from "../middleware/validation/validationMiddleware.mjs";
-import walletsService from '../services/walletService.mjs';
+import walletService from '../services/walletService.mjs';
 
 
 const router = express.Router();
@@ -14,7 +14,7 @@ router.get(`/user/:id`,
     validation.checkValidationResult,
     async (req, res) => {
         try {
-            const userWallet = await walletsService.getWalletByUserId(req.params.id);
+            const userWallet = await walletService.findWalletByUserId(req.params.id);
 
             return res.status(200).json(userWallet);
         } catch (err) {

@@ -115,7 +115,7 @@ router.get(`/`,
     });
 
 /**
- * Returns a trip by trip id.
+ * Returns a trip by user id.
  */
 router.get(`/user/:id`,
     validation.idParam,
@@ -135,7 +135,7 @@ router.get(`/user/:id`,
     });
 
 /**
- * Returns a trip specified by ID
+ * Returns a trip specified by trip ID
  */
 router.get(`/:id`,
     validation.idParam,
