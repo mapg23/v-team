@@ -14,6 +14,7 @@ export default function MapComponent({
   const mapRef = useRef(null);
   const markersRef = useRef([]);
   const parkingLayerRef = useRef(null);
+  const circleLayerRef = useRef(null);
   const chargingLayerRef = useRef(null);
 
   // BIKE ICON
@@ -42,7 +43,8 @@ export default function MapComponent({
 
 
   /**
-   * Renders the map if new city coordinates
+   * Initiates a new map instance based on coordinates
+   * If map already exists, only update the view
    */
   useEffect(() => {
     if (!coords.latitude || !coords.longitude) {
@@ -50,7 +52,7 @@ export default function MapComponent({
       return;
     }
 
-    // Om kartan redan finns → flytta den istället för att initiera ny
+    // Om kartan redan finns -> flytta den istället för att initiera ny
     if (mapRef.current) {
       mapRef.current.setView(
         [Number(coords.latitude), Number(coords.longitude)],
@@ -73,6 +75,26 @@ export default function MapComponent({
 
     mapRef.current = map;
   }, [coords]);
+
+  /**
+   * Draw circles when coordinates are changing (another city is selected)
+   * A circle represents the bounds of where a bike is alaod to run
+   */
+  useEffect(() => {
+     // Skapa Cirkel lager en gång
+    if (!circleLayerRef.current) {
+      circleLayerRef.current = L.layerGroup().addTo(mapRef.current);
+    }
+
+    const layer = circleLayerRef.current;
+
+    // Töm lager för att undvika att cirklar ritas om och om igen
+    layer.clearLayers();
+
+    L.circle([Number(coords.latitude), Number(coords.longitude)], {radius: 3000})
+    .bindPopup("Cirkeln representerar zonen som en cykel får köras i").openPopup()
+    .addTo(layer);
+  }, [coords])
 
   /**
    * Rerender markers on new bike events
