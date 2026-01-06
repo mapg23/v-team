@@ -40,12 +40,12 @@ class BikeService {
      * @param {boolean} occupied True or false.
      */
     async setBikeStatus(bike, parkedOK, occupied) {
-        console.log("Set status with booleans", bike.id, parkedOK, occupied);
+        // console.log("Set status with booleans", bike.id, parkedOK, occupied);
         let bikeStatus = parkedOK ? 10 : 20;
 
         bikeStatus = bike.battery > 20 ? bikeStatus : 50;
 
-        await this.updateBikeStatus(bike.id, bikeStatus, occupied);
+        await this._updateBikeStatus(bike.id, bikeStatus, occupied);
     }
 
     /**
@@ -55,7 +55,7 @@ class BikeService {
      * @param {object} data The data tu update ex: {status: 30}
      * @returns {Object} res The result of the update.
      */
-    async updateBikeStatus(bikeId, status, occupied) {
+    async _updateBikeStatus(bikeId, status, occupied) {
         await this.findBikeById(bikeId);
         const apiRes = await this.bikesModel.updateBike(
             bikeId,
@@ -81,7 +81,7 @@ class BikeService {
                 }),
             });
 
-        console.log(bikeRes);
+        // console.log(bikeRes);
 
         if (bikeRes.status != 200) {
             throw new Error("Could not set new status in bike brain");
@@ -93,17 +93,17 @@ class BikeService {
     /**
      * Starts a bike.
      * It creates a scooter_in_use row with who, hwere, when info.
-     * Sets bike to occupied, status to 40 in database and on bike.
+     * Sets bike to occupied in db - and status to 40 in database and on bike.
      * @param {object} bikeData An object With info about the bike about to start.
      * @returns bikeInUse - An object with information of the started bike.
      */
     async startBike(bikeData) {
         await this.createBikeInUse(bikeData);
         const bikeInUse = await this.findBikeInUseByBikeId(bikeData.scooter_id);
+        const status = 40;
+        const occupied = true;
 
-
-        console.log(bikeInUse);
-        await this.updateBikeStatus(bikeInUse.scooter_id, 40, 1);
+        await this._updateBikeStatus(bikeInUse.scooter_id, status, occupied);
 
         return bikeInUse;
     }
@@ -116,23 +116,24 @@ class BikeService {
      * @param {bool} parkedOk Parking status.
      */
     async stopBike(bike, bikeInUseId, parkedOk) {
-        let bikeIsOccupied = true;
+        let occupied = true;
 
         await this.removeBikeInUse(bikeInUseId);
 
-        bikeIsOccupied = false;
+        occupied = false;
 
-        await this.setBikeStatus(bike, parkedOk, bikeIsOccupied);
+        await this.setBikeStatus(bike, parkedOk, occupied);
     }
 
     // Can be called from bikeRoute and start/end trip.
-    async updateBike(bikeId, data) {
+    async updateBikeZones(bikeId, data) {
         const zone = await this.locationService.determineZone(data.latitude, data.longitude);
 
-        console.log(data);
+        if (!zone) {throw new Error("Could not determine bikes zone.");};
+
         data.current_zone_type = zone.type,
         data.current_zone_id = zone.id;
-        console.log(data);
+
         const res = await this.bikesModel.updateBike(bikeId, data);
 
         return res;

@@ -2,7 +2,6 @@ import tripsModel from "../models/trips.mjs";
 import BikeService from "../services/bikeService.mjs";
 import WalletsService from "../services/walletService.mjs";
 import PricingService from "./pricingService.mjs";
-import LocationService from "./locationService.mjs";
 
 //potential refactor: controller gets bike & wallet.
 
@@ -12,7 +11,6 @@ class TripService {
         bikeService = BikeService,
         walletsService = WalletsService,
         pricingService = PricingService,
-        locationService = LocationService,
     ) {
         /**
          * Inject the models class is depending on.
@@ -21,7 +19,6 @@ class TripService {
         this.bikeService = bikeService;
         this.walletsService = walletsService;
         this.pricingService = pricingService;
-        this.LocationService = locationService;
     }
 
     /**
@@ -58,6 +55,7 @@ class TripService {
         if (wallet.balance <= 0) {
             throw new Error(`Users wallet ${wallet.id} has insufficiant funds`);
         }
+        await this.bikeService.updateBikeZones(bikeId, bike);
 
         const bikeData = {
             user_id: userId,
@@ -82,7 +80,6 @@ class TripService {
         const isoFormatDate = now.toISOString();
         const datetimeFormat = isoFormatDate.replace("T", " ").split(".")[0];
 
-        console.log(datetimeFormat);
         return datetimeFormat;
     }
 
@@ -97,6 +94,9 @@ class TripService {
     async endTrip(bikeId) {
         const bikeInUse = await this.bikeService.findBikeInUseByBikeId(bikeId);
         const bike = await this.bikeService.findBikeById(bikeInUse.scooter_id);
+
+        await this.bikeService.updateBikeZones(bikeId, bike);
+
         const parkedOk =
             bike.current_zone_type === "parking" ||
             bike.current_zone_type === "charging";

@@ -110,7 +110,7 @@ class LocationService {
             zone.type = "parking";
             zone.id = isParked;
         }
-
+        console.log(zone);
         return zone;
     }
 }
