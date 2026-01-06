@@ -76,7 +76,7 @@ export default function InspectCityView() {
       (bike) => bike.city_id === Number(cityId)
     );
     const bikesAvailableCount = bikeObjectsInCity.filter(
-      (bike) => bike.status === 10
+      (bike) => bike.occupied === 0
     ).length;
     const bikesUsedCount = bikeObjectsInCity.length - bikesAvailableCount;
 
