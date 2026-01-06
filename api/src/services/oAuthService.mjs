@@ -1,18 +1,19 @@
 import jwtService from "./jwtService.mjs";
 import createUsers from "../models/users.mjs";
+import walletService from "./walletService.mjs";
 
 export const userModel = createUsers();
 
-const oauthService = {
+const oAuthService = {
     /**
-   * Takes a unique code, used to get an access token from Github.
-   * The access token gives us right to see the data defined in
-   * our scope on the initial request from frontend.
+   * Takes a unique code and a code verifier, used to get an access token from Github.
+   * The access token combined with the code verifier gives us right to see the
+   * data defined in our scope on the initial request from frontend.
    * @param   {string} code         Code from Oatuh provider
-   * @returns {string} access_token Access token from Oatuh provider
+   * @param   {string} codeVerifier The PKCE code verifyer is sent again from backend
+   * @returns {string} accessToken  Access token from Oatuh provider
    */
     getAccessToken: async function (code, codeVerifier) {
-        console.log(codeVerifier);
         const res = await fetch("https://github.com/login/oauth/access_token", {
             method: "POST",
             headers: { Accept: "application/json" },
@@ -24,9 +25,8 @@ const oauthService = {
                 code_verifier: codeVerifier,
             }),
         });
-        const { access_token, error } = await res.json();
 
-        console.log("access or error: ", access_token, error);
+        const { access_token: accessToken, error } = await res.json();
 
         if (error) {
             const err = new Error(`Failed getting Github token: ${error}`);
@@ -36,7 +36,7 @@ const oauthService = {
             throw err;
         }
 
-        return access_token;
+        return accessToken;
     },
 
     /**
@@ -44,10 +44,10 @@ const oauthService = {
    * @param   {string} access_token token provided by GitHub
    * @returns {string} Users email
    */
-    getUserEmail: async function (access_token) {
+    getUserEmail: async function (accessToken) {
         const emailsResponse = await fetch("https://api.github.com/user/emails", {
             headers: {
-                Authorization: `Bearer ${access_token}`,
+                Authorization: `Bearer ${accessToken}`,
                 Accept: "application/vnd.github+json",
                 "X-GitHub-Api-Version": "2022-11-28",
             },
@@ -79,38 +79,32 @@ const oauthService = {
     oAuthLogin: async function (rawState, encryptedState, code, codeVerifier) {
         const decryptedState = await jwtService.verifyToken(encryptedState);
 
-        console.log("state compare: ", decryptedState, rawState);
         if (decryptedState !== rawState) {
             throw new Error("Failed to authenticate state");
         }
 
         const accessToken = await this.getAccessToken(code, codeVerifier);
 
-        console.log(accessToken);
         const userEmail = await this.getUserEmail(accessToken);
         const user = await this.findOrCreateOauthUser(userEmail);
-        const token = await jwtService.createToken(user.id);
+        const token = await jwtService.createToken({
+            userId: user.id,
+            userRole: user.role,
+        });
 
-        return token;
+        return {token, userId: user.id};
     },
 
     /**
-   * Will find a user in our database by email, or create one.
-   * Username: <email>
-   * password: null
-   * email: <email>
-   * oauth: true
-   * @param   {string} email
-   * @returns {object} A user object
-   */
+     * Will find a user in our database by email, or create one.
+     * Username: <email>
+     * password: null
+     * email: <email>
+     * oauth: true
+     * @param   {string} email
+     * @returns {object} A user object
+     */
     findOrCreateOauthUser: async function (email) {
-        if (process.env.NODE_ENV !== "test") {
-            // To see working functionality
-            console.log("Find or create: ", email);
-            const data = { id: 1, email: email };
-
-            return data;
-        }
         let user;
 
         const result = await userModel.getUserByEmail(email);
@@ -121,15 +115,15 @@ const oauthService = {
             const created = await userModel.createUser({
                 username: email,
                 email: email,
-                password: null,
+                password: "-",
                 oauth: true,
-                role: user,
             });
 
             if (created.insertId) {
-                const newUser = await userModel.getUserById(created.insertId);
+                await walletService.createWalletForUser(created.insertId);
+                const userRes = await userModel.getUserById(created.insertId);
 
-                user = newUser[0];
+                user = userRes[0];
             } else {
                 throw new Error("User did not exist, and could not be created");
             }
@@ -139,4 +133,4 @@ const oauthService = {
     },
 };
 
-export default oauthService;
+export default oAuthService;

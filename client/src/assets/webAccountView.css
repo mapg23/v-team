@@ -1,0 +1,138 @@
+/* Root sizing */
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
+}
+
+/* Page layout */
+.web-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Content area under TopBar */
+.web-content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+/* Limit width so it doesn't touch edges */
+.web-top-panel,
+.web-bottom-row {
+    width: 100%;
+    max-width: 1200px;
+    /* adjust to taste */
+}
+
+/* Top panel */
+.web-top-panel {
+    flex: 1;
+    background: #f0f0f0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+/* Bottom row */
+.web-bottom-row {
+    flex: 2;
+    display: flex;
+    gap: 24px;
+}
+
+/* Bottom columns */
+.web-bottom-col {
+    flex: 1;
+    background: #e0e0e0;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.web-top-panel {
+    display: flex;
+}
+
+.web-top-panel-left {
+    /* background-color: yellow; */
+    width: 10%;
+}
+
+.web-top-panel-right {
+    /* background-color: blue; */
+    width: 100%;
+    padding: 1rem;
+}
+
+.web-avatar-container {
+    /* background-color: red; */
+    max-width: 250px;
+    max-height: 250px;
+}
+
+.web-avatar-container>img {
+    width: 100%;
+    height: 100%;
+}
+
+.web-bottom-title {
+    text-align: center;
+}
+
+
+/* Optional: responsiveness */
+@media (max-width: 768px) {
+    .web-bottom-row {
+        flex-direction: column;
+    }
+}
+
+/* TOP PANEL FORM */
+
+.web-form {
+    margin: 0 auto;
+    /* horizontal centering */
+    width: fit-content;
+    /* shrink grid to its content */
+    display: grid;
+    grid-template-columns: auto 1fr auto 1fr;
+    gap: 1rem 1.5rem;
+    align-items: center;
+    /* background-color: red; */
+}
+
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-field label {
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.form-field input {
+    padding: 0.5rem;
+}
+
+
+.g-1 {
+    grid-column: 1 / 2;
+}
+
+.g-2 {
+    grid-column: 2 / 3;
+}
+
+.g-norm {
+    grid-column: 1 / 3;
+    /* span both columns */
+}

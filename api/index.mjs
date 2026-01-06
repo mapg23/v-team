@@ -5,6 +5,8 @@ import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
+import authMiddleware from "./src/middleware/authMiddleware.mjs";
+
 import authRoutes from "./src/routes/authRoutes.mjs";
 import createUserRouter from "./src/routes/userRoutes.mjs";
 import createCityRouter from "./src/routes/cityRoutes.mjs";
@@ -32,26 +34,14 @@ app.use(cors({
 }));
 
 app.set("json spaces", 2);
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 // Döljer Express-version
 app.disable("x-powered-by");
 
-// ----------- Routes -----------
-app.use(`/api/${version}/auth`, authRoutes);
-// if (process.env.NODE_ENV !== "test") {app.use(authMiddleware);} // Everything below gets secured
-app.use(`/api/${version}`, createUserRouter());
-app.use(`/api/${version}`, createCityRouter());
-app.use(`/api/${version}`, createBikeRouter());
-app.use(`/api/${version}`, createStationRouter());
-app.use(`/api/${version}`, createParkingRouter());
-app.use(`/api/${version}/trips`, tripRoutes);
-app.use(`/api/${version}/payments`, paymentRoutes);
-app.use(`/api/${version}/prices`, priceRoutes);
-app.use(`/api/${version}/wallets`, walletRoutes);
-
-// -------- Socket.io
+// -------- Socket.io ( MÅST LIGGA HÄR UPPE)
 const server = createServer(app);
 const io = new Server(server, {
+    maxHttpBufferSize: 10 * 1024 * 1024,
     cors: {
         origin: "*",
         methods: ["GET", "POST"],
@@ -83,6 +73,35 @@ app.post("/telemetry", (req, res) => {
     // Skicka något svar så klienten inte hänger
     res.status(200).json({ ok: true });
 });
+
+
+
+// ------------------------------
+// ----------- Routes -----------
+// ------------------------------
+app.use(`/api/${version}/auth`, authRoutes);
+
+// - Applies authMiddleware to all routes after this point -
+if (process.env.NODE_ENV === "test") {
+    // Mini middleware, sets all users to admin for tests
+    app.use((req, _res, next) => {
+        req.user = { id: 1, role: "user" };
+        next();
+    });
+} else {
+    app.use(authMiddleware);
+}
+
+app.use(`/api/${version}`, createUserRouter());
+app.use(`/api/${version}`, createCityRouter());
+app.use(`/api/${version}`, createBikeRouter());
+app.use(`/api/${version}`, createStationRouter());
+app.use(`/api/${version}`, createParkingRouter());
+
+app.use(`/api/${version}/trips`, tripRoutes);
+app.use(`/api/${version}/payments`, paymentRoutes);
+app.use(`/api/${version}/prices`, priceRoutes);
+app.use(`/api/${version}/wallets`, walletRoutes);
 
 // Startar server med Socket.IO
 server.listen(port, "0.0.0.0", async () => {

@@ -28,7 +28,7 @@ jobs:
         working-directory: ${{ matrix.folder }}
 
       - name: Run Jest Tests
-        run: npm test -- --ci --coverage
+        run: npm run test:raw -- --ci --coverage
         working-directory: ${{ matrix.folder }}
 
       - name: Run Artillery Tests

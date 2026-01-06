@@ -16,8 +16,8 @@ const app = express();
 const port = process.env.BIKE_PORT || 7071;
 
 // To support encoded bodies
-app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb" }));
 
 // Routes
 app.use('/', infoRoutes);
@@ -28,7 +28,6 @@ app.use('/', bikeRoute);
 // Priorities telemetry messages.
 worker.on('message', (msg) => {
     if (msg.type === "telemetry") {
-        console.log("inside worker messages");
         forwardToMain(msg.data);
         return;
     }

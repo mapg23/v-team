@@ -44,7 +44,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `wallets` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `balance` int(11) NOT NULL DEFAULT 0
+  `balance` decimal(11,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -154,7 +154,9 @@ CREATE TABLE `scooter_in_use` (
   `scooter_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `start_time` datetime NOT NULL,
-  `expected_end_time` datetime DEFAULT NULL
+  `start_latitude` decimal(9,6) NOT NULL,
+  `start_longitude` decimal(9,6) NOT NULL,
+  `start_zone_type` enum('charging','parking') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- --------------------------------------------------------
@@ -170,10 +172,10 @@ CREATE TABLE `trips` (
   `cost` decimal(10,2) NOT NULL,
   `start_latitude` decimal(9,6) NOT NULL,
   `start_longitude` decimal(9,6) NOT NULL,
-  `start_zone_type` varchar(64),
+  `start_zone_type` enum('charging','parking') DEFAULT NULL,
   `end_latitude` decimal(9,6) DEFAULT NULL,
   `end_longitude` decimal(9,6) DEFAULT NULL,
-  `end_zone_type` varchar(64),
+  `end_zone_type` enum('charging','parking') DEFAULT NULL,
   `start_time` datetime NOT NULL,
   `end_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
@@ -266,7 +268,7 @@ ALTER TABLE `scooters`
 --
 ALTER TABLE `scooter_in_use`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `scooter_id` (`scooter_id`),
+  ADD UNIQUE KEY `scooter_id` (`scooter_id`),
   ADD KEY `user_id` (`user_id`);
 
 --

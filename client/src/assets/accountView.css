@@ -33,6 +33,7 @@
 }
 
 .payment-icon {
+    padding-left: 10px;
     font-size: 18px;
 }
 
@@ -63,4 +64,32 @@
 .details-card-saldo {
     padding: 0;
     margin: 0;
+}
+
+
+.account-buttons {
+    margin: 0;
+    padding: 0;
+}
+
+.account-buttons-body {
+    padding: 1rem;
+    margin: 10px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.account-buttons-body>button {
+    padding: 1rem;
+    border: 2px solid rgb(240, 240, 240);
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    color: black;
+}
+
+.account-buttons-body>button:active {
+    background-color: red;
+    background-color: #c8c8c8;
+
 }

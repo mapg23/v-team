@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import API from "../../config";
 
 import CheckoutForm from "../../components/payments/CheckoutForm";
 import AmountSelector from "../../components/payments/AmountSelector";
@@ -16,6 +15,7 @@ import "./PaymentView.css";
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC);
 
 export default function PaymentView() {
+  const API = "http://localhost:9091/api/v1";
   const [clientSecret, setClientSecret] = useState("");
 
   const [selectedAmount, setSelectedAmount] = useState("");
@@ -30,9 +30,10 @@ export default function PaymentView() {
     })
       .then((res) => {
         if (!res.ok) {
-            throw new Error(`could not connect with stripe ${res.status}`)
+          throw new Error(`could not connect with stripe ${res.status}`)
         }
-        return res.json()})
+        return res.json()
+      })
       .then((data) => setClientSecret(data.clientSecret));
 
   }, [selectedAmount]);
@@ -45,13 +46,13 @@ export default function PaymentView() {
 
   return (
     <div className="container payment-container">
-        <AmountSelector onSelect={setSelectedAmount} />
-        
-        {clientSecret && (
-        <Elements options={{clientSecret, appearance, loader}} stripe={stripePromise}>
-            <CheckoutForm />
+      <AmountSelector onSelect={setSelectedAmount} />
+
+      {clientSecret && (
+        <Elements options={{ clientSecret, appearance, loader }} stripe={stripePromise}>
+          <CheckoutForm />
         </Elements>
-        )}
+      )}
     </div>
   );
 }

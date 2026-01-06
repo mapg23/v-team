@@ -1,5 +1,5 @@
 "use strict";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { CreditCard, Wallet } from "lucide-react";
@@ -7,10 +7,14 @@ import { CreditCard, Wallet } from "lucide-react";
 import TopBar from "../components/TopBar";
 import Navigation from "../components/NavigationBar";
 
+import { useAuth } from "../components/AuthProvider";
+
 import "../assets/accountView.css";
 
 export default function AccountView() {
     const navigate = useNavigate();
+    const { logout, userId } = useAuth();
+    const [balance, setBalance] = useState(null);
 
     const handleHome = () => {
         navigate('/', { replace: true })
@@ -23,6 +27,20 @@ export default function AccountView() {
     const handlePaymentMethod = () => {
         console.log("payment")
     }
+
+    const handleAddBalanceMethod = () => {
+
+    }
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login', { replace: true });
+    }
+
+    useEffect(() => {
+
+    })
+
 
     return (
         <>
@@ -58,23 +76,22 @@ export default function AccountView() {
                                 </div>
 
                                 <div className="details-card-saldo">
-                                    <p>123 000:-</p>
+                                    <p>{balance}:-</p>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div className="account-buttons">
+                        <div className="account-buttons-body">
+                            <button className="logout-button" onClick={handleAddBalanceMethod}>Lägg till i saldo</button>
+                            <button className="logout-button" onClick={handleLogout}>Logout</button>
+                        </div>
+                    </div>
                 </div>
-
-                <div className="account-logout">
-                    <h1>Logout</h1>
-                </div>
-
                 <div className="navigation">
                     <Navigation />
                 </div>
             </div>
-
-
         </>
     );
 }

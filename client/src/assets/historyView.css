@@ -1,0 +1,80 @@
+.history-wrapper {
+    overflow: scroll;
+}
+
+
+.History-body {
+    padding: 1rem;
+}
+
+.History-card {
+    padding: 1rem;
+    border: 2px solid rgb(240, 240, 240);
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    /* background-color: pink; */
+}
+
+.History-card-body {
+    padding: 0;
+    margin: 0;
+}
+
+
+.account-buttons {
+    margin: 0;
+    padding: 0;
+}
+
+.account-buttons-body {
+    padding: 1rem;
+    margin: 0 px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.account-buttons-body>button {
+    padding: 1rem;
+    border: 2px solid rgb(240, 240, 240);
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    color: black;
+}
+
+.account-buttons-body>button:active {
+    background-color: red;
+    background-color: #c8c8c8;
+}
+
+.history-title {
+    font-size: 2rem;
+
+}
+
+.history-date {
+    font-size: 1.5rem;
+    color: gray;
+}
+
+.history-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+
+    all: unset;
+    /* removes almost everything */
+    cursor: pointer;
+    /* restore pointer behavior */
+    display: block;
+    /* or inline-block / flex */
+    width: 100%;
+
+}
+
+.history-more {
+    display: inline-b;
+    background-color: tan;
+    color: coral
+}

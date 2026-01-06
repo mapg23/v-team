@@ -1,0 +1,6 @@
+projectKey=Vteam
+serverUrl=https://sonarqube.petterssonhome.se
+serverVersion=9.9.8.100196
+dashboardUrl=https://sonarqube.petterssonhome.se/dashboard?id=Vteam
+ceTaskId=AZuORcGBIxnbnOuFOHVO
+ceTaskUrl=https://sonarqube.petterssonhome.se/api/ce/task?id=AZuORcGBIxnbnOuFOHVO
