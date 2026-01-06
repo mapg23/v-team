@@ -1,5 +1,7 @@
+"use strict"
+
 "use strict";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { CreditCard, Wallet } from "lucide-react";
@@ -11,10 +13,8 @@ import { useAuth } from "../components/AuthProvider";
 
 import "../assets/accountView.css";
 
-export default function AccountView() {
+export default function TransactionsView() {
     const navigate = useNavigate();
-    const { logout, userId } = useAuth();
-    const [balance, setBalance] = useState(null);
 
     const handleHome = () => {
         navigate('/', { replace: true })
@@ -32,14 +32,10 @@ export default function AccountView() {
 
     }
 
-    const handleLogout = () => {
-        logout();
+    const logout = () => {
+        const auth = useAuth().logout();
         navigate('/login', { replace: true });
     }
-
-    useEffect(() => {
-
-    })
 
 
     return (
@@ -76,7 +72,7 @@ export default function AccountView() {
                                 </div>
 
                                 <div className="details-card-saldo">
-                                    <p>{balance}:-</p>
+                                    <p>123 000:-</p>
                                 </div>
                             </div>
                         </div>
@@ -84,14 +80,18 @@ export default function AccountView() {
                     <div className="account-buttons">
                         <div className="account-buttons-body">
                             <button className="logout-button" onClick={handleAddBalanceMethod}>Lägg till i saldo</button>
-                            <button className="logout-button" onClick={handleLogout}>Logout</button>
+                            <button className="logout-button">Logout</button>
                         </div>
                     </div>
                 </div>
+
+
                 <div className="navigation">
                     <Navigation />
                 </div>
             </div>
+
+
         </>
     );
 }

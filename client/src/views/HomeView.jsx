@@ -9,10 +9,15 @@ import TopBar from "../components/TopBar";
 import Navigation from "../components/NavigationBar";
 import { socket } from "../components/socket";
 
+import { useAuth } from "../components/AuthProvider";
+
+import "leaflet.markercluster";
+
+
 export default function HomeView() {
     const navigate = useNavigate();
     const params = useParams();
-    const cityId = 1 // Change to param
+    const cityId = 1; // Change to param
 
     const [loading, setLoading] = useState(true);
 
@@ -33,10 +38,16 @@ export default function HomeView() {
         used: null
     });
 
+    function rentBike(id) {
+        console.log(`Hyr cykel med id: ${id}`)
+
+        navigate(`/bike/${id}`, { replace: true });
+    }
+
     function updateBikes(allBikes) {
-        const bikesInCity = allBikes.filter((bike) => bike.city_id === Number(cityId));
-        setBikes(bikesInCity);
-        updateBikeStatus(bikesInCity);
+        // const bikesInCity = allBikes.filter((bike) => bike.city_id === Number(cityId));
+        setBikes(allBikes);
+        updateBikeStatus(allBikes);
     }
 
     function updateBikeStatus(bikes) {
@@ -59,29 +70,34 @@ export default function HomeView() {
 
     }
 
-    // socket useEffect.
     useEffect(() => {
-        socket.on("bikes", (data) => {
+        const onBikes = (data) => {
             updateBikes(data);
-        });
+        };
+
+        const onConnect = () => {
+            console.log("socket connected", socket.id);
+        };
+
+        socket.on("connect", onConnect);
+        socket.on("bikes", onBikes);
 
         return () => {
-            socket.disconnect();
+            socket.off("connect", onConnect);
+            socket.off("bikes", onBikes);
         };
     }, [updateBikes]);
 
 
+
     useEffect(() => {
         async function fetchData() {
-            setcityDetails(await MapModel.getCityDetailsByID(cityId));
+            let details = await MapModel.getCityDetailsByID(cityId);
 
-            await MapModel.startBikeSync();
-
-            setParkingZones(await MapModel.getParkingZonesInCity(cityId));
-
-            setChargingZones(await MapModel.getChargingStationsInCity(cityId));
-
-            setLoading(false);
+            if (details.id = cityId) {
+                setcityDetails(details)
+                setLoading(false);
+            }
         }
         fetchData();
 
@@ -117,6 +133,7 @@ export default function HomeView() {
                         bikes={bikes}
                         parkingZones={parkingZones}
                         chargingZones={chargingZones}
+                        bikeRentCallback={rentBike}
                     />
                 </div>
 
