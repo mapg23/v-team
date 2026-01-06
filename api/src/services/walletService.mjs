@@ -69,6 +69,14 @@ class WalletService {
 
         return newBalance;
     }
+    async createWalletForUser(userId) {
+        const res = await walletsModel.createWallet({user_id: userId});
+
+        if (!res.insertId) {
+            throw new Error(`Could not create wallet for User ${userId}`);
+        }
+        return res;
+    }
 }
 export { WalletService };
 export default new WalletService();

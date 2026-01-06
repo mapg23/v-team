@@ -46,7 +46,7 @@ export default function createUsers(db = dbDefault) {
         getUserByEmail: async function getUserByEmail(email) {
             return await db.select(
                 'users',
-                ['id', 'username', 'email'],
+                ['*'],
                 'email = ?',
                 [email]
             );

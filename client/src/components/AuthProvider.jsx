@@ -9,18 +9,26 @@ export const AuthProvider = ({ children }) => {
         () => localStorage.getItem("isLoggedIn") === "true"
     );
 
-    const login = () => {
+    const [userId, setUserId] = useState(
+        () => localStorage.getItem("userId")
+    );
+
+    const login = (id) => {
         setIsLoggedIn(true);
+        setUserId(id);
         localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userId", id);
     };
 
     const logout = () => {
         setIsLoggedIn(false);
+        setUserId(null);
         localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userId");
     };
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+        <AuthContext.Provider value={{ isLoggedIn, userId, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

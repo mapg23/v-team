@@ -12,6 +12,7 @@ export default function MapComponent({
   bikes,
   parkingZones,
   chargingZones,
+  bikeRentCallback
 }) {
   console.log("MapComponent rendered");
   const containerRef = useRef(null); // DOM NODE
@@ -133,14 +134,29 @@ export default function MapComponent({
             <td>${bike.city_id}</td>
           </tr>
           <tr>
-            <th>Speed:</th>
-            <td>${bike.speed}</td>
+            <td colspan="2">
+              <button class="rent-bike-btn" data-bike-id="${bike.id}">
+                Hyr cykel
+              </button>
+            </td>
           </tr>
           </table>
           `
         )
         .openPopup()
         .addTo(map);
+
+      marker.on("popupopen", () => {
+        const btn = document.querySelector(
+          `.rent-bike-btn[data-bike-id="${bike.id}"]`
+        );
+
+        if (btn) {
+          btn.onclick = () => bikeRentCallback(bike.id)
+        }
+      });
+
+
       markersRef.current.push(marker);
     });
   }, [bikes, scooterIcon]);

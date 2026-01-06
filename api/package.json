@@ -6,7 +6,7 @@
     "scripts": {
         "start": "nodemon index.mjs",
         "eslint": "eslint .",
-        "test:raw": "jest --detectOpenHandles",
+        "test:raw": "jest",
         "test:ci": "jest --passWithNoTests",
         "test": "c8 --reporter=lcov --reporter=text npm run test:raw"
     },
@@ -35,6 +35,7 @@
         "globals": "^16.5.0",
         "jest": "^30.2.0",
         "json-server": "^1.0.0-beta.3",
-        "supertest": "^7.1.4"
+        "supertest": "^7.1.4",
+        "c8": "^10.1.3"
     }
 }
