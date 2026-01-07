@@ -44,14 +44,14 @@ const bikeService = {
 
       if (!response.ok) {
         throw new Error(
-          `HTTP error on fetchDocuments! Status: ${response.status}`
+          `HTTP error on getSingleBike! Status: ${response.status}`
         );
       }
 
       const responseData = await response.json();
       return responseData;
     } catch (error) {
-      console.error("fetchDocuments error:", error);
+      console.error("getSingleBike error:", error);
       return [];
     }
   },
