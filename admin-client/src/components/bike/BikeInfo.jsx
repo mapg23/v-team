@@ -17,30 +17,28 @@ import BikeStyle from "./BikeStyle.module.css";
 export default function BikeInfo({ bikeId }) {
   const [loading, setLoading] = useState(true);
   const [bikeInfo, setBikeInfo] = useState(null);
-  // const [bikeTrip, setBikeTrip] = useState(null);
   const navigate = useNavigate();
 
   /**
    * Get data based on bikeId passed from parent
    */
-  useEffect(() => {
-    async function getData() {
-      if (!bikeId) return;
-      const bikeData = await BikeService.getSingleBike(bikeId);
-      if (bikeData.id) {
-        const bikeInCity = await CityService.getCityDetailsById(bikeData.city_id);
-        if (bikeInCity.name) {
-          bikeData.city_name = bikeInCity.name;
-        }
-        setBikeInfo(bikeData);
+  async function getData() {
+    if (!bikeId) return;
+    const bikeData = await BikeService.getSingleBike(bikeId);
+    if (bikeData.id) {
+      const bikeInCity = await CityService.getCityDetailsById(bikeData.city_id);
+      if (bikeInCity.name) {
+        bikeData.city_name = bikeInCity.name;
       }
-      // if (bikeData.occupied) {
-      //   const allBikesInUse = await BikeService.getAllBikesInUse();
-      //   const currentBikeTrip = allBikesInUse.find((bike) => bike.id === bikeData.id);
-      //   setBikeTrip(currentBikeTrip)
-      // }
-      setLoading(false);
+      setBikeInfo(bikeData);
     }
+    setLoading(false);
+  }
+
+  /**
+   * fetch data when bikeId is changed
+   */
+  useEffect(() => {
     getData();
   }, [bikeId]);
 
@@ -55,8 +53,10 @@ export default function BikeInfo({ bikeId }) {
    * Stop a bike from running - useful if user is stealing bike
    */
   async function stopBike() {
-    const stopBike = await TripService.stopCurrentTrip(bikeInfo.id)
-    console.log(stopBike)
+    const stopBike = await TripService.stopCurrentTrip(bikeInfo.id);
+    if (stopBike.id) {
+      getData();
+    }
   }
 
   /**
@@ -79,8 +79,17 @@ export default function BikeInfo({ bikeId }) {
         ) : (
           <MdElectricScooter size={50} color="red"></MdElectricScooter>
         )} */}
-        <button className={bikeInfo.occupied ? BikeStyle["show"] : BikeStyle["hidden"]}onClick={stopBike}>
-          <BsFillSignStopFill size={35} color="red" title="Stop bike from getting stolen!"/>
+        <button
+          className={
+            bikeInfo.occupied ? BikeStyle["show"] : BikeStyle["hidden"]
+          }
+          onClick={stopBike}
+        >
+          <BsFillSignStopFill
+            size={35}
+            color="red"
+            title="Stop bike from getting stolen!"
+          />
           Stoppa cykel
         </button>
       </div>
