@@ -3,16 +3,13 @@ import {
   MapContainer,
   TileLayer,
   FeatureGroup,
-  Marker,
-  Popup,
 } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import MapController from "./MapController";
 import BikeMarkers from "./BikeMarkers";
-import ParkingZones from "./ParkingZones";
-import ChargingZones from "./ChargingZones";
+import ParkingZones from "./ParkingZoneMarkers";
+import ChargingZones from "./ChargingZoneMarkers";
 import { useState } from "react";
-import { FaBeer } from "react-icons/fa";
 
 /**
  * This is the main component for leaftlet-map
