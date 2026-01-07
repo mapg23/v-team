@@ -32,13 +32,14 @@ app.use(cors({
 }));
 
 app.set("json spaces", 2);
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 // Döljer Express-version
 app.disable("x-powered-by");
 
 // -------- Socket.io ( MÅST LIGGA HÄR UPPE)
 const server = createServer(app);
 const io = new Server(server, {
+    maxHttpBufferSize: 10 * 1024 * 1024,
     cors: {
         origin: "*",
         methods: ["GET", "POST"],

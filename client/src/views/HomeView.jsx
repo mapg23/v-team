@@ -11,11 +11,13 @@ import { socket } from "../components/socket";
 
 import { useAuth } from "../components/AuthProvider";
 
+import "leaflet.markercluster";
+
 
 export default function HomeView() {
     const navigate = useNavigate();
     const params = useParams();
-    const cityId = 1 // Change to param
+    const cityId = 1; // Change to param
 
     const [loading, setLoading] = useState(true);
 
@@ -43,9 +45,9 @@ export default function HomeView() {
     }
 
     function updateBikes(allBikes) {
-        const bikesInCity = allBikes.filter((bike) => bike.city_id === Number(cityId));
-        setBikes(bikesInCity);
-        updateBikeStatus(bikesInCity);
+        // const bikesInCity = allBikes.filter((bike) => bike.city_id === Number(cityId));
+        setBikes(allBikes);
+        updateBikeStatus(allBikes);
     }
 
     function updateBikeStatus(bikes) {

@@ -16,8 +16,8 @@ const app = express();
 const port = process.env.BIKE_PORT || 7071;
 
 // To support encoded bodies
-app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb" }));
 
 // Routes
 app.use('/', infoRoutes);
