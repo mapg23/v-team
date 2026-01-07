@@ -14,14 +14,7 @@ export const AuthProvider = ({ children }) => {
     );
 
     const checkLoggedin = () => {
-        let jwt = localStorage.getItem("jwt") ? false : true;
-        let userId = localStorage.getItem("userId") ? false : true;
-
-        if (!jwt || !userId) {
-            return false;
-        }
-
-        return true;
+        return localStorage.getItem("jwt") ? false : true;
     }
 
     const login = (id) => {

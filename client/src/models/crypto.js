@@ -1,4 +1,5 @@
 // C
+import { sha256 as jsSha256 } from "js-sha256";
 
 export function generateRandomString(length) {
   const chars =
@@ -13,18 +14,26 @@ export function generateRandomString(length) {
 // Enodes string with sha256, recommended way
 // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest#basic_example
 async function sha256(string) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(string);
-  return crypto.subtle.digest("SHA-256", data);
+  if (crypto?.subtle) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(string);
+    return crypto.subtle.digest("SHA-256", data);
+  }
+
+  // Fallback (Android WebView / HTTP / PWA)
+  return Uint8Array.from(
+    jsSha256.arrayBuffer(string)
+  );
 }
 
 // https://stackoverflow.com/questions/59911194/how-to-calculate-pckes-code-verifier
-function base64UrlEncode(verifier) {
-  return btoa(String.fromCharCode(...new Uint8Array(verifier)))
+function base64UrlEncode(buffer) {
+  return btoa(String.fromCharCode(...new Uint8Array(buffer)))
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=+$/, "");
 }
+
 
 // Creates challange and verifier for PKCE OAuth 2.1
 export async function createPKCE() {

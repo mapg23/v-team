@@ -3,7 +3,7 @@
     "name": "pwa-sample",
     "icons": [
         {
-            "src": "/wapp.png",
+            "src": "public/rull.png",
             "sizes": "200x200",
             "type": "image/png"
         }
