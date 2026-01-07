@@ -19,6 +19,7 @@ import tripRoutes from "./src/routes/tripRoutes.mjs";
 import paymentRoutes from "./src/routes/paymentRoutes.mjs";
 import priceRoutes from "./src/routes/priceRoutes.mjs";
 import walletRoutes from "./src/routes/walletRoutes.mjs";
+import routingService from "./src/services/routingService.mjs";
 
 const app = express();
 const port = process.env.API_PORT || 9091;
@@ -74,6 +75,20 @@ app.post("/telemetry", (req, res) => {
     res.status(200).json({ ok: true });
 });
 
+app.post("/routing-machine", async (req, res) => {
+    try {
+        const coords = req.body.coords;
+
+        console.log(coords);
+        const result = await routingService.generateRoute(coords);
+
+        console.log("RESULT IN ROUTER: ", result);
+        return res.json(result);
+    } catch (err) {
+        console.error(err);
+        return res.json(err);
+    }
+});
 
 
 // ------------------------------
