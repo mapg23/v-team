@@ -24,6 +24,7 @@ jest.mock("../../src/models/users.mjs", () => {
 });
 // Import it here to run it:
 import { userModel } from "../../src/services/authService.mjs";
+import walletService from "../../src/services/walletService.mjs";
 
 describe("authService", () => {
     // beforeEach(() => {
@@ -47,6 +48,7 @@ describe("authService", () => {
     });
 
     test("registerUser, success", async () => {
+        jest.spyOn(walletService, "createWalletForUser").mockReturnValue("OK");
         userModel.getUserByEmail.mockResolvedValue([]);
 
         bcrypt.hash.mockResolvedValue("hashed password");

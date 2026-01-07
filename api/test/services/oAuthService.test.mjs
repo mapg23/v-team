@@ -18,6 +18,7 @@ jest.mock("../../src/models/users.mjs", () => {
 });
 // Import it here to run it:
 import { userModel } from "../../src/services/oAuthService.mjs";
+import walletService from "../../src/services/walletService.mjs";
 
 describe("oAuthService", () => {
     afterEach(() => {
@@ -146,11 +147,13 @@ describe("oAuthService", () => {
     });
 
     test("findOrCreateOauthUser, new user success", async () => {
+        jest.spyOn(walletService, "createWalletForUser").mockReturnValue("OK");
         userModel.getUserByEmail.mockResolvedValue([]);
         userModel.createUser.mockResolvedValue({ insertId: 2 });
         userModel.getUserById.mockResolvedValue([
             { id: 1, email: "test@test.test" },
         ]);
+
 
         const user = await oAuthService.findOrCreateOauthUser("test@test.test");
 
