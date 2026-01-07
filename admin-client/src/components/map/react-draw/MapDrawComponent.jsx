@@ -10,19 +10,23 @@ import { EditControl } from "react-leaflet-draw";
 import MapController from "./MapController";
 import BikeMarkers from "./BikeMarkers";
 import ParkingZones from "./ParkingZones";
+import ChargingZones from "./ChargingZones";
 import { useState } from "react";
 import { FaBeer } from "react-icons/fa";
 
 /**
  * This is the main component for leaftlet-map
  * @param {Object} coords Renders map based on lat long coordinates
- * @param {Array}  bikes Array of bikeobjects
+ * @param {action} method provided from parent, call when draw:create event is triggered
+ * @param {Array<Object>} parkingZones Array of parkingZone Objects
+ * @param {Array<Object>} bikes Array of bike objects
  * @returns
  */
 export default function MapDrawComponent({
   coords,
   action,
   parkingZones,
+  chargingZones,
   bikes,
 }) {
   // Only render elements when loading is false
@@ -33,14 +37,11 @@ export default function MapDrawComponent({
   }, []);
 
   /**
-   * Call provided action method with the coordinates from Rectangle
-   * Circlar: e.layer => _mRadius, lat, lng
-   * Polygon: e.layer => [_latlngs]
-   * @param {layer} e layer of the draw object
+   * Call provided action method with event
+   * @param {e} e event of draw:created 
    */
   function onCreate(e) {
-    var layer = e.layer;
-    action(e.layer.getLatLngs());
+    action(e.layer);
   }
 
   if (loading) return <p>laddar karta..</p>;
@@ -60,8 +61,13 @@ export default function MapDrawComponent({
       />
       ;{/* CHILD Components */}
       <MapController center={coords} />
+
       {/* {ParkingZones} */}
       <ParkingZones zones={parkingZones} />
+
+      {/* {charingZones} */}
+      <ChargingZones zones={chargingZones} />
+
       {/* SKAPA GEOMETRI */}
       <FeatureGroup>
         <EditControl
