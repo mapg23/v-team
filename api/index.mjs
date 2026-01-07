@@ -82,7 +82,20 @@ app.post("/routing-machine", async (req, res) => {
         console.log(coords);
         const result = await routingService.generateRoute(coords);
 
-        console.log("RESULT IN ROUTER: ", result);
+        return res.json(result);
+    } catch (err) {
+        console.error(err);
+        return res.json(err);
+    }
+});
+
+app.post("/mega-routing-machine", async (req, res) => {
+    try {
+        const coordsArray = req.body;
+
+        console.log(coordsArray);
+        const result = await routingService.generateManyRoutes(coordsArray);
+
         return res.json(result);
     } catch (err) {
         console.error(err);

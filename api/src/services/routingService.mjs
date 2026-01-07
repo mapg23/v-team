@@ -115,7 +115,6 @@ class RoutingService {
      * @returns A route in json format.
      */
     async generateRoute(coords) {
-        console.log(coords);
         // Add more destinations
         const dest1 = await this.getRandomDestination(coords);
 
@@ -138,6 +137,24 @@ class RoutingService {
 
         return route;
     };
+
+    /**
+     * Takes an array of coordinate objects and returns routes.
+     * @param {Array} coordsArray [ {"x": "14.12487", "y": "57.860041"}, {...} ... ]
+     * @returns {Array} An array of smaller objects with just the coordinates,
+     * to keep the size down.
+     */
+    async generateManyRoutes(coordsArray) {
+        let routesArray = [];
+
+        for (const coords of coordsArray) {
+            const route = await this.generateRoute(coords);
+
+            routesArray.push(route?.routes[0]?.geometry || []);
+        }
+        return routesArray;
+    }
+
     /**
      * Checks which city the coord is in.
      * Gets a random destination inside the city center of that city.
