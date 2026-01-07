@@ -3,6 +3,7 @@ import CityDropDown from "../../components/input/CityDropDown";
 import CityService from "../../services/cities";
 import { useEffect, useState } from "react";
 import ParkingService from "../../services/parkings";
+import CreateParkingZoneForm from "../../components/forms/ParkingZoneForm";
 
 export default function ParkingView() {
   // render map based on city coordinates
@@ -15,12 +16,9 @@ export default function ParkingView() {
   const [parkingZones, setParkingZones] = useState(null);
   const [cityId, setCityId] = useState(1);
 
-  // render parking zone form
-  const [renderForm, setRenderForm] = useState(false);
-
   // New parking zone
   const [parkingZoneCoords, setParkingZoneCoords] = useState(null);
-  const [zoneName, setZoneName] = useState("");
+  const [renderParkingZoneForm, setRenderParkingZoneForm] = useState(false);
 
   /**
    * Fetch data on useEffect, triggered by CityId
@@ -59,12 +57,14 @@ export default function ParkingView() {
 
   /**
    * Set coordinates for the new parking zone
-   * @param {Array} coordinates array of coordinates for the parking zone
+   *
+   * @param {Object} layer leaftlet layer type from draw:create
    */
-  async function initNewParkingZone(parkingZoneCoords) {
+  async function initNewParkingZone(layer) {
+    const parkingZoneCoords = layer.getLatLngs();
     if (Array.isArray(parkingZoneCoords) && parkingZoneCoords.length > 0) {
       setParkingZoneCoords(parkingZoneCoords[0]);
-      setRenderForm(true);
+      setRenderParkingZoneForm(true);
     } else {
       console.log("invalid parkingZoneCoords", parkingZoneCoords);
     }
@@ -74,15 +74,13 @@ export default function ParkingView() {
    * Create parkingzone in database
    * @param {event} e
    */
-  async function handleSubmit(e) {
+  async function handleSubmit() {
     // const { cityId, maxLat, maxLong, minLat, minLong } = req.body;
-    e.preventDefault();
     const cords = parkingZoneCoords.slice();
 
     const lats = cords.map((c) => c.lat);
     const lngs = cords.map((c) => c.lng);
 
-    console.log(lats, lngs);
     const zoneObj = {
       cityId: cityId,
       maxLat: Math.max(...lats),
@@ -99,23 +97,12 @@ export default function ParkingView() {
   return (
     <div className="wrapper">
       <div className="card">
-        <CityDropDown action={initCityid} />
-        <p>{renderForm ? "ja" : "nej"}</p>
-        {renderForm ? (
+        <div className="card">
+          <CityDropDown action={initCityid} />
+        </div>
+        {renderParkingZoneForm ? (
           <div className="card">
-            <form onSubmit={handleSubmit}>
-              <div className="input">
-                <label htmlFor="zoneName">
-                  Välj ett namn för parkeringen:{" "}
-                </label>
-                <input
-                  type="text"
-                  id="zoneName"
-                  onChange={(e) => setZoneName(e.target.value)}
-                />
-              </div>
-              <button type="submit">Spara parkering!</button>
-            </form>
+            <CreateParkingZoneForm onFormSubmit={handleSubmit} />
           </div>
         ) : (
           ""
