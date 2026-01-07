@@ -1,7 +1,5 @@
 import API from "../config/api.js";
 
-const token = sessionStorage.getItem("jwt");
-
 /**
  * TripService handling all routes regarding trips made by users
  * Based on endpoints: https://docs.google.com/spreadsheets/d/1Tza3ZSUOJJRQJeSquKQbE6fRy4d3zNGafAVQxUVNg9M/edit?gid=0#gid=0
@@ -13,6 +11,7 @@ const TripService = {
    * @returns
    */
   getTripsByUserId: async function getTripsByUserId(userId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/trips/user/${userId}`, {
         method: "GET",
@@ -40,6 +39,7 @@ const TripService = {
    * @returns json
    */
   getAllTrips: async function getAllTrips() {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/trips`, {
         method: "GET",
@@ -68,8 +68,10 @@ const TripService = {
    * @returns json
    */
   stopCurrentTrip: async function stopCurrentTrip(bikeId) {
+    const token = sessionStorage.getItem("jwt");
+    console.log(bikeId)
     try {
-      const response = await fetch(`${API}/trips/${bikeId}`, {
+      const response = await fetch(`${API}/trips/bike/${bikeId}/end`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -79,13 +81,14 @@ const TripService = {
 
       if (!response.ok) {
         throw new Error(
-          `HTTP error on stopCurrentTrip! Status: ${response.status}`
+          `HTTP error on stopCurrentTrip! Status: ${response.status} ${response.message}`
         );
       }
 
       return await response.json();
     } catch (error) {
       console.error(error);
+      console.error(error.m);
       return [];
     }
   },

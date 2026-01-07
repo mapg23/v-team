@@ -1,7 +1,5 @@
 import API from "../config/api.js";
 
-const token = sessionStorage.getItem("jwt");
-
 /**
  * Bike services handling all routes regarding bikes
  * based on endpoints: https://docs.google.com/spreadsheets/d/1Tza3ZSUOJJRQJeSquKQbE6fRy4d3zNGafAVQxUVNg9M/edit?gid=0#gid=0
@@ -12,6 +10,7 @@ const bikeService = {
    * @returns {JSON}
    */
   getAllBikes: async function getAllBikes() {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/bikes`, {
         method: "GET",
@@ -33,6 +32,7 @@ const bikeService = {
    * @returns {JSON}
    */
   getSingleBike: async function getSingleBike(bikeId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/bikes/${bikeId}`, {
         method: "GET",
@@ -62,6 +62,7 @@ const bikeService = {
    * @returns {JSON}
    */
   deleteBike: async function deleteBike(bikeId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/bikes/${bikeId}`, {
         method: "DELETE",
@@ -83,6 +84,7 @@ const bikeService = {
    * @returns {JSON}
    */
   createNewBike: async function createNewBike(bike) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const bikeObj = {
         ...bike,
@@ -109,6 +111,7 @@ const bikeService = {
    * @returns {JSON}
    */
   startBikeSync: async function startBikeSync() {
+    const token = sessionStorage.getItem("jwt");
     console.log("bike serivce called");
     try {
       const response = await fetch(`${API}/bikes/sync`, {
@@ -145,6 +148,8 @@ const bikeService = {
       zoneId: `${zoneId}`,
     };
 
+    const token = sessionStorage.getItem("jwt");
+
     try {
       const response = await fetch(`${API}/bikes/${bikeId}/move`, {
         body: JSON.stringify(moveObject),
@@ -171,6 +176,8 @@ const bikeService = {
       zoneType: "parking", //
       zoneId: `${zoneId}`,
     };
+
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/bikes/${bikeId}/move`, {
         body: JSON.stringify(moveObject),
@@ -193,6 +200,7 @@ const bikeService = {
    * @returns {JSON}
    */
   getAllBikesInUse: async function getAllBikesInUse() {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/trips/bikes-in-use`, {
         method: "GET",

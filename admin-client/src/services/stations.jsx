@@ -1,7 +1,5 @@
 import API from "../config/api.js";
 
-const token = sessionStorage.getItem("jwt");
-
 /**
  * Station services handling all routes regarding stations
  * Based on endpoints: https://docs.google.com/spreadsheets/d/1Tza3ZSUOJJRQJeSquKQbE6fRy4d3zNGafAVQxUVNg9M/edit?gid=0#gid=0
@@ -11,6 +9,7 @@ const stationService = {
    * Get all stations
    */
   getAllStations: async function getAllStations() {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/stations`, {
         method: "GET",
@@ -39,6 +38,7 @@ const stationService = {
    * @returns {Object} Json object
    */
   getStationDetails: async function getStationDetails(id) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/stations${id}`, {
         method: "GET",
@@ -70,6 +70,7 @@ const stationService = {
   getBikesInChargingStation: async function getBikesInChargingStation(
     charingStationId
   ) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(
         `${API}/stations/${charingStationId}/bikes`,

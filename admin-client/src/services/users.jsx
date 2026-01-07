@@ -1,7 +1,5 @@
 import API from "../config/api.js";
 
-const token = sessionStorage.getItem("jwt");
-
 /**
  * User service handling all routes regarding users
  * Based on: https://docs.google.com/spreadsheets/d/1Tza3ZSUOJJRQJeSquKQbE6fRy4d3zNGafAVQxUVNg9M/edit?gid=0#gid=0
@@ -12,6 +10,7 @@ const userService = {
    * @returns {JSON}
    */
   getAllUsers: async function getAllUsers() {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/users`, {
         method: "GET",
@@ -40,6 +39,7 @@ const userService = {
    * @returns {JSON}
    */
   deleteAllUsers: async function deleteAllUsers() {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/users`, {
         method: "DELETE",
@@ -69,6 +69,7 @@ const userService = {
    * @returns {JSON}
    */
   createNewUser: async function createNewUser(userData) {
+    const token = sessionStorage.getItem("jwt");
     const userObject = {
       ...userData,
     };
@@ -101,6 +102,7 @@ const userService = {
    * @returns {JSON}
    */
   getUserDetails: async function getUserDetails(userId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/users/${userId}`, {
         method: "GET",
@@ -130,6 +132,7 @@ const userService = {
    * @param {Object} userData - Objekt med keys och values att uppdatera
    */
   updateUser: async function updateUser(userId, userData) {
+    const token = sessionStorage.getItem("jwt");
     const userObject = {
       ...userData,
     };
@@ -161,6 +164,7 @@ const userService = {
    * @param {Object} userData - Objekt med keys och values att uppdatera
    */
   patchUser: async function patchUser(userId, userData) {
+    const token = sessionStorage.getItem("jwt");
     const userObject = {
       ...userData,
     };
@@ -191,6 +195,7 @@ const userService = {
    * @returns {JSON}
    */
   deleteUser: async function deleteUser(userId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/users/${userId}`, {
         method: "DELETE",
@@ -221,6 +226,7 @@ const userService = {
    * @returns {JSON}
    */
   getUserRentalDetails: async function getUserRentalDetails(userId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/users/${userId}/rentals`, {
         method: "GET",
@@ -251,6 +257,7 @@ const userService = {
    * @returns {JSON}
    */
   editUserRental: async function editUserRental(userId, userData) {
+    const token = sessionStorage.getItem("jwt");
     const userObject = {
       ...userData,
     };
@@ -285,6 +292,7 @@ const userService = {
    * @returns {JSON}
    */
   patchUserRental: async function patchUserRental(userId, userData) {
+    const token = sessionStorage.getItem("jwt");
     const userObject = {
       ...userData,
     };
@@ -317,6 +325,7 @@ const userService = {
    * @returns {JSON}
    */
   deleteUserRental: async function deleteUserRental(userId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/users/${userId}/rentals`, {
         method: "DELETE",
@@ -345,6 +354,7 @@ const userService = {
    * @returns {JSON}
    */
   getUserBalanceDetails: async function getUserBalanceDetails(userId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/wallets/user/${userId}`, {
         method: "GET",

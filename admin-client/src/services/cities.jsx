@@ -1,7 +1,5 @@
 import API from "../config/api.js";
 
-const token = sessionStorage.getItem("jwt");
-
 /**
  * City service for handling all routes regarding cities.
  */
@@ -13,6 +11,7 @@ const cityService = {
       { id: 3, name: "Malmö" }
    */
   getAllCities: async function getAllCities() {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/cities`, {
         method: "GET",
@@ -41,6 +40,7 @@ const cityService = {
    * @param {int} cityId get city with id
    */
   getCityDetailsById: async function getCityDetailsById(id) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/cities/${id}`, {
         method: "GET",
@@ -62,6 +62,7 @@ const cityService = {
    * @returns {Object} new city
    */
   addNewCity: async function addNewCity(city) {
+    const token = sessionStorage.getItem("jwt");
     const cityObject = {
       name: `${city}`,
     };
@@ -87,6 +88,7 @@ const cityService = {
    * @returns {Object} new city
    */
   deleteCity: async function deleteCity(cityId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/cities/${cityId}`, {
         // body: JSON.stringify(cityObject),
@@ -110,6 +112,7 @@ const cityService = {
    * @return {Json} array of objects
    */
   getChargingStationsInCity: async function getChargingStationsInCity(cityId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/cities/${cityId}/stations`, {
         method: "GET",
@@ -132,6 +135,7 @@ const cityService = {
    * @return {Json} array of objects
    */
   getParkingZonesInCity: async function getParkingZonesInCity(cityId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/cities/${cityId}/parkings`, {
         method: "GET",
@@ -157,6 +161,7 @@ const cityService = {
     ];
    */
   getAllBikesInCity: async function getAllBikesInCity(id) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/cities/${id}/bikes`, {
         method: "GET",
@@ -182,6 +187,7 @@ const cityService = {
     ];
    */
   getSingleBikeInCity: async function getSingleBikeInCity(cityId, bikeId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/cities/${cityId}/bikes/${bikeId}`, {
         method: "GET",
@@ -210,6 +216,7 @@ const cityService = {
    * @returns {Object} Price details for curreny city
    */
   getPriceDetailsByCityId: async function getPriceDetailsByCityId(cityId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/prices/${cityId}`, {
         method: "GET",
@@ -233,6 +240,7 @@ const cityService = {
     cityId,
     data
   ) {
+    const token = sessionStorage.getItem("jwt");
     
     // Map dataObj to match price sevice in API
     const dataObj = {
