@@ -15,7 +15,7 @@ const stationService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -32,6 +32,37 @@ const stationService = {
       return [];
     }
   },
+  /**
+   * Create a new station
+   * @param {Object} stationObject containing {
+   * id, name, latitude, longitude, capacity}
+   */
+  createNewChargingStation:
+    async function createNewChargingStationstationObject(stationObject) {
+      const token = sessionStorage.getItem("jwt");
+      try {
+        const response = await fetch(`${API}/stations`, {
+          method: "POST",
+          body: JSON.stringify(stationObject),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `HTTP error on createNewChargingStation! Status: ${response.status}`
+          );
+        }
+
+        const responseData = await response.json();
+        return responseData;
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    },
 
   /**
    * Get details for this station
@@ -44,7 +75,7 @@ const stationService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -78,7 +109,7 @@ const stationService = {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
