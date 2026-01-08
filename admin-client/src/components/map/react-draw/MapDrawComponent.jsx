@@ -25,6 +25,7 @@ export default function MapDrawComponent({
   parkingZones,
   chargingZones,
   bikes,
+  editOptions
 }) {
   // Only render elements when loading is false
   const [loading, setLoading] = useState(false);
@@ -58,26 +59,29 @@ export default function MapDrawComponent({
       />
       ;{/* CHILD Components */}
       <MapController center={coords} />
-
       {/* {ParkingZones} */}
-      <ParkingZones zones={parkingZones} />
-
+      {parkingZones ? <ParkingZones zones={parkingZones} /> : ""}
       {/* {charingZones} */}
-      <ChargingZones zones={chargingZones} />
-
+      {chargingZones ? <ChargingZones zones={chargingZones} /> : ""}
       {/* SKAPA GEOMETRI */}
-      <FeatureGroup>
-        <EditControl
-          position="topright"
-          onCreated={onCreate}
-          draw={{
-            rectangle: false, // bug with undeclared variable type
-            circle: false,
-            circlemarker: false,
-            polyline: false,
-          }}
-        />
-      </FeatureGroup>
+      {editOptions.editable ? (
+        <FeatureGroup>
+          <EditControl
+            position="topright"
+            onCreated={onCreate}
+            draw={{
+              rectangle: editOptions.rectangle,
+              circle: editOptions.circle,
+              circlemarker: editOptions.circlemarker,
+              polyline: editOptions.polyline,
+              polygon: editOptions.polygon,
+              marker: editOptions.marker,
+            }}
+          />
+        </FeatureGroup>
+      ) : (
+        ""
+      )}
     </MapContainer>
   );
 }
