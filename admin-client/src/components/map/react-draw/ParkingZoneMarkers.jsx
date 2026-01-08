@@ -1,4 +1,5 @@
-import { Rectangle, Popup } from "react-leaflet";
+import { Rectangle, Popup, Marker } from "react-leaflet";
+import {useParkingIcon} from "../../icons/react-icons";
 
 /**
  * This component is rendering parkingZones
@@ -6,18 +7,24 @@ import { Rectangle, Popup } from "react-leaflet";
 export default function ParkingZoneMarkers({ zones }) {
   if (!zones) return <p>No parking zones</p>;
 
+  // PARKING ICON
+  const icon = useParkingIcon();
+
   return (
     <>
       {zones.map((zone) => (
-        <Rectangle key={zone.id}
+        <Rectangle
+          key={zone.id}
           bounds={[
             [zone.min_lat, zone.min_long], // south-west
             [zone.max_lat, zone.max_long], // north-east
           ]}
         >
-          <Popup>
-            {zone.id}
-          </Popup>
+          <Marker
+            icon={icon}
+            position={[zone.max_lat, zone.min_long]}>
+            <Popup>Parkerings id: {zone.id}</Popup>
+          </Marker>
         </Rectangle>
       ))}
     </>
