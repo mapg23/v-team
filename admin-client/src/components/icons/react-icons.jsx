@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
-import { FaParking } from "react-icons/fa";
+import { FaChargingStation, FaParking } from "react-icons/fa";
 import styles from "./iconStyles.module.css";
 
 /**
@@ -31,7 +31,7 @@ function useParkingIcon() {
 function useChargingIcon() {
   return useMemo(() => {
     return L.divIcon({
-      html: renderToStaticMarkup(<FaParking size={24} />),
+      html: renderToStaticMarkup(<FaChargingStation size={24} />),
       className: styles["charging-station"],
       iconSize: [24, 24],
       iconAnchor: [12, 24],
