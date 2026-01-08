@@ -124,7 +124,7 @@ export default function ChargingView() {
 
   return (
     <div className="wrapper">
-      <h1>Charging View</h1>
+      <h1>Laddstationer</h1>
       <div className="card">
         <div className="card">
           <CityDropDown action={initCityid} />
