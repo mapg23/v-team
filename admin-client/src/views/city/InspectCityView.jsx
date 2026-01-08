@@ -9,6 +9,7 @@ import { useParams } from "react-router";
 import CityDropDown from "../../components/input/CityDropDown";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../../socket";
+import MapDrawComponent from "../../components/map/react-draw/MapDrawComponent";
 
 /**
  * View for showing a city based on url
@@ -183,7 +184,13 @@ export default function InspectCityView() {
         </div>
       </div>
       <div className="map">
-        <Map
+        {/* <Map
+          coords={cityDetails}
+          bikes={bikes}
+          parkingZones={parkingZonesWithBikes}
+          chargingZones={chargingZonesWithBikes}
+        /> */}
+        <MapDrawComponent
           coords={cityDetails}
           bikes={bikes}
           parkingZones={parkingZonesWithBikes}
