@@ -16,7 +16,7 @@ export default function ParkingTable({ data, action }) {
     "Latidude 2",
     "Longitude 1",
     "Longitude 2",
-    "Antal cyklar"
+    "Action"
   ];
 
   /**
