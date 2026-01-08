@@ -4,6 +4,7 @@ import CityService from "../../services/cities";
 import { useEffect, useState } from "react";
 import ParkingService from "../../services/parkings";
 import CreateParkingZoneForm from "../../components/forms/ParkingZoneForm";
+import ParkingTable from "../../components/table/ParkingTable";
 
 export default function ParkingView() {
   // render map based on city coordinates
@@ -96,9 +97,11 @@ export default function ParkingView() {
 
   return (
     <div className="wrapper">
+      <h1>Parkeringar</h1>
       <div className="card">
         <div className="card">
           <CityDropDown action={initCityid} />
+          {cityCoordinates.latitude && cityCoordinates.longitude ? <ParkingTable data={parkingZones}/> : ""}
         </div>
         {renderParkingZoneForm ? (
           <div className="card">
