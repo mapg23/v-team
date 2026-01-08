@@ -120,6 +120,28 @@ const stationService = {
       return [];
     }
   },
+
+  /**
+   * Delete charging zone
+   * @return {JSON} response
+   */
+  deleteChargingZone: async function deleteChargingZone(zoneId) {
+    const token = sessionStorage.getItem("jwt");
+    try {
+      const response = await fetch(`${API}/stations/${zoneId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  },
 };
 
 export default stationService;
