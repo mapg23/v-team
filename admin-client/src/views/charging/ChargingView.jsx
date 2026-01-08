@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import stationService from "../../services/stations";
 import CreateChargingZoneForm from "../../components/forms/CreateChargingZoneForm";
 import ChargingTable from "../../components/table/ChargingTable";
+import { polygon } from "leaflet";
 
 export default function ChargingView() {
   // render map based on city coordinates
@@ -97,6 +98,19 @@ export default function ChargingView() {
     }
   }, [chargingZoneCoords]);
 
+  /**
+   * Options to include as EditableContent 
+   */
+  const editOptions = {
+    editable: true,
+    marker: true,
+    rectangle: false, 
+    circle: false,
+    circlemarker: false,
+    polyline: false,
+    polygon: false
+  };
+
   return (
     <div className="wrapper">
       <h1>Charging View</h1>
@@ -117,6 +131,7 @@ export default function ChargingView() {
             coords={cityCoordinates}
             action={initChargingZoneCreation}
             chargingZones={chargingZones}
+            editOptions={editOptions}
             // chargingZones={chargingZones}
           />
         ) : (

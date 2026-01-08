@@ -95,13 +95,30 @@ export default function ParkingView() {
     console.log(newParking);
   }
 
+  /**
+   * Options to include as EditableContent
+   */
+  const editOptions = {
+    editable: true,
+    marker: false,
+    rectangle: false,
+    circle: false,
+    circlemarker: false,
+    polyline: false,
+    polygon: true,
+  };
+
   return (
     <div className="wrapper">
       <h1>Parkeringar</h1>
       <div className="card">
         <div className="card">
           <CityDropDown action={initCityid} />
-          {cityCoordinates.latitude && cityCoordinates.longitude ? <ParkingTable data={parkingZones}/> : ""}
+          {cityCoordinates.latitude && cityCoordinates.longitude ? (
+            <ParkingTable data={parkingZones} />
+          ) : (
+            ""
+          )}
         </div>
         {renderParkingZoneForm ? (
           <div className="card">
@@ -115,6 +132,7 @@ export default function ParkingView() {
             coords={cityCoordinates}
             action={initNewParkingZone}
             parkingZones={parkingZones}
+            editOptions={editOptions}
           />
         ) : (
           <p>
