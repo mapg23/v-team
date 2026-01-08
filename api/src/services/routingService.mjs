@@ -1,5 +1,3 @@
-
-import "fs";
 import LocationService from "./locationService.mjs";
 
 /**
@@ -95,9 +93,9 @@ const cityLimits = [
  * This service can provide a surprise route in your city.
  * Pass a coords object:
  *
- *     "coords": {
+ *      {
  *        "x": "14.125001", "y": "57.860000"
- *  }
+ *      }
  *
  * And It will create a route along roads to a random spot in the same city.
  */
@@ -115,15 +113,16 @@ class RoutingService {
      * @returns A route in json format.
      */
     async generateRoute(coords) {
-        // Add more destinations
+        // Add more destinations?
         const dest1 = await this.getRandomDestination(coords);
+        const dest2 = await this.getRandomDestination(coords);
 
+        // overview	simplified (default), full , false
         const fetchUrl = `${this.url}` +
             `${coords.x},${coords.y};` +
-            `${dest1.long},${dest1.lat}` +
-            `?overview=full&geometries=geojson`;
-
-        console.log("Fetching: ", fetchUrl);
+            `${dest1.long},${dest1.lat};` +
+            `${dest2.long},${dest2.lat}` +
+            `?overview=simplified&geometries=geojson`;
 
         const res = await fetch(fetchUrl, {
             headers: {
@@ -131,11 +130,17 @@ class RoutingService {
             },
         });
 
+        if (!res.ok) {
+            console.log(fetchUrl);
+            throw new Error(`OSRM returned ${res.status}, ${res.message}`);
+        }
+
         const route = await res.json();
+        const waypoints = route?.routes[0]?.geometry?.coordinates || [];
 
-        console.log("res: ", route);
+        console.log("length: ", waypoints.length);
 
-        return route;
+        return waypoints;
     };
 
     /**
@@ -147,11 +152,22 @@ class RoutingService {
     async generateManyRoutes(coordsArray) {
         let routesArray = [];
 
-        for (const coords of coordsArray) {
-            const route = await this.generateRoute(coords);
+        /**
+         *   Sequential promises: 300 msec - 11sek (edgecase)
+         */
+        // for (const coords of coordsArray) {
+        //     const route = await this.generateRoute(coords);
 
-            routesArray.push(route?.routes[0]?.geometry || []);
-        }
+        //     routesArray.push(route?.routes[0]?.geometry || []);
+        // }
+        /**
+         * parallell promises:
+         * ~ Twice as fast, does it change order? does it matter?
+         */
+        routesArray = await Promise.all(
+            coordsArray.map(coords => this.generateRoute(coords))
+        );
+
         return routesArray;
     }
 
@@ -169,11 +185,13 @@ class RoutingService {
             if (this.locationService.isInZone(city.full, lat, long)) {
                 const destination = this.calculateRandomCoordsInZone(city.cityCenter);
 
-                console.log(destination, city.name);
+                // console.log(destination, city.name);
 
                 return destination;
             }
         }
+        // If out of bounds, return position, seems to not generate waypoints in routing machine.
+        return { lat, long };
     }
 
     /**

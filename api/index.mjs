@@ -77,9 +77,12 @@ app.post("/telemetry", (req, res) => {
 
 app.post("/routing-machine", async (req, res) => {
     try {
-        const coords = req.body.coords;
+        const coords = req.body;
 
-        console.log(coords);
+        if (!coords) {
+            throw new Error('Missing "coords" in request body {x:<>, y:<>}');
+        }
+
         const result = await routingService.generateRoute(coords);
 
         return res.json(result);
@@ -93,7 +96,10 @@ app.post("/mega-routing-machine", async (req, res) => {
     try {
         const coordsArray = req.body;
 
-        console.log(coordsArray);
+        if (!coordsArray) {
+            throw new Error('Missing "coordsArray" in request body [{x:<>, y:<>}]');
+        }
+
         const result = await routingService.generateManyRoutes(coordsArray);
 
         return res.json(result);
