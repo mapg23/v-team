@@ -103,7 +103,7 @@ class RoutingService {
     constructor(
         locationService = LocationService
     ) {
-        this.url = "http://osrm:5000/route/v1/bike/";
+        this.url = "http://osrm:5000/route/v1/bicycle/";
         this.cityLimits = cityLimits;
         this.locationService = locationService;
     }
@@ -136,9 +136,15 @@ class RoutingService {
         }
 
         const route = await res.json();
-        const waypoints = route?.routes[0]?.geometry?.coordinates || [];
+        // format: [ [14.183816,57.776748], [...]... ]
+        const waypointsArr = route?.routes[0]?.geometry?.coordinates || [];
 
-        console.log("length: ", waypoints.length);
+        console.log("length: ", waypointsArr.length);
+        // format: [ { x: 14.183816, y: 57.776748 }, {...}... ]
+        const waypoints = waypointsArr.map( coords =>({
+            x: coords[0],
+            y: coords[1]
+        }));
 
         return waypoints;
     };
@@ -191,6 +197,7 @@ class RoutingService {
             }
         }
         // If out of bounds, return position, seems to not generate waypoints in routing machine.
+        // But does not disturb simulation
         return { lat, long };
     }
 
