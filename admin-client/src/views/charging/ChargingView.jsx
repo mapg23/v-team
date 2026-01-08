@@ -4,6 +4,7 @@ import CityService from "../../services/cities";
 import { useEffect, useState } from "react";
 import stationService from "../../services/stations";
 import CreateChargingZoneForm from "../../components/forms/CreateChargingZoneForm";
+import ChargingTable from "../../components/table/ChargingTable";
 
 export default function ChargingView() {
   // render map based on city coordinates
@@ -102,6 +103,7 @@ export default function ChargingView() {
       <div className="card">
         <div className="card">
           <CityDropDown action={initCityid} />
+          {cityCoordinates.latitude && cityCoordinates.longitude ? <ChargingTable data={chargingZones}/> : ""}
         </div>
         {renderChargingZoneForm ? (
           <div className="card">
