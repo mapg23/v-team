@@ -1,22 +1,21 @@
-import { useEffect } from "react";
-import { Marker, useMap, Popup } from "react-leaflet";
-import { MdElectricScooter } from "react-icons/md";
-import { divIcon } from "leaflet";
-import { renderToStaticMarkup, renderToString } from "react-dom/server";
-import styling from "./Map-component.module.css";
+import { Marker, Popup } from "react-leaflet";
+import { useBikeIcon } from "../../icons/react-icons";
+import { useNavigate } from "react-router-dom";
 
 /**
- * This component is responsible for rendering Markers
+ * This component is responsible for rendering bike markers
  */
 export default function BikeMarkers({ bikes }) {
-  const iconMarkup = renderToStaticMarkup(
-    <MdElectricScooter />
-  );
-  const scooterIcon = divIcon({
-    html: iconMarkup,
-    className: styling["bike-used"],
-    iconSize: 25
-  });
+  const navigate = useNavigate();
+  const bikeIcons = useBikeIcon();
+
+  /**
+   * Redirect to bike/:id
+   * @param {number} id
+   */
+  function redirectToBike(id) {
+    if (id) navigate(`/bikes/${id}`);
+  }
 
   return (
     <>
@@ -24,9 +23,51 @@ export default function BikeMarkers({ bikes }) {
         <Marker
           key={bike.id}
           position={[bike.cords.y, bike.cords.x]}
-          icon={scooterIcon}
+          icon={bike.occupied ? bikeIcons.used : bikeIcons.free}
         >
-          <Popup>Bike #{bike.id}</Popup>
+          <Popup>
+            <table>
+              <tbody>
+                <tr>
+                  <th>Bike Id:</th>
+                  <td>{bike.id}</td>
+                </tr>
+                <tr>
+                  <th>Status:</th>
+                  <td>{bike.status}</td>
+                </tr>
+                <tr>
+                  <th>Cords:</th>
+                  <td>
+                    {bike.cords.x} {bike.cords.y}
+                  </td>
+                </tr>
+                <tr>
+                  <th>Occupied:</th>
+                  <td>{bike.occupied}</td>
+                </tr>
+                <tr>
+                  <th>City_Id:</th>
+                  <td>{bike.city_id}</td>
+                </tr>
+                <tr>
+                  <th>Zone id:</th>
+                  <td>{bike.current_zone_id}</td>
+                </tr>
+                <tr>
+                  <th>Zone type:</th>
+                  <td>{bike.current_zone_type}</td>
+                </tr>
+                <tr>
+                  <th>Speed:</th>
+                  <td>{bike.speed}</td>
+                </tr>
+              </tbody>
+            </table>
+            <button onClick={() => redirectToBike(bike.id)}>
+              Inspect Bike
+            </button>
+          </Popup>
         </Marker>
       ))}
     </>
