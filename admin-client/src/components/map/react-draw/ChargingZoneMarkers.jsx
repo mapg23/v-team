@@ -9,7 +9,11 @@ export default function ChargingZoneMarkers({ zones }) {
   return (
     <>
       {zones.map((zone) => (
-        <Marker key={zone.id} icon={chargingIcon} position={[zone.latitude, zone.longitude]}>
+        <Marker
+          key={zone.id}
+          icon={chargingIcon}
+          position={[zone.latitude, zone.longitude]}
+        >
           <Popup>
             <table>
               <tbody>
