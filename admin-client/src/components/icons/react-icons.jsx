@@ -1,7 +1,11 @@
 import { useMemo } from "react";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
-import { FaChargingStation, FaParking } from "react-icons/fa";
+import {
+  FaChargingStation,
+  FaParking,
+} from "react-icons/fa";
+import { MdElectricScooter } from "react-icons/md";
 import styles from "./iconStyles.module.css";
 
 /**
@@ -39,5 +43,28 @@ function useChargingIcon() {
   }, []);
 }
 
-export {useParkingIcon};
-export {useChargingIcon};
+/**
+ * Custom bike icon
+ * @returns {hook}
+ */
+function useBikeIcon() {
+  return useMemo(() => {
+    const createIcon = (className) =>
+      L.divIcon({
+        html: renderToStaticMarkup(<MdElectricScooter size={24} />),
+        className,
+        iconSize: [24, 24],
+        iconAnchor: [12, 24],
+      });
+
+    return {
+      used: createIcon(`${styles["bike-used"]}`),
+      free: createIcon(`${styles["bike-free"]}`),
+    };
+  }, []);
+}
+
+
+export { useParkingIcon };
+export { useChargingIcon };
+export { useBikeIcon };
