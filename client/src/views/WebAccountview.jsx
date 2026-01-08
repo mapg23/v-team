@@ -15,25 +15,35 @@ export default function WebAccountView() {
 
     const [user, setUser] = useState([]);
 
-    const handleLogout = () => {
-        logout();
-        navigate('/login', { replace: true });
+    const [balance, setBalance] = useState(0);
+    const [trips, setTrips] = useState([]);
+
+    function calcDuration(startTime, endTime) {
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+
+        console.log(`START: ${start}, |, END: ${end}`);
+        const diffMs = end - start;
+
+        const min = Math.floor(diffMs / (1000 * 60));
+        const hours = Math.floor(min / 60)
+        const minutes = min % 60;
+
+        return `${hours} Hours ${minutes} minutes.`;
     }
 
     useEffect(() => {
+        if (localStorage.getItem("isLoggedIn") != "true") {
+            logout();
+            navigate('/login', { replace: true });
 
-        // if (!isLoggedIn) {
-        //     navigate('/login', { replace: true })
-
-        // }
-        // if (!checkLoggedin) {
-        //     navigate('/login', { replace: true })
-        // }
+        }
 
         const fetchData = async () => {
-            console.log(userId);
             if (user.length === 0) {
                 setUser(await UserModel.getUserById(userId));
+                setBalance(await UserModel.getUserBalance(userId))
+                setTrips(await UserModel.getTrips(userId));
             }
         }
         fetchData();
@@ -41,7 +51,24 @@ export default function WebAccountView() {
         if (user.length >= 1) {
             setLoading(false);
         }
-    })
+
+        console.log(trips);
+    });
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login', { replace: true });
+    }
+
+    const handlePayment = () => {
+        navigate('/pay', { replace: true });
+    }
+
+    const handleRemoveAccount = async () => {
+        await UserModel.removeAccount(userId);
+        logout();
+        navigate('/login');
+    }
 
     if (loading) return (
         <>
@@ -59,58 +86,77 @@ export default function WebAccountView() {
                 />
 
                 <div className="web-content-wrapper">
+
                     <div className="web-top-panel">
-                        <div className="web-top-panel-left">
-                            <div className="web-avatar-container">
-                                <img src={avatar} />
-                            </div>
+                        <div className="web-top-avatar">
+                            <img src={avatar} alt="Avatar" />
                         </div>
 
-                        <div className="web-top-panel-right">
+                        <div className="web-top-info">
+                            <h1>Balance: {balance}:-</h1>
+                            <p>
+                                {user[0]['email']} <br />
+                            </p>
+                        </div>
 
-                            <form className="web-form">
-                                <div className="form-field g-1">
-                                    <label htmlFor="username">Username</label>
-                                    <input
-                                        id="username"
-                                        type="text"
-                                        value={user[0].username}
-                                    />
-                                </div>
-
-                                <div className="form-field g-2">
-                                    <label htmlFor="email">Email</label>
-                                    <input
-                                        id="email"
-                                        type="email"
-                                        value={user[0].email}
-                                    />
-                                </div>
-
-                                <div className="form-field g-norm">
-                                    <label htmlFor="other">Other</label>
-                                    <input id="other" type="text" />
-                                </div>
-                            </form>
-
+                        <div className="web-top-actions">
                             <button onClick={handleLogout}>Logga ut</button>
+                            <button onClick={handlePayment}>Lägg till pengar</button>
+                            <button onClick={handleRemoveAccount}>Ta bort konto</button>
                         </div>
-
                     </div>
+
 
                     <div className="web-bottom-row">
 
                         <div className="web-bottom-col">
                             <h2 className="web-bottom-title">
-                                Payment
+                                Priser
                             </h2>
+
+                            <p className="web-bottom-info">
+                                (Baseras på zoner)
+                            </p>
+                            <ul className="price-list">
+                                <li>
+                                    <span>Startkostnad</span>
+                                    <span>15/25:-</span>
+                                </li>
+                                <li>
+                                    <span>Minutkostnad</span>
+                                    <span>2.6/3.0 min</span>
+                                </li>
+                                <li>
+                                    <span>Parkerings kostnad</span>
+                                    <span>75/90:-</span>
+                                </li>
+
+                                <li>
+                                    <span>Rabbat</span>
+                                    <span>50%</span>
+                                </li>
+                            </ul>
                         </div>
 
                         <div className="web-bottom-col">
                             <h2 className="web-bottom-title">
-                                History
+                                Historik
                             </h2>
 
+                            <p className="web-bottom-info">
+                                (För mer info, använd applikationen)
+                            </p>
+
+                            <ul className="price-list">
+
+                                {trips.map(trip => (
+
+                                    <li key={trip.id}>
+                                        <span> #{trip.id} | {trip.cost}:- </span>
+                                        <span>{calcDuration(trip.start_time, trip.end_time)}</span>
+                                    </li>
+                                ))}
+                            </ul>
 
                         </div>
 
@@ -120,61 +166,3 @@ export default function WebAccountView() {
         </>
     )
 }
-
-// return (
-//     <>
-//         <div className="layout">
-
-//             <TopBar
-//                 title="Konto"
-//                 callback={handleTopBarCallback}
-//                 canCallback="yes"
-//             />
-
-//             <div className="content-wrapper">
-
-//                 <div className="Account-info">
-//                     <div className="Account-spacer" />
-//                     <div className="Account-header">
-//                         <h1>Aktiv betalningsmetod</h1>
-
-//                         <div className="payment-method" onClick={handlePaymentMethod}>
-//                             <div className="payment-left">
-//                                 <span className="payment-icon"><CreditCard /></span>
-//                                 <span className="payment-name">Metods namn här</span>
-//                             </div>
-
-//                             <span className="payment-arrow">›</span>
-//                         </div>
-//                     </div>
-
-//                     <div className="Account-body">
-//                         <div className="details-card">
-//                             <div>
-//                                 <h1>Ditt saldo <Wallet /></h1>
-//                             </div>
-
-//                             <div className="details-card-saldo">
-//                                 <p>123 000:-</p>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
-//                 <div className="account-buttons">
-//                     <div className="account-buttons-body">
-//                         <button className="logout-button" onClick={handleAddBalanceMethod}>Lägg till i saldo</button>
-//                         <button className="logout-button">Logout</button>
-//                     </div>
-//                 </div>
-//             </div>
-
-
-//             <div className="navigation">
-//                 <Navigation />
-//             </div>
-//         </div>
-
-
-//     </>
-// );
-// }
