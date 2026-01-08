@@ -6,7 +6,7 @@ import {useParkingIcon} from "../../icons/react-icons";
  */
 export default function ParkingZoneMarkers({ zones }) {
   if (!zones) return <p>No parking zones</p>;
-
+  console.log(zones)
   // PARKING ICON
   const icon = useParkingIcon();
 
@@ -23,7 +23,20 @@ export default function ParkingZoneMarkers({ zones }) {
           <Marker
             icon={icon}
             position={[zone.max_lat, zone.min_long]}>
-            <Popup>Parkerings id: {zone.id}</Popup>
+            <Popup>
+            <table>
+              <tbody>
+                <tr key={zone.id}>
+                  <th>Parkerings Id:</th>
+                  <td>{zone.id}</td>
+                </tr>
+                <tr key="cityid">
+                  <th>Stads id:</th>
+                  <td>{zone.city_id}</td>
+                </tr>
+              </tbody>
+            </table>
+          </Popup>
           </Marker>
         </Rectangle>
       ))}
