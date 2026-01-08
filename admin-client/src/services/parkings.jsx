@@ -61,7 +61,7 @@ const parkingService = {
 
   /**
    * Delete parking zone
-   * @return {JSON} array of objects
+   * @return {Response} response Object
    */
   deleteParkingZone: async function deleteParkingZone(parkId) {
     const token = sessionStorage.getItem("jwt");
@@ -74,7 +74,7 @@ const parkingService = {
         },
       });
 
-      return await response.json();
+      return response
     } catch (error) {
       console.error(error);
       return [];

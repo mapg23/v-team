@@ -22,28 +22,32 @@ export default function ParkingView() {
   const [renderParkingZoneForm, setRenderParkingZoneForm] = useState(false);
 
   /**
+   * Fetch data
+   *
+   */
+  async function fetchData() {
+    // get city details based on params
+    const city = await CityService.getCityDetailsById(cityId);
+    if (city.id) {
+      const coords = {
+        latitude: city.latitude,
+        longitude: city.longitude,
+      };
+      setCityCoordinates(coords);
+      // Get parking zones
+      const pZones = await CityService.getParkingZonesInCity(cityId);
+      if (Array.isArray(pZones) && pZones.length > 0) {
+        setParkingZones(pZones);
+      }
+    }
+  }
+
+  /**
    * Fetch data on useEffect, triggered by CityId
    * cityId is set from selecting a city via CityDropDown component
    */
   useEffect(() => {
-    async function fetchData() {
-      if (!cityId) return;
-
-      // get city details based on params
-      const city = await CityService.getCityDetailsById(cityId);
-      if (city.id) {
-        const coords = {
-          latitude: city.latitude,
-          longitude: city.longitude,
-        };
-        setCityCoordinates(coords);
-        // Get parking zones
-        const pZones = await CityService.getParkingZonesInCity(cityId);
-        if (Array.isArray(pZones) && pZones.length > 0) {
-          setParkingZones(pZones);
-        }
-      }
-    }
+    if (!cityId) return;
     fetchData();
   }, [cityId]);
 
@@ -91,8 +95,22 @@ export default function ParkingView() {
     };
 
     const newParking = await ParkingService.addNewParkingZone(zoneObj);
+    if (newParking.id) {
+      fetchData();
+    }
+  }
 
-    console.log(newParking);
+  /**
+   * Delete parking zone and re-fetch data
+   * @param {Number} zoneId delete zone with <id>
+   */
+  async function deletePZone(zoneId) {
+    if (zoneId) {
+      const response = await ParkingService.deleteParkingZone(zoneId);
+      if (response.ok) {
+        fetchData();
+      }
+    }
   }
 
   /**
@@ -114,7 +132,7 @@ export default function ParkingView() {
         <div className="card">
           <CityDropDown action={initCityid} />
           {cityCoordinates.latitude && cityCoordinates.longitude ? (
-            <ParkingTable data={parkingZones} />
+            <ParkingTable data={parkingZones} action={deletePZone} />
           ) : (
             ""
           )}
