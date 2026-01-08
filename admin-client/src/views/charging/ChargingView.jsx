@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import stationService from "../../services/stations";
 import CreateChargingZoneForm from "../../components/forms/CreateChargingZoneForm";
 import ChargingTable from "../../components/table/ChargingTable";
-import { polygon } from "leaflet";
 
 export default function ChargingView() {
   // render map based on city coordinates
@@ -99,6 +98,19 @@ export default function ChargingView() {
   }, [chargingZoneCoords]);
 
   /**
+   * Delete zone and re-fetch data
+   * @param {Number} zoneId delete zone with <id>
+   */
+  async function deleteZone(zoneId) {
+    if (zoneId) {
+      const response = await stationService.deleteChargingZone(zoneId);
+      if (response.ok) {
+        fetchData();
+      }
+    }
+  }
+
+  /**
    * Options to include as EditableContent 
    */
   const editOptions = {
@@ -116,7 +128,7 @@ export default function ChargingView() {
       <div className="card">
         <div className="card">
           <CityDropDown action={initCityid} />
-          {cityCoordinates.latitude && cityCoordinates.longitude ? <ChargingTable data={chargingZones}/> : ""}
+          {cityCoordinates.latitude && cityCoordinates.longitude ? <ChargingTable data={chargingZones} action={deleteZone}/> : ""}
         </div>
         {renderChargingZoneForm ? (
           <div className="card">
