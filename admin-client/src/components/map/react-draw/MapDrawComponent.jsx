@@ -64,7 +64,7 @@ export default function MapDrawComponent({
       {/* {charingZones} */}
       {chargingZones ? <ChargingZones zones={chargingZones} /> : ""}
       {/* SKAPA GEOMETRI */}
-      {editOptions.editable ? (
+      {editOptions ? (
         <FeatureGroup>
           <EditControl
             position="topright"

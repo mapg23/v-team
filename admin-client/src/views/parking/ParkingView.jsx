@@ -99,7 +99,6 @@ export default function ParkingView() {
    * Options to include as EditableContent
    */
   const editOptions = {
-    editable: true,
     marker: false,
     rectangle: false,
     circle: false,

@@ -102,7 +102,6 @@ export default function ChargingView() {
    * Options to include as EditableContent 
    */
   const editOptions = {
-    editable: true,
     marker: true,
     rectangle: false, 
     circle: false,
