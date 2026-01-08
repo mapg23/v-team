@@ -168,7 +168,7 @@ class RoutingService {
         // }
         /**
          * parallell promises:
-         * ~ Twice as fast, does it change order? does it matter?
+         * ~ Twice as fast. Seems to work.
          */
         routesArray = await Promise.all(
             coordsArray.map(coords => this.generateRoute(coords))

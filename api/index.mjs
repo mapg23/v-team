@@ -75,6 +75,10 @@ app.post("/telemetry", (req, res) => {
     res.status(200).json({ ok: true });
 });
 
+/**
+ * Req body object:
+ * { x: <coordinate>, y: <coordinate> }
+ */
 app.post("/routing-machine", async (req, res) => {
     try {
         const coords = req.body;
@@ -92,6 +96,14 @@ app.post("/routing-machine", async (req, res) => {
     }
 });
 
+/**
+ * Req body: Array av object
+ * [
+ *  { x: <coordinate>, y: <coordinate> },
+ * {...},
+ * ...
+ * ]
+ */
 app.post("/mega-routing-machine", async (req, res) => {
     try {
         const coordsArray = req.body;
