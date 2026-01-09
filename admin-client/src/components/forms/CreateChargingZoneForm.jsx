@@ -1,6 +1,3 @@
-import formstyle from "./Form.module.css";
-import inputstyle from "../input/input.module.css";
-
 import { useState } from "react";
 
 /**
