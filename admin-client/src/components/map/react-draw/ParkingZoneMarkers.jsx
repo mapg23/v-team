@@ -32,6 +32,10 @@ export default function ParkingZoneMarkers({ zones }) {
                     <th>Stads id:</th>
                     <td>{zone.city_id}</td>
                   </tr>
+                  <tr key="bikes">
+                    <th>Cyklar i zon:</th>
+                    <td>{zone.bikes}</td>
+                  </tr>
                 </tbody>
               </table>
             </Popup>

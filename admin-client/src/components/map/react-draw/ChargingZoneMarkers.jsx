@@ -37,6 +37,10 @@ export default function ChargingZoneMarkers({ zones }) {
                   <th>Longitude</th>
                   <td>{zone.longitude}</td>
                 </tr>
+                <tr key="bikes">
+                  <th>Cyklar i zon</th>
+                  <td>{zone.bikes}</td>
+                </tr>
                 <tr key="cap">
                   <th>Kapacitet</th>
                   <td>{zone.capacity}</td>
