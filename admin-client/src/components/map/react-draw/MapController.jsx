@@ -16,7 +16,7 @@ function MapController({ center }) {
       return;
     }
 
-    map.setView([center.latitude, center.longitude], 13, {
+    map.setView([center.latitude, center.longitude], 14, {
       animate: true,
     });
   }, [center, map]);
