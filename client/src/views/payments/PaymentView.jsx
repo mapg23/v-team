@@ -6,6 +6,9 @@ import CheckoutForm from "../../components/payments/CheckoutForm";
 import AmountSelector from "../../components/payments/AmountSelector";
 import "./PaymentView.css";
 
+import { getApiBase } from "../../apiUrl";
+
+
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
@@ -15,17 +18,23 @@ import "./PaymentView.css";
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC);
 
 export default function PaymentView() {
-  const API = "http://localhost:9091/api/v1";
+  const API = getApiBase();
   const [clientSecret, setClientSecret] = useState("");
 
   const [selectedAmount, setSelectedAmount] = useState("");
 
   useEffect(() => {
+    const token = sessionStorage.getItem("jwt");
+
+    console.log(token);
     if (!selectedAmount) { return };
     // Create PaymentIntent as soon as the page loads
     fetch(`${API}/payments/create-intent`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
       body: JSON.stringify({ amount: selectedAmount }),
     })
       .then((res) => {

@@ -2,9 +2,9 @@ import {TripService} from "../../src/services/tripService.mjs";
 
 describe("tripService", () => {
     let trips;
-    let bikes;
-    let parkings;
-    let wallets;
+    let bikeService;
+    let pricingService;
+    let walletService;
     let tripService;
 
     beforeEach(() => {
@@ -14,24 +14,24 @@ describe("tripService", () => {
             updateTrip: jest.fn(),
         };
 
-        bikes = {
-            getBikeById: jest.fn(),
+        bikeService = {
+            findBikeById: jest.fn(),
             updateBike: jest.fn(),
         };
 
-        parkings = {
+        pricingService = {
             getParkings: jest.fn(),
         };
 
-        wallets = {
-            getWalletByUserId: jest.fn(),
+        walletService = {
+            findWalletByUserId: jest.fn(),
             updateWallet: jest.fn(),
         };
 
-        tripService = new TripService(trips, bikes, parkings, wallets);
+        tripService = new TripService(trips, bikeService, walletService, pricingService);
 
         // Standard date to use
-        jest.spyOn(tripService, "getDbDate").mockReturnValue("2025-12-24 10:00:00");
+        jest.spyOn(tripService, "_getDbDate").mockReturnValue("2025-12-24 10:00:00");
     });
 
     afterEach(() => {
@@ -39,7 +39,7 @@ describe("tripService", () => {
     });
 
     test("getDbDate check that date is created", async () => {
-        const date = await tripService.getDbDate();
+        const date = await tripService._getDbDate();
 
         expect(date).toMatch(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/);
     });
@@ -98,79 +98,34 @@ describe("tripService", () => {
     //     expect(result[0].id).toBe(99);
     // });
 
-    // // test("startTrip throws if bike not found", async () => {
-    // //     bikes.getBikeById.mockResolvedValue([]);
-
-    // //     await expect(tripService.startTrip({ userId: 1, bikeId: 666 }))
-    // //         .rejects.toThrow("Bike with id: 666 was not found");
-    // // });
-
-    // test("startTrip throws if wallet is empty", async () => {
-    //     bikes.getBikeById.mockResolvedValue([
-    //         { id: 7, latitude: 59.1111, longitude: 18.1111 }
-    //     ]);
-
-    //     wallets.getWalletByUserId.mockResolvedValue([{
+    // test("startTrip throws if bike not found", async () => {
+    //     bikeService.findBikeById.mockResolvedValue([]);
+    //     walletService.findWalletByUserId.mockResolvedValue({
     //         id: 2,
     //         userId: 1,
-    //         balance: 0
-    //     }]);
+    //         balance: 1
+    //     });
 
-
-    //     await expect(
-    //         tripService.startTrip({ userId: 1, bikeId: 7 })
-    //     ).rejects.toThrow(`Users wallet 2 has insufficiant funds`);
+    //     await expect(tripService.startTrip({ userId: 1, bikeId: 666 }))
+    //         .rejects.toThrow("Bike with id: 666 was not found");
     // });
 
-    // // isInZone / isInParking
-    // test("isInZone returns true when inside", () => {
-    //     const zone = {
-    //         min_lat: 10,
-    //         max_lat: 20,
-    //         min_long: 30,
-    //         max_long: 40
-    //     };
+    test("startTrip throws if wallet is empty", async () => {
+        bikeService.findBikeById.mockResolvedValue([
+            { id: 7, latitude: 59.1111, longitude: 18.1111 }
+        ]);
 
-    //     expect(tripService.isInZone(zone, 15, 35)).toBe(true);
-    // });
-
-    // test("isInParking returns true if any zone matches", async () => {
-    //     parkings.getParkings.mockResolvedValue([
-    //         { min_lat: 10, max_lat: 20, min_long: 30, max_long: 40 }
-    //     ]);
-
-    //     const result = await tripService.isInParking(15, 35);
-
-    //     expect(result).toBe(true);
-    // });
+        walletService.findWalletByUserId.mockResolvedValue({
+            id: 2,
+            userId: 1,
+            balance: 0
+        });
 
 
-    // // calculateCost
-    // test("calculateCost add parking fee when not parked in parking", async () => {
-    //     const bike = { latitude: 1, longitude: 1 };
-    //     const trip = { start_time: "2025-12-24 08:00:00" };
-    //     // endTime: "2025-12-24 10:00:00"
-    //     const cost = await tripService.calculateCost(bike, trip, false);
-    //     // const calculatedCost = 120 * 2.5 + 30 + 80; = 410
-    //     // 2h @ 2.50 / minut + startavgift + felparkering.
-
-    //     expect(cost).toBe("410.00");
-    // });
-
-    // test("calculateCost gives discount when taken into parking", async () => {
-    //     jest.spyOn(tripService, "isInParking").mockResolvedValue(false);
-
-    //     const bike = {};
-    //     const trip = {
-    //         start_time: "2025-12-24 08:00:00",
-    //         start_latitude: 1,
-    //         start_longitude: 1
-    //     };
-
-    //     const cost = await tripService.calculateCost(bike, trip, true);
-
-    //     expect(cost).toBe("315.00");
-    // });
+        await expect(
+            tripService.startTrip({ userId: 1, bikeId: 7 })
+        ).rejects.toThrow(`Users wallet with id 2 has insufficiant funds`);
+    });
 
     // // endTrip
     // test("endTrip updates trip, bike and returns uppdated trip", async () => {

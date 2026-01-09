@@ -46,6 +46,18 @@ const wallets = {
     updateWallet: async function updateWallet(id, data) {
         return await db.update("wallets", data, "id = ?", [id]);
     },
+
+    /**
+     * Log a wallet update.
+     * Auto:        `id`, `created`
+     * Obligatory:  `wallet_id`, `amount`, decimal(11,2), `direction` enum('credit','debit')
+     * Opptional:   `trip_id`, `intent_id`, `comment`.
+     * @param {Object} body - An object containing the wallet data to insert.
+     * @returns {Promise<Array>} An array containing the result from the db operation.
+     */
+    createWalletLog: async function createWallet(body) {
+        return await db.insert("wallet_logs", body);
+    },
 };
 
 export default wallets;
