@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
+import { MapContainer, TileLayer, FeatureGroup, Circle } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import MapController from "./MapController";
 import BikeMarkers from "./BikeMarkers";
@@ -47,14 +47,18 @@ export default function MapDrawComponent({
     <MapContainer
       id="map"
       center={[coords.latitude, coords.longitude]}
-      zoom={13}
+      zoom={14}
       scrollWheelZoom={true}
-      style={{ height: "800px", width: "1000px" }}
+      className="map"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      <Circle
+        center={[coords.latitude, coords.longitude]}
+        radius={3000} // radius in meter
+      ></Circle>
       ;{/* CHILD Components */}
       <MapController center={coords} />
       {/* {ParkingZones} */}
