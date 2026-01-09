@@ -208,14 +208,22 @@ class Simulator {
     }
 
     getBikeStatus(payload) {
+        let index = this.bikes.findIndex(function (device) {
+            return device.getId() === Number(payload.id)
+        });
+
+
         return {
             event: 'retriving bike status',
-            data: this.bikes[Number(payload.id)].getStatus()
+            data: this.bikes[Number(index)].getStatus()
         };
     }
 
     setBikeStatus(payload) {
-        this.bikes[Number(payload.id).setStatus(payload.status)]
+        let index = this.bikes.findIndex(function (device) {
+            return device.getId() === Number(payload.id)
+        });
+        this.bikes[Number(index)].setStatus(payload.status);
         return { event: `id for bike ${payload.id} set to status ${payload.status}` };
     }
 
