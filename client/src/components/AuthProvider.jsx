@@ -6,29 +6,29 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(
-        () => localStorage.getItem("isLoggedIn") === "true"
+        () => sessionStorage.getItem("isLoggedIn") === "true"
     );
 
     const [userId, setUserId] = useState(
-        () => localStorage.getItem("userId")
+        () => sessionStorage.getItem("userId")
     );
 
     const checkLoggedin = () => {
-        return localStorage.getItem("jwt") ? false : true;
+        return sessionStorage.getItem("jwt") ? false : true;
     }
 
     const login = (id) => {
         setIsLoggedIn(true);
         setUserId(id);
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userId", id);
+        sessionStorage.setItem("isLoggedIn", "true");
+        sessionStorage.setItem("userId", id);
     };
 
     const logout = () => {
         setIsLoggedIn(false);
         setUserId(null);
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("userId");
+        sessionStorage.removeItem("isLoggedIn");
+        sessionStorage.removeItem("userId");
     };
 
     return (

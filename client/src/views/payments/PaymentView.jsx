@@ -24,7 +24,7 @@ export default function PaymentView() {
   const [selectedAmount, setSelectedAmount] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("jwt");
+    const token = sessionStorage.getItem("jwt");
 
     console.log(token);
     if (!selectedAmount) { return };
@@ -33,7 +33,7 @@ export default function PaymentView() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authentication: `Bearer ${token}`
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({ amount: selectedAmount }),
     })
