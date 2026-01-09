@@ -1,11 +1,9 @@
-import { useEffect } from "react";
 import { MapContainer, TileLayer, FeatureGroup, Circle } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import MapController from "./MapController";
 import BikeMarkers from "./BikeMarkers";
 import ParkingZones from "./ParkingZoneMarkers";
 import ChargingZones from "./ChargingZoneMarkers";
-import { useState } from "react";
 
 /**
  * This is the main component for leaftlet-map
@@ -25,13 +23,6 @@ export default function MapDrawComponent({
   bikes,
   editOptions,
 }) {
-  // Only render elements when loading is false
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
   /**
    * Call provided action method with event
    * @param {e} e event of draw:created
@@ -39,8 +30,6 @@ export default function MapDrawComponent({
   function onCreate(e) {
     action(e.layer);
   }
-
-  if (loading) return <p>laddar karta..</p>;
 
   return (
     // ------ MÅSTE FINNAS
@@ -59,7 +48,7 @@ export default function MapDrawComponent({
         center={[coords.latitude, coords.longitude]}
         radius={3000} // radius in meter
       ></Circle>
-      ;{/* CHILD Components */}
+      {/* CHILD Components */}
       <MapController center={coords} />
       {/* {ParkingZones} */}
       {parkingZones ? <ParkingZones zones={parkingZones} /> : ""}
