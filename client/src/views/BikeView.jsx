@@ -25,6 +25,8 @@ export default function BikeView() {
     const [tripId, setTripId] = useState(null);
 
     const [time, setTime] = useState(0);
+    const [cost, setCost] = useState(0);
+
     const intervalRef = useRef(null);
     const startRef = useRef(null);
 

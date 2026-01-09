@@ -136,8 +136,6 @@ export default function HistoryView() {
                                             <br />
                                             Cost: {trip.cost} Kr
                                             <br />
-
-                                            <span className="history-more">Click for more information.</span>
                                         </p>
                                     </div>
                                 </div>
