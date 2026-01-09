@@ -115,7 +115,7 @@ const oAuthService = {
             const created = await userModel.createUser({
                 username: email,
                 email: email,
-                password: "-",
+                password: null,
                 oauth: true,
             });
 

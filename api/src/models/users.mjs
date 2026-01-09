@@ -31,7 +31,7 @@ export default function createUsers(db = dbDefault) {
         getUserById: async function getUserById(id) {
             return await db.select(
                 'users',
-                ['id', 'username', 'email'],
+                ['id', 'username', 'email', 'role'],
                 'id = ?',
                 [id]
             );
