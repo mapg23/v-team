@@ -31,7 +31,7 @@ router.get('bike/getStatus/:id', async (req, res) => {
     res.json(response['data']);
 });
 
-router.post('bike/setStatus', async (req, res) => {
+router.post('/bike/setStatus', async (req, res) => {
     let id = req.body.id || null;
     let status = req.body.status || null;
 
