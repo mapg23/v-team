@@ -1,5 +1,5 @@
 "use strict";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import TopBar from "../components/TopBar";
 import Navigation from "../components/NavigationBar";
@@ -10,6 +10,8 @@ import { useAuth } from "../components/AuthProvider";
 
 import TripsModel from "../models/TripsModel";
 
+import "../assets/bikeView.css";
+
 export default function BikeView() {
     const navigate = useNavigate();
     const params = useParams();
@@ -19,6 +21,46 @@ export default function BikeView() {
 
     const [loading, setLoading] = useState(true);
     const [inProgress, setInProgress] = useState(false);
+
+    const [tripId, setTripId] = useState(null);
+
+    const [time, setTime] = useState(0);
+    const intervalRef = useRef(null);
+    const startRef = useRef(null);
+
+
+    function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+
+        return (
+            String(mins).padStart(2, "0") +
+            ":" +
+            String(secs).padStart(2, "0")
+        );
+    }
+
+    const start = () => {
+        if (intervalRef.current) return;
+
+        startRef.current = Date.now();
+
+        intervalRef.current = setInterval(() => {
+            const elapsedTime = (Date.now() - startRef.current) / 1000;
+
+            setTime(elapsedTime);
+        }, 250);
+    };
+
+    const stop = () => {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+    };
+
+    const reset = () => {
+        stop();
+        setTime(0);
+    }
 
 
     function topBarCallback() {
@@ -37,12 +79,17 @@ export default function BikeView() {
         let res = await TripsModel.startTrip(userId, bike);
 
         if (res[0]['id'] !== null) {
+            setTripId(res[0]['id']);
             setInProgress(true);
+            reset();
+            start();
         }
     }
 
     async function HandleStopTrip() {
+        let res = await TripsModel.endTrip(tripId);
         setInProgress(false)
+        stop();
     }
 
     if (loading) return (
@@ -66,13 +113,24 @@ export default function BikeView() {
 
                     {inProgress ? (
                         <>
-                            <h1>In progress (Timer här) </h1>
+                            <div className="bike-in-progress">
 
-                            <p>ID och annat här</p>
+                                <div className="bike-in-progress-header">
 
-                            <button onClick={HandleStopTrip}>
-                                Stop
-                            </button>
+                                    <h1>{formatTime(time)}</h1>
+
+                                    <p>
+                                        Kostnad: ?
+                                        <br />
+                                        Cykel: ?
+                                    </p>
+                                </div>
+
+                                <button onClick={HandleStopTrip}>
+                                    Stop
+                                </button>
+
+                            </div>
                         </>
                     ) : (
                         <button onClick={HandlestartTrip}>
