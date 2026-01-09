@@ -1,12 +1,10 @@
 import { useMemo } from "react";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
-import {
-  FaChargingStation,
-  FaParking,
-} from "react-icons/fa";
+import { FaChargingStation, FaParking } from "react-icons/fa";
 import { MdElectricScooter } from "react-icons/md";
 import styles from "./iconStyles.module.css";
+import { CgProfile } from "react-icons/cg";
 
 /**
  * Module containing icons as React Hooks
@@ -64,7 +62,18 @@ function useBikeIcon() {
   }, []);
 }
 
+/**
+ * User profile
+ * Not rendered in leaflet
+ */
+const CgProfileIcon = (() => {
+  return <CgProfile size={24}></CgProfile>;
+})
 
+// ----------
+// EXPORTS
+// ----------
+export { CgProfileIcon };
 export { useParkingIcon };
 export { useChargingIcon };
 export { useBikeIcon };
