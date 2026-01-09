@@ -124,58 +124,8 @@ describe("tripService", () => {
 
         await expect(
             tripService.startTrip({ userId: 1, bikeId: 7 })
-        ).rejects.toThrow(`Users wallet 2 has insufficiant funds`);
+        ).rejects.toThrow(`Users wallet with id 2 has insufficiant funds`);
     });
-
-    // // isInZone / isInParking
-    // test("isInZone returns true when inside", () => {
-    //     const zone = {
-    //         min_lat: 10,
-    //         max_lat: 20,
-    //         min_long: 30,
-    //         max_long: 40
-    //     };
-
-    //     expect(tripService.isInZone(zone, 15, 35)).toBe(true);
-    // });
-
-    // test("isInParking returns true if any zone matches", async () => {
-    //     parkings.getParkings.mockResolvedValue([
-    //         { min_lat: 10, max_lat: 20, min_long: 30, max_long: 40 }
-    //     ]);
-
-    //     const result = await tripService.isInParking(15, 35);
-
-    //     expect(result).toBe(true);
-    // });
-
-
-    // // calculateCost
-    // test("calculateCost add parking fee when not parked in parking", async () => {
-    //     const bike = { latitude: 1, longitude: 1 };
-    //     const trip = { start_time: "2025-12-24 08:00:00" };
-    //     // endTime: "2025-12-24 10:00:00"
-    //     const cost = await tripService.calculateCost(bike, trip, false);
-    //     // const calculatedCost = 120 * 2.5 + 30 + 80; = 410
-    //     // 2h @ 2.50 / minut + startavgift + felparkering.
-
-    //     expect(cost).toBe("410.00");
-    // });
-
-    // test("calculateCost gives discount when taken into parking", async () => {
-    //     jest.spyOn(tripService, "isInParking").mockResolvedValue(false);
-
-    //     const bike = {};
-    //     const trip = {
-    //         start_time: "2025-12-24 08:00:00",
-    //         start_latitude: 1,
-    //         start_longitude: 1
-    //     };
-
-    //     const cost = await tripService.calculateCost(bike, trip, true);
-
-    //     expect(cost).toBe("315.00");
-    // });
 
     // // endTrip
     // test("endTrip updates trip, bike and returns uppdated trip", async () => {
