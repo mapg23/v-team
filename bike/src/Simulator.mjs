@@ -228,16 +228,11 @@ class Simulator {
     }
 
     setBikeStatus(payload) {
-        console.log("PAYLOAD", payload)
-        console.log("BIKES: ", JSON.stringify(this.bikes[Number(payload.id)]));
         let index = this.bikes.findIndex(function (device) {
             return device.getId() === Number(payload.id)
         });
         this.bikes[Number(index)].setStatus(payload.status);
-        console.log(
-          "BIKEUPDATE: ",
-          JSON.stringify(this.bikes[Number(payload.id)])
-        );
+        this.bikes[Number(index)].setOccupied(payload.occupied);
         return { event: `id for bike ${payload.id} set to status ${payload.status}` };
     }
 
