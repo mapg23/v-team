@@ -51,7 +51,8 @@ class BikeService {
      * Update a bikes status in api and device.
      * Check that bike exists, and updates it.
      * @param {string} bikeId A numeric value in string format.
-     * @param {object} data The data tu update ex: {status: 30}
+     * @param {string} status The status 10, 20, 50
+     * @param {bool} occupied The occupied state
      * @returns {Object} res The result of the update.
      */
     async _updateBikeStatus(bikeId, status, occupied) {
