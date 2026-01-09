@@ -1,5 +1,6 @@
 import { GoHistory } from "react-icons/go";
 import styles from "./Styles.module.css";
+import tableStyle from "../table/Table.module.css"
 
 /**
  * Creates a table for trips
@@ -28,7 +29,7 @@ export default function History({ tripHistory }) {
       {/* <div className={styles.info}>
        */}
       <div>
-        <table className={styles.alignedTable}>
+        <table className={tableStyle.table}>
           <thead>
             <tr>
               <th>Travel Id</th>
@@ -42,19 +43,19 @@ export default function History({ tripHistory }) {
             {tripHistory.map((story) => {
               return (
                 <tr key={story.id}>
-                  <td className={styles.center}>{story.id}</td>
-                  <td className={styles.left}>
+                  <td>{story.id}</td>
+                  <td>
                     {story.startAdress
                       ? story.startAdress
                       : story.start_latitude}
                   </td>
-                  <td className={styles.left}>
+                  <td>
                     {story.endAdress ? story.endAdress : story.end_latitude}
                   </td>
-                  <td className={styles.right}>
+                  <td>
                     {calculateTime(story.start_time, story.end_time)}
                   </td>
-                  <td className={styles.right}>{story.cost} kr</td>
+                  <td>{story.cost} kr</td>
                 </tr>
               );
             })}
