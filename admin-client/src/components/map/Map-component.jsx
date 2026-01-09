@@ -14,6 +14,7 @@ export default function MapComponent({
   const mapRef = useRef(null);
   const markersRef = useRef([]);
   const parkingLayerRef = useRef(null);
+  const circleLayerRef = useRef(null);
   const chargingLayerRef = useRef(null);
 
   // BIKE ICON
@@ -40,8 +41,10 @@ export default function MapComponent({
     });
   }, []);
 
+
   /**
-   * Renders the map if new city coordinates
+   * Initiates a new map instance based on coordinates
+   * If map already exists, only update the view
    */
   useEffect(() => {
     if (!coords.latitude || !coords.longitude) {
@@ -49,11 +52,11 @@ export default function MapComponent({
       return;
     }
 
-    // Om kartan redan finns → flytta den istället för att initiera ny
+    // Om kartan redan finns -> flytta den istället för att initiera ny
     if (mapRef.current) {
       mapRef.current.setView(
         [Number(coords.latitude), Number(coords.longitude)],
-        13
+        14
       );
       return;
     }
@@ -74,6 +77,26 @@ export default function MapComponent({
   }, [coords]);
 
   /**
+   * Draw circles when coordinates are changing (another city is selected)
+   * A circle represents the bounds of where a bike is alaod to run
+   */
+  useEffect(() => {
+     // Skapa Cirkel lager en gång
+    if (!circleLayerRef.current) {
+      circleLayerRef.current = L.layerGroup().addTo(mapRef.current);
+    }
+
+    const layer = circleLayerRef.current;
+
+    // Töm lager för att undvika att cirklar ritas om och om igen
+    layer.clearLayers();
+
+    L.circle([Number(coords.latitude), Number(coords.longitude)], {radius: 3000})
+    .bindPopup("Cirkeln representerar zonen som en cykel får köras i").openPopup()
+    .addTo(layer);
+  }, [coords])
+
+  /**
    * Rerender markers on new bike events
    */
   useEffect(() => {
@@ -85,11 +108,13 @@ export default function MapComponent({
     markersRef.current = [];
 
     // Lägg till nya markers
+    // Om en cykel har status 10 - cykel är redo för användning
+    // Annars är cykeln hyrd alt på service, dvs inte tillgänglig
     bikes.forEach((bike) => {
       const customScooterIcon = L.divIcon({
         html: scooterIcon,
         className:
-          bike.occupied === 10 ? styles["bike-free"] : styles["bike-used"],
+          bike.occupied ? styles["bike-used"] : styles["bike-free"],
       });
 
       // Markers must be in Latitude, Longitude - else wont show!!
@@ -109,7 +134,7 @@ export default function MapComponent({
           </tr>
           <tr>
             <th>Cords:</th>
-            <td>${bike.cords.x} ${bike.cords.y}</td>
+            <td>Lat: ${bike.cords.y} Lng: ${bike.cords.x}</td>
           </tr>
           <tr>
             <th>Occupied:</th>
@@ -120,10 +145,19 @@ export default function MapComponent({
             <td>${bike.city_id}</td>
           </tr>
           <tr>
+            <th>Zone id:</th>
+            <td>${bike.current_zone_id}</td>
+          </tr>
+          <tr>
+            <th>Zone type:</th>
+            <td>${bike.current_zone_type}</td>
+          </tr>
+          <tr>
             <th>Speed:</th>
             <td>${bike.speed}</td>
           </tr>
           </table>
+          <button><a className="noStyling" href="/bikes/${bike.id}">Inspect Bike</button>
           `
         )
         .openPopup()
@@ -170,20 +204,8 @@ export default function MapComponent({
             <td>${parking.city_id}</td>
           </tr>
           <tr>
-            <th>Max_lat :</th>
-            <td>${parking.max_lat}</td>
-          </tr>
-          <tr>
-            <th>Max_long:</th>
-            <td>${parking.max_long}</td>
-          </tr>
-          <tr>
-            <th>Min_lat</th>
-            <td>${parking.min_lat}</td>
-          </tr>
-          <tr>
-            <th>Min_long:</th>
-            <td>${parking.min_long}</td>
+            <th>Bikes in zone :</th>
+            <td>${parking.bikes}</td>
           </tr>
           </table>
           `
@@ -234,17 +256,12 @@ export default function MapComponent({
             <th>Name:</th>
             <td>${zone.name}</td>
           </tr>
-          <tr>
-            <th>Latitude:</th>
-            <td>${zone.latitude}</td>
-          </tr>
-          <tr>
-            <th>Longitude:</th>
-            <td>${zone.longitude}</td>
-          </tr>
-          <tr>
             <th>Capacity:</th>
             <td>${zone.capacity}</td>
+          </tr>
+          <tr>
+            <th>Bikes in Zone:</th>
+            <td>${zone.bikes}</td>
           </tr>
           </table>
           `

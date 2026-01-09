@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import UserService from "../../services/users";
-import { useParams, useNavigate } from "react-router";
+import TripService from "../../services/trips";
+import { useParams } from "react-router";
 import Profile from "../../components/user/Profile";
 import Balance from "../../components/user/Balance";
 import History from "../../components/user/History";
-import styles from "../../components/button/Button.module.css";
+import styles from "../../components/user/Styles.module.css";
 
 /**
  * View for viewing a profile
  */
 export default function UserView() {
-  const navigate = useNavigate();
-
   // Get params
   const params = useParams();
   const userId = params.id;
@@ -36,11 +35,35 @@ export default function UserView() {
   /**
    * User rental history
    */
-  const [history, setHistory] = useState([
-    {
-      id: null,
-    },
-  ]);
+  const [tripHistory, setTripHistory] = useState([]);
+
+  /**
+   * Fetch all adresses from lat long
+   * @param {Json} trips Array of trip Objects
+   */
+  async function fetchAdress(trips) {
+    let result = [];
+    for (const trip of trips) {
+      const urlStart = `https://nominatim.openstreetmap.org/reverse?lat=${trip.start_latitude}&lon=${trip.start_longitude}&format=json`;
+      const responseStart = await fetch(urlStart);
+      const dataStart = await responseStart.json();
+      const urlEnd = `https://nominatim.openstreetmap.org/reverse?lat=${trip.end_latitude}&lon=${trip.end_longitude}&format=json`;
+      const responseEnd = await fetch(urlEnd);
+      const dataEnd = await responseEnd.json();
+
+      // sett adress, if any
+      const startAdress = dataStart?.address?.road;
+      if (startAdress) {
+        trip.startAdress = startAdress;
+      }
+      const endAdress = dataEnd?.address?.road;
+      if (endAdress) {
+        trip.endAdress = endAdress;
+      }
+      result.push(trip);
+    }
+    setTripHistory(result);
+  }
 
   /**
    * Fetch all data and set loading = false when done
@@ -49,25 +72,27 @@ export default function UserView() {
   useEffect(() => {
     async function fetchData() {
       const userDetails = await UserService.getUserDetails(userId);
+      if (Array.isArray(userDetails) && userDetails.length !== 0) {
+        setUserDetails(userDetails);
+      }
       const balance = await UserService.getUserBalanceDetails(userId);
-      const history = await UserService.getUserRentalDetails(userId);
-      setUserDetails(userDetails);
-      setBalance(balance);
-      setHistory(history);
-      // data is fetched, render
+      if (balance.balance) {
+        setBalance(balance.balance);
+      }
+      const userTrips = await TripService.getTripsByUserId(userId);
+      if (Array.isArray(userTrips) && userTrips.length !== 0) {
+        setTripHistory(userTrips);
+      }
+
+      // render component asap
+      // dont wait for addreses, slow api
       setLoading(false);
+
+      // Try get adresses
+      fetchAdress(userTrips);
     }
     fetchData();
   }, [userId]);
-
-  /**
-   * Delete user
-   */
-  async function handleSubmit(event) {
-    event.preventDefault();
-    const success = await UserService.deleteUser(userId);
-    if (success) navigate("/welcome");
-  }
 
   if (!params.id) {
     return <p>no userid provided...</p>;
@@ -76,18 +101,20 @@ export default function UserView() {
   if (!loading) {
     return (
       <>
-        <h2>Profilepage</h2>
-        <Profile userDetails={userDetails} />
-        <Balance balance={balance} />
-        <History history={history} />
-        <form onSubmit={handleSubmit}>
-          <button
-            className={`${styles.buttuon} ${styles.delete}`}
-            type="submit"
-          >
-            Delete user
-          </button>
-        </form>
+        <div className={styles.profileWrapper}>
+          {/* {USER PROFILE} */}
+          <h2>
+            {userDetails[0].username
+              ? userDetails[0].username + " profile"
+              : "Profilepage"}
+          </h2>
+          <Profile userDetails={userDetails} />
+          {/* {USER BALANCE} */}
+          <Balance balance={balance} />
+
+          {/* {USER TRIPS} */}
+          <History tripHistory={tripHistory} />
+        </div>
       </>
     );
   }

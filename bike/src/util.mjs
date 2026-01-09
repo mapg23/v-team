@@ -1,7 +1,7 @@
 "use strict";
 /**
  * Function to post bikes to api, uses worker thread messages to continously call this function.
- * @param {Array} data - Array of bikes 
+ * @param {Array} data - Array of bikes
  */
 async function forwardToMain(data) {
     try {

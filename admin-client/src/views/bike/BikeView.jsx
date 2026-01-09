@@ -3,6 +3,7 @@ import BikeService from "../../services/bikes";
 import { useNavigate } from "react-router";
 import CityDropDown from "../../components/input/CityDropDown";
 import TableWithActions from "../../components/table/TableWithActions";
+import BikesTable from "../../components/table/BikesTable";
 import style from "../../components/forms/Form.module.css";
 import CreateBikeForm from "../../components/forms/CreateBikeForm";
 import cityService from "../../services/cities";
@@ -134,26 +135,36 @@ export default function BikeView() {
 
   return (
     <>
-      <h1>BikeView</h1>
-      <h2>Chose a city and create a new bike</h2>
-      <CreateBikeForm action={createNewBike}></CreateBikeForm>
-      {/* {Filter by city} */}
-      <h2>Filter by city</h2>
-      <CityDropDown action={filterBikes} />
-      <button type="button" onClick={clearFilter}>
-        Clear filter
-      </button>
-      {/* </div> */}
-      {/* <p className={resultType === "error" ? style.error : style.success}> */}
-      <p className={resultClass}>{result}</p>
-      {/* Display bikes based on filter */}
-      <div className="hideOverFlow">
-        <p>Total bikes: {bikes.length}</p>
-        <TableWithActions
-          data={bikeFilter}
-          action={deleteBike}
-          inspect={inspectBike}
-        />
+      <div className="wrapper">
+        <h1>BikeView</h1>
+        <div className="cardWrapper">
+          {/* {CREATE BIKES} */}
+          <div className="card">
+            <h2>Chose a city and create a new bike</h2>
+            <CreateBikeForm action={createNewBike}></CreateBikeForm>
+          </div>
+
+          {/* {FILTER BIKES BY CITY} */}
+          <div className="card">
+            <h2>Filter by city</h2>
+            <CityDropDown action={filterBikes} />
+            <button type="button" onClick={clearFilter}>
+              Clear filter
+            </button>
+          </div>
+        </div>
+
+        {/* </div> */}
+        {/* <p className={resultType === "error" ? style.error : style.success}> */}
+        <div className="card">
+          <p className={resultClass}>{result}</p>
+          {/* Display bikes based on filter */}
+            <BikesTable
+              data={bikeFilter}
+              action={deleteBike}
+              inspect={inspectBike}
+            />
+        </div>
       </div>
     </>
   );

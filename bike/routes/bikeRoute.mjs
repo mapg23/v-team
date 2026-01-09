@@ -34,22 +34,30 @@ router.get('/bike/getStatus/:id', async (req, res) => {
 router.post('/bike/setStatus', async (req, res) => {
     let id = req.body.id || null;
     let status = req.body.status || null;
+    let occupied = req.body.occupied;
 
-    if (!id || !status) {
-        return res.status(404).json(
-            {
-                msg: "invalid PARAMS"
-            }
-        );
+    if (typeof occupied === undefined) {
+        return res.status(404).json({
+          msg: "invalid occupied PARAM",
+        });
+    }
+    if (!id || !status ) {
+      return res.status(404).json({
+        msg: "invalid id or status PARAMS",
+      });
     }
 
-    let response = await callWorker('set-bike-status', { id: id, status: status });
+    let response = await callWorker("set-bike-status", {
+      id: id,
+      status: status,
+      occupied: occupied,
+    });
 
     res.json(response['data']);
 });
 
 /**
- * PUT URL:PORT/bike/move/:id/:x/:y 
+ * PUT URL:PORT/bike/move/:id/:x/:y
  * GET /move/id/x/y - Moves a specific bike based on x and y.
  * X = Longitude.
  * Y = Latitued.
@@ -64,6 +72,17 @@ router.get('/move/:id/:x/:y', async (req, res) => {
     res.json(response);
 });
 
+///// J
+// Uppdaterar en cykel i simulatorn och gör zonflytt.
+router.put('/bike/:id', async (req, res) => {
+    const bikeId = req.params.id;
 
+    const response = await callWorker('update-bike', {
+        bikeId,
+        ...req.body
+    });
+
+    res.json(response);
+});
 
 export default router;

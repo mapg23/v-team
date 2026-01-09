@@ -86,28 +86,32 @@ export default function CityView() {
 
   return (
     <>
-      <h1>CityView</h1>
-      <TableWithActions
-        data={cities}
-        action={deleteCity}
-        inspect={inspectCity}
-      />
-      <div style={{ margin: "0 auto" }}>
-        <h2>Create new city</h2>
-        <p className={resultType === "error" ? style.error : style.success}>
-          {result}
-        </p>
-        <form className={style.form} onSubmit={createCity}>
-          <label htmlFor="city">CityName</label>
-          <input
-            style={{ height: "2rem" }}
-            placeholder="Enter city name"
-            type="text"
-            value={newCity}
-            onChange={(e) => setNewCity(e.target.value)}
+      <div className="wrapper">
+        <h1>CityView</h1>
+        <div className="card">
+          <TableWithActions
+            data={cities}
+            action={deleteCity}
+            inspect={inspectCity}
           />
-          <button type="submit">Create city</button>
-        </form>
+        </div>
+        <div className="card">
+          <h2>Create new city</h2>
+          <p className={resultType === "error" ? style.error : style.success}>
+            {result}
+          </p>
+          <form className={style.form} onSubmit={createCity}>
+            <label htmlFor="city">CityName</label>
+            <input
+              style={{ height: "2rem" }}
+              placeholder="Enter city name"
+              type="text"
+              value={newCity}
+              onChange={(e) => setNewCity(e.target.value)}
+            />
+            <button type="submit">Create city</button>
+          </form>
+        </div>
       </div>
     </>
   );

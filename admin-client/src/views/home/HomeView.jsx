@@ -78,11 +78,22 @@ function HomeView() {
 
   return (
     <>
-      <CityDropDown action={redirectToCity}></CityDropDown>
-      <h1>Överblick</h1>
-      <CityTable data={allCityDetails} />
-      <h2>Users</h2>
-      <UserTable data={activeUsers} />
+      <div className="wrapper">
+        <h1>Överblick</h1>
+        <div className="card">
+          <h2>Inspect city</h2>
+          <CityDropDown action={redirectToCity}></CityDropDown>
+        </div>
+        <div className="card">
+          <h2>Cities in Database</h2>
+          <CityTable data={allCityDetails} />
+        </div>
+
+        <div className="card">
+          <h2>Total users</h2>
+          <UserTable data={activeUsers} />
+        </div>
+      </div>
     </>
   );
 }
