@@ -9,8 +9,6 @@ const trip = {
      */
     createTrip: function createTrip(body) {
         return db.insert("trips", body);
-<<<<<<< HEAD
-=======
     },
 
     /**
@@ -20,7 +18,6 @@ const trip = {
      */
     getTrips: function getTrips() {
         return db.select("trips", "*");
->>>>>>> 6e40cedfd96eecfd3c13ac6b3622bb49f5b62f1c
     },
 
     /**
@@ -67,4 +64,3 @@ const trip = {
 };
 
 export default trip;
-

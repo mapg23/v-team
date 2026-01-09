@@ -2,11 +2,7 @@ import express from 'express';
 import * as validation from "../middleware/validation/validationMiddleware.mjs";
 import Stripe from "stripe";
 import wallets from '../models/wallets.mjs';
-<<<<<<< HEAD
-import tripService from '../services/tripService.mjs';
-=======
 import walletService from '../services/walletService.mjs';
->>>>>>> 6e40cedfd96eecfd3c13ac6b3622bb49f5b62f1c
 
 const stripe = new Stripe(`${process.env.STRIPE_SECRET}`);
 
