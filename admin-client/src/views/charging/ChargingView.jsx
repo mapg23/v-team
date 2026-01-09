@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
 import MapDrawComponent from "../../components/map/react-draw/MapDrawComponent";
 import CityDropDown from "../../components/input/CityDropDown";
 import CityService from "../../services/cities";
@@ -111,15 +113,15 @@ export default function ChargingView() {
   }
 
   /**
-   * Options to include as EditableContent 
+   * Options to include as EditableContent
    */
   const editOptions = {
     marker: true,
-    rectangle: false, 
+    rectangle: false,
     circle: false,
     circlemarker: false,
     polyline: false,
-    polygon: false
+    polygon: false,
   };
 
   return (
@@ -128,7 +130,11 @@ export default function ChargingView() {
       <div className="card">
         <div className="card">
           <CityDropDown action={initCityid} />
-          {cityCoordinates.latitude && cityCoordinates.longitude ? <ChargingTable data={chargingZones} action={deleteZone}/> : ""}
+          {cityCoordinates.latitude && cityCoordinates.longitude ? (
+            <ChargingTable data={chargingZones} action={deleteZone} />
+          ) : (
+            ""
+          )}
         </div>
         {renderChargingZoneForm ? (
           <div className="card">

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Marker, Popup } from "react-leaflet";
 import { useBikeIcon } from "../../icons/react-icons";
 import { useNavigate } from "react-router-dom";

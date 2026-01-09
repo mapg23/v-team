@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useMemo } from "react";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -66,9 +67,9 @@ function useBikeIcon() {
  * User profile
  * Not rendered in leaflet
  */
-const CgProfileIcon = (() => {
+const CgProfileIcon = () => {
   return <CgProfile size={24}></CgProfile>;
-})
+};
 
 // ----------
 // EXPORTS

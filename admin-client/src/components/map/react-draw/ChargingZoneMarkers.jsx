@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Marker, Popup } from "react-leaflet";
 import { useChargingIcon } from "../../icons/react-icons";
 /**

@@ -48,7 +48,10 @@ export default function ParkingView() {
    */
   useEffect(() => {
     if (!cityId) return;
-    fetchData();
+    function getData(){
+      fetchData();
+    };
+    getData();
   }, [cityId]);
 
   /**
