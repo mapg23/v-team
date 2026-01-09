@@ -229,7 +229,10 @@ class Simulator {
     }
 
     setBikeStatus(payload) {
+        console.log("PAYLOAD", payload)
+        console.log("BIKES: ", JSON.stringify(this.bikes[Number(payload.id)]));
         this.bikes[Number(payload.id).setStatus(payload.status)];
+        console.log("BIKEUPDATE: ", JSON.stringify(this.bikes[Number(payload.id)]))
         return { event: `id for bike ${payload.id} set to status ${payload.status}` };
     }
 
