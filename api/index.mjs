@@ -17,6 +17,8 @@ import startSimulator from "./src/startSimulator.mjs";
 import stopSimulator from "./src/stopSimulator.mjs";
 import tripRoutes from "./src/routes/tripRoutes.mjs";
 import paymentRoutes from "./src/routes/paymentRoutes.mjs";
+import priceRoutes from "./src/routes/priceRoutes.mjs";
+import walletRoutes from "./src/routes/walletRoutes.mjs";
 
 const app = express();
 const port = process.env.API_PORT || 9091;
@@ -98,6 +100,8 @@ app.use(`/api/${version}`, createParkingRouter());
 
 app.use(`/api/${version}/trips`, tripRoutes);
 app.use(`/api/${version}/payments`, paymentRoutes);
+app.use(`/api/${version}/prices`, priceRoutes);
+app.use(`/api/${version}/wallets`, walletRoutes);
 
 // Startar server med Socket.IO
 server.listen(port, "0.0.0.0", async () => {

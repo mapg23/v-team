@@ -1,7 +1,8 @@
 import express from 'express';
-// import * as validation from "../middleware/validation/validationMiddleware.mjs";
+import * as validation from "../middleware/validation/validationMiddleware.mjs";
 import Stripe from "stripe";
-import wallets from '../models/wallets.mjs';
+// import wallets from '../models/wallets.mjs';
+import walletService from '../services/walletService.mjs';
 
 const stripe = new Stripe(`${process.env.STRIPE_SECRET}`);
 
@@ -51,7 +52,7 @@ router.post(`/payment-success`,
     // validation.payment,
     // validation.checkValidationResult,
     async (req, res) => {
-        req.body.userId = 3;
+        // req.body.userId = 3;
         const { userId, intentId, status } = req.body;
 
         console.log("Status: ", status, ". For: ", intentId);
@@ -68,31 +69,52 @@ router.post(`/payment-success`,
                 return res.json({ status: status, message: "Payment was not successfull." });
             }
 
-            let walletRes = await wallets.getWalletByUserId(userId);
+            const newBalance = walletService.credit(userId, amountInKrona);
 
-            if (!walletRes[0]) {
-                walletRes = await wallets.createWallet(userId);
-            }
-            // console.log("WalletRes: ", walletRes);
-            const userWallet = walletRes[0];
+            // let walletRes = await wallets.getWalletByUserId(userId);
 
-            const newBalance = userWallet.balance += (amountInKrona);
-            const updateData = {
-                balance: newBalance
-            };
+            // if (!walletRes[0]) {
+            //     walletRes = await wallets.createWallet(userId);
+            // }
+            // // console.log("WalletRes: ", walletRes);
+            // const userWallet = walletRes[0];
 
-            // Update balance in users wallet
-            const result = await wallets.updateWallet(userWallet.id, updateData);
+            // const newBalance = userWallet.balance += (amountInKrona);
+            // const updateData = {
+            //     balance: newBalance
+            // };
+
+            // // Update balance in users wallet
+            // const result = await wallets.updateWallet(userWallet.id, updateData);
 
             // console.log(result); // OkPacket { affectedRows: 1, insertId: 0n, warningStatus: 0 }
-            if (result.affectedRows === 0) {
-                throw new Error("balance was not updated");
-            }
+            // if (result.affectedRows === 0) {
+            //     throw new Error("balance was not updated");
+            // }
 
             return res.json({ added: amountInKrona, balance: newBalance });
         } catch (err) {
             console.error('Error creating Stripe payment intent: ', err);
             res.status(500).json({ error: err.message });
+        }
+    });
+/**
+ * Returns user balance
+*/
+router.get(`/user/:id`,
+    validation.idParam,
+    validation.checkValidationResult,
+    async (req, res) => {
+        try {
+            const userWallet = await walletService.findWalletByUserId(req.params.id);
+
+            return res.status(200).json(userWallet);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                error: `Could not fetch wallet for user ${req.params.id}`,
+                message: err.message
+            });
         }
     });
 
