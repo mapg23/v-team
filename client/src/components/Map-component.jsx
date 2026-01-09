@@ -7,6 +7,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "../assets/Map-component.module.css";
 
+import "leaflet.markercluster";
+
 export default function MapComponent({
   coords,
   bikes,
@@ -14,10 +16,14 @@ export default function MapComponent({
   chargingZones,
   bikeRentCallback
 }) {
-  console.log("MapComponent rendered");
   const containerRef = useRef(null); // DOM NODE
   const mapRef = useRef(null); // Leaflet map instance
-  const markersRef = useRef([]);
+  // const markersRef = useRef([]);
+
+  // Reduces lag
+  const bikeClusterRef = useRef(null);
+  const bikeMarkersRef = useRef(new Map());
+
   const parkingLayerRef = useRef(null);
   const chargingLayerRef = useRef(null);
 
@@ -49,13 +55,11 @@ export default function MapComponent({
    * Renders the map if new city coordinates
    */
   useEffect(() => {
-    if (
-      coords?.latitude == null ||
-      coords?.longitude == null
-    ) {
+    if (coords?.latitude == null || coords?.longitude == null) {
       console.log("missing coordinates for map", coords);
       return;
     }
+    if (!containerRef.current) return;
 
     // Om kartan redan finns → flytta den istället för att initiera ny
     if (mapRef.current) {
@@ -66,7 +70,6 @@ export default function MapComponent({
       return;
     }
 
-    if (!containerRef.current) return;
     // Annars skapa ny karta
     const map = L.map(containerRef.current).setView(
       [Number(coords.latitude), Number(coords.longitude)],
@@ -79,7 +82,15 @@ export default function MapComponent({
         '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
+    bikeClusterRef.current = L.markerClusterGroup({
+      chunkedLoading: true,
+      chunkDelay: 50,
+      maxClusterRadius: 60
+    });
+
+    map.addLayer(bikeClusterRef.current);
     mapRef.current = map;
+
 
     setTimeout(() => {
       map.invalidateSize();
@@ -91,15 +102,24 @@ export default function MapComponent({
    * Rerender markers on new bike events
    */
   useEffect(() => {
-    const map = mapRef.current;
-    if (!map) return;
+    // const map = mapRef.current;
 
-    // Ta bort gamla markers
-    markersRef.current.forEach((marker) => marker.remove());
-    markersRef.current = [];
+    const cluster = bikeClusterRef.current;
+    if (!cluster) return;
+
+    const nextIds = new Set(bikes.map((b) => b.id));
+
+    bikeMarkersRef.current.forEach((marker, id) => {
+      if (!nextIds.has(id)) {
+        cluster.removeLayer(marker);
+        bikeMarkersRef.current.delete(id);
+      }
+    });
 
     // Lägg till nya markers
     bikes.forEach((bike) => {
+      if (bikeMarkersRef.current.has(bike.id)) return;
+
       const customScooterIcon = L.divIcon({
         html: scooterIcon,
         className:
@@ -110,41 +130,20 @@ export default function MapComponent({
       const marker = L.marker([bike.cords.y, bike.cords.x], {
         icon: customScooterIcon,
       })
-        .bindPopup(
-          `
+        .bindPopup(`
           <table>
-          <tr>
-            <th>Bike Id:</th>
-            <td><a href="/bikes/${bike.id}">${bike.id}</td>
-          </tr>
-          <tr>
-            <th>Status:</th>
-            <td>${bike.status}</td>
-          </tr>
-          <tr>
-            <th>Cords:</th>
-            <td>${bike.cords.x} ${bike.cords.y}</td>
-          </tr>
-          <tr>
-            <th>Occupied:</th>
-            <td>${bike.occupied}</td>
-          </tr>
-          <tr>
-            <th>City_Id:</th>
-            <td>${bike.city_id}</td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <button class="rent-bike-btn" data-bike-id="${bike.id}">
-                Hyr cykel
-              </button>
-            </td>
-          </tr>
+            <tr><th>Bike Id:</th><td>${bike.id}</td></tr>
+            <tr><th>Status:</th><td>${bike.status}</td></tr>
+            <tr><th>Occupied:</th><td>${bike.occupied}</td></tr>
+            <tr>
+              <td colspan="2">
+                <button class="rent-bike-btn" data-bike-id="${bike.id}">
+                  Hyr cykel
+                </button>
+              </td>
+            </tr>
           </table>
-          `
-        )
-        .openPopup()
-        .addTo(map);
+        `);
 
       marker.on("popupopen", () => {
         const btn = document.querySelector(
@@ -152,14 +151,13 @@ export default function MapComponent({
         );
 
         if (btn) {
-          btn.onclick = () => bikeRentCallback(bike.id)
+          btn.onclick = () => bikeRentCallback(bike.id);
         }
       });
-
-
-      markersRef.current.push(marker);
+      cluster.addLayer(marker);
+      bikeMarkersRef.current.set(bike.id, marker);
     });
-  }, [bikes, scooterIcon]);
+  }, [bikes, scooterIcon, bikeRentCallback]);
 
   /**
    * Render parkingZones
@@ -187,38 +185,8 @@ export default function MapComponent({
         [parking.min_lat, parking.min_long], // sydväst (min_lat, min_long)
       ];
       L.marker([parking.max_lat, parking.min_long], { icon: cutomParkingIcon })
-        .bindPopup(
-          `
-          <table>
-          <tr>
-            <th>Parking ID:</th>
-            <td><a href="/parking/${parking.id}">${parking.id}</td>
-          </tr>
-          <tr>
-            <th>City id:</th>
-            <td>${parking.city_id}</td>
-          </tr>
-          <tr>
-            <th>Max_lat :</th>
-            <td>${parking.max_lat}</td>
-          </tr>
-          <tr>
-            <th>Max_long:</th>
-            <td>${parking.max_long}</td>
-          </tr>
-          <tr>
-            <th>Min_lat</th>
-            <td>${parking.min_lat}</td>
-          </tr>
-          <tr>
-            <th>Min_long:</th>
-            <td>${parking.min_long}</td>
-          </tr>
-          </table>
-          `
-        )
-        .openPopup()
-        .addTo(layer); // lägg till lagret
+        .bindPopup(`<strong>Parking ID:</strong> ${parking.id}`)
+        .addTo(layer);
 
       // Rita rektangel
       L.polygon(polygonCoords, { color: "red" }).addTo(layer); // lägg till lagret
@@ -243,42 +211,9 @@ export default function MapComponent({
     layer.clearLayers();
 
     // Lägg till nya markers
-    chargingZones.forEach((zone) => {
-      // Markers must be in Latitude, Longitude - else wont show!!
-      L.marker([zone.latitude, zone.longitude], {
-        icon: chargingStationIcon,
-      })
-        .bindPopup(
-          `
-          <table>
-          <tr>
-            <th>Station id:</th>
-            <td><a href="/station:${zone.id}">${zone.id}</td>
-          </tr>
-          <tr>
-            <th>City id:</th>
-            <td>${zone.city_id}</td>
-          </tr>
-          <tr>
-            <th>Name:</th>
-            <td>${zone.name}</td>
-          </tr>
-          <tr>
-            <th>Latitude:</th>
-            <td>${zone.latitude}</td>
-          </tr>
-          <tr>
-            <th>Longitude:</th>
-            <td>${zone.longitude}</td>
-          </tr>
-          <tr>
-            <th>Capacity:</th>
-            <td>${zone.capacity}</td>
-          </tr>
-          </table>
-          `
-        )
-        .openPopup()
+    chargingZones.forEach((z) => {
+      L.marker([z.latitude, z.longitude], { icon: chargingStationIcon })
+        .bindPopup(`<strong>${z.name}</strong><br/>Capacity: ${z.capacity}`)
         .addTo(layer);
     });
   }, [chargingZones, chargingStationIcon]);
