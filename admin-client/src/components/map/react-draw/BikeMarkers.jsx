@@ -39,7 +39,7 @@ export default function BikeMarkers({ bikes }) {
                 <tr>
                   <th>Cords:</th>
                   <td>
-                    {bike.cords.x} {bike.cords.y}
+                    Lat: {bike.cords.y} Lng: {bike.cords.x}
                   </td>
                 </tr>
                 <tr>

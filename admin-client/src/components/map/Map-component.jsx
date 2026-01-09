@@ -134,7 +134,7 @@ export default function MapComponent({
           </tr>
           <tr>
             <th>Cords:</th>
-            <td>${bike.cords.x} ${bike.cords.y}</td>
+            <td>Lat: ${bike.cords.y} Lng: ${bike.cords.x}</td>
           </tr>
           <tr>
             <th>Occupied:</th>
