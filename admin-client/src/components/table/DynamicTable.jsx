@@ -26,7 +26,7 @@ export default function DynamicTable({ data, vertical }) {
     );
   }
   return (
-    <table>
+    <table className={styles["table"]}>
       <thead>
         <tr>
           {headers.map((key) => (
