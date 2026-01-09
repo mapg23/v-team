@@ -64,7 +64,7 @@ router.get('move/:id/:x/:y', async (req, res) => {
     res.json(response);
 });
 
-///// J
+
 // Uppdaterar en cykel i simulatorn och gör zonflytt.
 router.put('/bike/:id', async (req, res) => {
     const bikeId = req.params.id;

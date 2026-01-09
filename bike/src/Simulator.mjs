@@ -73,17 +73,6 @@ class Simulator {
                 continue;
             }
 
-            // if (this.cordinates[key].length === 0) {
-            //     console.log(`Bike: ${key} has no cordinates left ${this.cordinates[key].length}`)
-            //     this.bikes[index].status = 40;
-            //     this.cordinates[key] = [];
-            //     continue;
-            // }
-
-            /////// J
-            // Jag la till '!this.cordinates[key]' eftersom den annars kraschade
-            // när jag testade i Postman.
-            // Gamla versionen är den utkommenterade koden ovan.
             if (!this.cordinates[key] || this.cordinates[key].length === 0) {
                 console.log(`Bike: ${key} has no coordinates left`);
                 this.bikes[index].status = 40;
@@ -255,7 +244,7 @@ class Simulator {
      * @returns {Object} - Event with result and updated bike data if
      * successful, or error message if not
      */
-    updateBike(payload) { ///// J
+    updateBike(payload) {
         try {
             const bike = this.bikes.find(b => b.id === Number(payload.bikeId));
 
@@ -306,7 +295,7 @@ export async function handleWorkerMessage(msg, simm) {
         'move-specific': () => simm.moveSpecific(payload),
 
         'get-bike': () => simm.getBike(payload),
-        'update-bike': () => simm.updateBike(payload), ///// J
+        'update-bike': () => simm.updateBike(payload),
         'get-bike-status': () => simm.getBikeStatus(payload),
         'set-bike-status': () => simm.setBikeStatus(payload),
         'heartbeat': () => simm.heartbeat(),
