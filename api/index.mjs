@@ -14,7 +14,6 @@ import createBikeRouter from "./src/routes/bikeRoutes.mjs";
 import createStationRouter from "./src/routes/stationRoutes.mjs";
 import createParkingRouter from "./src/routes/parkingRoutes.mjs";
 import startSimulator from "./src/systemSimulation/startSimulator.mjs";
-import stopSimulator from "./src/systemSimulation/stopSimulator.mjs";
 import tripRoutes from "./src/routes/tripRoutes.mjs";
 import paymentRoutes from "./src/routes/paymentRoutes.mjs";
 import priceRoutes from "./src/routes/priceRoutes.mjs";
@@ -110,12 +109,3 @@ server.listen(port, "0.0.0.0", async () => {
     // Här startas simulatorn direkt när servern är igång.
     await startSimulator();
 });
-
-// Här stoppas simulatorn direkt när servern stängs ner.
-const serverShutDown = async () => {
-    // Anropar funktionen som sparar cyklarna i databasen.
-    await stopSimulator();
-};
-
-// Stoppar simulatorn vid docker-compose down
-process.on('SIGTERM', serverShutDown);
