@@ -86,6 +86,7 @@ services:
       - /app/node_modules
     environment:
       VITE_API_URL: "${API_URL}"
+      VITE_STRIPE_PUBLIC: "pk_test_51Sc3oKEthuRq4UFnN5Sc4MhSyGLbWmrK77sbNmMJ9kqV0knILOjkvCWIvAGxJG9yV6moMa4dxmbchAMlcc1MEhrC00fiANR8qV"
       CHOKIDAR_USEPOLLING: true
     depends_on:
       - api
