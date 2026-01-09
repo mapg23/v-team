@@ -53,7 +53,7 @@ class TripService {
         const wallet = await this.walletsService.findWalletByUserId(userId);
 
         if (wallet.balance <= 0) {
-            throw new Error(`Users wallet ${wallet.id} has insufficiant funds`);
+            throw new Error(`Users wallet with id ${wallet.id} has insufficiant funds`);
         }
         await this.bikeService.updateBikeZone(bikeId, bike);
 
@@ -126,13 +126,25 @@ class TripService {
         if (!result?.affectedRows) {
             throw new Error("Could not end trip");
         }
+        const tripId = result.insertId;
 
-        await this.walletsService.debit(bikeInUse.user_id, totalCost);
+        try {
+            await this.walletsService.debit(bikeInUse.user_id, totalCost, tripId);
+            await this.updatePaymentStatus(tripId, {payment_status: 'paid'});
+        } catch (err) {
+            await this.updatePaymentStatus(tripId, {payment_status: 'payment_failed'});
+            console.error("User could not be charged", err);
+        }
+
         await this.bikeService.stopBike(bike, bikeInUse.id, parkedOk);
 
-        const newTrip = await this.findTripById(result.insertId);
+        const newTrip = await this.findTripById(tripId);
 
         return newTrip;
+    }
+
+    async updatePaymentStatus(tripId, data) {
+        this.tripsModel.updateTrip(tripId, data);
     }
 
     async getCurrentTripCost(bikeId) {

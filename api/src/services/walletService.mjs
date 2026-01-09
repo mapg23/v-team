@@ -28,7 +28,7 @@ class WalletService {
      * @param {string} amount A numeric string representing the amount to credit the wallet.
      * @returns The wallets new balance.
      */
-    async credit(userId, amount) {
+    async credit(userId, amount, intentId = null) {
         const wallet = await this.findWalletByUserId(userId);
 
         const newBalance = Number(wallet.balance) + Number(amount);
@@ -43,6 +43,15 @@ class WalletService {
             throw new Error("Failed to update wallet balance");
         }
 
+        const logData = {
+            wallet_id: wallet.id,
+            amount,
+            direction: "credit",
+            intent_id: intentId
+        };
+
+        this.logWalletUpdate(logData);
+
         return newBalance;
     }
 
@@ -53,7 +62,7 @@ class WalletService {
      * @param {string} amount A numeric string representing the amount to debit the wallet.
      * @returns The wallets new balance.
      */
-    async debit(userId, amount) {
+    async debit(userId, amount, tripId = null) {
         const wallet = await this.findWalletByUserId(userId);
         const newBalance = Number(wallet.balance) - Number(amount);
 
@@ -66,6 +75,14 @@ class WalletService {
         if (!res?.affectedRows) {
             throw new Error("Failed to update wallet balance");
         }
+        const logData = {
+            wallet_id: wallet.id,
+            amount,
+            direction: "debit",
+            trip_id: tripId
+        };
+
+        this.logWalletUpdate(logData);
 
         return newBalance;
     }
@@ -74,6 +91,24 @@ class WalletService {
 
         if (!res.insertId) {
             throw new Error(`Could not create wallet for User ${userId}`);
+        }
+        return res;
+    }
+
+    /**
+     * Creates a log for the wallet update.
+     * Obligatory:  `wallet_id`, `amount` decimal(11,2), `direction` enum('credit','debit')
+     * Auto:        `id`, `created`
+     * Opptional:   `trip_id`, `intent_id`, `comment`.
+     *
+     * @param {Object} body - An object containing the log data to insert.
+     * @returns {Promise<Array>} An array containing the result from the db operation.
+     */
+    async logWalletUpdate(body) {
+        const res = await this.wallets.createWalletLog(body);
+
+        if (!res.insertId) {
+            throw new Error(`Could not create a log for the wallet update`);
         }
         return res;
     }

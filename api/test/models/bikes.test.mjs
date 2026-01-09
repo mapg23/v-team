@@ -1,4 +1,5 @@
 import createBikes, { validateZone, getZoneCoordinates } from '../../src/models/bikes.mjs';
+import handleZoneUpdate from '../../src/helpers/zoneUpdate.mjs';
 
 const mockDb = {
     select: jest.fn(),
@@ -291,5 +292,79 @@ describe("getZoneCoordinates", () => {
         const resultParking = await getZoneCoordinates('parking', 99, mockDb);
 
         expect(resultParking).toBeNull();
+    });
+});
+
+// Test för helper-funktionen
+describe("handleZoneUpdate", () => {
+    const bike = {
+        id: 1,
+        city_id: 1
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test("returns existing coordinates when zone is null", async () => {
+        // Tomt db-objekt skickas in eftersom validateZone och getZoneCoordinates är mockade.
+        // Förhindrar att testet råkar nå riktig databas (och hänger pga pool timeout).
+        const result = await handleZoneUpdate(
+            bike,
+            null,
+            null,
+            59.0,
+            18.0,
+            {}
+        );
+
+        expect(result).toEqual({
+            latitude: 59.0,
+            longitude: 18.0
+        });
+    });
+
+    test("throws error for invalid zone type", async () => {
+        await expect(
+            handleZoneUpdate(
+                bike,
+                "invalid",
+                1,
+                59.0,
+                18.0,
+                {}
+            )
+        ).rejects.toMatchObject({
+            status: 400
+        });
+    });
+
+    test("returns zone coordinates when zone is valid", async () => {
+        jest.spyOn(
+            await import('../../src/models/bikes.mjs'),
+            'validateZone'
+        ).mockResolvedValue(true);
+
+        jest.spyOn(
+            await import('../../src/models/bikes.mjs'),
+            'getZoneCoordinates'
+        ).mockResolvedValue({
+            latitude: 59,
+            longitude: 18
+        });
+
+        const result = await handleZoneUpdate(
+            bike,
+            "parking",
+            2,
+            0,
+            0,
+            {}
+        );
+
+        expect(result).toEqual({
+            latitude: 59,
+            longitude: 18
+        });
     });
 });

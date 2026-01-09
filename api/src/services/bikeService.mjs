@@ -51,10 +51,12 @@ class BikeService {
      * Update a bikes status in api and device.
      * Check that bike exists, and updates it.
      * @param {string} bikeId A numeric value in string format.
-     * @param {object} data The data tu update ex: {status: 30}
+     * @param {string} status The status 10, 20, 50
+     * @param {bool} occupied The occupied state
      * @returns {Object} res The result of the update.
      */
     async _updateBikeStatus(bikeId, status, occupied) {
+        const noccupied = occupied ? 1 : 0;
         await this.findBikeById(bikeId);
         const apiRes = await this.bikesModel.updateBike(
             bikeId,
@@ -68,17 +70,17 @@ class BikeService {
             throw new Error(`Bike with id: ${bikeId} Could not be updated`);
         }
 
-        const bikeRes = await fetch('http://bike:7071/bike/setStatus',
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    id: bikeId,
-                    status: status,
-                }),
-            });
+        const bikeRes = await fetch("http://bike:7071/bike/setStatus", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: bikeId,
+            status: status,
+            occupied: noccupied,
+          }),
+        });
 
         if (bikeRes.status != 200) {
             throw new Error("Could not set new status in bike brain");

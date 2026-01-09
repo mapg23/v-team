@@ -42,6 +42,10 @@ router.post("/", async (req, res) => {
             discount_multiplier: discountMultiplier
         });
 
+        if (!result.affectedRows) {
+            return res.status(500).json({ error: "Could not greate prices for city" });
+        }
+
         res.status(201).json({ result: "success" });
     } catch (err) {
         res.status(500).json({ error: err.message });

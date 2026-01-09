@@ -169,7 +169,7 @@ export async function validateZone(
  * @param {number} zoneId - ID of the zone to fetch coordinates for.
  * @returns {Promise<object|null>} Coordinates object or null.
  */
-export  async function getZoneCoordinates(zoneType, zoneId, db = dbDefault) {
+export async function getZoneCoordinates(zoneType, zoneId, db = dbDefault) {
     switch (zoneType) {
         case 'charging': {
             const zone = await db.select(

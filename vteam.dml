@@ -30,7 +30,7 @@ INSERT INTO `scooters`
 (`status`, `battery`, `latitude`, `longitude`, `occupied`, `city_id`)
 VALUES
 -- Bankeryd
-(10, 88, 57.863800, 14.128300, 0, 1),
+(10, 88, 57.863800, 14.128300, 1, 1),
 (10, 76, 57.862900, 14.127100, 0, 1),
 
 -- Habo
@@ -40,6 +40,8 @@ VALUES
 -- Jönköping
 (10, 55, 57.783100, 14.166800, 0, 3),
 (10, 49, 57.782100, 14.164900, 0, 3);
+
+INSERT INTO `scooter_in_use`(`id`, `scooter_id`, `user_id`, `start_time`, `start_latitude`, `start_longitude`, `start_zone_type`) VALUES ('1','1','1','2025-12-19 13:08:22','57.863800','14.128300','parking')
 
 
  INSERT INTO `charging_zones` (`city_id`, `name`, `latitude`, `longitude`, `capacity`) VALUES

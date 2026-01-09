@@ -40,7 +40,7 @@ function App() {
     }
   }
 
-
+  // LÄGG TILL ROUTE FÖR PAYMENT/COMPLETE
   return (
     <Router>
       <Routes>

@@ -1,0 +1,22 @@
+.map {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.bike-used {
+  background-color: #0096FF;
+}
+
+.bike-free {
+  background-color: green;
+}
+
+/* #map {
+  height: 500px;
+  width: 500px;
+} */
+
+.sr-only {
+  display: none;
+}
