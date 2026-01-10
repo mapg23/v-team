@@ -81,6 +81,9 @@ router.post(`/bike/:id/end`,
         }
     });
 
+/**
+ * Delete a trip
+ */
 router.delete(`/:id`,
     validation.idParam,
     validation.checkValidationResult,
@@ -123,7 +126,7 @@ router.get(`/bikes-in-use`,
     });
 
 /**
- * Returns all user trips
+ * Returns all trips
  */
 router.get(`/`,
     async (req, res) => {

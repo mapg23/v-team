@@ -1,17 +1,28 @@
-// import Map from "@/components/map/Map-component";
-// import { useEffect, useState } from "react";
-// import CityService from "services/cities";
-// import PieChart from "components/chart/PieChart";
-// import BikeSocket from "components/socket/BikeSocket";
-// import BikeService from "../../services/bikes";
-// import { useNavigate, useParams } from "react-router";
-// import CityDropDown from "../../components/input/CityDropDown";
-// import TableWithActions from "../../components/table/TableWithActions";
-// import style from "../../components/forms/Form.module.css";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import BikeInfo from "../../components/bike/BikeInfo";
 
 /**
  * View a specific bike
  */
 export default function InspectBikeView() {
-    return <h1>BikeView</h1>
+  const [loading, setLoading] = useState(true);
+  const param = useParams();
+  const bikeId = param.id;
+
+  useEffect(() => {
+    async function getData() {
+      setLoading(false);
+    }
+    getData();
+  }, [bikeId]);
+
+  if (loading) return <p>Hämtar cykeldata..</p>;
+
+  return (
+    <div className="wrapper">
+      <h1>Bike #{bikeId}</h1>
+      <BikeInfo bikeId={bikeId}></BikeInfo>
+    </div>
+  );
 }

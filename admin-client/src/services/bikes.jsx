@@ -10,11 +10,13 @@ const bikeService = {
    * @returns {JSON}
    */
   getAllBikes: async function getAllBikes() {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/bikes`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -30,24 +32,26 @@ const bikeService = {
    * @returns {JSON}
    */
   getSingleBike: async function getSingleBike(bikeId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/bikes/${bikeId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
         throw new Error(
-          `HTTP error on fetchDocuments! Status: ${response.status}`
+          `HTTP error on getSingleBike! Status: ${response.status}`
         );
       }
 
       const responseData = await response.json();
       return responseData;
     } catch (error) {
-      console.error("fetchDocuments error:", error);
+      console.error("getSingleBike error:", error);
       return [];
     }
   },
@@ -58,11 +62,13 @@ const bikeService = {
    * @returns {JSON}
    */
   deleteBike: async function deleteBike(bikeId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/bikes/${bikeId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -78,6 +84,7 @@ const bikeService = {
    * @returns {JSON}
    */
   createNewBike: async function createNewBike(bike) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const bikeObj = {
         ...bike,
@@ -87,6 +94,7 @@ const bikeService = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -97,64 +105,20 @@ const bikeService = {
     }
   },
 
-  /**
-   * Get bikes renetal details
-   * @returns {JSON}
-   */
-  getRentedBikeDetails: async function getRentedBikeDetails(bikeId) {
-    try {
-      const response = await fetch(`${API}/bikes/${bikeId}/rental`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      return await response.json();
-    } catch (error) {
-      console.error("fetchDocuments error:", error);
-      return null;
-    }
-  },
-
-  /**
-   * Get bikes renetal details
-   * @returns {JSON}
-   */
-  endBikeRental: async function endBikeRental(bikeId) {
-    try {
-      const response = await fetch(`${API}/bikes/${bikeId}/rental/end`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on fetchDocuments! Status: ${response.status}`
-        );
-      }
-
-      const responseData = await response.json();
-      return responseData;
-    } catch (error) {
-      console.error("fetchDocuments error:", error);
-      return [];
-    }
-  },
 
   /**
    * Start sync for bikes
    * @returns {JSON}
    */
   startBikeSync: async function startBikeSync() {
+    const token = sessionStorage.getItem("jwt");
     console.log("bike serivce called");
     try {
       const response = await fetch(`${API}/bikes/sync`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -166,32 +130,88 @@ const bikeService = {
 
       return await response.json();
     } catch (error) {
-      console.error("fetchDocuments error:", error);
+      console.error("startBikeSync error:", error);
       return [];
     }
   },
 
   /**
-   * Start sync for bikes
+   * Move bike to charging zone
    * @returns {JSON}
    */
-  moveBikeToZone: async function moveBikeToZone(bikeId, zoneId) {
+  moveBikeToChargingZone: async function moveBikeToChargingZone(
+    bikeId,
+    zoneId
+  ) {
     const moveObject = {
-      bike_id: `${bikeId}`,
-      zone_id: `${zoneId}`,
+      zoneType: "charging", //
+      zoneId: `${zoneId}`,
     };
+
+    const token = sessionStorage.getItem("jwt");
+
     try {
       const response = await fetch(`${API}/bikes/${bikeId}/move`, {
         body: JSON.stringify(moveObject),
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
       return await response.json();
     } catch (error) {
-      console.error("fetchDocuments error:", error);
+      console.error("MoveBikeToChargingZone error:", error);
+      return [];
+    }
+  },
+
+  /**
+   * Move bike to parking zone
+   * @returns {JSON}
+   */
+  moveBikeToParkingZone: async function moveBikeToParkingZone(bikeId, zoneId) {
+    const moveObject = {
+      zoneType: "parking", //
+      zoneId: `${zoneId}`,
+    };
+
+    const token = sessionStorage.getItem("jwt");
+    try {
+      const response = await fetch(`${API}/bikes/${bikeId}/move`, {
+        body: JSON.stringify(moveObject),
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error("Move bike to parking zone:", error);
+      return [];
+    }
+  },
+
+  /**
+   * Get all bikes currently being used
+   * @returns {JSON}
+   */
+  getAllBikesInUse: async function getAllBikesInUse() {
+    const token = sessionStorage.getItem("jwt");
+    try {
+      const response = await fetch(`${API}/trips/bikes-in-use`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("Get All bikes in use:", error);
       return [];
     }
   },

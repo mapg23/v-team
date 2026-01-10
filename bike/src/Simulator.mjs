@@ -132,16 +132,6 @@ class Simulator {
                 current_zone_type: bike.current_zone_type,
                 current_zone_id: bike.current_zone_id
             }));
-            // this.bikes.push(new Device(
-            //     bike.id,
-            //     parsedCords,
-            //     bike.battery,
-            //     bike.status,
-            //     bike.occupied,
-            //     0,
-            //     bike.city_id,
-            //     bike
-            // ));
         }
         this.startMovement();
         return { event: `Bikes: ${this.bikes.length}`, data: this.bikes };
@@ -201,7 +191,11 @@ class Simulator {
     setRoute(payload) {
         try {
             for (let key in payload) {
-                this.cordinates[Number(key)] = payload[key];
+                let index = this.bikes.findIndex(function (device) {
+                    return device.getId() === Number(key)
+                });
+
+                this.cordinates[Number(index)] = payload[key];
             }
             return { event: 'Succesfully added routes', data: payload };
         } catch (error) {
@@ -211,14 +205,23 @@ class Simulator {
     }
 
     getBikeStatus(payload) {
+        let index = this.bikes.findIndex(function (device) {
+            return device.getId() === Number(payload.id)
+        });
+
+
         return {
             event: 'retriving bike status',
-            data: this.bikes[Number(payload.id)].getStatus()
+            data: this.bikes[Number(index)].getStatus()
         };
     }
 
     setBikeStatus(payload) {
-        this.bikes[Number(payload.id).setStatus(payload.status)];
+        let index = this.bikes.findIndex(function (device) {
+            return device.getId() === Number(payload.id)
+        });
+        this.bikes[Number(index)].setStatus(payload.status);
+        this.bikes[Number(index)].setOccupied(payload.occupied);
         return { event: `id for bike ${payload.id} set to status ${payload.status}` };
     }
 

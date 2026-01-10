@@ -100,6 +100,22 @@ class Device {
     }
 
     /**
+     * 
+     * @returns Get occupied
+     */
+    getOccupied() {
+        return this.occupied;
+    }
+
+    /**
+   * Setter for id.
+   * @param {Number} status
+   */
+    setOccupied(occupied) {
+        this.occupied = occupied;
+    }
+
+    /**
    * Method to move bike.
    * @param {Array}} cords
    * @returns  {Array}

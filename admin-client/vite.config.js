@@ -19,8 +19,10 @@ export default defineConfig({
   },
   server: {
     host: "0.0.0.0",
+    // eslint-disable-next-line no-undef
     port: Number(process.env.ADMIN_CLIENT_PORT) || 5173,
     hmr: {
+      // eslint-disable-next-line no-undef
       clientPort: Number(process.env.ADMIN_CLIENT_PORT) || 5173,
     },
   },

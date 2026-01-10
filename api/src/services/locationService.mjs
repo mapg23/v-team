@@ -112,6 +112,7 @@ class LocationService {
         return zone;
     }
 }
+export { LocationService };
 
 const locationService = new LocationService;
 

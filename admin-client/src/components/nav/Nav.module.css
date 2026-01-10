@@ -1,26 +1,28 @@
- ul {
-   list-style-type: none;
-   margin: 0;
-   padding: 0;
-   width: 200px;
-   border: 1px solid grey;
-   border-radius: 10px;
- }
+.navList {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background: #1e1e1e;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  text-align: left;
+}
 
- li a {
-   display: block;
-   color: white;
-   padding: 8px 16px;
-   text-decoration: none;
- }
+.navList a {
+  display: block;
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+}
 
- /* Change the link and background color on hover */
- li a:hover {
-   background-color: #555555;
-   color: white;
- }
+/* Change the link and background color on hover */
+.navList a:hover {
+  background-color: #555555;
+  color: white;
+}
 
 .active {
   background-color: #04AA6D;
   /* color: blue; */
-} 
+}

@@ -10,11 +10,13 @@ const userService = {
    * @returns {JSON}
    */
   getAllUsers: async function getAllUsers() {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/users`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -37,11 +39,13 @@ const userService = {
    * @returns {JSON}
    */
   deleteAllUsers: async function deleteAllUsers() {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/users`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -65,6 +69,7 @@ const userService = {
    * @returns {JSON}
    */
   createNewUser: async function createNewUser(userData) {
+    const token = sessionStorage.getItem("jwt");
     const userObject = {
       ...userData,
     };
@@ -74,6 +79,7 @@ const userService = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -96,11 +102,13 @@ const userService = {
    * @returns {JSON}
    */
   getUserDetails: async function getUserDetails(userId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/users/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -124,6 +132,7 @@ const userService = {
    * @param {Object} userData - Objekt med keys och values att uppdatera
    */
   updateUser: async function updateUser(userId, userData) {
+    const token = sessionStorage.getItem("jwt");
     const userObject = {
       ...userData,
     };
@@ -133,6 +142,7 @@ const userService = {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -154,6 +164,7 @@ const userService = {
    * @param {Object} userData - Objekt med keys och values att uppdatera
    */
   patchUser: async function patchUser(userId, userData) {
+    const token = sessionStorage.getItem("jwt");
     const userObject = {
       ...userData,
     };
@@ -163,6 +174,7 @@ const userService = {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -183,16 +195,18 @@ const userService = {
    * @returns {JSON}
    */
   deleteUser: async function deleteUser(userId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/users/${userId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error on patchUser! Status: ${response.status}`);
+        throw new Error(`HTTP error on deleteUser! Status: ${response.status}`);
       }
 
       // return response
@@ -212,16 +226,13 @@ const userService = {
    * @returns {JSON}
    */
   getUserRentalDetails: async function getUserRentalDetails(userId) {
-    return [
-      {
-        id: 1,
-      },
-    ];
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/users/${userId}/rentals`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -246,6 +257,7 @@ const userService = {
    * @returns {JSON}
    */
   editUserRental: async function editUserRental(userId, userData) {
+    const token = sessionStorage.getItem("jwt");
     const userObject = {
       ...userData,
     };
@@ -255,6 +267,7 @@ const userService = {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -279,6 +292,7 @@ const userService = {
    * @returns {JSON}
    */
   patchUserRental: async function patchUserRental(userId, userData) {
+    const token = sessionStorage.getItem("jwt");
     const userObject = {
       ...userData,
     };
@@ -288,12 +302,13 @@ const userService = {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
         throw new Error(
-          `HTTP error on getUserRentalDetails! Status: ${response.status}`
+          `HTTP error on patchUserRental! Status: ${response.status}`
         );
       }
 
@@ -310,11 +325,13 @@ const userService = {
    * @returns {JSON}
    */
   deleteUserRental: async function deleteUserRental(userId) {
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/users/${userId}/rentals`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -337,48 +354,13 @@ const userService = {
    * @returns {JSON}
    */
   getUserBalanceDetails: async function getUserBalanceDetails(userId) {
-    return {
-      balance: 100,
-    };
+    const token = sessionStorage.getItem("jwt");
     try {
-      const response = await fetch(`${API}/users/${userId}/balance`, {
+      const response = await fetch(`${API}/wallets/user/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on getUserBalanceDetails! Status: ${response.status}`
-        );
-      }
-
-      const responseData = await response.json();
-      return responseData;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  },
-
-  /**
-   * Edit User balance
-   * @param {number|string} userId - ID för användaren som ska uppdateras
-   * @param {Object} balance - Objekt med keys och values att uppdatera
-   * @returns {JSON}
-   */
-  editUserBalance: async function editUserBalance(userId, balance) {
-    const balanceObject = {
-      ...balance,
-    };
-
-    try {
-      const response = await fetch(`${API}/users/${userId}/balance`, {
-        body: JSON.stringify(balanceObject),
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 

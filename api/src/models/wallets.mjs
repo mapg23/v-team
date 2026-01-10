@@ -11,8 +11,8 @@ const wallets = {
      * @param {Object} body - An object containing the wallet data to insert.
      * @returns {Promise<Array>} An array containing the result from the db operation.
      */
-    createWallet: function createWallet(body) {
-        return db.insert("wallets", body);
+    createWallet: async function createWallet(body) {
+        return await db.insert("wallets", body);
     },
 
     /**
@@ -21,8 +21,8 @@ const wallets = {
      * @param {number} id - ID of the transaction.
      * @returns {Promise<Array>} An array containing the result from the db operation.
      */
-    getWalletById: function getWalletById(id) {
-        return db.select("wallets", "*", "id = ?", [id]);
+    getWalletById: async function getWalletById(id) {
+        return await db.select("wallets", "*", "id = ?", [id]);
     },
 
     /**
@@ -32,8 +32,8 @@ const wallets = {
      * @returns {Promise<Array>} An array containing the result from the db operation.
      * select(table, columns = '*', where = '', params = [])
      */
-    getWalletByUserId: function getWalletByUserId(userId) {
-        return db.select("wallets", "*", "user_id = ?", [userId]);
+    getWalletByUserId: async function getWalletByUserId(userId) {
+        return await db.select("wallets", "*", "user_id = ?", [userId]);
     },
 
     /**
@@ -43,8 +43,20 @@ const wallets = {
      * @param {Object} body - An object containing the trip data to insert.
      * @returns {Promise<Array>} An array containing the result from the db operation.
      */
-    updateWallet: function updateWallet(id, data) {
-        return db.update("wallets", data, "id = ?", [id]);
+    updateWallet: async function updateWallet(id, data) {
+        return await db.update("wallets", data, "id = ?", [id]);
+    },
+
+    /**
+     * Log a wallet update.
+     * Auto:        `id`, `created`
+     * Obligatory:  `wallet_id`, `amount`, decimal(11,2), `direction` enum('credit','debit')
+     * Opptional:   `trip_id`, `intent_id`, `comment`.
+     * @param {Object} body - An object containing the wallet data to insert.
+     * @returns {Promise<Array>} An array containing the result from the db operation.
+     */
+    createWalletLog: async function createWallet(body) {
+        return await db.insert("wallet_logs", body);
     },
 };
 

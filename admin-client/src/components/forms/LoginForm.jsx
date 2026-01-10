@@ -1,6 +1,5 @@
 import formstyle from "./Form.module.css";
 import inputstyle from "../input/input.module.css";
-import btnstyle from "../button/Button.module.css";
 
 import { useState } from "react";
 
@@ -13,6 +12,7 @@ import { useState } from "react";
 export default function LoginForm({ onFormSubmit }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
 
   /**
    * Call parent function onSubmit
@@ -20,19 +20,26 @@ export default function LoginForm({ onFormSubmit }) {
    * @param {Event} e
    */
   function handleSubmit(e) {
-    console.log("handlesubmit called");
     e.preventDefault();
-    onFormSubmit({ email, password });
+    onFormSubmit({ email, password, username });
+    // Reset input
+    resetInput();
+  }
+
+  /**
+   * Reset all user input
+   */
+  function resetInput() {
+    setEmail("");
+    setUsername("");
+    setPassword("");
   }
 
   return (
     <form onSubmit={handleSubmit} className={formstyle.form}>
-      <h2>Logga in</h2>
-
-      {/* {error && <p style={{ color: "red" }}>{error}</p>} */}
 
       <input
-        // type="email"
+        type="email"
         placeholder="example@gmail.com"
         value={email} // use for validation
         onChange={(e) => setEmail(e.target.value)}
@@ -40,14 +47,22 @@ export default function LoginForm({ onFormSubmit }) {
       />
 
       <input
-        // type="password"
+        type="password"
         placeholder="Lösenord"
         value={password} // use for validation
         onChange={(e) => setPassword(e.target.value)}
         className={inputstyle.input}
       />
 
-      <button type="submit" className={btnstyle.btn}>
+      <input
+        type="text"
+        placeholder="Username"
+        value={username} // use for validation
+        onChange={(e) => setUsername(e.target.value)}
+        className={inputstyle.input}
+      />
+
+      <button type="submit">
         Logga in
       </button>
     </form>

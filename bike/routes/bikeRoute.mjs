@@ -15,7 +15,7 @@ router.get('/bike/:id', async (req, res) => {
     res.json(response['data']);
 });
 
-router.get('bike/getStatus/:id', async (req, res) => {
+router.get('/bike/getStatus/:id', async (req, res) => {
     let id = req.params.id || null;
 
     if (!id) {
@@ -31,19 +31,27 @@ router.get('bike/getStatus/:id', async (req, res) => {
     res.json(response['data']);
 });
 
-router.post('bike/setStatus', async (req, res) => {
+router.post('/bike/setStatus', async (req, res) => {
     let id = req.body.id || null;
     let status = req.body.status || null;
+    let occupied = req.body.occupied;
 
-    if (!id || !status) {
-        return res.status(404).json(
-            {
-                msg: "invalid PARAMS"
-            }
-        );
+    if (typeof occupied === undefined) {
+        return res.status(404).json({
+          msg: "invalid occupied PARAM",
+        });
+    }
+    if (!id || !status ) {
+      return res.status(404).json({
+        msg: "invalid id or status PARAMS",
+      });
     }
 
-    let response = await callWorker('set-bike-status', { id: id, status: status });
+    let response = await callWorker("set-bike-status", {
+      id: id,
+      status: status,
+      occupied: occupied,
+    });
 
     res.json(response['data']);
 });
@@ -54,7 +62,7 @@ router.post('bike/setStatus', async (req, res) => {
  * X = Longitude.
  * Y = Latitued.
  */
-router.get('move/:id/:x/:y', async (req, res) => {
+router.get('/move/:id/:x/:y', async (req, res) => {
     let x = req.params.x;
     let y = req.params.y;
     let id = req.params.id;
