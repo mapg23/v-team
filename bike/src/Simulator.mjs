@@ -18,7 +18,7 @@ class Simulator {
      * Constructor for simulator
      * @param {Number} totalBikes
      * @param {Array} bikes
-     * @param {Array} cordinates
+     * @param {Object} cordinates
      */
     constructor(totalBikes = 1, bikes = [], cordinates = {}) {
         this.totalBikes = totalBikes;
@@ -176,26 +176,25 @@ class Simulator {
 
     /**
      * Getter method for device based on id.
-     * @param {Array} payload
-     * @returns {Array} - Device
+     * @param {Object} payload
+     * @returns {Object} - Device
      */
     getBike(payload) {
-        return { event: 'Retriving bike', data: this.bikes[payload.id] };
+        const bike = this.bikes.find(b => b.id === Number(payload.id));
+
+        return { event: 'Retriving bike', data: bike };
     }
 
     /**
      * Method that alters a specific bikes cordinates based on bike id.
-     * @param {Array} payload
-     * @returns {Array} - Array of result.
+     * @param {Object} payload
+     * @returns {Object} - The result.
      */
+
     setRoute(payload) {
         try {
             for (let key in payload) {
-                let index = this.bikes.findIndex(function (device) {
-                    return device.getId() === Number(key)
-                });
-
-                this.cordinates[Number(index)] = payload[key];
+                this.cordinates[Number(key)] = payload[key];
             }
             return { event: 'Succesfully added routes', data: payload };
         } catch (error) {
@@ -205,24 +204,20 @@ class Simulator {
     }
 
     getBikeStatus(payload) {
-        let index = this.bikes.findIndex(function (device) {
-            return device.getId() === Number(payload.id)
-        });
+        const bike = this.bikes.find(b => b.id === Number(payload.id));
 
-
-        return {
-            event: 'retriving bike status',
-            data: this.bikes[Number(index)].getStatus()
-        };
+        return { event: 'retrieving bike status', data: bike?.getStatus() };
     }
 
+
     setBikeStatus(payload) {
-        let index = this.bikes.findIndex(function (device) {
-            return device.getId() === Number(payload.id)
-        });
-        this.bikes[Number(index)].setStatus(payload.status);
-        this.bikes[Number(index)].setOccupied(payload.occupied);
-        return { event: `id for bike ${payload.id} set to status ${payload.status}` };
+        const bike = this.bikes.find(b => b.id === Number(payload.id));
+
+        if (!bike) {return { event: 'Bike not found' };}
+
+        bike.setStatus(payload.status);
+        bike.setOccupied(payload.occupied);
+        return { event: `bike ${payload.id} set to status ${payload.status}` };
     }
 
 
@@ -236,7 +231,8 @@ class Simulator {
             this.cordinates[Number(payload.id)] = payload.cords;
             return { event: 'succesfully Moved a bike', data: payload };
         } catch (error) {
-            console.error('Invalid Payload');
+            console.error('Invalid Payload', error.message);
+
             return { event: 'Invalid Payload' };
         }
     }
