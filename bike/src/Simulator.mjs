@@ -244,61 +244,30 @@ class Simulator {
      * @returns {Object} - Event with result and updated bike data if
      * successful, or error message if not
      */
-    // updateBike(payload) {
-    //     try {
-    //         const bike = this.bikes.find(b => b.id === Number(payload.bikeId));
-
-    //         if (!bike) {
-    //             console.error('Bike not found');
-    //             return { event: 'Bike not found' };
-    //         }
-
-    //         bike.status = Number(payload.status);
-    //         bike.battery = Number(payload.battery);
-    //         bike.occupied = payload.occupied;
-    //         bike.current_zone_type = payload.zoneType;
-    //         bike.current_zone_id = Number(payload.zoneId);
-
-    //         bike.move({ x: payload.longitude, y: payload.latitude });
-    //         this.sendUpdates();
-
-    //         return { event: 'Bike updated', data: bike };
-    //     } catch (error) {
-    //         console.error('Invalid Payload', error.message);
-    //         return { event: 'Invalid Payload' };
-    //     }
-    // }
-
     updateBike(payload) {
-    try {
-        const bike = this.bikes.find(b => b.id === Number(payload.bikeId));
-        if (!bike) return { event: 'Bike not found' };
+        try {
+            const bike = this.bikes.find(b => b.id === Number(payload.bikeId));
 
-        bike.status = Number(payload.status);
-        bike.battery = Number(payload.battery);
-        bike.occupied = Number(payload.occupied);
-        bike.current_zone_type = payload.zoneType ?? null;
-        bike.current_zone_id = payload.zoneId ?? null;
+            if (!bike) {
+                console.error('Bike not found');
+                return { event: 'Bike not found' };
+            }
 
-        // Simulatorn använder interna koordinater där x = longitud och y = latitud,
-        // därför mappas värdena explicit här för att undvika omkastade positioner när zondata saknas.
-        const x = Number(payload.longitude);
-        const y = Number(payload.latitude);
+            bike.status = Number(payload.status);
+            bike.battery = Number(payload.battery);
+            bike.occupied = payload.occupied;
+            bike.current_zone_type = payload.zoneType;
+            bike.current_zone_id = Number(payload.zoneId);
 
-        if (Number.isNaN(x) || Number.isNaN(y)) {
-            throw new Error("Invalid coordinates");
+            bike.move({ x: payload.longitude, y: payload.latitude });
+            this.sendUpdates();
+
+            return { event: 'Bike updated', data: bike };
+        } catch (error) {
+            console.error('Invalid Payload', error.message);
+            return { event: 'Invalid Payload' };
         }
-
-        bike.move({ x, y });
-
-        this.sendUpdates();
-        return { event: 'Bike updated', data: bike };
-    } catch (error) {
-        console.error('Invalid Payload', error.message);
-        return { event: 'Invalid Payload' };
     }
-}
-
 };
 
 export function createSimulator(options) {
