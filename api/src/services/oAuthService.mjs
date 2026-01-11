@@ -7,34 +7,44 @@ export const userModel = createUsers();
 const oAuthService = {
     /**
    * Takes a unique code and a code verifier, used to get an access token from Github.
-   * The access token combined with the code verifier gives us right to see the
-   * data defined in our scope on the initial request from frontend.
+   * The access token gives us right to see the data (defined in our scope on the
+   * initial request from frontend).
    * @param   {string} code         Code from Oatuh provider
-   * @param   {string} codeVerifier The PKCE code verifyer is sent again from backend
+   * @param   {string} verifier     The PKCE code verifyer for the code challenge
    * @returns {string} accessToken  Access token from Oatuh provider
    */
-    getAccessToken: async function (code, codeVerifier) {
+    getAccessToken: async function (
+        code,
+        verifier,
+        clientId,
+        githubCallbackUrl,
+        gitHubSecret
+    ) {
         const res = await fetch("https://github.com/login/oauth/access_token", {
             method: "POST",
             headers: { Accept: "application/json" },
             body: new URLSearchParams({
-                client_id: process.env.GITHUB_CLIENT_ID,
-                client_secret: process.env.GITHUB_CLIENT_SECRET,
-                redirect_uri: "http://localhost:5173/login/github/callback",
+                client_id: clientId,
+                client_secret: gitHubSecret,
+                redirect_uri: githubCallbackUrl,
                 code: code,
-                code_verifier: codeVerifier,
+                code_verifier: verifier,
             }),
         });
 
-        const { access_token: accessToken, error } = await res.json();
+        const result = await res.json();
 
-        if (error) {
-            const err = new Error(`Failed getting Github token: ${error}`);
+        console.log(result);
+
+        if (result.error) {
+            const err = new Error(`Failed getting Github token: ${result.error}`);
 
             err.status = 401;
-            err.details = error;
+            err.details = result.error;
             throw err;
-        }
+        };
+
+        const accessToken = result.access_token;
 
         return accessToken;
     },
@@ -45,6 +55,7 @@ const oAuthService = {
    * @returns {string} Users email
    */
     getUserEmail: async function (accessToken) {
+        console.log("Getting user emails\n\n\n\n");
         const emailsResponse = await fetch("https://api.github.com/user/emails", {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -58,6 +69,8 @@ const oAuthService = {
         }
 
         const userEmails = await emailsResponse.json();
+
+        console.log(userEmails);
         const primaryEmailObject = userEmails.find(
             (em) => em.verified === true && em.primary === true
         );
@@ -65,6 +78,7 @@ const oAuthService = {
         if (!primaryEmailObject) {
             throw new Error("No verified primary email found on GitHub");
         }
+        console.log(primaryEmailObject);
 
         return primaryEmailObject.email;
     },
@@ -76,14 +90,24 @@ const oAuthService = {
    * @param   {string} code           Code from Oatuh provider
    * @returns {string} token          A JWT to access API
    */
-    oAuthLogin: async function (rawState, encryptedState, code, codeVerifier) {
-        const decryptedState = await jwtService.verifyToken(encryptedState);
+    oAuthLogin: async function (encryptedState, code) {
+        const state = await jwtService.verifyToken(encryptedState);
 
-        if (decryptedState !== rawState) {
-            throw new Error("Failed to authenticate state");
+        let githubCallbackUrl = process.env.VITE_GITHUB_CALLBACK_USER;
+        let gitHubSecret = process.env.GITHUB_CLIENT_SECRET_USER;
+
+        if (state.clientId === process.env.VITE_GITHUB_CLIENT_ID_ADMIN) {
+            githubCallbackUrl = process.env.VITE_GITHUB_CALLBACK_ADMIN;
+            gitHubSecret = process.env.GITHUB_CLIENT_SECRET_ADMIN;
         }
 
-        const accessToken = await this.getAccessToken(code, codeVerifier);
+        const accessToken = await this.getAccessToken(
+            code,
+            state.verifier,
+            state.clientId,
+            githubCallbackUrl,
+            gitHubSecret,
+        );
 
         const userEmail = await this.getUserEmail(accessToken);
         const user = await this.findOrCreateOauthUser(userEmail);

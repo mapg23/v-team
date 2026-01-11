@@ -2,6 +2,7 @@ import express from "express";
 import authService from "../services/authService.mjs";
 import oAuthService from "../services/oAuthService.mjs";
 import jwtService from "../services/jwtService.mjs";
+import createPKCE from "../services/cryptoService.mjs";
 import * as validation from "../middleware/validation/validationMiddleware.mjs";
 import { restrictTo } from "../middleware/authMiddleware.mjs";
 
@@ -35,8 +36,6 @@ router.post(
     validation.userRules,
     validation.checkValidationResult,
     async (req, res) => {
-        console.log(req.body);
-
         try {
             const { email, password, username } = req.body;
             const token = await authService.loginUser(email, password, username);
@@ -54,17 +53,38 @@ router.post(
  */
 router.post(
     `/oauth/login`,
-    validation.oAuthLoginRules,
-    validation.checkValidationResult,
+    // validation.oAuthLoginRules,
+    // validation.checkValidationResult,
     async (req, res) => {
         try {
-            const { rawState, encryptedState, code, code_verifier: codeVerifier } = req.body;
+            const { encryptedState, code } = req.body;
             const data = await oAuthService.oAuthLogin(
-                rawState,
                 encryptedState,
                 code,
-                codeVerifier
             );
+
+            return res.json({
+                jwt: data.token,
+                userId: data.id
+            });
+        } catch (err) {
+            return res.status(401).json(err);
+        }
+    }
+);
+
+/**
+ * Oauth login - for multiple frontends
+ * Will login or register a new oauth-user.
+ */
+router.post(
+    `/oauth/login/:frontEndId`,
+    // validation.oAuthLoginRules,
+    // validation.checkValidationResult,
+    async (req, res) => {
+        try {
+            const frontEndId = req.params;
+            const data = await oAuthService.oAuthLogin(frontEndId);
 
             return res.json({
                 jwt: data.token,
@@ -83,14 +103,18 @@ router.post(
  */
 router.post(
     `/oauth/get_state`,
-    validation.getStateRules,
-    validation.checkValidationResult,
+    // validation.getStateRules,
+    // validation.checkValidationResult,
     async (req, res) => {
-        const state = req.body.state;
+        const clientId = req.body.client_id;
 
-        const encryptedState = await jwtService.createToken(state, 60);
+        console.log("STATE:(app id) ", clientId);
+        const {challenge, verifier} = await createPKCE();
 
-        return res.json({ encryptedState: encryptedState });
+        console.log("2. CHALLANGE/VERIFIER: ", challenge, verifier);
+        const encryptedState = await jwtService.createToken({ clientId, verifier }, 10);
+
+        return res.json({ encryptedState: encryptedState, challenge });
     }
 );
 
