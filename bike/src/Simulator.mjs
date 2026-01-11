@@ -74,7 +74,7 @@ class Simulator {
             }
 
             if (!this.cordinates[key] || this.cordinates[key].length === 0) {
-                console.log(`Bike: ${key} has no coordinates left`);
+                console.log(`Bike: ${key} has no cordinates left 0`);
                 this.bikes[index].status = 40;
                 this.cordinates[key] = [];
                 continue;
@@ -192,7 +192,7 @@ class Simulator {
         try {
             for (let key in payload) {
                 let index = this.bikes.findIndex(function (device) {
-                    return device.getId() === Number(key)
+                    return device.getId() === Number(key);
                 });
 
                 this.cordinates[Number(index)] = payload[key];
@@ -206,7 +206,7 @@ class Simulator {
 
     getBikeStatus(payload) {
         let index = this.bikes.findIndex(function (device) {
-            return device.getId() === Number(payload.id)
+            return device.getId() === Number(payload.id);
         });
 
 
@@ -218,8 +218,9 @@ class Simulator {
 
     setBikeStatus(payload) {
         let index = this.bikes.findIndex(function (device) {
-            return device.getId() === Number(payload.id)
+            return device.getId() === Number(payload.id);
         });
+
         this.bikes[Number(index)].setStatus(payload.status);
         this.bikes[Number(index)].setOccupied(payload.occupied);
         return { event: `id for bike ${payload.id} set to status ${payload.status}` };
@@ -237,24 +238,21 @@ class Simulator {
             return { event: 'succesfully Moved a bike', data: payload };
         } catch (error) {
             console.error('Invalid Payload');
-            return { event: 'Invalid Payload' };
+            return { event: 'Invalid Payload', message: error.message  };
         }
     }
-    /**
-     * Method to update a bike's properties and position in the simulator.
-     * @param {*} payload - Object containing bikeId, status, battery,
-     * occupied, zoneType, zoneId, longitude, latitude
-     * @returns {Object} - Event with result and updated bike data if
-     * successful, or error message if not
-     */
+
     updateBike(payload) {
         try {
-            const bike = this.bikes.find(b => b.id === Number(payload.bikeId));
+            const index = this.bikes.findIndex(device =>
+                device.getId() === Number(payload.bikeId)
+            );
 
-            if (!bike) {
-                console.error('Bike not found');
+            if (index === -1) {
                 return { event: 'Bike not found' };
             }
+
+            const bike = this.bikes[index];
 
             bike.status = Number(payload.status);
             bike.battery = Number(payload.battery);
@@ -267,38 +265,9 @@ class Simulator {
 
             return { event: 'Bike updated', data: bike };
         } catch (error) {
-            console.error('Invalid Payload', error.message);
-            return { event: 'Invalid Payload' };
+            return { event: 'Invalid Payload', message: error.message };
         }
     }
-
-//     updateBike(payload) {
-//     try {
-//         const index = this.bikes.findIndex(device =>
-//             device.getId() === Number(payload.bikeId)
-//         );
-
-//         if (index === -1) {
-//             return { event: 'Bike not found' };
-//         }
-
-//         const bike = this.bikes[index];
-
-//         bike.status = Number(payload.status);
-//         bike.battery = Number(payload.battery);
-//         bike.occupied = payload.occupied;
-//         bike.current_zone_type = payload.zoneType;
-//         bike.current_zone_id = Number(payload.zoneId);
-
-//         bike.move({ x: payload.longitude, y: payload.latitude });
-//         this.sendUpdates();
-
-//         return { event: 'Bike updated', data: bike };
-//     } catch (error) {
-//         return { event: 'Invalid Payload' };
-//     }
-// }
-
 };
 
 export function createSimulator(options) {
