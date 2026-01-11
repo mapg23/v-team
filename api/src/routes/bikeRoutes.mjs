@@ -306,7 +306,7 @@ export default function createBikeRouter(bikes = createBikes()) {
      */
     route.put('/bikes/:id/move', validateJsonBody, async (req, res) => {
         const bikeId = Number(req.params.id);
-        const { zoneType, zoneId } = req.body;
+        const { zoneType, zoneId, occupied } = req.body;
         const allowed = ['charging', 'parking'];
 
         if (!allowed.includes(zoneType)) {
@@ -345,7 +345,8 @@ export default function createBikeRouter(bikes = createBikes()) {
                 current_zone_type: zoneType,
                 current_zone_id: zoneId,
                 latitude: coords.latitude,
-                longitude: coords.longitude
+                longitude: coords.longitude,
+                occupied: occupied
             });
 
             if (result.affectedRows === 0) {
@@ -357,7 +358,7 @@ export default function createBikeRouter(bikes = createBikes()) {
             // Skicka uppdateringar till simulatorn.
 
             // Värden från befintliga cykelobjektet skickas till simulatorn för att undvika null.
-            const { status, battery, occupied } = bike;
+            const { status, battery } = bike;
 
             try {
                 await updateSimulator({
@@ -368,7 +369,7 @@ export default function createBikeRouter(bikes = createBikes()) {
                     zoneId,
                     status,
                     battery,
-                    occupied
+                    occupied: occupied
                 });
             } catch (simErr) {
                 console.error('Simulator update failed:', simErr);
