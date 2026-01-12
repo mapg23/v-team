@@ -96,7 +96,7 @@ const TripsModel = {
     },
 
     startTrip: async function startTrip(userId, bikeId) {
-        return await this.basicPOST(`/trips`, {
+        return await this.basicPOST(`/trips/start`, {
             "userId": userId,
             "bikeId": bikeId
         });
