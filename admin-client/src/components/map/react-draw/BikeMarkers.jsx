@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { Marker, Popup } from "react-leaflet";
-import { useBikeIcon } from "../../icons/react-icons";
+import { BikeIcon } from "../../icons/react-icons";
 import { useNavigate } from "react-router-dom";
 
 /**
@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
  */
 export default function BikeMarkers({ bikes }) {
   const navigate = useNavigate();
-  const bikeIcons = useBikeIcon();
+  const bikeIcons = BikeIcon();
 
   /**
    * Redirect to bike/:id
