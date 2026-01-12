@@ -1,7 +1,15 @@
 import btnStyles from "../button/Button.module.css";
 import navStyles from "../nav/Nav.module.css";
 import { useLocation } from "react-router-dom";
-import { HomeIcon, CityIcon } from "../icons/react-icons";
+import {
+  HomeIcon,
+  CityIcon,
+  CostIcon,
+  StaticChargeIcon,
+  StaticParkIcon,
+  CgProfileIcon,
+  StaticBikeIcon,
+} from "../icons/react-icons";
 
 /**
  *
@@ -43,12 +51,8 @@ function Navigation({ logout }) {
               pathname === "/cost" ? navStyles.active : ""
             }`}
           >
-            <CityIcon></CityIcon>
-            <a
-              href="/cost"
-            >
-              Prissättning
-            </a>
+            <CostIcon></CostIcon>
+            <a href="/cost">Prissättning</a>
           </div>
         </li>
         <li>
@@ -57,12 +61,8 @@ function Navigation({ logout }) {
               pathname === "/stations" ? navStyles.active : ""
             }`}
           >
-            <CityIcon></CityIcon>
-            <a
-              href="/stations"
-            >
-              Laddstationer
-            </a>
+            <StaticChargeIcon></StaticChargeIcon>
+            <a href="/stations">Laddstationer</a>
           </div>
         </li>
         <li>
@@ -71,12 +71,8 @@ function Navigation({ logout }) {
               pathname === "/parkings" ? navStyles.active : ""
             }`}
           >
-            <CityIcon></CityIcon>
-            <a
-              href="/parkings"
-            >
-              Parkeringar
-            </a>
+            <StaticParkIcon></StaticParkIcon>
+            <a href="/parkings">Parkeringar</a>
           </div>
         </li>
         <li>
@@ -85,12 +81,8 @@ function Navigation({ logout }) {
               pathname === "/users" ? navStyles.active : ""
             }`}
           >
-            <CityIcon></CityIcon>
-            <a
-              href="/users"
-            >
-              Användare
-            </a>
+            <CgProfileIcon></CgProfileIcon>
+            <a href="/users">Användare</a>
           </div>
         </li>
         <li>
@@ -99,12 +91,8 @@ function Navigation({ logout }) {
               pathname === "/bikes" ? navStyles.active : ""
             }`}
           >
-            <CityIcon></CityIcon>
-            <a
-              href="/bikes"
-            >
-              Elsparkcyklar
-            </a>
+            <StaticBikeIcon></StaticBikeIcon>
+            <a href="/bikes">Elsparkcyklar</a>
           </div>
         </li>
         <li>

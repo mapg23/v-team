@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { FaChargingStation, FaParking } from "react-icons/fa";
 import { MdElectricScooter, MdOutlineLocationCity } from "react-icons/md";
 import { AiOutlineHome } from "react-icons/ai";
+import { HiOutlineCurrencyDollar } from "react-icons/hi2";
 import styles from "./iconStyles.module.css";
 import { CgProfile } from "react-icons/cg";
 import iconStyles from "./iconStyles.module.css";
@@ -93,4 +94,36 @@ export function CityIcon(bool) {
       size={24}
     ></MdOutlineLocationCity>
   );
+}
+
+/**
+ * Cost icon
+ * * @returns {Component}
+ */
+export function CostIcon() {
+  return <HiOutlineCurrencyDollar size={24}></HiOutlineCurrencyDollar>;
+}
+
+/**
+ * Static Charge icon
+ * * @returns {Component}
+ */
+export function StaticChargeIcon() {
+  return <FaChargingStation size={24}></FaChargingStation>;
+}
+
+/**
+ * Static Parking icon
+ * * @returns {Component}
+ */
+export function StaticParkIcon() {
+  return <FaParking size={24}></FaParking>;
+}
+
+/**
+ * Static Bike icon
+ * * @returns {Component}
+ */
+export function StaticBikeIcon() {
+  return <MdElectricScooter size={24}></MdElectricScooter>;
 }
