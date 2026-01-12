@@ -1,5 +1,9 @@
 # V-team 08 - Rull
 
+![Rull](client/public/rull.png)
+
+
+
 ## Coverage
 
 ### API
