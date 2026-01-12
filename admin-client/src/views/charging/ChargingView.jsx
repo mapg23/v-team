@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import MapDrawComponent from "../../components/map/react-draw/MapDrawComponent";
 import CityDropDown from "../../components/input/CityDropDown";
 import CityService from "../../services/cities";
@@ -50,7 +48,10 @@ export default function ChargingView() {
    */
   useEffect(() => {
     if (!cityId) return;
-    fetchData();
+    function getData() {
+      fetchData();
+    }
+    getData();
   }, [cityId]);
 
   /**
@@ -68,8 +69,10 @@ export default function ChargingView() {
    */
   async function initChargingZoneCreation(layer) {
     const chargingZoneCoords = layer.getLatLng();
-    if (chargingZoneCoords.lat && chargingZoneCoords.lng)
+    if (chargingZoneCoords.lat && chargingZoneCoords.lng) {
       setChargingZoneCoords(chargingZoneCoords);
+      setRenderChargingZoneForm(true);
+    }
   }
 
   /**
@@ -86,18 +89,11 @@ export default function ChargingView() {
     };
 
     const created = await stationService.createNewChargingStation(cZone);
-    if (created.id) fetchData();
-  }
-
-  /**
-   * Show form for creating a charing zone
-   * Only renders if coordinates for a charging zone are set
-   */
-  useEffect(() => {
-    if (chargingZoneCoords) {
-      setRenderChargingZoneForm(true);
+    if (created.id) {
+      fetchData();
+      setRenderChargingZoneForm(false);
     }
-  }, [chargingZoneCoords]);
+  }
 
   /**
    * Delete zone and re-fetch data

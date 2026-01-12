@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { Rectangle, Popup, Marker } from "react-leaflet";
 import { ParkingIcon } from "../../icons/react-icons";
 
