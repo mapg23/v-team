@@ -32,6 +32,14 @@ export default function createBikes(db = dbDefault) {
             return await db.insert('scooters', body);
         },
 
+        createBikeSimulator: async function createBike(body) {
+            return await db.bulkInsert('scooters', body);
+        },
+
+        deleteAllBikes: async function deleteAllBikes() {
+            return await db.remove('scooters');
+        },
+
         /**
          * Get a bike by ID.
          *

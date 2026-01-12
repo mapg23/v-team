@@ -1,16 +1,5 @@
 "use strict";
 
-
-// app.post("/mega-routing-machine", async (req, res) => {
-
-async function generateBikes() {
-
-}
-generateBikes();
-
-
-
-
 async function start() {
     let heartbeatTimer = 5000;
 
@@ -108,3 +97,5 @@ async function startBikes(params) {
 
     console.log(`[LOG]: ${routesJson.event}`);
 }
+
+await startBikes();

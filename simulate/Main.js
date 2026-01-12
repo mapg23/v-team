@@ -1,4 +1,6 @@
+import fs from "fs";
 import { writeFile } from "fs/promises";
+import { constrainedMemory } from "process";
 
 const cityLimits = [
     {
@@ -55,6 +57,16 @@ function rand(min, max) {
     return Math.random() * (max - min) + min;
 }
 
+
+function isFileEmpty(path) {
+    return fs.statSync(path).size === 0;
+}
+
+const EPS = 1e-6
+function same(a, b) {
+    return Math.abs(a - b) < EPS;
+}
+
 function randomPoint(bounds) {
     return {
         lat: rand(bounds.min_lat, bounds.max_lat),
@@ -108,17 +120,65 @@ async function generateJSON(scooters) {
     )
 }
 
-(async () => {
+async function instanciateBikes(count = 333) {
     const city = cityLimits.find(c => c.name === "Jönköping");
-    const scooters = await generatePoints(city, 333);
-    await generateJSON(scooters)
+    const scooters = await generatePoints(city, count);
 
-    await fetch(`http://localhost:9091/mega-routing-machine`, {
+    let res = await fetch(`http://localhost:9091/mega-routing-machine`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(scooters)
     });
+    let coordinates = await res.json();
+
+    let createResp = await fetch(`http://localhost:9091/simulate-bikes-create`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': "application/json"
+        },
+        body: JSON.stringify(coordinates)
+    });
+
+    let bikes = await createResp.json();
+
+    const result = {};
+
+    for (let i = 0; i < coordinates.length; i++) {
+        const start = coordinates[i][0];
+
+        const bike = bikes.find(b =>
+            same(b.latitude, start.y) &&
+            same(b.longitude, start.x)
+        );;
+
+        if (bike) {
+            result[bike.id] = coordinates[i];
+        }
+    }
+
+    await fetch('http://localhost:9091/forward-routes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': "application/json"
+        },
+        body: JSON.stringify(result)
+    });
+
+    return coordinates;
+}
+
+async function setBikesInMotion(params) {
+
+}
+
+
+(async () => {
+    let cords = await instanciateBikes(333); // Generera cyklar
+    // await generateJSON(scooters)
+    // console.log(cords);
+    // console.log(bikes)
+    // setBikesInMotion(bikes);
 })();
 
