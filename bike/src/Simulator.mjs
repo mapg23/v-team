@@ -39,7 +39,7 @@ class Simulator {
      * @returns Void
      */
     startMovement() {
-        if (this.movementInterval) {return;}
+        if (this.movementInterval) { return; }
 
         this.movementInterval = setInterval(() => {
             this.heartbeat();
@@ -64,6 +64,7 @@ class Simulator {
      * @returns {Array|void} - Event array
      */
     heartbeat() {
+        console.log(this.cordinates);
         for (let key in this.cordinates) {
             let index = this.bikes.findIndex(function (device) {
                 return device.getId() === Number(key);
@@ -117,6 +118,8 @@ class Simulator {
     startFromMemory(payload) {
         // Retrives all bikes from db
         // Start bike movement
+
+        console.log(payload);
         this.bikes = [];
         for (let bike of payload) {
             let parsedCords = { x: Number(bike.longitude), y: Number(bike.latitude) };
@@ -133,6 +136,8 @@ class Simulator {
                 current_zone_id: bike.current_zone_id
             }));
         }
+
+        console.log(this.bikes);
         this.startMovement();
         return { event: `Bikes: ${this.bikes.length}`, data: this.bikes };
     }
@@ -191,12 +196,15 @@ class Simulator {
     setRoute(payload) {
         try {
             for (let key in payload) {
+
                 let index = this.bikes.findIndex(function (device) {
                     return device.getId() === Number(key);
                 });
 
-                this.cordinates[Number(index)] = payload[key];
+                this.cordinates[Number(key)] = payload[key];
+                // this.cordinates[Number(index)] = payload[key];
             }
+
             return { event: 'Succesfully added routes', data: payload };
         } catch (error) {
             console.error('Invalid JSON structure', error.message);
