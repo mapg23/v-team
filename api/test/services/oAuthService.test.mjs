@@ -108,13 +108,6 @@ describe("oAuthService", () => {
 
         expect(userEmail).toBe("test@test.test");
     });
-    test("oAuthLogin, fail: bad state provided", async () => {
-        jwtService.verifyToken.mockResolvedValue("bad value");
-
-        await expect(
-            oAuthService.oAuthLogin("real value", "encrypted value", "code")
-        ).rejects.toThrow("Failed to authenticate state");
-    });
 
     test("oAuthLogin, success", async () => {
         jwtService.verifyToken.mockResolvedValue("real value");

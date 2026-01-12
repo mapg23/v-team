@@ -34,8 +34,6 @@ const oAuthService = {
 
         const result = await res.json();
 
-        console.log(result);
-
         if (result.error) {
             const err = new Error(`Failed getting Github token: ${result.error}`);
 
@@ -55,7 +53,6 @@ const oAuthService = {
    * @returns {string} Users email
    */
     getUserEmail: async function (accessToken) {
-        console.log("Getting user emails\n\n\n\n");
         const emailsResponse = await fetch("https://api.github.com/user/emails", {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -70,7 +67,6 @@ const oAuthService = {
 
         const userEmails = await emailsResponse.json();
 
-        console.log(userEmails);
         const primaryEmailObject = userEmails.find(
             (em) => em.verified === true && em.primary === true
         );
@@ -78,7 +74,6 @@ const oAuthService = {
         if (!primaryEmailObject) {
             throw new Error("No verified primary email found on GitHub");
         }
-        console.log(primaryEmailObject);
 
         return primaryEmailObject.email;
     },

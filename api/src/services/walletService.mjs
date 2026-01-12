@@ -33,13 +33,16 @@ class WalletService {
 
         const newBalance = Number(wallet.balance) + Number(amount);
 
-
+        // Start transaction
         const res = await this.wallets.updateWallet(
             wallet.id,
             {balance: newBalance},
         );
 
         if (!res?.affectedRows) {
+            console.error(
+                `User ${userId} successfully paid ${amount}, but users wallet was not credited`
+            );
             throw new Error("Failed to update wallet balance");
         }
 
@@ -50,7 +53,11 @@ class WalletService {
             intent_id: intentId
         };
 
-        this.logWalletUpdate(logData);
+        const logRes = await this.logWalletUpdate(logData);
+
+        if (!logRes?.insertId) {
+            throw new Error("Wallet credited but log failed");
+        }
 
         return newBalance;
     }
@@ -107,6 +114,7 @@ class WalletService {
     async logWalletUpdate(body) {
         const res = await this.wallets.createWalletLog(body);
 
+        console.log("WALLET_LOG: ", res);
         if (!res.insertId) {
             throw new Error(`Could not create a log for the wallet update`);
         }
