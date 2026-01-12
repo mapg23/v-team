@@ -128,6 +128,23 @@ services:
   #     - "${USER_CLIENT_PORT:-5174}:5174"
   #   networks:
   #     - app_network
+  #OSRM - docker run --platform=linux/amd64 -t -i -p 5555:5000 -v "${PWD}:/data" osrm/osrm-backend osrm-routed --algorithm mld /data/rull.osrm
+  osrm:
+    container_name: osrm
+    image: osrm/osrm-backend
+    platform: linux/amd64
+    # build:
+      # context: ./osrm
+      # dockerfile: Dockerfile
+    restart: always
+    env_file: .env
+    volumes:
+      - ./osrm/data:/data
+    command: osrm-routed --algorithm mld /data/rull.osrm
+    ports:
+      - 6061:5000
+    networks:
+      - app_network
 
 networks:
   app_network:

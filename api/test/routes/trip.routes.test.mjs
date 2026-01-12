@@ -53,7 +53,7 @@ describe('Trips routes', () =>{
 
         tripService.startTrip.mockResolvedValue([tripMock]);
 
-        const res = await request(app).post("/trips").send({userId: "a", bikeId: 3});
+        const res = await request(app).post("/trips/start").send({userId: "a", bikeId: 3});
 
         expect(res.body).toEqual(
             {"errors":
@@ -83,7 +83,7 @@ describe('Trips routes', () =>{
 
         tripService.startTrip.mockResolvedValue([tripMock]);
 
-        const res = await request(app).post("/trips").send({userId: 2, bikeId: 3});
+        const res = await request(app).post("/trips/start").send({userId: 2, bikeId: 3});
 
         expect(res.body).toEqual([tripMock]);
         expect(res.status).toEqual(201);
@@ -93,7 +93,7 @@ describe('Trips routes', () =>{
         tripService.startTrip.mockRejectedValue(new Error("Trip could not be created"));
 
 
-        const res = await request(app).post("/trips").send({userId: 999, bikeId: 3});
+        const res = await request(app).post("/trips/start").send({userId: 999, bikeId: 3});
 
         expect(res.body).toEqual({
             "error": "Could not create trip",
@@ -103,7 +103,7 @@ describe('Trips routes', () =>{
     });
 
 
-    test("PUT / end a trip", async () => {
+    test("POST / end a trip", async () => {
         const endedTrip = {
             id: 5,
             cost: "120.00"
@@ -111,21 +111,21 @@ describe('Trips routes', () =>{
 
         tripService.endTrip.mockResolvedValue([endedTrip]);
 
-        const res = await request(app).put("/trips/1");
+        const res = await request(app).post("/trips/bike/1/end");
 
         expect(res.body).toEqual([endedTrip]);
         expect(res.status).toEqual(200);
         expect(tripService.endTrip).toHaveBeenCalledWith("1");
     });
 
-    test("PUT / end a trip Fail: backend Error thrown", async () => {
+    test("POST / end a trip Fail: backend Error thrown", async () => {
         tripService.endTrip.mockRejectedValue(new Error("Could not end trip with id: 999"));
 
 
-        const res = await request(app).put("/trips/999");
+        const res = await request(app).post("/trips/bike/999/end");
 
         expect(res.body).toEqual({
-            error: "Could not end trip with id: 999",
+            error: "Could not end trip for bike with id: 999",
             "message": "Could not end trip with id: 999",
         });
         expect(res.status).toEqual(500);

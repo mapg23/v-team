@@ -13,10 +13,13 @@ import createCityRouter from "./src/routes/cityRoutes.mjs";
 import createBikeRouter from "./src/routes/bikeRoutes.mjs";
 import createStationRouter from "./src/routes/stationRoutes.mjs";
 import createParkingRouter from "./src/routes/parkingRoutes.mjs";
-import startSimulator from "./src/startSimulator.mjs";
-import stopSimulator from "./src/stopSimulator.mjs";
+import startSimulator from "./src/systemSimulation/startSimulator.mjs";
+import stopSimulator from "./src/systemSimulation/stopSimulator.mjs";
 import tripRoutes from "./src/routes/tripRoutes.mjs";
 import paymentRoutes from "./src/routes/paymentRoutes.mjs";
+import priceRoutes from "./src/routes/priceRoutes.mjs";
+import walletRoutes from "./src/routes/walletRoutes.mjs";
+import routingService from "./src/services/routingService.mjs";
 
 const app = express();
 const port = process.env.API_PORT || 9091;
@@ -72,6 +75,51 @@ app.post("/telemetry", (req, res) => {
     res.status(200).json({ ok: true });
 });
 
+/**
+ * Req body object:
+ * { x: <coordinate>, y: <coordinate> }
+ */
+app.post("/routing-machine", async (req, res) => {
+    try {
+        const coords = req.body;
+
+        if (!coords) {
+            throw new Error('Missing "coords" in request body {x:<>, y:<>}');
+        }
+
+        const result = await routingService.generateRoute(coords);
+
+        return res.json(result);
+    } catch (err) {
+        console.error(err);
+        return res.json(err);
+    }
+});
+
+/**
+ * Req body: Array av object
+ * [
+ *  { x: <coordinate>, y: <coordinate> },
+ * {...},
+ * ...
+ * ]
+ */
+app.post("/mega-routing-machine", async (req, res) => {
+    try {
+        const coordsArray = req.body;
+
+        if (!coordsArray) {
+            throw new Error('Missing "coordsArray" in request body [{x:<>, y:<>}]');
+        }
+
+        const result = await routingService.generateManyRoutes(coordsArray);
+
+        return res.json(result);
+    } catch (err) {
+        console.error(err);
+        return res.json(err);
+    }
+});
 
 
 // ------------------------------
@@ -98,6 +146,8 @@ app.use(`/api/${version}`, createParkingRouter());
 
 app.use(`/api/${version}/trips`, tripRoutes);
 app.use(`/api/${version}/payments`, paymentRoutes);
+app.use(`/api/${version}/prices`, priceRoutes);
+app.use(`/api/${version}/wallets`, walletRoutes);
 
 // Startar server med Socket.IO
 server.listen(port, "0.0.0.0", async () => {

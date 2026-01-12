@@ -1,13 +1,15 @@
 import Map from "@/components/map/Map-component";
 import { useEffect, useState } from "react";
 import CityService from "services/cities";
+import parkingService from "../../services/parkings";
+import stationService from "../../services/stations";
 import CityTable from "components/table/CityTable";
 import PieChart from "components/chart/PieChart";
-import BikeSocket from "components/socket/BikeSocket";
-import bikeService from "../../services/bikes";
 import { useParams } from "react-router";
 import CityDropDown from "../../components/input/CityDropDown";
 import { useNavigate } from "react-router-dom";
+import { socket } from "../../socket";
+import MapDrawComponent from "../../components/map/react-draw/MapDrawComponent";
 
 /**
  * View for showing a city based on url
@@ -40,6 +42,12 @@ export default function InspectCityView() {
   // Sync charging zones from database
   const [chargingZones, setChargingZones] = useState([]);
 
+  // Get bikes in all parking zones
+  const [parkingZonesWithBikes, setParkingZonesWithBikes] = useState([])
+  
+  // Get bikes in all charging zones
+  const [chargingZonesWithBikes, setChargingZonesWithBikes] = useState([])
+
   // Map different bike status
   const [bikeStatusMap, setBikeStatusMap] = useState({
     available: null,
@@ -49,35 +57,47 @@ export default function InspectCityView() {
   // -----------------------------
   // Update bikes from socket
   // -----------------------------
-  function updateBikes(bikeData) {
-    const bikesInCity = bikeData.filter(
+  useEffect(() => {
+    function bikeEvent(bikeData) {
+      setBikes(bikeData);
+    }
+
+    socket.on("bikes", bikeEvent);
+
+    return () => {
+      socket.off("bikes", bikeEvent);
+    };
+  }, [cityId]);
+
+  // -----------------------------
+  // Update Chart with bike status in City
+  // -----------------------------
+  useEffect(() => {
+    const bikeObjectsInCity = bikes.filter(
       (bike) => bike.city_id === Number(cityId)
     );
-    // console.log(bikesInCity)
-    setBikes(bikesInCity);
-    updateBikeStatus(bikesInCity);
-  }
+    const bikesAvailableCount = bikeObjectsInCity.filter(
+      (bike) => bike.occupied === 0
+    ).length;
+    const bikesUsedCount = bikeObjectsInCity.length - bikesAvailableCount;
 
-  /**
-   * Filter different status
-   */
-  function updateBikeStatus(bikes) {
-    const availableCount = bikes.filter((bike) => bike.occupied === 10).length;
-    const usedCount = bikes.length - availableCount;
-
+    // Prev är befintliga värdet, om inget ändras, returna samma
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setBikeStatusMap((prev) => {
-      // Prev är befintliga värdet, om inget ändras, returna samma
-      if (prev.available === availableCount && prev.used === usedCount) {
+      if (
+        prev.available === bikesAvailableCount &&
+        prev.used === bikesUsedCount
+      ) {
         return prev;
       }
 
       // Annars ersätt
       return {
-        available: availableCount,
-        used: usedCount,
+        available: bikesAvailableCount,
+        used: bikesUsedCount,
       };
     });
-  }
+  }, [bikes, cityId]);
 
   // -----------------------------
   // Fetch initial data
@@ -86,9 +106,6 @@ export default function InspectCityView() {
     async function fetchData() {
       // get city details based on params
       setcityDetails(await CityService.getCityDetailsById(cityId));
-
-      // Start Bike Sync
-      await bikeService.startBikeSync();
 
       // Get parking zones
       setParkingZones(await CityService.getParkingZonesInCity(cityId));
@@ -102,6 +119,46 @@ export default function InspectCityView() {
     fetchData();
   }, [cityId]);
 
+  // -----------------------------
+  // Get number of bikes in parking zone
+  // -----------------------------
+  useEffect(() => {
+    async function getBikesInParkingZone() {
+      const parkingZonesWithBikes = parkingZones.map(
+        async (parkingZone) => {
+          const bikesInZone = await parkingService.getAllBikesInParkingZone(
+            parkingZone.id
+          );
+          const newZone = {...parkingZone, bikes: bikesInZone.bikeCount}
+          return newZone
+        }
+      );
+      const updatedZones = await Promise.all(parkingZonesWithBikes);
+      setParkingZonesWithBikes(updatedZones);
+    }
+    getBikesInParkingZone();
+  }, [parkingZones]);
+
+  // -----------------------------
+  // Get number of bikes in charging zone
+  // -----------------------------
+  useEffect(() => {
+    async function getBikesInChargingZone() {
+      const chargingZonesWithBikes = chargingZones.map(
+        async (chargingZone) => {
+          const bikesInZone = await stationService.getBikesInChargingStation(
+            chargingZone.id
+          );
+          const newZone = { ...chargingZone, bikes: bikesInZone.bikeCount };
+          return newZone
+        }
+      );
+      const updatedZones = await Promise.all(chargingZonesWithBikes);
+      setChargingZonesWithBikes(updatedZones);
+    }
+    getBikesInChargingZone();
+  }, [chargingZones]);
+
   /**
    * Method for handling the selectionChange
    * @param {id} cityId redirect to city/:id
@@ -113,20 +170,33 @@ export default function InspectCityView() {
   if (loading) return <h1>Loading...</h1>;
 
   return (
-    <>
-      <BikeSocket paramId={cityId} onUpdate={updateBikes} />
-      <CityDropDown action={redirectToCity} />
-      <h1>{cityDetails.name}</h1>
-      <div style={{ display: "flex", justifyContent: "space-around" }}>
-        <CityTable data={cityDetails} vertical={true} />
-        <PieChart bikeStatusMap={bikeStatusMap} />
+    <div className="wrapper">
+      <div className="card">
+        <CityDropDown action={redirectToCity} />
+        <h1>{cityDetails.name}</h1>
+        <div className="cardWrapper">
+          <div className="card">
+            <CityTable data={cityDetails} vertical={true} />
+          </div>
+          <div className="card">
+            <PieChart bikeStatusMap={bikeStatusMap} />
+          </div>
+        </div>
       </div>
-      <Map
-        coords={cityDetails}
-        bikes={bikes}
-        parkingZones={parkingZones}
-        chargingZones={chargingZones}
-      />
-    </>
+      <div className="map">
+        {/* <Map
+          coords={cityDetails}
+          bikes={bikes}
+          parkingZones={parkingZonesWithBikes}
+          chargingZones={chargingZonesWithBikes}
+        /> */}
+        <MapDrawComponent
+          coords={cityDetails}
+          bikes={bikes}
+          parkingZones={parkingZonesWithBikes}
+          chargingZones={chargingZonesWithBikes}
+        />
+      </div>
+    </div>
   );
 }

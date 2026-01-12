@@ -2,6 +2,7 @@ import "dotenv/config";
 import bcrypt from "bcrypt";
 import jwtService from "../services/jwtService.mjs";
 import createUsers from "../models/users.mjs";
+import walletService from "./walletService.mjs";
 
 // Export for testing
 export const userModel = createUsers();
@@ -37,6 +38,8 @@ const auth = {
 
         const userResult = await userModel.createUser(userData);
         const userId = userResult.insertId;
+
+        await walletService.createWalletForUser(userId);
         const user = await userModel.getUserById(userId);
 
         return user;
@@ -61,8 +64,6 @@ const auth = {
         }
         const match = await bcrypt.compare(password, user.password);
 
-        console.log("HERE")
-        console.log(match);
 
         if (!match) {
             throw new Error("Invalid username or password. Try again.");

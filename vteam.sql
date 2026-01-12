@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Databas: `vteam`
 --
-
+DROP TABLE IF EXISTS `wallet_logs`;
 DROP TABLE IF EXISTS `prices`;
 DROP TABLE IF EXISTS `cities_to_charging`;
 DROP TABLE IF EXISTS `cities_to_parking`;
@@ -44,7 +44,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `wallets` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `balance` int(11) NOT NULL DEFAULT 0
+  `balance` decimal(11,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -154,7 +154,9 @@ CREATE TABLE `scooter_in_use` (
   `scooter_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `start_time` datetime NOT NULL,
-  `expected_end_time` datetime DEFAULT NULL
+  `start_latitude` decimal(9,6) NOT NULL,
+  `start_longitude` decimal(9,6) NOT NULL,
+  `start_zone_type` enum('charging','parking') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- --------------------------------------------------------
@@ -168,12 +170,13 @@ CREATE TABLE `trips` (
   `user_id` int(11) NOT NULL,
   `scooter_id` int(11) NOT NULL,
   `cost` decimal(10,2) NOT NULL,
+  `payment_status` enum('unpaid','paid','payment_failed') DEFAULT 'unpaid',
   `start_latitude` decimal(9,6) NOT NULL,
   `start_longitude` decimal(9,6) NOT NULL,
-  `start_zone_type` varchar(64),
+  `start_zone_type` enum('charging','parking') DEFAULT NULL,
   `end_latitude` decimal(9,6) DEFAULT NULL,
   `end_longitude` decimal(9,6) DEFAULT NULL,
-  `end_zone_type` varchar(64),
+  `end_zone_type` enum('charging','parking') DEFAULT NULL,
   `start_time` datetime NOT NULL,
   `end_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
@@ -187,7 +190,7 @@ CREATE TABLE `trips` (
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(64) NULL,
-  `password` varchar(256) NOT NULL,
+  `password` varchar(256) NULL,
   `email` varchar(64) NOT NULL,
   `oauth` tinyint(1) NOT NULL DEFAULT 0,
   `role` enum('admin','user') DEFAULT 'user'
@@ -203,6 +206,19 @@ CREATE TABLE `prices` (
     `minute_fee` decimal(5,2) NOT NULL,
     `parking_fee` decimal(5,2) NOT NULL,
     `discount_multiplier` decimal(2,1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+--
+-- Tabellstruktur `wallet_logs`
+--
+CREATE TABLE `wallet_logs` (
+    `id` int(11) NOT NULL,
+    `wallet_id` int(11) NOT NULL,
+    `amount` decimal(11,2) NOT NULL,
+    `direction` enum('credit','debit') NOT NULL,
+    `trip_id` int(11) NULL,
+    `intent_id` VARCHAR(128) NULL,
+    `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 --
@@ -266,7 +282,7 @@ ALTER TABLE `scooters`
 --
 ALTER TABLE `scooter_in_use`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `scooter_id` (`scooter_id`),
+  ADD UNIQUE KEY `scooter_id` (`scooter_id`),
   ADD KEY `user_id` (`user_id`);
 
 --
@@ -288,6 +304,14 @@ ALTER TABLE `users`
 --
 ALTER TABLE `prices`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Index för tabell `wallet_logs`
+--
+ALTER TABLE `wallet_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `wallet_id` (`wallet_id`),
+  ADD KEY `trip_id` (`trip_id`);
 
 --
 -- AUTO_INCREMENT för dumpade tabeller
@@ -360,6 +384,12 @@ ALTER TABLE `prices`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT för tabell `wallet_logs`
+--
+ALTER TABLE `wallet_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- Restriktioner för dumpade tabeller
 --
 
@@ -421,6 +451,13 @@ COMMIT;
 --
 ALTER TABLE `prices`
   ADD CONSTRAINT `fk_prices_city` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Restriktioner för tabell `wallet_logs`
+--
+ALTER TABLE `wallet_logs`
+  ADD CONSTRAINT `fk_logs_wallet` FOREIGN KEY (`wallet_id`) REFERENCES `wallets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_logs_trips` FOREIGN KEY (`trip_id`) REFERENCES `trips` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

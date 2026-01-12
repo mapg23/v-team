@@ -1,6 +1,7 @@
 import express from 'express';
 import trips from "../models/trips.mjs";
 import tripService from "../services/tripService.mjs";
+import bikesInUseModel from '../models/bikesInUse.mjs';
 import * as validation from "../middleware/validation/validationMiddleware.mjs";
 
 const router = express.Router();
@@ -10,9 +11,9 @@ const router = express.Router();
  * Request body needs:
  * ID for the user
  * ID for the bike
- * @returns {Array} an array with the trip object.
+ * @returns {Array} an array with the bike-in-use object.
  */
-router.post(`/`,
+router.post(`/start`,
     validation.createTrip,
     validation.checkValidationResult,
     async (req, res) => {
@@ -27,16 +28,39 @@ router.post(`/`,
     });
 
 /**
- * End a trip.
- * Request body needs:
- * id: id for the trip
- * userID: the users id
- * bikeID: the bikes id
- * location: Location when button clicked
- *  (to avoid race condition(?) if heartbeat not recent?) SKIPPA?
+ * Get current cost for a trip
+ * Param required:
+ * bike id: id for the bike used
  * @returns {Array} an array with the trip object.
  */
-router.put(`/:id`,
+router.get(`/bike/:id/current-cost`,
+    validation.idParam,
+    validation.checkValidationResult,
+    async (req, res) => {
+        try {
+            const tripCost = await tripService.getCurrentTripCost(req.params.id);
+
+            if (!tripCost) {
+                return res.status(404).json({ error: "Cost for trip not found" });
+            }
+
+            return res.status(200).json(tripCost);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                error: `Could not get cost for trip with bike # ${req.params.id}`,
+                message: err.message
+            });
+        }
+    });
+/**
+ * End a trip.
+ * stops bike and creates new trip data in db.
+ * Param required:
+ * id: id for the bike used
+ * @returns {Array} an array with the trip object.
+ */
+router.post(`/bike/:id/end`,
     validation.idParam,
     validation.checkValidationResult,
     async (req, res) => {
@@ -51,12 +75,15 @@ router.put(`/:id`,
         } catch (err) {
             console.error(err);
             return res.status(500).json({
-                error: `Could not end trip with id: ${req.params.id}`,
+                error: `Could not end trip for bike with id: ${req.params.id}`,
                 message: err.message
             });
         }
     });
 
+/**
+ * Delete a trip
+ */
 router.delete(`/:id`,
     validation.idParam,
     validation.checkValidationResult,
@@ -79,8 +106,45 @@ router.delete(`/:id`,
             });
         }
     });
+
 /**
- * Returns all user trips
+ * Returns all started trips, all bikes in use.
+ */
+router.get(`/bikes-in-use`,
+    async (req, res) => {
+        try {
+            const startedTripsList = await bikesInUseModel.getBikesInUse();
+
+            return res.status(200).json(startedTripsList);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                error: `Could not fetch all bikes in use`,
+                message: err.message
+            });
+        }
+    });
+
+/**
+ * Returns all trips
+ */
+router.get(`/`,
+    async (req, res) => {
+        try {
+            const tripList = await trips.getTrips();
+
+            return res.status(200).json(tripList);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                error: `Could not fetch trips for user ${req.params.id}`,
+                message: err.message
+            });
+        }
+    });
+
+/**
+ * Returns a trip by user id.
  */
 router.get(`/user/:id`,
     validation.idParam,
@@ -88,8 +152,6 @@ router.get(`/user/:id`,
     async (req, res) => {
         try {
             const userList = await trips.getTripsByUserId(req.params.id);
-
-            console.log(userList);
 
             return res.status(200).json(userList);
         } catch (err) {
@@ -102,16 +164,16 @@ router.get(`/user/:id`,
     });
 
 /**
- * Returns a trip specified by ID
+ * Returns a trip specified by trip ID
  */
 router.get(`/:id`,
     validation.idParam,
     validation.checkValidationResult,
     async (req, res) => {
         try {
-            const user = await trips.getTripById(req.params.id);
+            const trip = await trips.getTripById(req.params.id);
 
-            return res.status(200).json(user);
+            return res.status(200).json(trip);
         } catch (err) {
             console.error(err);
             return res.status(500).json({

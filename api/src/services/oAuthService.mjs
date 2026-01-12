@@ -1,5 +1,6 @@
 import jwtService from "./jwtService.mjs";
 import createUsers from "../models/users.mjs";
+import walletService from "./walletService.mjs";
 
 export const userModel = createUsers();
 
@@ -114,14 +115,15 @@ const oAuthService = {
             const created = await userModel.createUser({
                 username: email,
                 email: email,
-                password: "-",
+                password: null,
                 oauth: true,
             });
 
             if (created.insertId) {
-                const newUser = await userModel.getUserById(created.insertId);
+                await walletService.createWalletForUser(created.insertId);
+                const userRes = await userModel.getUserById(created.insertId);
 
-                user = newUser[0];
+                user = userRes[0];
             } else {
                 throw new Error("User did not exist, and could not be created");
             }

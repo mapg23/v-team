@@ -1,21 +1,37 @@
-.container {
+.profileContainer,
+.historyContainer,
+.balanceContainer {
   display: flex;
-  gap: 8px;
-  line-height: 0.5;
-  /* justify-content: center; */
+  gap: 1rem;
+  justify-content: start;
   align-items: center;
+  text-align: left;
+  margin: 1rem;
+  padding: 0.5rem;
+  background: #1e1e1e;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .avatar {
   margin: 1rem;
 }
 
-.info {
-  display: flex;
-  flex-direction: column;
+.profileWrapper {
   /* width: 100%; */
-  text-align: left;
-  padding: 1rem;
-  
+  padding: 2rem;
 }
 
+.alignedTable th,
+.alignedTable td {
+  text-align: center;
+}
+
+.alignedTable td.left {
+  text-align: left;
+}
+
+.alignedTable td.right {
+  text-align: right;
+}

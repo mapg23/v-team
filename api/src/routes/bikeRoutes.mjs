@@ -1,6 +1,9 @@
 import express from "express";
 import createBikes, { validateZone, getZoneCoordinates } from "../models/bikes.mjs";
 import validateJsonBody from "../middleware/validateJsonBody.mjs";
+import updateSimulator from "../systemSimulation/updateSimulator.mjs";
+import handleZoneUpdate from "../helpers/zoneUpdate.mjs";
+
 
 export default function createBikeRouter(bikes = createBikes()) {
     const route = express.Router();
@@ -8,6 +11,7 @@ export default function createBikeRouter(bikes = createBikes()) {
     /**
      * GET /bikes/sync
      * Fetches bikes from the database and sends them to the simulator.
+     * Good for testing code when developing.
      * Returns 200 on success, otherwise 500.
      */
     route.get(`/bikes/sync`, async (req, res) => {
@@ -101,56 +105,98 @@ export default function createBikeRouter(bikes = createBikes()) {
 
     /**
      * PUT /bikes/:id
-     * Updates a bike by ID.
+     * Updates a bike's status, battery, occupancy, location, and zone.
      *
      * Request Body:
      * {
-     *   status?: number,
-     *   battery?: number,
-     *   latitude?: number,
-     *   longitude?: number,
-     *   occupied?: number,
-     *   cityId?: number,
-     *   currentZoneId?: number | null,
-     *   currentZoneType?: string | null
+     *   status: number,
+     *   battery: number,
+     *   latitude: number,
+     *   longitude: number,
+     *   occupied: number,
+     *   cityId: number,
+     *   currentZoneType?: string | null,
+     *   currentZoneId?: number | null
      * }
      *
      * Returns:
-     * 200: updated bike
-     * 400: invalid id or zone
+     * 200: updated bike object
+     * 400: invalid bike ID, missing required fields, or invalid zone
      * 404: bike not found
      * 500: server error
      */
-    route.put(`/bikes/:id`, validateJsonBody, async (req, res) => {
+
+    route.put("/bikes/:id", validateJsonBody, async (req, res) => {
         try {
             const id = Number(req.params.id);
 
             if (isNaN(id)) {
-                return res.status(400).json({ error: "Invalid bike id" });
+                {
+                    return res.status(400).json({ error: "Invalid bike id" });}
             }
 
-            if ('currentZoneType' in req.body || 'currentZoneId' in req.body) {
-                const bike = await bikes.getBikeById(id);
-                // Använder befintlig city som default
-                const cityId = req.body.cityId ?? bike[0].city_id;
+            let {
+                status,
+                battery,
+                latitude,
+                longitude,
+                occupied,
+                cityId,
+                currentZoneId,
+                currentZoneType
+            } = req.body;
 
-                const isValid = await validateZone(
-                    req.body.currentZoneType,
-                    req.body.currentZoneId,
-                    cityId,
-                    bikes.db
+            const requiredFields = [status, battery, latitude, longitude, occupied, cityId];
+
+            if (requiredFields.some(f => f == null)) {
+                return res.status(400).json({ error: "Missing required fields" });
+            }
+
+            const bikeArray = await bikes.getBikeById(id);
+
+            if (!bikeArray[0]) {
+                return res.status(404).json({ error: "Bike not found" });
+            }
+            const bike = bikeArray[0];
+
+            try {
+                const coords = await handleZoneUpdate(
+                    bike, currentZoneType, currentZoneId, latitude, longitude, bikes.db
                 );
 
-                if (!isValid) {
-                    return res.status(400).json({ error: "Invalid zone" });
-                }
+                latitude = coords.latitude;
+                longitude = coords.longitude;
+            } catch (zoneErr) {
+                return res.status(zoneErr.status).json({ error: zoneErr.message });
             }
 
-            const result = await bikes.updateBike(id, req.body);
+            const result = await bikes.updateBike(id, {
+                status,
+                battery,
+                latitude,
+                longitude,
+                occupied,
+                city_id: cityId,
+                current_zone_id: currentZoneId,
+                current_zone_type: currentZoneType
+            });
 
             if (result.affectedRows === 0) {
                 return res.status(404).json({ error: "Bike not found" });
             }
+
+            await updateSimulator(
+                {
+                    bikeId: id,
+                    latitude,
+                    longitude,
+                    zoneType: currentZoneType,
+                    zoneId: currentZoneId,
+                    status,
+                    battery,
+                    occupied
+                }
+            );
 
             const updatedBike = await bikes.getBikeById(id);
 
@@ -160,7 +206,6 @@ export default function createBikeRouter(bikes = createBikes()) {
             return res.status(500).json({ error: "Could not update bike" });
         }
     });
-
 
     /**
      * GET /bikes
@@ -308,6 +353,27 @@ export default function createBikeRouter(bikes = createBikes()) {
             }
 
             const updatedBike = await bikes.getBikeById(bikeId);
+
+            // Skicka uppdateringar till simulatorn.
+
+            // Värden från befintliga cykelobjektet skickas till simulatorn för att undvika null.
+            const { status, battery, occupied } = bike;
+
+            try {
+                await updateSimulator({
+                    bikeId,
+                    latitude: coords.latitude,
+                    longitude: coords.longitude,
+                    zoneType,
+                    zoneId,
+                    status,
+                    battery,
+                    occupied
+                });
+            } catch (simErr) {
+                console.error('Simulator update failed:', simErr);
+            }
+
 
             return res.status(200).json(updatedBike[0]);
         } catch (err) {

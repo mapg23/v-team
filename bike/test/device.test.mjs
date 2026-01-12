@@ -18,7 +18,7 @@ describe('Test device', () => {
             });
         }
         return new Device(options);
-    }
+    };
 
     test('Device initialization', () => {
         const device = new Device({
@@ -29,6 +29,7 @@ describe('Test device', () => {
             occupied: false,
             speed: 0
         });
+
         expect(device).toBeInstanceOf(Device);
     });
 
@@ -48,7 +49,8 @@ describe('Test device', () => {
             status: 10,
             occupied: false,
             speed: 0
-        })
+        });
+
         device.setStatus(60);
 
         let res = device.move({ x: 100, y: 100 });
@@ -62,10 +64,11 @@ describe('Test device', () => {
         expect(device.id).toBe(0);
 
         expect(device.getId()).toBe(0);
-    })
+    });
 
     test('getCityId && setCityId', () => {
         const device = creeateMockDevice();
+
         device.setCityId(123);
 
         expect(device.getCityId()).toBe(123);
@@ -73,9 +76,10 @@ describe('Test device', () => {
 
     test('getStatus && setStatus', () => {
         const device = creeateMockDevice();
+
         expect(device.getStatus()).toBe(10);
 
         device.setStatus(20);
-        expect(device.getStatus()).toBe(20)
+        expect(device.getStatus()).toBe(20);
     });
 });
