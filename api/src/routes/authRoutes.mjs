@@ -53,8 +53,8 @@ router.post(
  */
 router.post(
     `/oauth/login`,
-    // validation.oAuthLoginRules,
-    // validation.checkValidationResult,
+    validation.oAuthLoginRules,
+    validation.checkValidationResult,
     async (req, res) => {
         try {
             const { encryptedState, code } = req.body;
@@ -74,37 +74,14 @@ router.post(
 );
 
 /**
- * Oauth login - for multiple frontends
- * Will login or register a new oauth-user.
- */
-router.post(
-    `/oauth/login/:frontEndId`,
-    // validation.oAuthLoginRules,
-    // validation.checkValidationResult,
-    async (req, res) => {
-        try {
-            const frontEndId = req.params;
-            const data = await oAuthService.oAuthLogin(frontEndId);
-
-            return res.json({
-                jwt: data.token,
-                userId: data.id
-            });
-        } catch (err) {
-            return res.status(401).json(err);
-        }
-    }
-);
-
-/**
  * Allows frontend to get an encrypted "state", a value
  * passed to OAuth provider. Can later be checked here
  * to increase security.
  */
 router.post(
     `/oauth/get_state`,
-    // validation.getStateRules,
-    // validation.checkValidationResult,
+    validation.getStateRules,
+    validation.checkValidationResult,
     async (req, res) => {
         const clientId = req.body.client_id;
 
