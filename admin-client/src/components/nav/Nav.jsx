@@ -1,11 +1,14 @@
 import btnStyles from "../button/Button.module.css";
 import navStyles from "../nav/Nav.module.css";
+import { useLocation } from "react-router-dom";
 
 /**
  *
  * @returns UL as Navigation
  */
 function Navigation({ logout }) {
+  const location = useLocation();
+  const { hash, pathname, search } = location;
   function handleLogout() {
     logout();
   }
@@ -13,25 +16,60 @@ function Navigation({ logout }) {
     <>
       <ul className={navStyles.navList}>
         <li>
-          <a href="/home">Hem</a>
+          <a
+            href="/home"
+            className={pathname === "/home" ? navStyles["active"] : ""}
+          >
+            Hem
+          </a>
         </li>
         <li>
-          <a href="/cities">Städer</a>
+          <a
+            href="/cities"
+            className={pathname === "/cities" ? navStyles["active"] : ""}
+          >
+            Städer
+          </a>
         </li>
         <li>
-          <a href="/cost">Prissättning</a>
+          <a
+            href="/cost"
+            className={pathname === "/cost" ? navStyles["active"] : ""}
+          >
+            Prissättning
+          </a>
         </li>
         <li>
-          <a href="/stations">Laddstationer</a>
+          <a
+            href="/stations"
+            className={pathname === "/stations" ? navStyles["active"] : ""}
+          >
+            Laddstationer
+          </a>
         </li>
         <li>
-          <a href="/parkings">Parkeringar</a>
+          <a
+            href="/parkings"
+            className={pathname === "/parkings" ? navStyles["active"] : ""}
+          >
+            Parkeringar
+          </a>
         </li>
         <li>
-          <a href="/users">Användare</a>
+          <a
+            href="/users"
+            className={pathname === "/users" ? navStyles["active"] : ""}
+          >
+            Användare
+          </a>
         </li>
         <li>
-          <a href="/bikes">Elsparkcyklar</a>
+          <a
+            href="/bikes"
+            className={pathname === "/bikes" ? navStyles["active"] : ""}
+          >
+            Elsparkcyklar
+          </a>
         </li>
         <li>
           <button className={`${btnStyles.delete}`} onClick={handleLogout}>
