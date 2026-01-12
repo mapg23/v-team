@@ -73,17 +73,6 @@ class Simulator {
                 continue;
             }
 
-            // if (this.cordinates[key].length === 0) {
-            //     console.log(`Bike: ${key} has no cordinates left ${this.cordinates[key].length}`)
-            //     this.bikes[index].status = 40;
-            //     this.cordinates[key] = [];
-            //     continue;
-            // }
-
-            /////// J
-            // Jag la till '!this.cordinates[key]' eftersom den annars kraschade
-            // när jag testade i Postman.
-            // Gamla versionen är den utkommenterade koden ovan.
             if (!this.cordinates[key] || this.cordinates[key].length === 0) {
                 console.log(`Bike: ${key} has no coordinates left`);
                 this.bikes[index].status = 40;
@@ -203,7 +192,7 @@ class Simulator {
         try {
             for (let key in payload) {
                 let index = this.bikes.findIndex(function (device) {
-                    return device.getId() === Number(key)
+                    return device.getId() === Number(key);
                 });
 
                 this.cordinates[Number(index)] = payload[key];
@@ -217,7 +206,7 @@ class Simulator {
 
     getBikeStatus(payload) {
         let index = this.bikes.findIndex(function (device) {
-            return device.getId() === Number(payload.id)
+            return device.getId() === Number(payload.id);
         });
 
 
@@ -229,8 +218,9 @@ class Simulator {
 
     setBikeStatus(payload) {
         let index = this.bikes.findIndex(function (device) {
-            return device.getId() === Number(payload.id)
+            return device.getId() === Number(payload.id);
         });
+
         this.bikes[Number(index)].setStatus(payload.status);
         this.bikes[Number(index)].setOccupied(payload.occupied);
         return { event: `id for bike ${payload.id} set to status ${payload.status}` };
@@ -247,7 +237,7 @@ class Simulator {
             this.cordinates[Number(payload.id)] = payload.cords;
             return { event: 'succesfully Moved a bike', data: payload };
         } catch (error) {
-            console.error('Invalid Payload');
+            console.error(`Invalid Payload: ${error.message}`);
             return { event: 'Invalid Payload' };
         }
     }
@@ -258,7 +248,7 @@ class Simulator {
      * @returns {Object} - Event with result and updated bike data if
      * successful, or error message if not
      */
-    updateBike(payload) { ///// J
+    updateBike(payload) {
         try {
             const bike = this.bikes.find(b => b.id === Number(payload.bikeId));
 
@@ -309,7 +299,7 @@ export async function handleWorkerMessage(msg, simm) {
         'move-specific': () => simm.moveSpecific(payload),
 
         'get-bike': () => simm.getBike(payload),
-        'update-bike': () => simm.updateBike(payload), ///// J
+        'update-bike': () => simm.updateBike(payload),
         'get-bike-status': () => simm.getBikeStatus(payload),
         'set-bike-status': () => simm.setBikeStatus(payload),
         'heartbeat': () => simm.heartbeat(),

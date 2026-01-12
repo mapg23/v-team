@@ -100,7 +100,7 @@ class Device {
     }
 
     /**
-     * 
+     *
      * @returns Get occupied
      */
     getOccupied() {
