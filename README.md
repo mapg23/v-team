@@ -1,14 +1,5 @@
 # V-team 08 - Rull
 
-## Branches
-
-### Main brancher
-- feature/bike
-- feature/api
-
-- feature/admin
-- feature/client
-
 ## Coverage
 
 ### API
