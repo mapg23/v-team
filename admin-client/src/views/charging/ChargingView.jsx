@@ -21,6 +21,9 @@ export default function ChargingView() {
   const [chargingZoneCoords, setChargingZoneCoords] = useState(null);
   const [renderChargingZoneForm, setRenderChargingZoneForm] = useState(false);
 
+  // layer - remove when new zone is created
+  const [layer, setLayer] = useState(null);
+
   /**
    * fetchData manually
    * @returns
@@ -72,6 +75,7 @@ export default function ChargingView() {
     if (chargingZoneCoords.lat && chargingZoneCoords.lng) {
       setChargingZoneCoords(chargingZoneCoords);
       setRenderChargingZoneForm(true);
+      setLayer(layer);
     }
   }
 
@@ -92,6 +96,9 @@ export default function ChargingView() {
     if (created.id) {
       fetchData();
       setRenderChargingZoneForm(false);
+      // clear layer
+      layer.remove();
+      setLayer(false);
     }
   }
 
