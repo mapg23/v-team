@@ -17,64 +17,95 @@ function Navigation({ logout }) {
     <>
       <ul className={navStyles.navList}>
         <li>
-          <div className={navStyles.navDiv}>
-            <HomeIcon
-              className={pathname === "/home" ? navStyles["active"] : ""}
-            ></HomeIcon>
+          <div
+            className={`${navStyles.navDiv} ${
+              pathname === "/home" ? navStyles.active : ""
+            }`}
+          >
+            <HomeIcon />
             <a href="/home">Hem</a>
           </div>
         </li>
         <li>
-          <div className={navStyles.navDiv}>
-            {pathname === "/cities" ? CityIcon(true) : CityIcon("")}
-            <a
-              href="/cities"
-              // className={pathname === "/cities" ? () => CityIcon("green") : ""}
-            >
-              Städer
-            </a>
+          <div
+            className={`${navStyles.navDiv} ${
+              pathname === "/cities" ? navStyles.active : ""
+            }`}
+          >
+            <CityIcon></CityIcon>
+            <a href="/cities">Städer</a>
           </div>
         </li>
 
         <li>
-          <a
-            href="/cost"
-            className={pathname === "/cost" ? navStyles["active"] : ""}
+          <div
+            className={`${navStyles.navDiv} ${
+              pathname === "/cost" ? navStyles.active : ""
+            }`}
           >
-            Prissättning
-          </a>
+            <CityIcon></CityIcon>
+            <a
+              href="/cost"
+            >
+              Prissättning
+            </a>
+          </div>
         </li>
         <li>
-          <a
-            href="/stations"
-            className={pathname === "/stations" ? navStyles["active"] : ""}
+          <div
+            className={`${navStyles.navDiv} ${
+              pathname === "/stations" ? navStyles.active : ""
+            }`}
           >
-            Laddstationer
-          </a>
+            <CityIcon></CityIcon>
+            <a
+              href="/stations"
+            >
+              Laddstationer
+            </a>
+          </div>
         </li>
         <li>
-          <a
-            href="/parkings"
-            className={pathname === "/parkings" ? navStyles["active"] : ""}
+          <div
+            className={`${navStyles.navDiv} ${
+              pathname === "/parkings" ? navStyles.active : ""
+            }`}
           >
-            Parkeringar
-          </a>
+            <CityIcon></CityIcon>
+            <a
+              href="/parkings"
+            >
+              Parkeringar
+            </a>
+          </div>
         </li>
         <li>
-          <a
-            href="/users"
-            className={pathname === "/users" ? navStyles["active"] : ""}
+          <div
+            className={`${navStyles.navDiv} ${
+              pathname === "/users" ? navStyles.active : ""
+            }`}
           >
-            Användare
-          </a>
+            <CityIcon></CityIcon>
+            <a
+              href="/users"
+            >
+              Användare
+            </a>
+          </div>
         </li>
         <li>
-          <a
-            href="/bikes"
-            className={pathname === "/bikes" ? navStyles["active"] : ""}
+          <div
+            className={`${navStyles.navDiv} ${
+              pathname === "/bikes" ? navStyles.active : ""
+            }`}
           >
-            Elsparkcyklar
-          </a>
+            <CityIcon></CityIcon>
+            <a
+              href="/bikes"
+            >
+              Elsparkcyklar
+            </a>
+          </div>
         </li>
         <li>
           <button className={`${btnStyles.delete}`} onClick={handleLogout}>
