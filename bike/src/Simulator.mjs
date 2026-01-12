@@ -196,8 +196,8 @@ class Simulator {
     setRoute(payload) {
         try {
             for (let key in payload) {
-
                 let index = this.bikes.findIndex(function (device) {
+                    console.log(index);
                     return device.getId() === Number(key);
                 });
 
