@@ -59,7 +59,7 @@ function App() {
           </div>
           <div className="app-content">
             <Routes>
-              <Route path="/welcome" element={<HomeView />} />
+              <Route path="/home" element={<HomeView />} />
               <Route path="/user/:id" element={<ProfileView />} />
               <Route path="/users" element={<UsersView />} />
               <Route path="/city/:id" element={<InspectCityView />} />
@@ -69,7 +69,7 @@ function App() {
               <Route path="/parkings" element={<ParkingView />} />
               <Route path="/stations" element={<ChargingView />} />
               <Route path="/cost" element={<CostView />} />
-              <Route path="*" element={<Navigate to="/welcome" />} />
+              <Route path="*" element={<Navigate to="/home" />} />
             </Routes>
           </div>
         </div>

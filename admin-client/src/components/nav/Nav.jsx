@@ -14,7 +14,7 @@ function Navigation({ logout }) {
     <>
         <ul className={navStyles.navList}>
           <li>
-            <a href="/welcome">Översikt</a>
+            <a href="/home">Hem</a>
           </li>
           <li>
             <a href="/cities">Städer</a>
