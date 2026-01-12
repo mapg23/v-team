@@ -15,6 +15,7 @@ import createBikes from "../models/bikes.mjs";
 export default async function startSimulator() {
     const bikes = createBikes();
     const bikesList = await bikes.getBikes();
+
     try {
         await fetch("http://bike:7071/start", {
             method: "POST",
