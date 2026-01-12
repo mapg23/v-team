@@ -83,7 +83,6 @@ const db = {
         ]);
 
         return this.query(sql, params);
-
     },
 
     // Helper function for update.

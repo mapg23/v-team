@@ -116,6 +116,7 @@ app.post("/mega-routing-machine", async (req, res) => {
         }
 
         const result = await routingService.generateManyRoutes(coordsArray);
+
         return res.json(result);
     } catch (err) {
         console.error(err);
@@ -133,11 +134,12 @@ app.post("/simulate-bikes-create", async (req, res) => {
             throw new Error("Missing coordinates");
         }
         let bikeModel = createBikes();
+
         await bikeModel.deleteAllBikes();
         let bikes = [];
-        for (let i = 0; i < coordinates.length; i++) {
 
-            let first = { "latitude": coordinates[i][0].y, "longitude": coordinates[i][0].x }
+        for (let i = 0; i < coordinates.length; i++) {
+            let first = { "latitude": coordinates[i][0].y, "longitude": coordinates[i][0].x };
 
             bikes[i] = {
                 'status': 100,
@@ -146,10 +148,11 @@ app.post("/simulate-bikes-create", async (req, res) => {
                 'longitude': first.longitude,
                 'occupied': 1,
                 'city_id': 1
-            }
+            };
         }
 
         let creation = await bikeModel.createBikeSimulator(bikes);
+
         console.log(creation);
 
         const firstId = Number(creation.insertId);
@@ -161,7 +164,6 @@ app.post("/simulate-bikes-create", async (req, res) => {
         }));
 
         return res.json(bikesWithIds);
-
     } catch (err) {
         console.error(err);
         return res.json(err);
@@ -189,7 +191,6 @@ app.post('/forward-routes', async (req, res) => {
         });
 
         // console.log(await setRes.json());
-
     } catch (err) {
         console.error(err);
     }
