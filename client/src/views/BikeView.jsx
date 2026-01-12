@@ -16,13 +16,12 @@ export default function BikeView() {
     const navigate = useNavigate();
     const params = useParams();
     const [bike, setBike] = useState(null);
+    const [tripObj, setTripObj] = useState([]);
 
     const { userId } = useAuth();
 
     const [loading, setLoading] = useState(true);
     const [inProgress, setInProgress] = useState(false);
-
-    const [tripId, setTripId] = useState(null);
 
     const [time, setTime] = useState(0);
     const [cost, setCost] = useState(0);
@@ -49,7 +48,6 @@ export default function BikeView() {
 
         intervalRef.current = setInterval(() => {
             const elapsedTime = (Date.now() - startRef.current) / 1000;
-
             setTime(elapsedTime);
         }, 250);
     };
@@ -79,9 +77,8 @@ export default function BikeView() {
 
     async function HandlestartTrip() {
         let res = await TripsModel.startTrip(userId, bike);
-
-        if (res[0]['id'] !== null) {
-            setTripId(res[0]['id']);
+        if (res) {
+            setTripObj(res);
             setInProgress(true);
             reset();
             start();
@@ -89,7 +86,8 @@ export default function BikeView() {
     }
 
     async function HandleStopTrip() {
-        let res = await TripsModel.endTrip(tripId);
+        let res = await TripsModel.endTrip(bike);
+        console.log(res);
         setInProgress(false)
         stop();
     }
@@ -122,7 +120,7 @@ export default function BikeView() {
                                     <h1>{formatTime(time)}</h1>
 
                                     <p>
-                                        Kostnad: ?
+                                        Kostnad: {cost}
                                         <br />
                                         Cykel: ?
                                     </p>
