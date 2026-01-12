@@ -25,3 +25,9 @@
 .active {
   border-bottom: 2px solid grey;
 }
+
+.navDiv {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}

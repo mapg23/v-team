@@ -2,9 +2,11 @@ import { Component, useMemo } from "react";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
 import { FaChargingStation, FaParking } from "react-icons/fa";
-import { MdElectricScooter } from "react-icons/md";
+import { MdElectricScooter, MdOutlineLocationCity } from "react-icons/md";
+import { AiOutlineHome } from "react-icons/ai";
 import styles from "./iconStyles.module.css";
 import { CgProfile } from "react-icons/cg";
+import iconStyles from "./iconStyles.module.css";
 
 /**
  * Module containing all icons to allow consistent
@@ -68,4 +70,27 @@ export function BikeIcon() {
  */
 export function CgProfileIcon() {
   return <CgProfile size={24}></CgProfile>;
+}
+
+/**
+ * Home icon
+ * * @returns {Component}
+ */
+export function HomeIcon() {
+  return <AiOutlineHome size={24}></AiOutlineHome>;
+}
+
+/**
+ * City icon
+ * * @returns {<Component />}
+ */
+export function CityIcon(bool) {
+  // if (bool) {
+  //   <MdOutlineLocationCity fill={iconStyles.module.css} size={24}></MdOutlineLocationCity>;
+  // }
+  return (
+    <MdOutlineLocationCity
+      size={24}
+    ></MdOutlineLocationCity>
+  );
 }

@@ -1,6 +1,7 @@
 import btnStyles from "../button/Button.module.css";
 import navStyles from "../nav/Nav.module.css";
 import { useLocation } from "react-router-dom";
+import { HomeIcon, CityIcon } from "../icons/react-icons";
 
 /**
  *
@@ -16,21 +17,25 @@ function Navigation({ logout }) {
     <>
       <ul className={navStyles.navList}>
         <li>
-          <a
-            href="/home"
-            className={pathname === "/home" ? navStyles["active"] : ""}
-          >
-            Hem
-          </a>
+          <div className={navStyles.navDiv}>
+            <HomeIcon
+              className={pathname === "/home" ? navStyles["active"] : ""}
+            ></HomeIcon>
+            <a href="/home">Hem</a>
+          </div>
         </li>
         <li>
-          <a
-            href="/cities"
-            className={pathname === "/cities" ? navStyles["active"] : ""}
-          >
-            Städer
-          </a>
+          <div className={navStyles.navDiv}>
+            {pathname === "/cities" ? CityIcon(true) : CityIcon("")}
+            <a
+              href="/cities"
+              // className={pathname === "/cities" ? () => CityIcon("green") : ""}
+            >
+              Städer
+            </a>
+          </div>
         </li>
+
         <li>
           <a
             href="/cost"
