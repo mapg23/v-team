@@ -36,7 +36,7 @@ export default function BikesTable({ data, action, inspect }) {
   }
 
   return (
-    <table className={styles.bikeTable}>
+    <table className={styles.table}>
       <thead>
         <tr>
           {headers.map((key) => (
@@ -47,8 +47,13 @@ export default function BikesTable({ data, action, inspect }) {
 
       <tbody>
         {_data.map((obj) => (
-          <tr onClick={() => handleInspect(obj.id)} key={obj.id}>
-            <td>{obj.id}</td>
+          <tr key={obj.id}>
+            <td
+              className={styles.redirect}
+              onClick={() => handleInspect(obj.id)}
+            >
+              {obj.id}
+            </td>
             <td>{obj.status}</td>
             <td>{obj.battery}</td>
             <td>{obj.occupied ? "yes" : "no"}</td>

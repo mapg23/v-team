@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import BikeService from "../../services/bikes";
 import { useNavigate } from "react-router";
 import CityDropDown from "../../components/input/CityDropDown";
-import TableWithActions from "../../components/table/TableWithActions";
 import BikesTable from "../../components/table/BikesTable";
 import style from "../../components/forms/Form.module.css";
 import CreateBikeForm from "../../components/forms/CreateBikeForm";
