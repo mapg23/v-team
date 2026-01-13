@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import CityService from "services/cities";
-import CityTable from "components/table/CityTable";
+import CitiesTable from "components/table/CitiesTable";
 import UserTable from "components/table/UserTable";
 import userService from "services/users";
 import CityDropDown from "../../components/input/CityDropDown";
@@ -86,7 +86,7 @@ function HomeView() {
         </div>
         <div className="card">
           <h2>Cities in Database</h2>
-          <CityTable data={allCityDetails} />
+          <CitiesTable data={allCityDetails} inspect={redirectToCity}/>
         </div>
 
         <div className="card">
