@@ -8,7 +8,7 @@ import styles from "./Table.module.css";
 export default function CitiesTable({ data, action, inspect }) {
   const _data = Array.isArray(data) ? data : [data];
   if (_data.length === 0) return <p>Finns inga städer..</p>;
-  console.log(_data);
+
     const headers = [
       "City id",
       "City name",
