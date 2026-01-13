@@ -2,6 +2,7 @@ import express from 'express';
 import validateJsonBody from '../middleware/validateJsonBody.mjs';
 import helpers from '../helpers/validateUser.mjs';
 import createUsers from "../models/users.mjs";
+import { calculatePagination } from '../helpers/pagination.mjs';
 
 export default function createUserRouter(users = createUsers()) {
     const route = express.Router();
@@ -99,9 +100,7 @@ export default function createUserRouter(users = createUsers()) {
 
     route.get(`/users`, async (req, res) => {
         try {
-            const page = Number(req.query.page) || 1;
-            const limit = Number(req.query.limit) || 50;
-            const offset = (page - 1) * limit;
+            const { page, limit, offset } = calculatePagination(req.query);
 
             if (req.query.email) {
                 const invalidEmail = helpers.validateEmailSearch(req.query.email);

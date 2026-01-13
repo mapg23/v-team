@@ -3,6 +3,7 @@ import createBikes, { validateZone, getZoneCoordinates } from "../models/bikes.m
 import validateJsonBody from "../middleware/validateJsonBody.mjs";
 import updateSimulator from "../systemSimulation/updateSimulator.mjs";
 import handleZoneUpdate from "../helpers/zoneUpdate.mjs";
+import { calculatePagination } from "../helpers/pagination.mjs";
 
 
 export default function createBikeRouter(bikes = createBikes()) {
@@ -219,10 +220,7 @@ export default function createBikeRouter(bikes = createBikes()) {
      */
     route.get(`/bikes`, async (req, res) => {
         try {
-            const page = Number(req.query.page) || 1;
-            const limit = Number(req.query.limit) || 50;
-            // Antalet rader innan den sidan
-            const offset = (page - 1) * limit;
+            const { page, limit, offset } = calculatePagination(req.query);
 
             const bikesList = await bikes.getBikes({ limit, offset });
             const total = await bikes.countBikes();
