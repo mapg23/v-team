@@ -14,7 +14,6 @@ import createBikeRouter from "./src/routes/bikeRoutes.mjs";
 import createStationRouter from "./src/routes/stationRoutes.mjs";
 import createParkingRouter from "./src/routes/parkingRoutes.mjs";
 import startSimulator from "./src/systemSimulation/startSimulator.mjs";
-import stopSimulator from "./src/systemSimulation/stopSimulator.mjs";
 import tripRoutes from "./src/routes/tripRoutes.mjs";
 import paymentRoutes from "./src/routes/paymentRoutes.mjs";
 import priceRoutes from "./src/routes/priceRoutes.mjs";
@@ -22,7 +21,6 @@ import walletRoutes from "./src/routes/walletRoutes.mjs";
 import routingService from "./src/services/routingService.mjs";
 
 import createBikes from "./src/models/bikes.mjs";
-import { json } from "stream/consumers";
 
 const app = express();
 const port = process.env.API_PORT || 9091;
@@ -156,7 +154,7 @@ app.post("/simulate-bikes-create", async (req, res) => {
         console.log(creation);
 
         const firstId = Number(creation.insertId);
-        const count = Number(creation.affectedRows);
+        // const count = Number(creation.affectedRows);
 
         const bikesWithIds = bikes.map((bike, i) => ({
             id: firstId + i,
@@ -170,7 +168,7 @@ app.post("/simulate-bikes-create", async (req, res) => {
     }
 });
 
-app.post('/forward-routes', async (req, res) => {
+app.post('/forward-routes', async (req) => {
     try {
         let coordinates = req.body;
 
@@ -182,15 +180,13 @@ app.post('/forward-routes', async (req, res) => {
 
         console.log(coordinates);
 
-        let setRes = await fetch(`http://bike:7071/setRoute`, {
+        await fetch(`http://bike:7071/setRoute`, {
             method: 'POST',
             headers: {
                 'Content-Type': "application/json"
             },
             body: JSON.stringify(coordinates)
         });
-
-        // console.log(await setRes.json());
     } catch (err) {
         console.error(err);
     }
@@ -230,12 +226,3 @@ server.listen(port, "0.0.0.0", async () => {
     // Här startas simulatorn direkt när servern är igång.
     await startSimulator();
 });
-
-// Här stoppas simulatorn direkt när servern stängs ner.
-const serverShutDown = async () => {
-    // Anropar funktionen som sparar cyklarna i databasen.
-    await stopSimulator();
-};
-
-// Stoppar simulatorn vid docker-compose down
-process.on('SIGTERM', serverShutDown);
