@@ -60,18 +60,17 @@ describe("bikes model", () => {
         ]);
 
         expect(mockDb.select).toHaveBeenCalledWith(
-        'scooters',
-        scooterFields,
-        // where
-        null,
-        // params
-        [],
-        // limit
-        50,
-        // offset
-        0
-    );
-
+            'scooters',
+            scooterFields,
+            // where
+            null,
+            // params
+            [],
+            // limit
+            50,
+            // offset
+            0
+        );
     });
 
     test("createBike inserts bike", async () => {

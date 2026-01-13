@@ -70,8 +70,8 @@ describe("Bikes API - OK", () => {
         const res = await request(app).get('/bikes');
 
         expect(res.status).toBe(200);
-        expect(res.body[0]).toHaveProperty("status", 10);
-        expect(res.body[0]).toHaveProperty("current_zone_type", null);
+        expect(res.body.bikes[0]).toHaveProperty("status", 10);
+        expect(res.body.bikes[0]).toHaveProperty("current_zone_type", null);
     });
 
     test("GET /bikes/:id returns a bike", async () => {
