@@ -4,6 +4,8 @@ export default function createBikes(db = dbDefault) {
     const bikes = {
         /**
          * Get bikes with pagination.
+         * @param {number} limit=50 - Max number of bikes to return.
+         * @param {number} offset=0 - Number of bikes to skip.
          * @returns {Promise<Array>} List of bikes.
          */
         getBikes: async function getBikes({ limit = 50, offset = 0 } = {}) {
