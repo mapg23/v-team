@@ -106,7 +106,7 @@
 
 /* BODY ROWS */
 .table tbody tr {
-  cursor: pointer;
+  /* cursor: pointer; */
   transition: background-color 0.2s ease;
 }
 
@@ -119,6 +119,10 @@
 .table td {
   padding: 14px 16px;
   border-bottom: 1px solid #1f1f1f;
+}
+
+.table td.redirect {
+  cursor: pointer;
 }
 
 /* OPTIONAL: last row no border */
