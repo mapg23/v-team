@@ -209,22 +209,36 @@ export default function createBikeRouter(bikes = createBikes()) {
 
     /**
      * GET /bikes
-     * Fetches all bikes.
+     * Fetches bikes with pagination.
+     * Query parameters:
+     *   ?page=1&limit=50
      *
      * Returns:
-     * 200: list of bikes
+     * 200: bikes list with pagination info
      * 500: server error
      */
     route.get(`/bikes`, async (req, res) => {
         try {
-            const list = await bikes.getBikes();
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 50;
+            // Antalet rader innan den sidan
+            const offset = (page - 1) * limit;
 
-            return res.status(200).json(list);
+            const bikesList = await bikes.getBikes({ limit, offset });
+            const total = await bikes.countBikes();
+
+            return res.status(200).json({
+                page,
+                limit,
+                total,
+                bikes: bikesList
+            });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not fetch bikes" });
         }
     });
+
 
     /**
      * GET /bikes/:id

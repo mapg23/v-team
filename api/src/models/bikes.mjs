@@ -3,24 +3,33 @@ import dbDefault from "../database.mjs";
 export default function createBikes(db = dbDefault) {
     const bikes = {
         /**
-         * Get all bikes.
+         * Get bikes with pagination.
          * @returns {Promise<Array>} List of bikes.
          */
-        getBikes: async function getBikes() {
+        getBikes: async function getBikes({ limit = 50, offset = 0 } = {}) {
             return await db.select(
                 'scooters',
                 [
-                    'id',
-                    'status',
-                    'battery',
-                    'latitude',
-                    'longitude',
-                    'occupied',
-                    'city_id',
-                    'current_zone_type',
-                    'current_zone_id'
-                ]
+                    'id', 'status', 'battery', 'latitude', 'longitude',
+                    'occupied', 'city_id', 'current_zone_type', 'current_zone_id'
+                ],
+                null,
+                [],
+                limit,
+                offset
             );
+        },
+        /**
+         * Count total number of bikes.
+         * @returns {Promise<number>} Total number of bikes in the database.
+         */
+        countBikes: async function countBikes() {
+            const result = await db.select(
+                'scooters',
+                ['COUNT(*) as total']
+            );
+
+            return Number(result[0].total);
         },
 
         /**
