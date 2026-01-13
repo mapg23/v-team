@@ -5,6 +5,24 @@ import API from "../config/api.js";
  * Based on endpoints: https://docs.google.com/spreadsheets/d/1Tza3ZSUOJJRQJeSquKQbE6fRy4d3zNGafAVQxUVNg9M/edit?gid=0#gid=0
  */
 const parkingService = {
+  getAllParkingZones: async function getAllParkingZones() {
+    const token = sessionStorage.getItem("jwt");
+    try {
+      const response = await fetch(`${API}/parkings`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  },
+
   /**
    * Add a new parking zone
    * @param {Object} zoneObj
