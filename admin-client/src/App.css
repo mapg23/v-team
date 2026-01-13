@@ -62,3 +62,36 @@
   gap: 1rem;
   margin: 0 auto;
 }
+
+.systems {
+  display: flex;
+  /* width: 100%; */
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.systemCard {
+  /* border: 1px solid grey; */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  height: 300px;
+}
+
+.systemText h3,
+.systemText p{
+  margin: 0.5rem 1rem 0 1rem;
+}
+
+.systems img {
+  height: 200px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.systemCard:hover {
+  background-color: grey;
+}
