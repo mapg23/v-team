@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import LoginView from "./views/auth/LoginView";
 import HomeView from "./views/home/HomeView";
 import CityView from "./views/city/CityView";
