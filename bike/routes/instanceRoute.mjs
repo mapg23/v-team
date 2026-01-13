@@ -24,7 +24,7 @@ router.get('/heartbeat', async (req, res) => {
  * Route to set a pre-defined route
  */
 router.post('/setRoute', async (req, res) => {
-    let cordinates = req.body.cordinates || null;
+    let cordinates = req.body || null;
 
     try {
         const response = await callWorker('setRoute', cordinates);

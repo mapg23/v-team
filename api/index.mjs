@@ -21,6 +21,9 @@ import priceRoutes from "./src/routes/priceRoutes.mjs";
 import walletRoutes from "./src/routes/walletRoutes.mjs";
 import routingService from "./src/services/routingService.mjs";
 
+import createBikes from "./src/models/bikes.mjs";
+import { json } from "stream/consumers";
+
 const app = express();
 const port = process.env.API_PORT || 9091;
 const version = process.env.API_VERSION || "v1";
@@ -113,7 +116,6 @@ app.post("/mega-routing-machine", async (req, res) => {
         }
 
         const result = await routingService.generateManyRoutes(coordsArray);
-
         return res.json(result);
     } catch (err) {
         console.error(err);
@@ -121,6 +123,77 @@ app.post("/mega-routing-machine", async (req, res) => {
     }
 });
 
+
+app.post("/simulate-bikes-create", async (req, res) => {
+    try {
+        const coordinates = req.body;
+
+
+        if (!coordinates) {
+            throw new Error("Missing coordinates");
+        }
+        let bikeModel = createBikes();
+        await bikeModel.deleteAllBikes();
+        let bikes = [];
+        for (let i = 0; i < coordinates.length; i++) {
+
+            let first = { "latitude": coordinates[i][0].y, "longitude": coordinates[i][0].x }
+
+            bikes[i] = {
+                'status': 100,
+                'battery': 100,
+                'latitude': first.latitude,
+                'longitude': first.longitude,
+                'occupied': 1,
+                'city_id': 1
+            }
+        }
+
+        let creation = await bikeModel.createBikeSimulator(bikes);
+        console.log(creation);
+
+        const firstId = Number(creation.insertId);
+        const count = Number(creation.affectedRows);
+
+        const bikesWithIds = bikes.map((bike, i) => ({
+            id: firstId + i,
+            ...bike
+        }));
+
+        return res.json(bikesWithIds);
+
+    } catch (err) {
+        console.error(err);
+        return res.json(err);
+    }
+});
+
+app.post('/forward-routes', async (req, res) => {
+    try {
+        let coordinates = req.body;
+
+        if (!coordinates) {
+            throw new Error("NO COORDINATES");
+        }
+
+        await startSimulator();
+
+        console.log(coordinates);
+
+        let setRes = await fetch(`http://bike:7071/setRoute`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': "application/json"
+            },
+            body: JSON.stringify(coordinates)
+        });
+
+        // console.log(await setRes.json());
+
+    } catch (err) {
+        console.error(err);
+    }
+});
 
 // ------------------------------
 // ----------- Routes -----------

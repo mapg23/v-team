@@ -32,14 +32,14 @@ const db = {
             console.error(`SQL ERROR: ${err.message}`);
             throw err;
         } finally {
-            if (conn) {await conn.end();}
+            if (conn) { await conn.end(); }
         }
     },
     // Helper function for select.
     select: async function select(table, columns = '*', where = '', params = []) {
         const sql =
-        `SELECT ${Array.isArray(columns) ? columns.join(', ') : columns} FROM ${table}` +
-        (where ? ` WHERE ${where}` : '');
+            `SELECT ${Array.isArray(columns) ? columns.join(', ') : columns} FROM ${table}` +
+            (where ? ` WHERE ${where}` : '');
 
         return this.query(sql, params);
     },
@@ -53,6 +53,37 @@ const db = {
         const sql = `INSERT INTO ${table} (${keys.join(', ')}) VALUES (${placeholders})`;
 
         return this.query(sql, values);
+    },
+
+    bulkInsert: async function (table, rows) {
+        const columns = [
+            "status",
+            "battery",
+            "latitude",
+            "longitude",
+            "occupied",
+            "city_id"
+        ];
+
+        const row = `(${columns.map(() => "?").join(",")})`;
+        const placeholders = rows.map(() => row).join(",");
+
+        const sql = `
+        INSERT INTO ${table} (${columns.join(", ")})
+        VALUES ${placeholders}
+    `;
+
+        const params = rows.flatMap(b => [
+            b.status,
+            b.battery,
+            b.latitude,
+            b.longitude,
+            b.occupied,
+            b.city_id
+        ]);
+
+        return this.query(sql, params);
+
     },
 
     // Helper function for update.
