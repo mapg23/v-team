@@ -44,6 +44,7 @@ export default function CityDropDown({action}) {
           handleSelect(e.target.value);
         }}
       >
+        <option key="choose">Välj..</option>
         {cityNames.map((city) => {
           return <option key={city}>{city}</option>;
         })}
