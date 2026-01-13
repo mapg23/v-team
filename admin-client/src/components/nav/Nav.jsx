@@ -37,7 +37,7 @@ function Navigation({ logout }) {
         <li>
           <div
             className={`${navStyles.navDiv} ${
-              pathname === "/cities" ? navStyles.active : ""
+              pathname.includes("cities") || pathname.includes("city") ? navStyles.active : ""
             }`}
           >
             <CityIcon></CityIcon>
@@ -78,7 +78,7 @@ function Navigation({ logout }) {
         <li>
           <div
             className={`${navStyles.navDiv} ${
-              pathname === "/users" ? navStyles.active : ""
+              pathname.includes("/user") ? navStyles.active : ""
             }`}
           >
             <CgProfileIcon></CgProfileIcon>
@@ -88,7 +88,7 @@ function Navigation({ logout }) {
         <li>
           <div
             className={`${navStyles.navDiv} ${
-              pathname === "/bikes" ? navStyles.active : ""
+              pathname.includes("/bikes") ? navStyles.active : ""
             }`}
           >
             <StaticBikeIcon></StaticBikeIcon>
