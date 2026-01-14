@@ -32,16 +32,16 @@ export default function CostForm({ onFormSubmit, priceDetails }) {
 
   return (
     <form onSubmit={handleSubmit} className={formstyle.form}>
-      <label>Start fee</label>
+      <label>Start kostnad</label>
       <input
         type="Number"
-        placeholder="Starting fee"
+        placeholder="Start kostnad"
         value={startFee} // use for validation
         onChange={(e) => setStartFee(e.target.value)}
         className={inputstyle.input}
       />
 
-      <label>Price per minute fee</label>
+      <label>Kr / minut</label>
       <input
         type="Number"
         placeholder="Price per minute fee"
@@ -50,7 +50,7 @@ export default function CostForm({ onFormSubmit, priceDetails }) {
         className={inputstyle.input}
       />
 
-      <label>Ticket fee for invalid parking</label>
+      <label>Bot om ogiltig parkeringsplats</label>
       <input
         type="Number"
         placeholder="Ticket fee for invalid parking"
@@ -59,7 +59,7 @@ export default function CostForm({ onFormSubmit, priceDetails }) {
         className={inputstyle.input}
       />
 
-      <label>Discount if correct parking</label>
+      <label>Rabatt om giltig parkering</label>
       <input
         type="Number"
         placeholder="Discount if correct parking"
@@ -68,7 +68,7 @@ export default function CostForm({ onFormSubmit, priceDetails }) {
         className={inputstyle.input}
       />
 
-      <button type="submit">Update cost!</button>
+      <button type="submit">Uppdatera</button>
     </form>
   );
 }
