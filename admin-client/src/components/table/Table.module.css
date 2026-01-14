@@ -129,6 +129,10 @@ tbody>tr:hover {
     border-bottom: 1px solid #1f1f1f;
 }
 
+.table td.redirect {
+    cursor: pointer;
+}
+
 /* OPTIONAL: last row no border */
 .table tbody tr:last-child td {
     border-bottom: none;

@@ -58,4 +58,11 @@
     background-color: #04AA6D;
     border: 2px solid var(--col-text);
     /* color: blue; */
+    border-bottom: 2px solid grey;
+}
+
+.navDiv {
+    display: flex;
+    justify-content: left;
+    align-items: center;
 }

@@ -32,7 +32,7 @@ const jwtService = {
 
             return decoded.sub;
         } catch (err) {
-            throw new Error("Invalid token.");
+            throw new Error(`Invalid token: ${err.message}`);
         }
     },
 };

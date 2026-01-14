@@ -36,21 +36,21 @@ router.post('/bike/setStatus', async (req, res) => {
     let status = req.body.status || null;
     let occupied = req.body.occupied;
 
-    if (typeof occupied === undefined) {
+    if (typeof occupied === "undefined") {
         return res.status(404).json({
-          msg: "invalid occupied PARAM",
+            msg: "invalid occupied PARAM",
         });
     }
     if (!id || !status ) {
-      return res.status(404).json({
-        msg: "invalid id or status PARAMS",
-      });
+        return res.status(404).json({
+            msg: "invalid id or status PARAMS",
+        });
     }
 
     let response = await callWorker("set-bike-status", {
-      id: id,
-      status: status,
-      occupied: occupied,
+        id: id,
+        status: status,
+        occupied: occupied,
     });
 
     res.json(response['data']);
@@ -72,7 +72,7 @@ router.get('/move/:id/:x/:y', async (req, res) => {
     res.json(response);
 });
 
-///// J
+
 // Uppdaterar en cykel i simulatorn och gör zonflytt.
 router.put('/bike/:id', async (req, res) => {
     const bikeId = req.params.id;

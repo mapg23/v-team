@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import BikeService from "../../services/bikes";
 import { useNavigate } from "react-router";
 import CityDropDown from "../../components/input/CityDropDown";
-import TableWithActions from "../../components/table/TableWithActions";
 import BikesTable from "../../components/table/BikesTable";
 import style from "../../components/forms/Form.module.css";
 import CreateBikeForm from "../../components/forms/CreateBikeForm";
@@ -18,6 +17,9 @@ export default function BikeView() {
   const [bikeFilter, setBikeFilter] = useState([]);
   const [result, setResult] = useState(null);
   const [resultType, setResultType] = useState("error");
+  // Pagination
+  const [page, setPage] = useState(1);
+  const [max, setMax] = useState(false);
 
   /**
    * Styles for response
@@ -35,22 +37,27 @@ export default function BikeView() {
   /**
    * Update all data
    */
-  async function updateData() {
-    setBikes(await BikeService.getAllBikes());
-    setBikeFilter(await BikeService.getAllBikes());
+  async function getData() {
+    const bikes = await BikeService.getAllBikes({ page });
+    if (bikes.bikes.length > 0) {
+      setBikes(bikes.bikes);
+      setBikeFilter(bikes.bikes);
+      setMax(false)
+    } else {
+      setMax(true);
+    }
   }
 
   /**
-   * Run on mount
+   * Get data whenever pages is updated
    */
   useEffect(() => {
     async function fetchData() {
-      setBikes(await BikeService.getAllBikes());
-      setBikeFilter(await BikeService.getAllBikes());
+      await getData();
       setLoading(false);
     }
     fetchData();
-  }, []);
+  }, [page]);
 
   /**
    * Delete bike with id
@@ -64,7 +71,7 @@ export default function BikeView() {
       setResultType("success");
 
       // update bikes
-      await updateData();
+      await getData();
       return;
     }
     setResult(response.error);
@@ -91,12 +98,11 @@ export default function BikeView() {
     bikeObj.occupied = 0;
     bikeObj.status = 10;
     const response = await BikeService.createNewBike(bikeObj);
-    console.log(response);
     if (response.id) {
       setResult("Successfully created a new bike!");
       setResultType("success");
       // update bikes
-      await updateData();
+      await getData();
       return;
     }
     setResult(response.error);
@@ -131,12 +137,39 @@ export default function BikeView() {
     setResultType("info");
   }
 
+  /**
+   * Increment page by 1 if max is false
+   */
+  function increasePage() {
+    if (!max) {
+      setPage((page) => page + 1);
+    }
+  }
+
+  /**
+   * Reduce current page by 1
+   * Only reduce if page is > 1
+   */
+  function reducePage() {
+    if (page === 1) return;
+    setPage(page => page -1)
+  }
+
   if (loading) return <p>loading..</p>;
 
   return (
     <>
       <div className="wrapper">
-        <h1>BikeView</h1>
+        <div className="card">
+          <h1>BikeView</h1>
+          <p>I följande vy kan du hantera elscyklar.</p>
+          <p>Du kan skapa och ta bort cyklar, samt filtrera cyklar per stad.</p>
+          <p>
+            Vill du visa cykeln på en karta trycker du på cykelns{" "}
+            <strong>ID</strong>
+          </p>
+        </div>
+
         <div className="cardWrapper">
           {/* {CREATE BIKES} */}
           <div className="card">
@@ -159,11 +192,16 @@ export default function BikeView() {
         <div className="card">
           <p className={resultClass}>{result}</p>
           {/* Display bikes based on filter */}
-            <BikesTable
-              data={bikeFilter}
-              action={deleteBike}
-              inspect={inspectBike}
-            />
+          <p>Current page {page}</p>
+          <button onClick={reducePage}>
+            Prev page: {page !== 1 ? page - 1 : page}
+          </button>
+          <button onClick={increasePage}>Next page: {page + 1}</button>
+          <BikesTable
+            data={bikeFilter}
+            action={deleteBike}
+            inspect={inspectBike}
+          />
         </div>
       </div>
     </>

@@ -3,6 +3,7 @@ import createBikes, { validateZone, getZoneCoordinates } from "../models/bikes.m
 import validateJsonBody from "../middleware/validateJsonBody.mjs";
 import updateSimulator from "../systemSimulation/updateSimulator.mjs";
 import handleZoneUpdate from "../helpers/zoneUpdate.mjs";
+import { calculatePagination } from "../helpers/pagination.mjs";
 
 
 export default function createBikeRouter(bikes = createBikes()) {
@@ -209,22 +210,33 @@ export default function createBikeRouter(bikes = createBikes()) {
 
     /**
      * GET /bikes
-     * Fetches all bikes.
+     * Fetches bikes with pagination.
+     * Query parameters:
+     *   ?page=1&limit=50
      *
      * Returns:
-     * 200: list of bikes
+     * 200: bikes list with pagination info
      * 500: server error
      */
     route.get(`/bikes`, async (req, res) => {
         try {
-            const list = await bikes.getBikes();
+            const { page, limit, offset } = calculatePagination(req.query);
 
-            return res.status(200).json(list);
+            const bikesList = await bikes.getBikes({ limit, offset });
+            const total = await bikes.countBikes();
+
+            return res.status(200).json({
+                page,
+                limit,
+                total,
+                bikes: bikesList
+            });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not fetch bikes" });
         }
     });
+
 
     /**
      * GET /bikes/:id
@@ -340,12 +352,15 @@ export default function createBikeRouter(bikes = createBikes()) {
                 return res.status(400).json({ error: 'Zone coordinates not found' });
             }
 
+            const batteryLevel = zoneType === "charging" ? 100 : bike.battery;
+
             // Uppdatera cykeln med zon och koordinater
             const result = await bikes.updateBike(bikeId, {
                 current_zone_type: zoneType,
                 current_zone_id: zoneId,
                 latitude: coords.latitude,
-                longitude: coords.longitude
+                longitude: coords.longitude,
+                battery: batteryLevel
             });
 
             if (result.affectedRows === 0) {

@@ -67,9 +67,9 @@ describe('Users API - ok', () => {
         const res = await request(app).get('/users');
 
         expect(res.status).toBe(200);
-        expect(res.body[0]).toHaveProperty('id', 1);
-        expect(res.body[0]).toHaveProperty('username', 'Falcon');
-        expect(res.body[0]).toHaveProperty('email', 'falcon@hotmail.com');
+        expect(res.body.users[0]).toHaveProperty('id', 1);
+        expect(res.body.users[0]).toHaveProperty('username', 'Falcon');
+        expect(res.body.users[0]).toHaveProperty('email', 'falcon@hotmail.com');
     });
 
     test('PUT /users/:id update a user', async () => {

@@ -9,43 +9,14 @@ const userService = {
    * Get all users
    * @returns {JSON}
    */
-  getAllUsers: async function getAllUsers() {
+  getAllUsers: async function getAllUsers({limit, page}) {
     const token = sessionStorage.getItem("jwt");
     try {
-      const response = await fetch(`${API}/users`, {
+      const response = await fetch(`${API}/users?page=${page}&limit=${limit}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on getAllUsers! Status: ${response.status}`
-        );
-      }
-
-      const responseData = await response.json();
-      return responseData;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  },
-
-  /**
-   * Delete all users
-   * @returns {JSON}
-   */
-  deleteAllUsers: async function deleteAllUsers() {
-    const token = sessionStorage.getItem("jwt");
-    try {
-      const response = await fetch(`${API}/users`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -239,105 +210,6 @@ const userService = {
       if (!response.ok) {
         throw new Error(
           `HTTP error on getUserRentalDetails! Status: ${response.status}`
-        );
-      }
-
-      const responseData = await response.json();
-      return responseData;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  },
-
-  /**
-   * Edit user rental
-   * @param {number|string} userId - ID för användaren som ska uppdateras
-   * @param {Object} userData - Objekt med keys och values att uppdatera
-   * @returns {JSON}
-   */
-  editUserRental: async function editUserRental(userId, userData) {
-    const token = sessionStorage.getItem("jwt");
-    const userObject = {
-      ...userData,
-    };
-    try {
-      const response = await fetch(`${API}/users/${userId}/rentals`, {
-        body: JSON.stringify(userObject),
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on editUserRental! Status: ${response.status}`
-        );
-      }
-
-      const responseData = await response.json();
-      return responseData;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  },
-
-  /**
-   * Patch user rental
-   * @param {number|string} userId - ID för användaren som ska uppdateras
-   * @param {Object} userData - Objekt med keys och values att uppdatera
-   * @returns {JSON}
-   */
-  patchUserRental: async function patchUserRental(userId, userData) {
-    const token = sessionStorage.getItem("jwt");
-    const userObject = {
-      ...userData,
-    };
-    try {
-      const response = await fetch(`${API}/users/${userId}/rentals`, {
-        body: JSON.stringify(userObject),
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on patchUserRental! Status: ${response.status}`
-        );
-      }
-
-      const responseData = await response.json();
-      return responseData;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  },
-
-  /**
-   * Get user rental details
-   * @returns {JSON}
-   */
-  deleteUserRental: async function deleteUserRental(userId) {
-    const token = sessionStorage.getItem("jwt");
-    try {
-      const response = await fetch(`${API}/users/${userId}/rentals`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error on deleteUserRental! Status: ${response.status}`
         );
       }
 
