@@ -23,6 +23,9 @@ function Navigation({ logout }) {
     }
     return (
         <>
+            <div className="logo-container">
+                <img src="/images/rull.png" alt="" />
+            </div>
             <ul className={navStyles.navList}>
                 <li>
                     <div
