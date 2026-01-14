@@ -39,10 +39,10 @@ function HomeView() {
     async function fetchData() {
       const cities = await CityService.getAllCities();
       setCities(cities.length);
-      const users = await userService.getAllUsers();
-      setUsers(users.length);
-      const bikes = await bikeService.getAllBikes();
-      setBikes(bikes.length);
+      const users = await userService.getAllUsers({ limit: 0 }); // get all users
+      setUsers(users.users.length);
+      const bikes = await bikeService.getAllBikes({ limit: 0 }); // get all bikes
+      setBikes(bikes.bikes.length);
       const pZOnes = await parkingService.getAllParkingZones();
       setPZones(pZOnes.length);
       const cZones = await stationService.getAllStations();

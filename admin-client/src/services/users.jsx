@@ -9,10 +9,10 @@ const userService = {
    * Get all users
    * @returns {JSON}
    */
-  getAllUsers: async function getAllUsers({page}) {
+  getAllUsers: async function getAllUsers({limit, page}) {
     const token = sessionStorage.getItem("jwt");
     try {
-      const response = await fetch(`${API}/users?page=${page}`, {
+      const response = await fetch(`${API}/users?page=${page}&limit=${limit}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
