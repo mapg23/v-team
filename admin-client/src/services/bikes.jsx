@@ -215,6 +215,27 @@ const bikeService = {
       return [];
     }
   },
+
+  /**
+   * Get number of bikes in db
+   * NO ROUTE IMPLEMENTED
+   */
+  countAllBikes: async function countAllBikes() {
+    const token = sessionStorage.getItem("jwt");
+    try {
+      const response = await fetch(`${API}/bikes/count`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("Get countAllBikes:", error);
+      return [];
+    }
+  }
 };
 
 export default bikeService;
