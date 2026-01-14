@@ -18,50 +18,53 @@ import { getApiBase } from "../../apiUrl";
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC);
 
 export default function PaymentView() {
-  const API = getApiBase();
-  const [clientSecret, setClientSecret] = useState("");
+    const API = getApiBase();
+    const [clientSecret, setClientSecret] = useState("");
 
-  const [selectedAmount, setSelectedAmount] = useState("");
+    const [selectedAmount, setSelectedAmount] = useState("");
 
-  useEffect(() => {
-    const token = sessionStorage.getItem("jwt");
+    useEffect(() => {
+        const token = sessionStorage.getItem("jwt");
 
-    console.log(token);
-    if (!selectedAmount) { return };
-    // Create PaymentIntent as soon as the page loads
-    fetch(`${API}/payments/create-intent`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ amount: selectedAmount }),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`could not connect with stripe ${res.status}`)
-        }
-        return res.json()
-      })
-      .then((data) => setClientSecret(data.clientSecret));
+        console.log(token);
+        if (!selectedAmount) { return };
+        // Create PaymentIntent as soon as the page loads
+        fetch(`${API}/payments/create-intent`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                amount: selectedAmount,
+                id: 1, // Ändra till riktigt user id
+            }),
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`could not connect with stripe ${res.status}`)
+                }
+                return res.json()
+            })
+            .then((data) => setClientSecret(data.clientSecret));
 
-  }, [selectedAmount]);
+    }, [selectedAmount]);
 
-  const appearance = {
-    theme: 'stripe',
-  };
-  // Enable the skeleton loader UI for optimal loading. OK?
-  const loader = 'auto';
+    const appearance = {
+        theme: 'stripe',
+    };
+    // Enable the skeleton loader UI for optimal loading. OK?
+    const loader = 'auto';
 
-  return (
-    <div className="container payment-container">
-      <AmountSelector onSelect={setSelectedAmount} />
+    return (
+        <div className="container payment-container">
+            <AmountSelector onSelect={setSelectedAmount} />
 
-      {clientSecret && (
-        <Elements options={{ clientSecret, appearance, loader }} stripe={stripePromise}>
-          <CheckoutForm />
-        </Elements>
-      )}
-    </div>
-  );
+            {clientSecret && (
+                <Elements options={{ clientSecret, appearance, loader }} stripe={stripePromise}>
+                    <CheckoutForm />
+                </Elements>
+            )}
+        </div>
+    );
 }

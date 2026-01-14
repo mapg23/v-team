@@ -1,25 +1,16 @@
 # V-team 08 - Rull
 
-## Branches
+![Rull](client/public/rull.png)
 
-### Main brancher
-- feature/bike
-- feature/api
 
-- feature/admin
-- feature/client
 
 ## Coverage
 
 ### API
 [![API Coverage](https://raw.githubusercontent.com/mapg23/v-team/main/coverage-badges/api-badge/api-coverage.svg)](https://github.com/mapg23/v-team/blob/main/coverage-badges/api-badge/api-coverage.svg)
 
-TODO: Lägg till flera mätvärden
-
 ### Bike
 [![Bike Coverage](https://raw.githubusercontent.com/mapg23/v-team/main/coverage-badges/bike-badge/bike-coverage.svg)](https://github.com/mapg23/v-team/blob/main/coverage-badges/bike-badge/bike-coverage.svg)
-
-TODO: Lägg till flera mätvärden
 
 ## Initialization ( docker compose )
 ### To Start the system, stand in root and execute the command below:

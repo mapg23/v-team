@@ -1,57 +1,44 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function GithubCallback({onLogin}) {
-  const navigate = useNavigate();
-  const effectRan = useRef(false);
+export default function GithubCallback({ onLogin }) {
+    const navigate = useNavigate();
+    const effectRan = useRef(false);
 
-  useEffect(() => {
-    if (effectRan.current) return;
-    effectRan.current = true;
+    useEffect(() => {
+        if (effectRan.current) return;
+        effectRan.current = true;
 
-    async function handleCallback() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get("code");
-      const encryptedState = urlParams.get("state");
+        async function handleCallback() {
+            console.log("ADMIN GH CALLBACK");
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get("code");
+            const encryptedState = urlParams.get("state");
 
-      const savedState = sessionStorage.getItem("oauth_state");
-      const rawState = sessionStorage.getItem("oauth_state_raw");
-      const codeVerifier = sessionStorage.getItem("pkce_verifier");
-      //   console.log("Stored verifier:", codeVerifier);
+            const response = await fetch(
+                "http://localhost:9091/api/v1/auth/oauth/login",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        code,
+                        encryptedState,
+                    }),
+                }
+            );
 
-      if (encryptedState !== savedState) {
-        console.error("Invalid OAuth state!");
-        return;
-      }
+            const data = await response.json();
 
-      const response = await fetch(
-        "http://localhost:9091/api/v1/auth/oauth/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            code,
-            encryptedState,
-            rawState,
-            code_verifier: codeVerifier,
-          }),
+            if (data.jwt) {
+                // Token ska göra att jag är inloggad
+                sessionStorage.setItem("jwt", data.jwt);
+                await onLogin();
+                navigate("/home");
+            }
         }
-      );
 
-      const data = await response.json();
-      // Empty session storage
-      sessionStorage.clear();
+        handleCallback();
+    }, [navigate, onLogin]);
 
-      if (data.jwt) {
-        // Token ska göra att jag är inloggad
-        sessionStorage.setItem("jwt", data.jwt);
-        await onLogin();
-        navigate("/welcome");
-      }
-    }
-
-    handleCallback();
-  }, [navigate, onLogin]);
-
-  return <p>Logging in... </p>;
+    return <p>Logging in... </p>;
 } 

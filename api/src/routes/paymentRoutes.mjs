@@ -14,10 +14,11 @@ const router = express.Router();
  * @returns the client secret
  */
 router.post(`/create-intent`,
-    // validation.idBody,
-    // validation.checkValidationResult,
+    validation.createIntent,
+    validation.checkValidationResult,
     async (req, res) => {
-        const { amount } = req.body;
+        console.log("INIT INTENT : ", process.env.STRIPE_SECRET);
+        const { amount, id } = req.body;
 
         // console.log("initializing create-intent for: ", amount);
         try {
@@ -31,6 +32,9 @@ router.post(`/create-intent`,
                 // because Stripe enables its functionality by default.
                 automatic_payment_methods: {
                     enabled: true,
+                },
+                metadata: {
+                    "user_id": id,
                 },
             });
 
@@ -66,32 +70,13 @@ router.post(`/payment-success`,
             // console.log(paymentIntent, "*** status, amount: ", status, amount);
 
             if (status !== "succeeded") {
+                console.error(`Payment with intent ${intentId} failed`);
                 return res.json({ status: status, message: "Payment was not successfull." });
             }
 
-            const newBalance = walletService.credit(userId, amountInKrona);
+            const newBalance = walletService.credit(userId, amountInKrona, intentId);
 
-            // let walletRes = await wallets.getWalletByUserId(userId);
-
-            // if (!walletRes[0]) {
-            //     walletRes = await wallets.createWallet(userId);
-            // }
-            // // console.log("WalletRes: ", walletRes);
-            // const userWallet = walletRes[0];
-
-            // const newBalance = userWallet.balance += (amountInKrona);
-            // const updateData = {
-            //     balance: newBalance
-            // };
-
-            // // Update balance in users wallet
-            // const result = await wallets.updateWallet(userWallet.id, updateData);
-
-            // console.log(result); // OkPacket { affectedRows: 1, insertId: 0n, warningStatus: 0 }
-            // if (result.affectedRows === 0) {
-            //     throw new Error("balance was not updated");
-            // }
-
+            // console.log("SUCCESS for INTENT : ", intentId);
             return res.json({ added: amountInKrona, balance: newBalance });
         } catch (err) {
             console.error('Error creating Stripe payment intent: ', err);
