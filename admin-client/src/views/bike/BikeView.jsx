@@ -17,6 +17,9 @@ export default function BikeView() {
   const [bikeFilter, setBikeFilter] = useState([]);
   const [result, setResult] = useState(null);
   const [resultType, setResultType] = useState("error");
+  // Pagination
+  const [page, setPage] = useState(1);
+  const [max, setMax] = useState(false);
 
   /**
    * Styles for response
@@ -34,22 +37,27 @@ export default function BikeView() {
   /**
    * Update all data
    */
-  async function updateData() {
-    setBikes(await BikeService.getAllBikes());
-    setBikeFilter(await BikeService.getAllBikes());
+  async function getData() {
+    const bikes = await BikeService.getAllBikes({ page });
+    if (bikes.bikes.length > 0) {
+      setBikes(bikes.bikes);
+      setBikeFilter(bikes.bikes);
+      setMax(false)
+    } else {
+      setMax(true);
+    }
   }
 
   /**
-   * Run on mount
+   * Get data whenever pages is updated
    */
   useEffect(() => {
     async function fetchData() {
-      setBikes(await BikeService.getAllBikes());
-      setBikeFilter(await BikeService.getAllBikes());
+      await getData();
       setLoading(false);
     }
     fetchData();
-  }, []);
+  }, [page]);
 
   /**
    * Delete bike with id
@@ -63,7 +71,7 @@ export default function BikeView() {
       setResultType("success");
 
       // update bikes
-      await updateData();
+      await getData();
       return;
     }
     setResult(response.error);
@@ -95,7 +103,7 @@ export default function BikeView() {
       setResult("Successfully created a new bike!");
       setResultType("success");
       // update bikes
-      await updateData();
+      await getData();
       return;
     }
     setResult(response.error);
@@ -130,6 +138,24 @@ export default function BikeView() {
     setResultType("info");
   }
 
+  /**
+   * Increment page by 1 if max is false
+   */
+  function increasePage() {
+    if (!max) {
+      setPage((page) => page + 1);
+    }
+  }
+
+  /**
+   * Reduce current page by 1
+   * Only reduce if page is > 1
+   */
+  function reducePage() {
+    if (page === 1) return;
+    setPage(page => page -1)
+  }
+
   if (loading) return <p>loading..</p>;
 
   return (
@@ -158,11 +184,16 @@ export default function BikeView() {
         <div className="card">
           <p className={resultClass}>{result}</p>
           {/* Display bikes based on filter */}
-            <BikesTable
-              data={bikeFilter}
-              action={deleteBike}
-              inspect={inspectBike}
-            />
+          <p>Current page {page}</p>
+          <button onClick={reducePage}>
+            Prev page: {page !== 1 ? page - 1 : page}
+          </button>
+          <button onClick={increasePage}>Next page: {page + 1}</button>
+          <BikesTable
+            data={bikeFilter}
+            action={deleteBike}
+            inspect={inspectBike}
+          />
         </div>
       </div>
     </>

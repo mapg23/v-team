@@ -7,7 +7,7 @@ import styles from "./Table.module.css";
  */
 export default function BikesTable({ data, action, inspect }) {
   const _data = Array.isArray(data) ? data : [data];
-  if (_data.length === 0) return <p>Finns inga städer..</p>;
+  if (_data.length === 0) return <p>Finns inga cyklar..</p>;
 
   const headers = [
     "id",
