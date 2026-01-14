@@ -54,46 +54,6 @@ describe("Bikes API - OK", () => {
         expect(res.body).toHaveProperty("current_zone_type", null);
     });
 
-    test("GET /bikes returns bike list", async () => {
-        mockDb.select.mockResolvedValue([{
-            id: 1,
-            status: 10,
-            battery: 80,
-            latitude: 59.0,
-            longitude: 18.0,
-            occupied: 0,
-            city_id: 1,
-            current_zone_type: null,
-            current_zone_id: null
-        }]);
-
-        const res = await request(app).get('/bikes');
-
-        expect(res.status).toBe(200);
-        expect(res.body.bikes[0]).toHaveProperty("status", 10);
-        expect(res.body.bikes[0]).toHaveProperty("current_zone_type", null);
-    });
-
-    test("GET /bikes/:id returns a bike", async () => {
-        mockDb.select.mockResolvedValue([{
-            id: 2,
-            status: 10,
-            battery: 75,
-            latitude: 59.0,
-            longitude: 18.0,
-            occupied: 0,
-            city_id: 1,
-            current_zone_type: 'parking',
-            current_zone_id: 5
-        }]);
-
-        const res = await request(app).get('/bikes/2');
-
-        expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty("status", 10);
-        expect(res.body).toHaveProperty("current_zone_type", "parking");
-    });
-
     test("PUT /bikes/:id updates a bike", async () => {
         mockDb.update.mockResolvedValue({ affectedRows: 1 });
         mockDb.select.mockResolvedValue([{

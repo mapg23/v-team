@@ -26,7 +26,7 @@ export default function createBikes(db = dbDefault) {
          * @returns {Promise<number>} Total number of bikes in the database.
          */
         countBikes: async function countBikes() {
-            return await countRows('scooters');
+            return await this.countRows('scooters');
         },
 
 

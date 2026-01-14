@@ -167,7 +167,9 @@ describe("bikes model", () => {
             'scooters',
             scooterFields,
             'city_id = ?',
-            [2]
+            [2],
+            50,
+            0
         );
     });
 
