@@ -9,14 +9,14 @@ const userService = {
    * Get all users
    * @returns {JSON}
    */
-  getAllUsers: async function getAllUsers() {
+  getAllUsers: async function getAllUsers({page}) {
     const token = sessionStorage.getItem("jwt");
     try {
-      const response = await fetch(`${API}/users`, {
+      const response = await fetch(`${API}/users?page=${page}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
