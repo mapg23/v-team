@@ -109,7 +109,12 @@ export default function CityView() {
   return (
     <>
       <div className="wrapper">
-        <h1>CityView</h1>
+        <div className="card">
+          <h1>Städer</h1>
+          <p>Hantera städer genom verktygen nedan.</p>
+          <p>Du kan både registrera och ta bort städer.</p>
+          <p>Vill du visa detaljer för en stad så trycker du på stadens namn</p>
+        </div>
         <div className="card">
           <CitiesTable
             data={allCityDetails}
@@ -118,12 +123,12 @@ export default function CityView() {
           />
         </div>
         <div className="card">
-          <h2>Create new city</h2>
           <p className={resultType === "error" ? style.error : style.success}>
             {result}
           </p>
+          <h2>Registrera ny stad</h2>
           <form className={style.form} onSubmit={createCity}>
-            <label htmlFor="city">CityName</label>
+            <label htmlFor="city">Stad</label>
             <input
               style={{ height: "2rem" }}
               placeholder="Enter city name"
@@ -131,7 +136,7 @@ export default function CityView() {
               value={newCity}
               onChange={(e) => setNewCity(e.target.value)}
             />
-            <button type="submit">Create city</button>
+            <button type="submit">Registrera stad</button>
           </form>
         </div>
       </div>
