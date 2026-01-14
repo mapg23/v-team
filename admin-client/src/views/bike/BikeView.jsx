@@ -152,7 +152,7 @@ export default function BikeView() {
    */
   function reducePage() {
     if (page === 1) return;
-    setPage(page => page -1)
+    setPage(page => page - 1)
   }
 
   if (loading) return <p>loading..</p>;
@@ -192,11 +192,13 @@ export default function BikeView() {
         <div className="card">
           <p className={resultClass}>{result}</p>
           {/* Display bikes based on filter */}
-          <p>Current page {page}</p>
-          <button onClick={reducePage}>
-            Prev page: {page !== 1 ? page - 1 : page}
-          </button>
-          <button onClick={increasePage}>Next page: {page + 1}</button>
+          <div className="pages-btn-wrapper">
+            <button onClick={reducePage}>
+              Prev page: {page !== 1 ? page - 1 : page}
+            </button>
+            <p>Current page {page}</p>
+            <button onClick={increasePage}>Next page: {page + 1}</button>
+          </div>
           <BikesTable
             data={bikeFilter}
             action={deleteBike}

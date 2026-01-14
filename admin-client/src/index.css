@@ -3,6 +3,7 @@
 /* @import url("./styles/utilities.css"); */
 @import url("./styles/button.css");
 @import url("./styles/forms.css");
+@import url("./styles/design-elements.css");
 /* @import url(./components/button/Button.module.css); */
 
 #root {
@@ -99,10 +100,10 @@ button:focus-visible {
     display: inline-block;
 }
 
-.image-wrapper {
+.logo-wrapper {
     height: 115px;
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: center;
 }
 
