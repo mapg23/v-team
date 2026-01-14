@@ -1,0 +1,27 @@
+    button {
+        cursor: pointer;
+        /* width: 100%; */
+        border: 2px solid var(--col-border);
+        border-radius: var(--radius-md);
+        /* box-shadow: 2px 2px 0 var(--col-border); */
+        padding: var(--space-s);
+        margin: var(--space-s);
+
+        svg {
+            display: inline;
+            vertical-align: bottom;
+            margin: 0 var(--space-xs);
+        }
+    }
+
+    button:hover {
+        background-color: var(--col-green);
+        color: var(--col-bg);
+    }
+
+    button:active {
+        cursor: pointer;
+        /* width: 100%; */
+        border: 2px solid var(--col-pop);
+        /* box-shadow: 0px 0px 0 var(--col-border); */
+    }

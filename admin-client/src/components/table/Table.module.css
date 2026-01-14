@@ -1,133 +1,141 @@
 .verticalTable {
-  /* width: 100%; */
-  border-collapse: collapse;
-  font-family: Arial, sans-serif;
+    /* width: 100%; */
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
 }
 
 .verticalTable th,
 .verticalTable td {
-  border: 1px solid #ccc;
-  padding: 10px 12px;
-  text-align: left;
+    border: 1px solid #ccc;
+    padding: 10px 12px;
+    text-align: left;
 }
 
 .verticalTable th {
-  font-weight: bold;
-  /* background-color: #f2f2f2; */
+    font-weight: bold;
+    /* background-color: #f2f2f2; */
 }
 
 .verticalTable tr:nth-child(even) {
-  /* background-color: #fafafa; */
+    /* background-color: #fafafa; */
 }
 
 .verticalTable tr:nth-child(odd) {
-  /* background-color: #ffffff; */
+    /* background-color: #ffffff; */
 }
 
 /* BIKETABLE BASE */
 .bikeTable {
-  width: 100%;
-  border-collapse: collapse;
-  color: #eaeaea;
-  background-color: #121212;
-  font-size: 0.95rem;
+    width: 100%;
+    border-collapse: collapse;
+    /* color: #eaeaea; */
+    /* background-color: #121212; */
+    font-size: 0.95rem;
 }
 
 /* HEADER */
 .bikeTable thead {
-  background-color: #1a1a1a;
+    background-color: #1a1a1a;
 }
 
 .bikeTable thead th {
-  text-align: center;
-  padding: 14px 16px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  color: #bdbdbd;
-  border-bottom: 2px solid #2c2c2c;
+    text-align: center;
+    padding: 14px 16px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: #bdbdbd;
+    border-bottom: 2px solid #2c2c2c;
 }
 
 /* BODY ROWS */
 .bikeTable tbody tr {
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.bikeTable tbody tr:hover {
-  background-color: #2a2a2a;
-  /* ljusgrå hover */
+/* .bikeTable tbody tr:hover {
+    background-color: #2a2a2a;
 }
+
+*/
 
 /* CELLS */
 .bikeTable td {
-  padding: 14px 16px;
-  border-bottom: 1px solid #1f1f1f;
+    padding: 14px 16px;
+    border-bottom: 1px solid #1f1f1f;
 }
 
 /* OPTIONAL: last row no border */
 .bikeTable tbody tr:last-child td {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 /* ACTION COLUMN (Delete Bike) */
 .bikeTable td.action {
-  color: #ffffff;
-  font-weight: 500;
+    color: #ffffff;
+    font-weight: 500;
 }
 
 /* TABLE BASE */
 .table {
-  margin: 0 auto;
-  margin-top: 1rem;
-  width: 100%;
-  border-collapse: collapse;
-  color: #eaeaea;
-  background-color: #121212;
-  font-size: 0.95rem;
+    margin: 0 auto;
+    margin-top: 1rem;
+    width: 100%;
+    border-collapse: collapse;
+    /* color: #eaeaea; */
+    /* background-color: #121212; */
+    font-size: 0.95rem;
 }
 
 /* HEADER */
 .table thead {
-  background-color: #1a1a1a;
+    background-color: #1a1a1a;
 }
 
 .table thead th {
-  text-align: center;
-  padding: 14px 16px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  color: #bdbdbd;
-  border-bottom: 2px solid #2c2c2c;
+    text-align: center;
+    padding: 14px 16px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: #bdbdbd;
+    border-bottom: 2px solid var(--col-border);
 }
 
 /* BODY ROWS */
 .table tbody tr {
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.table tbody tr:hover {
-  background-color: #2a2a2a;
-  /* ljusgrå hover */
+tbody:hover {
+    color: var(--col-text-muted);
+    background-color: var(--col-bg-muted);
+}
+
+tbody>tr:hover {
+    /* background-color: #2a2a2a; */
+    color: var(--col-text);
+    background-color: var(--col-bg);
+    /* ljusgrå hover */
 }
 
 /* CELLS */
 .table td {
-  padding: 14px 16px;
-  border-bottom: 1px solid #1f1f1f;
+    padding: 14px 16px;
+    border-bottom: 1px solid #1f1f1f;
 }
 
 /* OPTIONAL: last row no border */
 .table tbody tr:last-child td {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 /* ACTION COLUMN (Delete Bike) */
 .table td.action {
-  color: #ffffff;
-  font-weight: 500;
+    color: #ffffff;
+    font-weight: 500;
 }

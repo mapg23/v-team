@@ -1,105 +1,136 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+@import url("./styles/tokens.css");
+@import url("./styles/base.css");
+/* @import url("./styles/utilities.css"); */
+@import url("./styles/button.css");
+@import url("./styles/forms.css");
+/* @import url(./components/button/Button.module.css); */
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;  
-}
-
-* {
-  box-sizing: border-box;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+#root {
+    font-family: var(--font-family-base);
+    line-height: 1.5;
+    font-weight: 400;
+    /* max-width: 1280px; */
+    margin: 0 auto;
+    padding: 2rem 0rem;
+    text-align: center;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-p {
-  margin: 0.5rem;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  vertical-align: center;
-  gap: 0.5rem;
-  margin: 0 auto;
-  margin-top: 0.5rem;  
-}
-button:hover {
-  border-color: #646cff;
-}
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+    outline: 4px auto - webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.app-layout {
+    background-color: var(--col-bg-muted);
+    padding: 1rem;
+    display: flex;
+    /* width: 1200px; */
+    width: 98vw;
+    /* height: 100vh; */
+    min-height: 90vh;
+    align-items: top;
+    gap: 0.5rem;
+    margin: 0 auto;
+    border-radius: 8px;
+    /* background-color: red; */
+    /* background-color: grey; */
 }
 
-/* LIST STYLES
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  width: 200px;
-  border: 1px solid grey;
-  border-radius: 10px;
+.app-content {
+    margin: 0 auto;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    /* background-color: red; */
+    width: 100%;
+    gap: 1rem;
 }
 
-li a {
-  display: block;
-  color: white;
-  padding: 8px 16px;
-  text-decoration: none;
+.card {
+    /* background: #1e1e1e; */
+    background-color: var(--col-bg);
+    border-radius: 8px;
+    padding: 1rem 2rem var(--space-xxl);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem;
 }
 
-/* Change the link and background color on hover 
-li a:hover {
-  background-color: #555555;
-  color: white;
-}*/
+.map {
+    width: 100%;
+    min-height: 700px;
+    padding: 0;
+    background: #1e1e1e;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.wrapper {
+    padding: 1rem;
+    min-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cardWrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin: 0 auto;
+}
+
+.logo {
+    max-width: 100px;
+}
+
+.logo-small {
+    max-width: 100px;
+    display: inline-block;
+}
+
+.image-wrapper {
+    height: 115px;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+}
+
+a>svg {
+    margin: auto;
+    color: var(--col-blue);
+}
+
+@media screen and (max-width: 1200px) {
+    .app-layout {
+        flex-direction: column;
+    }
+
+    .navContainer ul {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        li,
+        button {
+            margin: var(--space-xs);
+            /* 
+            a,
+            button {
+                padding: 0 var(--space-xs);
+            } */
+        }
+
+    }
+
+}
