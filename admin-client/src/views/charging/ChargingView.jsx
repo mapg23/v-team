@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import stationService from "../../services/stations";
 import CreateChargingZoneForm from "../../components/forms/CreateChargingZoneForm";
 import ChargingTable from "../../components/table/ChargingTable";
+import style from "../../components/forms/Form.module.css";
 
 export default function ChargingView() {
   // render map based on city coordinates
@@ -23,6 +24,23 @@ export default function ChargingView() {
 
   // layer - remove when new zone is created
   const [layer, setLayer] = useState(null);
+
+  // Results from create / delete
+  const [result, setResult] = useState(null);
+  const [resultType, setResultType] = useState("error");
+
+  /**
+   * Styles for create / delete result
+   */
+  const resultClassMap = {
+    success: style.success,
+    error: style.error,
+    warning: style.warning,
+    info: style.info,
+  };
+
+  // Get current result
+  const resultClass = resultClassMap[resultType] || "";
 
   /**
    * fetchData manually
@@ -51,6 +69,8 @@ export default function ChargingView() {
    */
   useEffect(() => {
     if (!cityId) return;
+    // reset result
+    setResult(null);
     function getData() {
       fetchData();
     }
@@ -99,6 +119,9 @@ export default function ChargingView() {
       // clear layer
       layer.remove();
       setLayer(false);
+      // show result
+      setResult(`Ny laddstation: ${cZone.name}`);
+      setResultType("success");
     }
   }
 
@@ -110,6 +133,8 @@ export default function ChargingView() {
     if (zoneId) {
       const response = await stationService.deleteChargingZone(zoneId);
       if (response.ok) {
+        setResult(`Laddstation raderad`);
+        setResultType("success");
         fetchData();
       }
     }
@@ -129,10 +154,17 @@ export default function ChargingView() {
 
   return (
     <div className="wrapper">
-      <h1>Laddstationer</h1>
+      <div className="card">
+        <h1>Laddstationer</h1>
+        <p>
+          I följande vy kan du inspektera samt ta bort befintliga stationer.
+        </p>
+        <p>Vill du skapa en ny station använder verktyget i kartan.</p>
+      </div>
       <div className="card">
         <div className="card">
           <CityDropDown action={initCityid} />
+          <p className={resultClass}>{result}</p>
           {cityCoordinates.latitude && cityCoordinates.longitude ? (
             <ChargingTable data={chargingZones} action={deleteZone} />
           ) : (
