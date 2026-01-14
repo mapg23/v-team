@@ -137,7 +137,13 @@ export default function ParkingView() {
 
   return (
     <div className="wrapper">
-      <h1>Parkeringar</h1>
+      <div className="card">
+        <h1>Parkeringar</h1>
+        <p>
+          I följande vy kan du inspektera samt ta bort befintliga parkeringar.
+        </p>
+        <p>Vill du skapa en ny parkering använder verktyget i kartan.</p>
+      </div>
       <div className="card">
         <div className="card">
           <CityDropDown action={initCityid} />
