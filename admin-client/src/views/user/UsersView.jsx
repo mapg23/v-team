@@ -28,7 +28,7 @@ function HomeView() {
       setMax(false);
     } else {
       setMax(true);
-      console.log("Max is", {max})
+      console.log("Max is", { max });
     }
   }
 
@@ -50,7 +50,7 @@ function HomeView() {
    * Increment page by 1 if max is false
    */
   function increasePage() {
-    console.log(max)
+    console.log(max);
     if (!max) {
       setPage((page) => page + 1);
     }
@@ -72,7 +72,14 @@ function HomeView() {
   return (
     <div className="wrapper">
       <div className="card">
-        <h2>Users</h2>
+        <h1>Användare</h1>
+        <p>I följande vy kan du inspektera användare.</p>
+        <p>
+          För att visa en användares tidigare rutter och kostnader trycker du
+          profile symbolen
+        </p>
+      </div>
+      <div className="card">
         <p>Current page {page}</p>
         <button onClick={reducePage}>
           Prev page: {page !== 1 ? page - 1 : page}
