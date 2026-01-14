@@ -2,15 +2,36 @@ import dbDefault from "../database.mjs";
 
 export default function createUsers(db = dbDefault) {
     const users = {
+
         /**
-         * Get all users.
-         *
+         * Get users with pagination.
+         * @param {number} limit=50 - Max number of bikes to return.
+         * @param {number} offset=0 - Number of bikes to skip.
          * @returns {Promise<Array>} List of users.
          */
-        getUsers: async function getUsers() {
-            const users = await db.select('users', ['id', 'username', 'email']);
+        getUsers: async function getUsers({ limit = 50, offset = 0 } = {}) {
+            const users = await db.select('users',
+                ['id', 'username', 'email'],
+                null,
+                [],
+                limit,
+                offset
+            );
 
             return users;
+        },
+
+        /**
+         * Count total number of users.
+         * @returns {Promise<number>} Total number of users in the database.
+         */
+        countUsers: async function countUsers() {
+            const result = await db.select(
+                'users',
+                ['COUNT(*) as total']
+            );
+
+            return Number(result[0].total);
         },
         /**
          * Create a new user in the database.

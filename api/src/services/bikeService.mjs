@@ -57,6 +57,7 @@ class BikeService {
      */
     async _updateBikeStatus(bikeId, status, occupied) {
         const noccupied = occupied ? 1 : 0;
+
         await this.findBikeById(bikeId);
         const apiRes = await this.bikesModel.updateBike(
             bikeId,
@@ -71,15 +72,15 @@ class BikeService {
         }
 
         const bikeRes = await fetch("http://bike:7071/bike/setStatus", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: bikeId,
-            status: status,
-            occupied: noccupied,
-          }),
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                id: bikeId,
+                status: status,
+                occupied: noccupied,
+            }),
         });
 
         if (bikeRes.status != 200) {
