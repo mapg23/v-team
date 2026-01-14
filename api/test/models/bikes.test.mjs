@@ -67,7 +67,7 @@ describe("bikes model", () => {
             // params
             [],
             // limit
-            undefined,
+            50,
             // offset
             0
         );
