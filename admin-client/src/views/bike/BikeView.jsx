@@ -160,7 +160,16 @@ export default function BikeView() {
   return (
     <>
       <div className="wrapper">
-        <h1>BikeView</h1>
+        <div className="card">
+          <h1>BikeView</h1>
+          <p>I följande vy kan du hantera elscyklar.</p>
+          <p>Du kan skapa och ta bort cyklar, samt filtrera cyklar per stad.</p>
+          <p>
+            Vill du visa cykeln på en karta trycker du på cykelns{" "}
+            <strong>ID</strong>
+          </p>
+        </div>
+
         <div className="cardWrapper">
           {/* {CREATE BIKES} */}
           <div className="card">
