@@ -57,7 +57,7 @@ export default function ChargingView() {
       setCityCoordinates(coords);
       // Get parking zones
       const cZones = await CityService.getChargingStationsInCity(cityId);
-      if (Array.isArray(cZones) && cZones.length > 0) {
+      if (Array.isArray(cZones)) {
         setChargingZones(cZones);
       }
     }
@@ -70,9 +70,9 @@ export default function ChargingView() {
   useEffect(() => {
     if (!cityId) return;
     // reset result
-    setResult(null);
-    function getData() {
-      fetchData();
+    async function getData() {
+      await fetchData();
+      setResult(null);
     }
     getData();
   }, [cityId]);
