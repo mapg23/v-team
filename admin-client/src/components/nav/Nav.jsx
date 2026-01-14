@@ -17,7 +17,7 @@ import {
  */
 function Navigation({ logout }) {
   const location = useLocation();
-  const { hash, pathname, search } = location;
+  const pathname = location.pathname;
   function handleLogout() {
     logout();
   }

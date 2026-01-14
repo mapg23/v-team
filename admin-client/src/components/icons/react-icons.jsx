@@ -7,7 +7,6 @@ import { AiOutlineHome } from "react-icons/ai";
 import { HiOutlineCurrencyDollar } from "react-icons/hi2";
 import styles from "./iconStyles.module.css";
 import { CgProfile } from "react-icons/cg";
-import iconStyles from "./iconStyles.module.css";
 
 /**
  * Module containing all icons to allow consistent
@@ -85,10 +84,7 @@ export function HomeIcon() {
  * City icon
  * * @returns {<Component />}
  */
-export function CityIcon(bool) {
-  // if (bool) {
-  //   <MdOutlineLocationCity fill={iconStyles.module.css} size={24}></MdOutlineLocationCity>;
-  // }
+export function CityIcon() {
   return (
     <MdOutlineLocationCity
       size={24}
