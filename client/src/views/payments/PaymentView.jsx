@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+
+import TopBar from "../../components/TopBar";
 
 import CheckoutForm from "../../components/payments/CheckoutForm";
 import AmountSelector from "../../components/payments/AmountSelector";
@@ -18,6 +21,12 @@ import { getApiBase } from "../../apiUrl";
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC);
 
 export default function PaymentView() {
+
+  const navigate = useNavigate();
+  const handleTopBarCallback = () => {
+    navigate('/account', { replace: true })
+  }
+
   const API = getApiBase();
   const [clientSecret, setClientSecret] = useState("");
 
@@ -26,7 +35,6 @@ export default function PaymentView() {
   useEffect(() => {
     const token = sessionStorage.getItem("jwt");
 
-    console.log(token);
     if (!selectedAmount) { return };
     // Create PaymentIntent as soon as the page loads
     fetch(`${API}/payments/create-intent`, {
@@ -54,14 +62,24 @@ export default function PaymentView() {
   const loader = 'auto';
 
   return (
-    <div className="container payment-container">
-      <AmountSelector onSelect={setSelectedAmount} />
+    <div className="layout">
+      <TopBar
+        title="Konto"
+        callback={handleTopBarCallback}
+        canCallback="yes"
+      />
 
-      {clientSecret && (
-        <Elements options={{ clientSecret, appearance, loader }} stripe={stripePromise}>
-          <CheckoutForm />
-        </Elements>
-      )}
+      <div className="container payment-container">
+        {!selectedAmount && (
+          <AmountSelector onSelect={setSelectedAmount} />
+        )}
+
+        {clientSecret && (
+          <Elements options={{ clientSecret, appearance, loader }} stripe={stripePromise}>
+            <CheckoutForm />
+          </Elements>
+        )}
+      </div>
     </div>
   );
 }
