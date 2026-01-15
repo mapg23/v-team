@@ -25,4 +25,6 @@ jobs:
         working-directory: ./
 
       - name: Run sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: npm run sonar
