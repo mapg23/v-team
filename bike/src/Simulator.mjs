@@ -64,7 +64,6 @@ class Simulator {
      * @returns {Array|void} - Event array
      */
     heartbeat() {
-        console.log(this.cordinates);
         for (let key in this.cordinates) {
             let index = this.bikes.findIndex(function (device) {
                 return device.getId() === Number(key);
@@ -86,7 +85,7 @@ class Simulator {
             // när jag testade i Postman.
             // Gamla versionen är den utkommenterade koden ovan.
             if (!this.cordinates[key] || this.cordinates[key].length === 0) {
-                console.log(`Bike: ${key} has no coordinates left`);
+                console.log(`Bike: ${key} has no cordinates left`);
                 this.bikes[index].status = 40;
                 this.cordinates[key] = [];
                 continue;
