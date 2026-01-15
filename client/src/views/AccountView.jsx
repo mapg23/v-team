@@ -9,12 +9,15 @@ import Navigation from "../components/NavigationBar";
 
 import { useAuth } from "../components/AuthProvider";
 
+import UserModel from "../models/UserModel";
+
 import "../assets/accountView.css";
 
 export default function AccountView() {
     const navigate = useNavigate();
     const { logout, userId } = useAuth();
     const [balance, setBalance] = useState(null);
+    const [account, setAccount] = useState([]);
 
     const handleHome = () => {
         navigate('/', { replace: true })
@@ -24,12 +27,8 @@ export default function AccountView() {
         navigate('/', { replace: true })
     }
 
-    const handlePaymentMethod = () => {
-        console.log("payment")
-    }
-
     const handleAddBalanceMethod = () => {
-
+        navigate('/pay', { replace: true });
     }
 
     const handleLogout = () => {
@@ -38,7 +37,12 @@ export default function AccountView() {
     }
 
     useEffect(() => {
-
+        const fetchData = async () => {
+            let accountData = await UserModel.getUserBalance(userId);
+            setAccount(accountData);
+            setBalance(accountData.balance);
+        }
+        fetchData();
     })
 
 
@@ -57,16 +61,7 @@ export default function AccountView() {
                     <div className="Account-info">
                         <div className="Account-spacer" />
                         <div className="Account-header">
-                            <h1>Aktiv betalningsmetod</h1>
-
-                            <div className="payment-method" onClick={handlePaymentMethod}>
-                                <div className="payment-left">
-                                    <span className="payment-icon"><CreditCard /></span>
-                                    <span className="payment-name">Metods namn här</span>
-                                </div>
-
-                                <span className="payment-arrow">›</span>
-                            </div>
+                            <h1>Användare #{account.id}</h1>
                         </div>
 
                         <div className="Account-body">

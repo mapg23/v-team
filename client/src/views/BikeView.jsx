@@ -49,7 +49,13 @@ export default function BikeView() {
         intervalRef.current = setInterval(() => {
             const elapsedTime = (Date.now() - startRef.current) / 1000;
             setTime(elapsedTime);
+            getCurrentCost();
         }, 250);
+    };
+
+    const getCurrentCost = async () => {
+        let amount = await TripsModel.getCurrentCost(bike);
+        setCost(amount);
     };
 
     const stop = () => {
@@ -69,8 +75,9 @@ export default function BikeView() {
 
 
     useEffect(() => {
-        if (!bike) {
-            setBike(params.id);
+        setBike(params.id);
+
+        if (bike) {
             setLoading(false)
         }
     })
@@ -122,7 +129,7 @@ export default function BikeView() {
                                     <p>
                                         Kostnad: {cost}
                                         <br />
-                                        Cykel: ?
+                                        Cykel: # {bike}
                                     </p>
                                 </div>
 

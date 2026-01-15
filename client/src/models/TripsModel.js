@@ -16,6 +16,7 @@ const TripsModel = {
             });
 
             if (!response.ok) {
+                throw new Error(response);
                 throw new Error(
                     `(${response.status}) Response not ok url: ${API}${url}`
                 );
@@ -101,6 +102,8 @@ const TripsModel = {
             "bikeId": bikeId
         });
 
+        console.log(res);
+
         return res;
     },
 
@@ -113,7 +116,7 @@ const TripsModel = {
     },
 
     getCurrentCost: async function getCurrentCost(bikeId) {
-        return await this.basicGet(`/bike/${bikeId}/current-cost`);
+        return await this.basicGet(`/trips/bike/${bikeId}/current-cost`);
     }
 }
 

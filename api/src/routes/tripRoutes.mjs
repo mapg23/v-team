@@ -37,6 +37,8 @@ router.get(`/bike/:id/current-cost`,
     validation.idParam,
     validation.checkValidationResult,
     async (req, res) => {
+        console.log(req.params);
+
         try {
             const tripCost = await tripService.getCurrentTripCost(req.params.id);
 
