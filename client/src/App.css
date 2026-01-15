@@ -1,8 +1,9 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+    overflow: auto;
 }
 
 /* .logo {
@@ -34,33 +35,33 @@
 } */
 
 .app-layout {
-  display: flex;
-  width: 800px;
-  height: 800px;
-  align-items: top;
-  gap: 1rem;
-  /* background-color: grey; */
+    display: flex;
+    width: 800px;
+    height: 800px;
+    align-items: top;
+    gap: 1rem;
+    /* background-color: grey; */
 }
 
 .app-content {
-  display: flex;
-  flex-direction: column;
-  /* background-color: red; */
-  width: 100%;
-  gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    /* background-color: red; */
+    width: 100%;
+    gap: 1rem;
 }
 
 .userContainer {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  padding: 0.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.5rem;
 }
 
 .user {
-  width: 5rem;
-  height: 5rem;
-  background-color: blue;
-  border-radius: 100px;
-  align-items: right;
+    width: 5rem;
+    height: 5rem;
+    background-color: blue;
+    border-radius: 100px;
+    align-items: right;
 }
