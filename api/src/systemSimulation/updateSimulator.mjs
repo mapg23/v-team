@@ -44,7 +44,6 @@ export default async function updateSimulator(params) {
                 occupied
             })
         });
-
     } catch (err) {
         console.error("Failed to update simulator:", err);
     }
