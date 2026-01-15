@@ -1,6 +1,7 @@
-import { Marker, Popup } from "react-leaflet";
+import { Marker, Popup, useMap, useMapEvents } from "react-leaflet";
 import { BikeIcon } from "../../icons/react-icons";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 /**
  * This component is responsible for rendering bike markers
@@ -8,6 +9,13 @@ import { useNavigate } from "react-router-dom";
 export default function BikeMarkers({ bikes }) {
   const navigate = useNavigate();
   const bikeIcons = BikeIcon();
+  const map = useMap();
+  
+
+  useEffect(() => {
+    // console.log(mapBounds.contains([bikes[0].cords.y, bikes[0].cords.x]))
+    console.log(bikes)
+  },[bikes])
 
   /**
    * Redirect to bike/:id
@@ -29,9 +37,26 @@ export default function BikeMarkers({ bikes }) {
     return bike.occupied ? bikeIcons.used : bikeIcons.free;
   }
 
+  const [bounds, setBounds] = useState(map.getBounds());
+
+  /**
+   * Update mapBounds when zooming
+   * 
+   * useful for only rendering bikes inside bounds
+   */
+  useMapEvents({
+    moveend: () => {
+      setBounds(map.getBounds());
+    },
+    zoomend: () => {
+      setBounds(map.getBounds());
+    },
+  });
+
   return (
     <>
-      {bikes.map((bike) => (
+      {bikes.filter((bike) => bounds.contains([bike.cords.y, bike.cords.x])).
+      map((bike) => ( 
         <Marker
           key={bike.id}
           position={[bike.cords.y, bike.cords.x]}
