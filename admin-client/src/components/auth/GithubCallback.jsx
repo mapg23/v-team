@@ -33,7 +33,7 @@ export default function GithubCallback({ onLogin }) {
                 // Token ska göra att jag är inloggad
                 sessionStorage.setItem("jwt", data.jwt);
                 await onLogin();
-                navigate("/welcome");
+                navigate("/home");
             }
         }
 

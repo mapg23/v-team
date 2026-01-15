@@ -175,10 +175,8 @@ async function setBikesInMotion(params) {
 
 
 (async () => {
-    let cords = await instanciateBikes(333); // Generera cyklar
-    // await generateJSON(scooters)
-    // console.log(cords);
-    // console.log(bikes)
-    // setBikesInMotion(bikes);
+    // SÄtt inte mer än 6000
+
+    let cords = await instanciateBikes(6000); // Generera cyklar
 })();
 

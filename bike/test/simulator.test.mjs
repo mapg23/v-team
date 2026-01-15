@@ -197,7 +197,7 @@ describe('Testing Simulator', () => {
 
         for (let i = 0; i < 10; i++) {
             expect(simm.cordinates[i]).toEqual([]);
-            expect(logSpy).toHaveBeenCalledWith(`Bike: ${i} has no cordinates left 0`);
+            expect(logSpy).toHaveBeenCalledWith(`Bike: ${i} has no cordinates left`);
         }
         simm.end();
         logSpy.mockRestore();
