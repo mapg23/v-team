@@ -40,7 +40,6 @@ export default function WebAccountView() {
         }
 
         const fetchData = async () => {
-
             try {
                 let userFetch = await UserModel.getUserById(userId);
                 let balanceFetch = await UserModel.getUserBalance(userId);
@@ -151,14 +150,18 @@ export default function WebAccountView() {
                             </p>
 
                             <ul className="price-list">
-
-                                {trips.map(trip => (
-
-                                    <li key={trip.id}>
-                                        <span> #{trip.id} | {trip.cost}:- </span>
-                                        <span>{calcDuration(trip.start_time, trip.end_time)}</span>
+                                {trips.length === 0 ? (
+                                    <li className="empty-state">
+                                        <span>No trips yet</span>
                                     </li>
-                                ))}
+                                ) : (
+                                    trips.map(trip => (
+                                        <li key={trip.id}>
+                                            <span> #{trip.id} | {trip.cost}:- </span>
+                                            <span>{calcDuration(trip.start_time, trip.end_time)}</span>
+                                        </li>
+                                    ))
+                                )}
                             </ul>
 
                         </div>

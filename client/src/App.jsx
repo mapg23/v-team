@@ -18,7 +18,7 @@ import GithubCallback from "./components/GithubCallback"
 import WebAccountView from "./views/WebAccountview";
 
 import PaymentView from "./views/payments/PaymentView";
-
+import PaymentSuccessView from "./views/payments/PaymentSuccessView";
 
 // CSS
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -89,6 +89,12 @@ function App() {
         <Route path="/pay" element={
           <MiddleWare>
             <PaymentView />
+          </MiddleWare>
+        } />
+
+        <Route path="/payment/complete" element={
+          <MiddleWare>
+            <PaymentSuccessView />
           </MiddleWare>
         } />
 
