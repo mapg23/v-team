@@ -60,6 +60,7 @@ export function BikeIcon() {
     return {
       used: createIcon(`${styles["bike-used"]}`),
       free: createIcon(`${styles["bike-free"]}`),
+      repair: createIcon(`${styles["bike-repair"]}`),
     };
   }, []);
 }

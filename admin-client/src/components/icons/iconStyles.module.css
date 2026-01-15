@@ -29,6 +29,11 @@
   color: green
 }
 
+.bike-repair {
+  font-size: 1.2rem;
+  color: red
+}
+
 .active {
   color: green;
 }

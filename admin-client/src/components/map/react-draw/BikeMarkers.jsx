@@ -17,13 +17,26 @@ export default function BikeMarkers({ bikes }) {
     if (id) navigate(`/bikes/${id}`);
   }
 
+  /**
+   * Return a bikeIcon based on the status of the bike
+   * @param {Object} bike 
+   * @returns Icon
+   */
+  function getBikeIcon(bike) {
+    if (bike.current_zone_type === "charging") {
+      return bikeIcons.repair;
+    }
+    return bike.occupied ? bikeIcons.used : bikeIcons.free;
+  }
+
   return (
     <>
       {bikes.map((bike) => (
         <Marker
           key={bike.id}
           position={[bike.cords.y, bike.cords.x]}
-          icon={bike.occupied ? bikeIcons.used : bikeIcons.free}
+          // icon={bike.occupied ? bikeIcons.used : bikeIcons.free}
+          icon={getBikeIcon(bike)}
         >
           <Popup>
             <table>
