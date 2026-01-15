@@ -4,7 +4,7 @@ import avatar from "../assets/avatar.png";
 import TopBar from "../components/TopBar";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../components/AuthProvider";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 import UserModel from "../models/UserModel";
 
@@ -13,7 +13,7 @@ export default function WebAccountView() {
     const { logout, userId, checkLoggedin, isLoggedIn } = useAuth();
     const [loading, setLoading] = useState(true);
 
-    const [user, setUser] = useState([]);
+    const [user, setUser] = useState({});
 
     const [balance, setBalance] = useState(0);
     const [trips, setTrips] = useState([]);
@@ -36,24 +36,27 @@ export default function WebAccountView() {
         if (localStorage.getItem("isLoggedIn") != "true") {
             logout();
             navigate('/login', { replace: true });
-
+            return;
         }
 
         const fetchData = async () => {
-            if (user.length === 0) {
-                setUser(await UserModel.getUserById(userId));
-                setBalance(await UserModel.getUserBalance(userId))
-                setTrips(await UserModel.getTrips(userId));
+
+            try {
+                let userFetch = await UserModel.getUserById(userId);
+                let balanceFetch = await UserModel.getUserBalance(userId);
+                let tripFetch = await UserModel.getTrips(userId);
+                setUser(userFetch);
+                setBalance(balanceFetch.balance)
+                setTrips(tripFetch);
+
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
             }
         }
         fetchData();
-
-        if (user.length >= 1) {
-            setLoading(false);
-        }
-
-        console.log(trips);
-    });
+    }, [userId]);
 
     const handleLogout = () => {
         logout();
