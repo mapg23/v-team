@@ -1,0 +1,40 @@
+.leaflet-popup-content .bike-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leaflet-popup-content .bike-table th {
+    text-align: left;
+    padding: var(--space-m);
+    background-color: var(--col-bg-light);
+    color: var(--col-text);
+    font-weight: 900;
+}
+
+.leaflet-popup-content .bike-table td {
+    padding: var(--space-m);
+    border-bottom: 1px solid var(--col-border);
+    color: var(--col-text);
+}
+
+.leaflet-popup-content .bike-table tr:last-child td {
+    border-bottom: none;
+}
+
+.leaflet-popup-content .bike-table tbody tr td .rent-bike-btn {
+    background: var(--col-pop);
+    color: #ffffff;
+    border-radius: var(--space-s);
+    border: 0;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: var(--space-s);
+    transition: all var(--trans-dur) ease;
+}
+
+.leaflet-popup-content .rent-bike-btn:active {
+    scale: 1.1;
+}
