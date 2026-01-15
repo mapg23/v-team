@@ -28,7 +28,6 @@ function HomeView() {
       setMax(false);
     } else {
       setMax(true);
-      console.log("Max is", { max });
     }
   }
 
@@ -50,7 +49,6 @@ function HomeView() {
    * Increment page by 1 if max is false
    */
   function increasePage() {
-    console.log(max);
     if (!max) {
       setPage((page) => page + 1);
     }
