@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import bikeService from "../../services/bikes";
 import parkingService from "../../services/parkings";
 import stationService from "../../services/stations";
+import { ArrowIcon } from "../../components/icons/react-icons";
 
 /**
  * Home view for admin
@@ -71,18 +72,16 @@ function HomeView() {
       <div className="wrapper">
         <div className="card">
           <section>
-            <h2>Välkommen till admin verktyget för Rull</h2>
+            <h1>Administration</h1>
+            <h2>Välkommen till adminverktyget för Rull</h2>
             <p>
-              Här finns verktyg för att hantera städer, cyklar och användare.
-            </p>
-            <p>
+              Här finns verktyg för att hantera städer, cyklar och användare.<br />
               Du hittar verktygen genom navigera via den vänstra kolumnen eller{" "}
               <br />
-              genom att välja ett verktyg nedan.
-            </p>
+              genom att välja ett verktyg nedan.</p>
             <p>
               Vill du gå till en specifik stad kan du välja i dropdown listan
-              nedan
+              nedan<br />
             </p>
           </section>
           <h2>Inspektera en stad</h2>
@@ -95,67 +94,69 @@ function HomeView() {
           <div className="systems">
             {/* CITIES */}
             <div className="systemCard">
-              <div className="imageDiv">
-                <a href="/cities">
+              <a href="/cities">
+                <div className="imageDiv">
                   <img src="./src/assets/city.png" alt="city" />
-                </a>
-              </div>
-              <div className="systemText">
-                <h3>Vi finns i {cities} städer!</h3>
-                <p>Hantera städer</p>
-              </div>
+                </div>
+                <div className="systemText">
+                  <h3><span className="system-text">Vi finns i {cities} städer</span></h3>
+                  <p>Hantera städer <ArrowIcon className="arrow-icon" /></p>
+                </div>
+              </a>
             </div>
 
             {/* BIKES */}
             <div className="systemCard">
-              <div className="imageDiv">
-                <a href="/bikes">
+              <a href="/bikes">
+                <div className="imageDiv">
+
                   <img src="./src/assets/bikes.png" alt="city" />
-                </a>
-              </div>
-              <div className="systemText">
-                <h3>Vi hanterar hela {bikes} cyklar!</h3>
-                <p>Hantera Cyklar</p>
-              </div>
+
+                </div>
+                <div className="systemText">
+                  <h3>Vi hanterar hela {bikes} cyklar!</h3>
+                  <p>Hantera Cyklar <ArrowIcon className="arrow-icon" /></p>
+                </div>
+              </a>
             </div>
             {/* USERS */}
 
             <div className="systemCard">
-              <div className="imageDiv">
-                <a href="/users">
+              <a href="/users">
+                <div className="imageDiv">
                   <img src="./src/assets/user.png" alt="city" />
-                </a>
-              </div>
-              <div className="systemText">
-                <h3>{users} användare älskar oss!</h3>
-                <p>Hantera Användare</p>
-              </div>
+                </div>
+                <div className="systemText">
+                  <h3>{users} användare älskar oss!</h3>
+                  <p>Hantera Användare <ArrowIcon className="arrow-icon" /></p>
+                </div>
+              </a>
             </div>
 
             {/* PZONES */}
             <div className="systemCard">
-              <div className="imageDiv">
-                <a href="/parkings">
+              <a href="/parkings">
+                <div className="imageDiv">
                   <img src="./src/assets/pzone.png" alt="city" />
-                </a>
-              </div>
-              <div className="systemText">
-                <h3>Våra {pZones} parkeringar!</h3>
-                <p>Hantera Parkeringar</p>
-              </div>
+                </div>
+                <div className="systemText">
+                  <h3>Våra {pZones} parkeringar!</h3>
+                  <p>Hantera Parkeringar <ArrowIcon className="arrow-icon" /></p>
+                </div>
+              </a>
             </div>
 
             {/* CZONES */}
             <div className="systemCard">
-              <div className="imageDiv">
-                <a href="/stations">
+              <a href="/stations">
+                <div className="imageDiv">
                   <img src="./src/assets/czone.png" alt="city" />
-                </a>
-              </div>
-              <div className="systemText">
-                <h3>Våra {cZones} laddstationer!</h3>
-                <p>Hantera Laddstationer</p>
-              </div>
+                </div>
+                <div className="systemText">
+                  <h3>Våra {cZones} laddstationer!</h3>
+                  <p>Hantera Laddstationer <ArrowIcon className="arrow-icon" /></p>
+                </div>
+              </a>
             </div>
           </div>
         </div>

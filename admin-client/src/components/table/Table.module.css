@@ -143,3 +143,8 @@ tbody>tr:hover {
     color: #ffffff;
     font-weight: 500;
 }
+
+td button {
+    margin: 0;
+    padding: var(--space-xs) var(--space-s);
+}

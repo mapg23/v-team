@@ -1,42 +1,3 @@
-/* #root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
-} */
-
-.app-layout {
-    /* display: flex;
-    width: 1200px;
-    height: 100vh;
-    align-items: top;
-    gap: 1rem;
-    margin: 0 auto; */
-    /* background-color: red; */
-    /* background-color: grey; */
-}
-
-/* .app-content {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 1rem;
-} */
-
-/* 
-.card {
-    background: #1e1e1e;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 1rem;
-} */
-
 .map {
     width: 100%;
     min-height: 700px;
@@ -65,7 +26,6 @@
 
 .systems {
     display: flex;
-    /* width: 100%; */
     flex-wrap: wrap;
     gap: 1rem;
     align-items: center;
@@ -73,7 +33,6 @@
 }
 
 .systemCard {
-    /* border: 1px solid grey; */
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     text-align: center;
@@ -85,6 +44,14 @@
     margin: 0.5rem 1rem 0 1rem;
 }
 
+.systemText p {
+    color: var(--col-bg);
+    border: 2px solid var(--col-green);
+    border-radius: 999px;
+    background-color: var(--col-green);
+    padding: var(--space-s);
+}
+
 .systems img {
     height: 200px;
     width: 100%;
@@ -92,6 +59,49 @@
     border-radius: 10px;
 }
 
-.systemCard:hover {
-    background-color: grey;
+.arrow-icon {
+    display: inline;
+    vertical-align: bottom;
+    transition: all var(--transition-slow);
+    /* transition: transform 0.3s ease; */
 }
+
+.systemCard:hover .arrow-icon {
+    transform: translateX(6px);
+}
+
+.systemCard:active .arrow-icon {
+    transform: translateX(100%);
+}
+
+.systems {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+}
+
+/* 
+.systemCard {
+    position: relative;
+}
+
+.systems img {
+    display: block;
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.systemText {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    color: black;
+
+    .system-text {
+        text-align: left;
+        font-weight: 900;
+        line-height: 0.8;
+        font-size: clamp(1rem, 5cqw, 3rem);
+    }
+} */

@@ -192,7 +192,7 @@ export default function BikeView() {
         <div className="card">
           <p className={resultClass}>{result}</p>
           {/* Display bikes based on filter */}
-          <div className="pages-btn-wrapper">
+          <div className="pagination-btn-wrapper">
             <button onClick={reducePage}>
               Prev page: {page !== 1 ? page - 1 : page}
             </button>

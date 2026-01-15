@@ -80,11 +80,13 @@ function HomeView() {
         </p>
       </div>
       <div className="card">
-        <p>Current page {page}</p>
-        <button onClick={reducePage}>
-          Prev page: {page !== 1 ? page - 1 : page}
-        </button>
-        <button onClick={increasePage}>Next page: {page + 1}</button>
+        <div className="pagination-btn-wrapper">
+          <button onClick={reducePage}>
+            Prev page: {page !== 1 ? page - 1 : page}
+          </button>
+          <p>Current page {page}</p>
+          <button onClick={increasePage}>Next page: {page + 1}</button>
+        </div>
         <UserTable data={activeUsers} />
       </div>
     </div>

@@ -33,7 +33,7 @@ function Navigation({ logout }) {
               }`}
           >
 
-            <a href="/home"><HomeIcon /> Hem</a>
+            <a href="/home"><span className="nav-icon"><HomeIcon /></span> <span className="nav-text">Hem</span></a>
           </div>
         </li>
         <li>
@@ -41,7 +41,7 @@ function Navigation({ logout }) {
             className={`${navStyles.navDiv} ${pathname.includes("cities") || pathname.includes("city") ? navStyles.active : ""
               }`}
           >
-            <a href="/cities"><CityIcon /> Städer</a>
+            <a href="/cities"><span className="nav-icon"><CityIcon /></span> <span className="nav-text">Städer</span></a>
           </div>
         </li>
 

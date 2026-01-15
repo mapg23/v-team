@@ -58,18 +58,21 @@
 /* Change the link and background color on hover */
 .navDiv:hover {
     /* background-color: #555555; */
-    border: 2px solid var(--col-blue);
+    border: 2px solid var(--col-text);
 }
 
 .navDiv {
     display: flex;
     justify-content: left;
     align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .navDiv.active {
     /* background-color: #04AA6D; */
     border: 2px solid var(--col-green);
     /* color: blue; */
-    background-color: rgba(96, 162, 141, 0.14);
+    /* background-color: rgba(96, 162, 141, 0.14); */
+    background-color: var(--col-green-light);
 }
