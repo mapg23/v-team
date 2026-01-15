@@ -45,7 +45,6 @@ export default async function updateSimulator(params) {
             })
         });
 
-        // console.log("Simulator updated for bike:", bikeId);
     } catch (err) {
         console.error("Failed to update simulator:", err);
     }
