@@ -59,7 +59,8 @@ export default function InspectCityView() {
   // -----------------------------
   useEffect(() => {
     function bikeEvent(bikeData) {
-      setBikes(bikeData);
+      const bikes = bikeData.filter((bike) => bike.city_id === Number(cityId));
+      setBikes(bikes);
     }
 
     socket.on("bikes", bikeEvent);
@@ -73,13 +74,13 @@ export default function InspectCityView() {
   // Update Chart with bike status in City
   // -----------------------------
   useEffect(() => {
-    const bikeObjectsInCity = bikes.filter(
-      (bike) => bike.city_id === Number(cityId)
-    );
-    const bikesAvailableCount = bikeObjectsInCity.filter(
+    // const bikeObjectsInCity = bikes.filter(
+    //   (bike) => bike.city_id === Number(cityId)
+    // );
+    const bikesAvailableCount = bikes.filter(
       (bike) => bike.occupied === 0
     ).length;
-    const bikesUsedCount = bikeObjectsInCity.length - bikesAvailableCount;
+    const bikesUsedCount = bikes.length - bikesAvailableCount;
 
     // Prev är befintliga värdet, om inget ändras, returna samma
     // eslint-disable-next-line react-hooks/set-state-in-effect

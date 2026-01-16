@@ -8,14 +8,14 @@ import cityService from "../../services/cities";
  */
 export default function CreateBikeForm({ action }) {
 
-  const [cityId, setCityid] = useState(1);
+  const [cityId, setCityid] = useState(null);
 
   /**
    * Set city id for the bike to be created in
    *
    * @param {int} cityId
    */
-  function handleSelection(cityId) {    
+  function handleSelection(cityId) {
     setCityid(cityId);
   }
 
@@ -23,6 +23,7 @@ export default function CreateBikeForm({ action }) {
    * Call provided action on submit
    */
   async function handleSubmit() {
+    if (!cityId) return;
     const city = await cityService.getCityDetailsById(cityId);
     const response = await getCoordinates(city.name);
 

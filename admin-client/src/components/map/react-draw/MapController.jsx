@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 
 /**
- * This component is responsible for updating the view and zoom
+ * Zoom to city center
  * @param {Object} center CityObject container latitude, longitude properties 
  * @returns 
  */

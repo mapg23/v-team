@@ -118,7 +118,6 @@ class Simulator {
         // Retrives all bikes from db
         // Start bike movement
 
-        console.log(payload);
         this.bikes = [];
         for (let bike of payload) {
             let parsedCords = { x: Number(bike.longitude), y: Number(bike.latitude) };
@@ -136,7 +135,6 @@ class Simulator {
             }));
         }
 
-        console.log(this.bikes);
         this.startMovement();
         return { event: `Bikes: ${this.bikes.length}`, data: this.bikes };
     }
@@ -196,7 +194,6 @@ class Simulator {
         try {
             for (let key in payload) {
                 let index = this.bikes.findIndex(function (device) {
-                    console.log(index);
                     return device.getId() === Number(key);
                 });
 

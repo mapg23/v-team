@@ -57,9 +57,14 @@ export default function CostView() {
   return (
     <>
       <div className="wrapper">
-        <h1>CostView</h1>
         <div className="card">
-          <h2>Chose a city to handle costs regarding renting a scooter</h2>
+          <h1>Kostnader</h1>
+          <p>I följande vy kan du hantera kostnader för att hyra en cykel.</p>
+          <p>Priserna varierar beroende på vilken stad cykeln är registrerad i.</p>
+          <p>Välj därför en stad i dropdown-listan och hantera sedan kostnaderna.</p>
+        </div>
+        <div className="card">
+          <h2>Välj en stad för att hantera kostnader</h2>
           <CityDropDown action={updateCityId} />
           <div className="container">
             <div className="card-one">
@@ -68,7 +73,7 @@ export default function CostView() {
               </div>
               {priceDetails ? (
                 <>
-                  <h2>Current renting cost</h2>
+                  <h2>Kostnader för uthyrning</h2>
                   <CostForm
                     onFormSubmit={updateCost}
                     priceDetails={priceDetails}

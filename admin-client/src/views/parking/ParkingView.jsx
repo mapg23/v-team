@@ -21,6 +21,9 @@ export default function ParkingView() {
   const [parkingZoneCoords, setParkingZoneCoords] = useState(null);
   const [renderParkingZoneForm, setRenderParkingZoneForm] = useState(false);
 
+  // layer - remove when new zone is created
+  const [layer, setLayer] = useState(null);
+
   /**
    * Fetch data
    *
@@ -48,9 +51,9 @@ export default function ParkingView() {
    */
   useEffect(() => {
     if (!cityId) return;
-    function getData(){
+    function getData() {
       fetchData();
-    };
+    }
     getData();
   }, [cityId]);
 
@@ -73,6 +76,7 @@ export default function ParkingView() {
     if (Array.isArray(parkingZoneCoords) && parkingZoneCoords.length > 0) {
       setParkingZoneCoords(parkingZoneCoords[0]);
       setRenderParkingZoneForm(true);
+      setLayer(layer);
     } else {
       console.log("invalid parkingZoneCoords", parkingZoneCoords);
     }
@@ -100,6 +104,9 @@ export default function ParkingView() {
     const newParking = await ParkingService.addNewParkingZone(zoneObj);
     if (newParking.id) {
       fetchData();
+      // Clear layer
+      layer.remove();
+      setLayer(false);
     }
   }
 
@@ -130,7 +137,13 @@ export default function ParkingView() {
 
   return (
     <div className="wrapper">
-      <h1>Parkeringar</h1>
+      <div className="card">
+        <h1>Parkeringar</h1>
+        <p>
+          I följande vy kan du inspektera samt ta bort befintliga parkeringar.
+        </p>
+        <p>Vill du skapa en ny parkering använder verktyget i kartan.</p>
+      </div>
       <div className="card">
         <div className="card">
           <CityDropDown action={initCityid} />

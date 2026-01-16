@@ -36,6 +36,7 @@ export default function CreateChargingZoneForm({ onFormSubmit }) {
           type="text"
           id="zoneName"
           onChange={(e) => setZoneName(e.target.value)}
+          required
         />
       </div>
       <button type="submit">Spara laddstation!</button>
