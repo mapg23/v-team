@@ -142,14 +142,13 @@ app.post("/simulate-bikes-create", async (req, res) => {
             let first = { "latitude": coordinates[i][0].y, "longitude": coordinates[i][0].x };
 
             let cityID = 1;
-            const section_one = Math.floor(coordinates.length / 3);
-            const section_two = Math.floor((coordinates.length * 2) / 3);
+            const sectionOne = Math.floor(coordinates.length / 3);
+            const sectionTwo = Math.floor((coordinates.length * 2) / 3);
 
-            if (i < section_one) {
+            if (i < sectionOne) {
                 cityID = 1;
-
-            } else if (i < section_two) {
-                cityID = 2
+            } else if (i < sectionTwo) {
+                cityID = 2;
             } else {
                 cityID = 3;
             }
@@ -175,13 +174,13 @@ app.post("/simulate-bikes-create", async (req, res) => {
         }));
 
         for (let i = 0; i < bikesWithIds.length; i++) {
-
             try {
                 let data = {
                     userId: 7,
                     bikeId: bikesWithIds[i].id
                 };
-                const newTrip = await tripService.startTrip(data);
+
+                await tripService.startTrip(data);
             } catch (err) {
                 console.error(err);
             }
@@ -215,21 +214,6 @@ app.post('/forward-routes', async (req) => {
         console.error(err);
     }
 });
-
-
-app.post(`/start-simulator-trip`,
-    async (req, res) => {
-        // try {
-        //     console.log(req.body.userId);
-        //     console.log(req.body.bikeId);
-        //     const newTrip = await tripService.startTrip(req.body);
-
-        //     return res.status(201).json(newTrip);
-        // } catch (err) {
-        //     console.error(err);
-        //     return res.status(500).json({ error: 'Could not create trip', message: err.message });
-        // }
-    });
 
 // ------------------------------
 // ----------- Routes -----------

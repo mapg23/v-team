@@ -197,8 +197,8 @@ class Simulator {
                     return device.getId() === Number(key);
                 });
 
-                this.cordinates[Number(key)] = payload[key];
-                // this.cordinates[Number(index)] = payload[key];
+                // this.cordinates[Number(key)] = payload[key];
+                this.cordinates[Number(index)] = payload[key];
             }
 
             return { event: 'Succesfully added routes', data: payload };
