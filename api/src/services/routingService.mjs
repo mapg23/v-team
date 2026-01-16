@@ -139,9 +139,9 @@ class RoutingService {
         // format: [ [14.183816,57.776748], [...]... ]
         const waypointsArr = route?.routes[0]?.geometry?.coordinates || [];
 
-        console.log("length: ", waypointsArr.length);
+        // console.log("length: ", waypointsArr.length);
         // format: [ { x: 14.183816, y: 57.776748 }, {...}... ]
-        const waypoints = waypointsArr.map( coords =>({
+        const waypoints = waypointsArr.map(coords => ({
             x: coords[0],
             y: coords[1]
         }));
@@ -212,7 +212,7 @@ class RoutingService {
         const lat = Math.random() * (zone.max_lat - zone.min_lat) + zone.min_lat;
         const long = Math.random() * (zone.max_long - zone.min_long) + zone.min_long;
 
-        return {lat, long};
+        return { lat, long };
     }
 };
 

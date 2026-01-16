@@ -58,27 +58,27 @@ export const userRules = [
     body("username").optional(), // NULL enabled
 ];
 
+// AUTH
 export const oAuthLoginRules = [
-    body("rawState").notEmpty().withMessage("Raw State is required."),
-
     body("encryptedState")
         .notEmpty()
         .withMessage("Encrypted state is required.")
         .isJWT(),
 
-    body("code").notEmpty().withMessage("Code is required."),
-
-    body("code_verifier")
+    body("code")
         .notEmpty()
-        .withMessage("Code is required.")
         .isAlphanumeric()
-        .withMessage("Code verifier has to be alphanumeric."),
+        .withMessage("Code is required."),
 ];
 
 export const getStateRules = [
-    body("state").notEmpty().withMessage("State is required"),
+    body("client_id")
+        .notEmpty()
+        .isAlphanumeric()
+        .withMessage("State is required"),
 ];
 
+// TRIP
 export const createTrip = [
     body("userId")
         .isInt({ min: 1 })
@@ -88,5 +88,20 @@ export const createTrip = [
         .isInt({ min: 1 })
         .withMessage("User ID must be a positive integer"),
 ];
+
+//PAYMENT
+export const createIntent = [
+    body("amount")
+        .notEmpty()
+        .isNumeric()
+        .withMessage("Failed to read ammount"),
+    idBody
+];
+
+export const paymentSuccess = [
+    // body("intentId").notEmpty().isNumeric().withMessage("Missibng intent ID"),
+    // body("status").notEmpty().isString().withMessage("Missing status")
+];
+
 // Om filen blir tung av rulesets kan vi splitta i
 // filer och exportera härifrån för att behålla dot-notation syntax
