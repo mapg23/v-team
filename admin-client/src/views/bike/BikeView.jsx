@@ -161,7 +161,7 @@ export default function BikeView() {
     <>
       <div className="wrapper">
         <div className="card">
-          <h1>BikeView</h1>
+          <h1>Elsparkcyklar</h1>
           <p>I följande vy kan du hantera elscyklar.</p>
           <p>Du kan skapa och ta bort cyklar, samt filtrera cyklar per stad.</p>
           <p>
