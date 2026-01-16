@@ -2,46 +2,53 @@ import styles from "./Table.module.css";
 /**
  * Create a Table based on a array of objects
  *
- * @param {Array} data array of objects
+ * @param {Object} CityObject
  * @returns
  */
-export default function CityTable({ data, vertical }) {
-  const _data = Array.isArray(data) ? data : [data];
-  if (_data.length === 0) return <p>Finns inga städer..</p>;
-  
-  const headers = Object.keys(_data[0]);
-  if (vertical) {
-    return (
-      <table className={styles.verticalTable}>
-        <tbody>
-          {Object.keys(_data[0]).map((key) => (
-            <tr key={key}>
-              <th>{key}</th>
-              <td>{_data[0][key]}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-  }
-  return (
-    <table className={styles.table}>
-      <thead>
-        <tr>
-          {headers.map((key) => (
-            <th key={key}>{key.toUpperCase()}</th>
-          ))}
-        </tr>
-      </thead>
+export default function CityTable({ data }) {
+  2;
 
+  const headers = [
+    "City id",
+    "City name",
+    "Bikes in city",
+    "Parking zones",
+    "Charging zones",
+    "Latitude",
+    "Longitude"
+  ];
+
+  return (
+    <table className={styles.verticalTable}>
       <tbody>
-        {_data.map((obj) => (
-          <tr key={obj.id}>
-            {headers.map((key) => (
-              <td key={obj.id + "-" + key}>{obj[key]}</td>
-            ))}
-          </tr>
-        ))}
+        <tr>
+          <th>{headers[0]}</th>
+          <td>{data.id || null}</td>
+        </tr>
+        <tr>
+          <th>{headers[1]}</th>
+          <td>{data.name || null}</td>
+        </tr>
+        <tr>
+          <th>{headers[2]}</th>
+          <td>{data.bikeCount || null}</td>
+        </tr>
+        <tr>
+          <th>{headers[3]}</th>
+          <td>{data.parkingCount || null}</td>
+        </tr>
+        <tr>
+          <th>{headers[4]}</th>
+          <td>{data.stationCount || null}</td>
+        </tr>
+        <tr>
+          <th>{headers[5]}</th>
+          <td>{data.latitude || null}</td>
+        </tr>
+        <tr>
+          <th>{headers[6]}</th>
+          <td>{data.longitude || null}</td>
+        </tr>
       </tbody>
     </table>
   );
