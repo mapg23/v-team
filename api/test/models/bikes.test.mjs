@@ -61,7 +61,15 @@ describe("bikes model", () => {
 
         expect(mockDb.select).toHaveBeenCalledWith(
             'scooters',
-            scooterFields
+            scooterFields,
+            // where
+            null,
+            // params
+            [],
+            // limit
+            50,
+            // offset
+            0
         );
     });
 
@@ -159,7 +167,9 @@ describe("bikes model", () => {
             'scooters',
             scooterFields,
             'city_id = ?',
-            [2]
+            [2],
+            50,
+            0
         );
     });
 

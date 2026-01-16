@@ -2,9 +2,24 @@ import express from 'express';
 import validateJsonBody from '../middleware/validateJsonBody.mjs';
 import helpers from '../helpers/validateUser.mjs';
 import createUsers from "../models/users.mjs";
+import { calculatePagination } from '../helpers/pagination.mjs';
 
 export default function createUserRouter(users = createUsers()) {
     const route = express.Router();
+
+    /**
+     * Returns total number of users in the system.
+     */
+    route.get('/users/count', async (req, res) => {
+        try {
+            const total = await users.countUsers();
+
+            return res.status(200).json({ total });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Could not fetch users count" });
+        }
+    });
 
     /**
      * POST /users
@@ -78,38 +93,54 @@ export default function createUserRouter(users = createUsers()) {
 
     /**
      * GET /users
-     * Fetches all users, or a single user if `email`
-     * query parameter is provided.
+     * Fetches all users with pagination, or a single user if `email` query parameter is provided.
      *
      * Query Parameters:
-     * email?: string - optional email to filter user by.
+     * page?: number - optional, default 1
+     * limit?: number - optional, default 50
+     * email?: string - optional email to filter user by
      *
      * Returns:
-     * 200: list of users or single user
+     * 200: {
+     *   page: number,
+     *   limit: number,
+     *   total: number,
+     *   users: Array of user objects
+     *  }
+     *
      * 400: invalid email format
      * 500: server error
      */
+
     route.get(`/users`, async (req, res) => {
         try {
+            const { page, limit, offset } = calculatePagination(req.query);
+
             if (req.query.email) {
                 const invalidEmail = helpers.validateEmailSearch(req.query.email);
 
-                if (invalidEmail) {
-                    return res.status(400).json({ error: invalidEmail});
-                }
+                if (invalidEmail) {return res.status(400).json({ error: invalidEmail });}
+
                 const user = await users.getUserByEmail(req.query.email);
 
                 return res.status(200).json(user);
             }
 
-            const userList = await users.getUsers();
+            const userList = await users.getUsers({ limit, offset });
+            const total = await users.countUsers();
 
-            return res.status(200).json(userList);
+            return res.status(200).json({
+                page,
+                limit,
+                total,
+                users: userList
+            });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: 'Could not fetch users' });
         }
     });
+
 
     /**
      * PUT /users/:id

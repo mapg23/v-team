@@ -27,7 +27,7 @@ describe("jwtService, functional tests", () => {
         );
 
         await expect(jwtService.verifyToken(token2)).rejects.toThrow(
-            "Invalid token."
+            "Invalid token: jwt expired"
         );
     });
 });

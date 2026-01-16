@@ -222,11 +222,12 @@ describe('City sub-resources', () => {
         bikes.getBikesByCityId = jest.fn().mockResolvedValue(
             [{ id: 1 }, { id: 2 }]
         );
+        bikes.countBikesInCity = jest.fn().mockResolvedValue(2);
         cities.getCityById = jest.fn().mockResolvedValue([{ id: 1 }]);
         const res = await request(app).get('/cities/1/bikes');
 
         expect(res.status).toBe(200);
-        expect(res.body).toHaveLength(2);
+        expect(res.body.bikes).toHaveLength(2);
     });
 
     test('GET /cities/:id/stations invalid id', async () => {
