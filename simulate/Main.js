@@ -121,8 +121,17 @@ async function generateJSON(scooters) {
 }
 
 async function instanciateBikes(count = 333) {
-    const city = cityLimits.find(c => c.name === "Jönköping");
-    const scooters = await generatePoints(city, count);
+    let city1 = cityLimits.find(c => c.name === "Jönköping");
+    let city2 = cityLimits.find(c => c.name === "Habo");
+    let city3 = cityLimits.find(c => c.name === "Bankeryd");
+
+    const [c1, c2, c3] = await Promise.all([
+        generatePoints(city3, count / 3),
+        generatePoints(city2, count / 3),
+        generatePoints(city1, count / 3),
+    ]);
+
+    let scooters = [...c1, ...c2, ...c3];
 
     let res = await fetch(`http://localhost:9091/mega-routing-machine`, {
         method: 'POST',
@@ -177,6 +186,6 @@ async function setBikesInMotion(params) {
 (async () => {
     // SÄtt inte mer än 6000
 
-    let cords = await instanciateBikes(6000); // Generera cyklar
+    let cords = await instanciateBikes(100); // Generera cyklar
 })();
 

@@ -6,6 +6,7 @@ import * as validation from "../middleware/validation/validationMiddleware.mjs";
 
 const router = express.Router();
 
+
 /**
  * Start a trip.
  * Request body needs:
