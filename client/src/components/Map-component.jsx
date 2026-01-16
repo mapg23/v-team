@@ -123,7 +123,6 @@ export default function MapComponent({
       if (bike.occupied === 1 || bike.current_zone_type === 'charging') {
         return;
       }
-      console.log(bike)
 
       const customScooterIcon = L.divIcon({
         html: scooterIcon,
