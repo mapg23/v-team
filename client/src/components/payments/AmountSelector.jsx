@@ -44,12 +44,11 @@ const AmountSelector = ({ onSelect }) => {
             <strong id="amount-total" className="amount-total">{amount / 100} SEK</strong>
           </label>
         )}
-
+        <button className="confirm-amount-btn"
+          disabled={!selectedAmount}
+          onClick={confirmSelection}
+        >Bekräfta belopp</button>
       </div>
-      <button className="btn confirm-amount-btn"
-        disabled={!selectedAmount}
-        onClick={confirmSelection}
-      >Bekräfta belopp</button>
     </div>
   );
 }

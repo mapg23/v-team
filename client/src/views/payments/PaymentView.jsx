@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import { useAuth } from "../../components/AuthProvider";
 
 import TopBar from "../../components/TopBar";
 
@@ -21,6 +22,7 @@ import { getApiBase } from "../../apiUrl";
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC);
 
 export default function PaymentView() {
+  const { userId } = useAuth();
 
   const navigate = useNavigate();
   const handleTopBarCallback = () => {
@@ -43,7 +45,10 @@ export default function PaymentView() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ amount: selectedAmount }),
+      body: JSON.stringify({
+        amount: selectedAmount,
+        id: userId,
+      }),
     })
       .then((res) => {
         if (!res.ok) {

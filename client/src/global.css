@@ -4,8 +4,14 @@
     --col-grey: #a4babe;
     --col-bg: #f1f2f3;
 
+    --col-green: #64db78;
+    --col-yellow: #fdd90d;
+    /* --col-red: #ed3121; */
+
     --space-s: 0.5rem;
     --space-m: 1rem;
+
+    --radius: 8px;
 
     --trans-dur: 0.3s;
     --trans-timing1: cubic-bezier(0.37, 0, 0.63, 1);
@@ -16,7 +22,6 @@ html,
 body,
 #root {
     height: 100%;
-    background-color: var(--col-bg);
 }
 
 .page {

@@ -1,0 +1,65 @@
+.battery-card {
+    padding: 0.5rem;
+    min-height: fit-content;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 3px 0px 2px var(--col-darken);
+    background-color: #ffffff80;
+    border: 1px solid black;
+    border-radius: var(--radius);
+    margin: 1rem 0.5rem;
+
+    h1 {
+        color: var(--col-pop);
+        font-size: 2.2rem;
+        margin: var(--space-l) 0;
+        font-weight: 900;
+    }
+
+    .pill {
+        border-radius: 999rem;
+    }
+
+    .info {
+        border: 1px solid grey;
+        border-radius: var(--radius);
+    }
+
+    .power-indicator {
+        margin-bottom: 1rem;
+    }
+
+    .power-bar {
+        height: 1rem;
+        background-color: #999;
+    }
+
+    .indicator {
+        height: 100%;
+        width: 50%;
+        background-color: var(--col-pop);
+        box-shadow: 1px 2px 3px 1px inset var(--col-lighten);
+    }
+
+    fieldset {
+        padding: 1rem;
+        border-radius: var(--radius);
+        margin: var(--space-m) var(--space-s);
+        background-color: var(--col-bg-mute);
+    }
+
+    .battery-legend {
+        float: none;
+        width: fit-content;
+        margin: 0 0 0 0;
+        font-weight: 200;
+    }
+
+    h4 {
+        font-size: 1rem;
+    }
+
+    label {
+        display: block;
+    }
+}
