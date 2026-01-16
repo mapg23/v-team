@@ -45,6 +45,16 @@
     margin: var(--space-s);
 }
 
+.confirm-amount-btn {
+    background-color: var(--col-pop);
+    color: white;
+}
+
+.confirm-amount-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 @media only screen and (max-width: 600px) {
     .amount-label {
         width: 100%;
