@@ -163,9 +163,10 @@ class Simulator {
      */
     end() {
         this.stopMovement();
-        // Save all bike positions to database
+        let exportArray = this.bikes;
+
         this.bikes = [];
-        return { event: 'stopping worker' };
+        return { event: 'stopping worker', data: exportArray };
     }
 
     /**
@@ -182,7 +183,11 @@ class Simulator {
      * @returns {Array} - Device
      */
     getBike(payload) {
-        return { event: 'Retriving bike', data: this.bikes[payload.id] };
+        let index = this.bikes.findIndex(function (device) {
+            return device.getId() === Number(key);
+        });
+
+        return { event: 'Retriving bike', data: this.bikes[index] };
     }
 
     /**
