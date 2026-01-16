@@ -120,6 +120,11 @@ export default function MapComponent({
     bikes.forEach((bike) => {
       if (bikeMarkersRef.current.has(bike.id)) return;
 
+      if (bike.occupied === 1 || bike.current_zone_type === 'charging') {
+        return;
+      }
+      console.log(bike)
+
       const customScooterIcon = L.divIcon({
         html: scooterIcon,
         className:

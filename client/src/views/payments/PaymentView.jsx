@@ -24,7 +24,7 @@ export default function PaymentView() {
 
   const navigate = useNavigate();
   const handleTopBarCallback = () => {
-    navigate('/account', { replace: true })
+    navigate('/', { replace: true })
   }
 
   const API = getApiBase();
