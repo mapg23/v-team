@@ -35,14 +35,23 @@ const db = {
             if (conn) { await conn.end(); }
         }
     },
-    // Helper function for select.
-    select: async function select(table, columns = '*', where = '', params = []) {
-        const sql =
-            `SELECT ${Array.isArray(columns) ? columns.join(', ') : columns} FROM ${table}` +
-            (where ? ` WHERE ${where}` : '');
+
+    // Helper function for select with pagination option
+    select: async function select(table, columns = '*', where = '', params = [], limit, offset) {
+        let sql =
+        `SELECT ${Array.isArray(columns) ? columns.join(', ') : columns} FROM ${table}` +
+        (where ? ` WHERE ${where}` : '');
+
+        if (limit != null) {
+            sql += ` LIMIT ${limit}`;
+            if (offset != null) {
+                sql += ` OFFSET ${offset}`;
+            }
+        }
 
         return this.query(sql, params);
     },
+
 
     // Helper function for insert.
     insert: async function insert(table, data) {
@@ -83,7 +92,6 @@ const db = {
         ]);
 
         return this.query(sql, params);
-
     },
 
     // Helper function for update.
