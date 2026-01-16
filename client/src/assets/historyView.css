@@ -47,13 +47,21 @@
     background-color: #c8c8c8;
 }
 
-.history-title {
-    font-size: 2rem;
+.history-text {
+    display: flex;
+}
 
+.history-title {
+    display: inline;
+    font-size: 2rem;
+    font-weight: 900;
 }
 
 .history-date {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: 200;
+    vertical-align: top;
+    margin-left: auto;
     color: gray;
 }
 
