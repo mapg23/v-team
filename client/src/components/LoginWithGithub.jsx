@@ -1,46 +1,49 @@
-import { generateRandomString, createPKCE } from "../models/crypto";
-const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
-const redirectUri = "http://localhost:5174/login/github/callback";
+const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID_USER;
+const redirectUri = import.meta.env.VITE_GITHUB_CALLBACK_USER;
+import { FaGithub } from "react-icons/fa";
 
-
+/**
+ * Gets PKCE data from the API.
+ * A challenge and a state variable.
+ * @returns {object} PKCEData
+ */
 export default function LoginWithGithub() {
 
-  async function getEncryptedState(state) {
-    const response = await fetch("/api/v1/auth/oauth/get_state", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ state: state })
-    });
+    async function getPKCEData(clientId) {
+        const response = await fetch("/api/v1/auth/oauth/get_state", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ client_id: clientId })
+        });
 
-    const result = await response.json();
-    // console.log(response, result);
-    const encryptedState = result.encryptedState;
+        const result = await response.json();
+        const PKCEData = {
+            state: result.encryptedState,
+            challenge: result.challenge
+        };
 
-    return encryptedState;
-  }
+        return PKCEData;
+    }
 
-  async function login() {
-    const rawState = generateRandomString(50);
-    const encryptedState = await getEncryptedState(rawState);
-    // console.log(rawState, encryptedState);
-    const { verifier, challenge } = await createPKCE();
-    // console.log("PKCE verifier:", verifier);
-    // console.log("PKCE challenge:", challenge);
-    sessionStorage.setItem("pkce_verifier", verifier)
-    sessionStorage.setItem("oauth_state", encryptedState);
-    sessionStorage.setItem("oauth_state_raw", rawState);
+    /**
+     * Uses the PKCE-Data, builds the long URL with URLSearchParams
+     * and starts the OAuth procedure.
+     */
+    async function login() {
+        const PKCEData = await getPKCEData(clientId);
+        // console.log("STATE: ", PKCEData.state, "CHALLENGE: ", PKCEData.challenge,);
 
-    const params = new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: redirectUri,
-      scope: "user:email",
-      state: encryptedState,
-      code_challenge: challenge,
-      code_challenge_method: "S256",
-    });
+        const params = new URLSearchParams({
+            client_id: clientId,
+            redirect_uri: redirectUri,
+            scope: "user:email",
+            state: PKCEData.state,
+            code_challenge: PKCEData.challenge,
+            code_challenge_method: "S256",
+        });
 
-    window.location.href = `https://github.com/login/oauth/authorize?${params}`;
-  }
+        window.location.href = `https://github.com/login/oauth/authorize?${params}`;
+    }
 
-  return <button onClick={login}>Login with GitHub</button>;
+    return <button onClick={login}><FaGithub size={20} /> Login with GitHub</button>;
 }
