@@ -184,7 +184,7 @@ class Simulator {
      */
     getBike(payload) {
         let index = this.bikes.findIndex(function (device) {
-            return device.getId() === Number(key);
+            return device.getId() === Number(payload.id);
         });
 
         return { event: 'Retriving bike', data: this.bikes[index] };

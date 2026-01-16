@@ -41,7 +41,7 @@ router.post('/bike/setStatus', async (req, res) => {
             msg: "invalid occupied PARAM",
         });
     }
-    if (!id || !status ) {
+    if (!id || !status) {
         return res.status(404).json({
             msg: "invalid id or status PARAMS",
         });
