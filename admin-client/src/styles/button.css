@@ -28,6 +28,7 @@
     }
 
     .btn-pill {
+        min-width: 5rem;
         border-radius: 999px;
         border: 2px solid var(--col-text);
     }

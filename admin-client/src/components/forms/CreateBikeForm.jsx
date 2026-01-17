@@ -43,7 +43,7 @@ export default function CreateBikeForm({ action }) {
       <CityDropDown action={handleSelection}></CityDropDown>
       <form className={style.form}>
         <button type="button" onClick={handleSubmit}>
-          Create bike!
+          Lägg till cykel
         </button>
       </form>
     </>

@@ -71,7 +71,7 @@
 }
 
 .systemCard:active .arrow-icon {
-    transform: translateX(100%);
+    transform: translateX(12px);
 }
 
 .systems {

@@ -8,9 +8,8 @@
     background-color: var(--col-bg);
     border-radius: 8px;
     padding: var(--space-m) var(--space-s);
-    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     text-align: left;
-    border-right: 5px solid var(--col-bg-muted);
 
     li {
         margin: var(--space-s) var(--space-m);
