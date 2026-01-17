@@ -1,6 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { jwtDecode } from "jwt-decode";
+
+
 export default function GithubCallback({ onLogin }) {
     // console.log("GH CALLBACK");
     const navigate = useNavigate();
@@ -33,8 +36,14 @@ export default function GithubCallback({ onLogin }) {
             if (data.jwt) {
                 // Token ska göra att jag är inloggad
                 sessionStorage.setItem("jwt", data.jwt);
+
+                let decoded = jwtDecode(data.jwt);
+                let userID = decoded['sub']['userId'];
+                sessionStorage.setItem("userid", userID);
+
                 await onLogin();
-                navigate("/");
+
+                navigate('/');
             }
         }
 

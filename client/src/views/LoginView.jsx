@@ -1,28 +1,30 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-import { useAuth } from "../components/AuthProvider";
-
 import LoginWithGithub from "../components/LoginWithGithub";
 
 import UserModel from "../models/UserModel";
+import { jwtDecode } from "jwt-decode";
 
 
-export default function LoginView() {
+export default function LoginView({
+  loginCallback
+}) {
   const navigate = useNavigate(); // redirect på React vis
-  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   async function handleLogin(e) {
     e.preventDefault();
-    console.log("Login");
 
-    let id = await UserModel.loginUser(email, password);
+    let payload = await UserModel.loginUser(email, password);
+    sessionStorage.setItem("jwt", payload['jwt']);
+    let decoded = jwtDecode(payload['jwt']);
+    let userID = decoded['sub']['userId'];
+    sessionStorage.setItem("userid", userID);
 
-    login(id);
-    navigate("/", { replace: true });
+    loginCallback();
   }
 
   return (

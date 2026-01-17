@@ -9,8 +9,6 @@ import TopBar from "../components/TopBar";
 import Navigation from "../components/NavigationBar";
 import { socket } from "../components/socket";
 
-import { useAuth } from "../components/AuthProvider";
-
 import "leaflet.markercluster";
 
 
@@ -108,7 +106,6 @@ export default function HomeView() {
     })
 
     const redirect = () => {
-        navigate("/login", { replace: true });
     }
 
     if (loading) return (

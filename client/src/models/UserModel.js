@@ -125,11 +125,7 @@ const UserModel = {
             "username": "",
         })
 
-        sessionStorage.setItem("jwt", response["jwt"]);
-        const payload = jwtDecode(response["jwt"]);
-        const userId = payload.sub.userId;
-
-        return userId;
+        return response;
     },
 
     getUserById: async function getUserById(id) {

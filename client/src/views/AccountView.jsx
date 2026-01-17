@@ -7,15 +7,14 @@ import { CreditCard, Wallet, LogOut } from "lucide-react";
 import TopBar from "../components/TopBar";
 import Navigation from "../components/NavigationBar";
 
-import { useAuth } from "../components/AuthProvider";
-
 import UserModel from "../models/UserModel";
 
 import "../assets/accountView.css";
 
 export default function AccountView() {
   const navigate = useNavigate();
-  const { logout, userId } = useAuth();
+
+  const userId = Number(sessionStorage.getItem("userid"));
   const [balance, setBalance] = useState(null);
   const [account, setAccount] = useState([]);
 

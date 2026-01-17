@@ -6,7 +6,6 @@ import Navigation from "../components/NavigationBar";
 
 import BikeModel from "../models/BikeModel";
 import TripsModel from "../models/TripsModel";
-import { useAuth } from "../components/AuthProvider";
 import PowerIndicator from "../components/PowerIndicator";
 
 
@@ -18,7 +17,7 @@ export default function BikeView() {
   const [bike, setBike] = useState(null);
   const [tripObj, setTripObj] = useState([]);
 
-  const { userId } = useAuth();
+  const userId = Number(sessionStorage.getItem("userid"));
 
   const [loading, setLoading] = useState(true);
   const [inProgress, setInProgress] = useState(false);
