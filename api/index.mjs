@@ -20,6 +20,8 @@ import priceRoutes from "./src/routes/priceRoutes.mjs";
 import walletRoutes from "./src/routes/walletRoutes.mjs";
 import routingService from "./src/services/routingService.mjs";
 
+import tripService from "./src/services/tripService.mjs";
+
 import createBikes from "./src/models/bikes.mjs";
 
 const app = express();
@@ -139,19 +141,29 @@ app.post("/simulate-bikes-create", async (req, res) => {
         for (let i = 0; i < coordinates.length; i++) {
             let first = { "latitude": coordinates[i][0].y, "longitude": coordinates[i][0].x };
 
+            let cityID = 1;
+            const sectionOne = Math.floor(coordinates.length / 3);
+            const sectionTwo = Math.floor((coordinates.length * 2) / 3);
+
+            if (i < sectionOne) {
+                cityID = 1;
+            } else if (i < sectionTwo) {
+                cityID = 2;
+            } else {
+                cityID = 3;
+            }
+
             bikes[i] = {
                 'status': 100,
                 'battery': 100,
                 'latitude': first.latitude,
                 'longitude': first.longitude,
                 'occupied': 1,
-                'city_id': 1
+                'city_id': cityID
             };
         }
 
         let creation = await bikeModel.createBikeSimulator(bikes);
-
-        console.log(creation);
 
         const firstId = Number(creation.insertId);
         // const count = Number(creation.affectedRows);
@@ -160,6 +172,19 @@ app.post("/simulate-bikes-create", async (req, res) => {
             id: firstId + i,
             ...bike
         }));
+
+        for (let i = 0; i < bikesWithIds.length; i++) {
+            try {
+                let data = {
+                    userId: 7,
+                    bikeId: bikesWithIds[i].id
+                };
+
+                await tripService.startTrip(data);
+            } catch (err) {
+                console.error(err);
+            }
+        }
 
         return res.json(bikesWithIds);
     } catch (err) {
@@ -177,8 +202,6 @@ app.post('/forward-routes', async (req) => {
         }
 
         await startSimulator();
-
-        console.log(coordinates);
 
         await fetch(`http://bike:7071/setRoute`, {
             method: 'POST',

@@ -64,7 +64,6 @@ class Simulator {
      * @returns {Array|void} - Event array
      */
     heartbeat() {
-        console.log(this.cordinates);
         for (let key in this.cordinates) {
             let index = this.bikes.findIndex(function (device) {
                 return device.getId() === Number(key);
@@ -75,7 +74,7 @@ class Simulator {
             }
 
             if (!this.cordinates[key] || this.cordinates[key].length === 0) {
-                console.log(`Bike: ${key} has no coordinates left`);
+                console.log(`Bike: ${key} has no cordinates left`);
                 this.bikes[index].status = 40;
                 this.cordinates[key] = [];
                 continue;
@@ -119,7 +118,6 @@ class Simulator {
         // Retrives all bikes from db
         // Start bike movement
 
-        console.log(payload);
         this.bikes = [];
         for (let bike of payload) {
             let parsedCords = { x: Number(bike.longitude), y: Number(bike.latitude) };
@@ -137,7 +135,6 @@ class Simulator {
             }));
         }
 
-        console.log(this.bikes);
         this.startMovement();
         return { event: `Bikes: ${this.bikes.length}`, data: this.bikes };
     }
@@ -166,9 +163,10 @@ class Simulator {
      */
     end() {
         this.stopMovement();
-        // Save all bike positions to database
+        let exportArray = this.bikes;
+
         this.bikes = [];
-        return { event: 'stopping worker' };
+        return { event: 'stopping worker', data: exportArray };
     }
 
     /**
@@ -185,7 +183,11 @@ class Simulator {
      * @returns {Array} - Device
      */
     getBike(payload) {
-        return { event: 'Retriving bike', data: this.bikes[payload.id] };
+        let index = this.bikes.findIndex(function (device) {
+            return device.getId() === Number(payload.id);
+        });
+
+        return { event: 'Retriving bike', data: this.bikes[index] };
     }
 
     /**
@@ -197,12 +199,11 @@ class Simulator {
         try {
             for (let key in payload) {
                 let index = this.bikes.findIndex(function (device) {
-                    console.log(index);
                     return device.getId() === Number(key);
                 });
 
-                this.cordinates[Number(key)] = payload[key];
-                // this.cordinates[Number(index)] = payload[key];
+                // this.cordinates[Number(key)] = payload[key];
+                this.cordinates[Number(index)] = payload[key];
             }
 
             return { event: 'Succesfully added routes', data: payload };

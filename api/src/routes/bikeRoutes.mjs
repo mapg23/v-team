@@ -34,6 +34,20 @@ export default function createBikeRouter(bikes = createBikes()) {
     });
 
     /**
+     * Returns total number of bikes in the system.
+     */
+    route.get('/bikes/count', async (req, res) => {
+        try {
+            const total = await bikes.countBikes();
+
+            return res.status(200).json({ total });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Could not fetch bike count" });
+        }
+    });
+
+    /**
      * POST /bikes
      * Creates a bike manually (admin only).
      *

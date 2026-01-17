@@ -8,6 +8,20 @@ export default function createUserRouter(users = createUsers()) {
     const route = express.Router();
 
     /**
+     * Returns total number of users in the system.
+     */
+    route.get('/users/count', async (req, res) => {
+        try {
+            const total = await users.countUsers();
+
+            return res.status(200).json({ total });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Could not fetch users count" });
+        }
+    });
+
+    /**
      * POST /users
      * Creates a new user.
      *

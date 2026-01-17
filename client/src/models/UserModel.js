@@ -137,8 +137,7 @@ const UserModel = {
     },
 
     getUserBalance: async function getUserBalance(id) {
-        // TODO: KOPPLA TILL API
-        return 12
+        return await this.basicGet(`/wallets/user/${id}`);
     },
 
     removeAccount: async function removeAccount(id) {

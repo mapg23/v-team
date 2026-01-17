@@ -6,6 +6,7 @@ import * as validation from "../middleware/validation/validationMiddleware.mjs";
 
 const router = express.Router();
 
+
 /**
  * Start a trip.
  * Request body needs:
@@ -37,6 +38,8 @@ router.get(`/bike/:id/current-cost`,
     validation.idParam,
     validation.checkValidationResult,
     async (req, res) => {
+        console.log(req.params);
+
         try {
             const tripCost = await tripService.getCurrentTripCost(req.params.id);
 

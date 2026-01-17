@@ -14,12 +14,14 @@ export default function BikeView() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [bikes, setBikes] = useState([]);
-  const [bikeFilter, setBikeFilter] = useState([]);
   const [result, setResult] = useState(null);
-  const [resultType, setResultType] = useState("error");
+  const [resultType, setResultType] = useState("success");
   // Pagination
   const [page, setPage] = useState(1);
   const [max, setMax] = useState(false);
+  // Filter
+  const [filterIsActive, setFilterIsActive] = useState(false);
+  const [cityId, setCityId] = useState(null);
 
   /**
    * Styles for response
@@ -39,26 +41,66 @@ export default function BikeView() {
    */
   async function getData() {
     const bikes = await BikeService.getAllBikes({ page });
-    if (bikes.bikes.length > 0) {
+    console.log(bikes);
+    if (bikes.bikes) {
       setBikes(bikes.bikes);
-      setBikeFilter(bikes.bikes);
-      setMax(false)
+    }
+    if (bikes.bikes.length > 0) {
+      setMax(false);
     } else {
       setMax(true);
     }
   }
 
   /**
-   * Get data whenever pages is updated
+   * Get data by city
+   */
+  async function getDataByCity(cityId) {
+    const result = await cityService.getAllBikesInCity({ cityId, page });
+    const cityObject = await cityService.getCityDetailsById(cityId);
+    if (result.bikes && result.bikes.length > 0) {
+      setBikes(result.bikes);
+      setMax(false);
+    } else {
+      setBikes(result.bikes);
+      setMax(true);
+    }
+    setResult(`Filter by: ${cityObject.name}`);
+  }
+
+  /**
+   * Activate filter settings
+   * Always restart on page 1
+   */
+  async function setFilter(cityId) {
+    setFilterIsActive(true);
+    setCityId(cityId);
+    setPage(1);
+    getDataByCity(cityId);
+  }
+
+  /**
+   * Get data on mount based on current Filter status
    */
   useEffect(() => {
     async function fetchData() {
-      await getData();
+      await callMethodByFilterStatus();
       setLoading(false);
     }
     fetchData();
   }, [page]);
 
+
+  /**
+   * Call by filter
+   */
+  async function callMethodByFilterStatus() {
+    if (filterIsActive) {
+      await getDataByCity(cityId);
+    } else {
+      await getData();
+    }
+  }
   /**
    * Delete bike with id
    *
@@ -69,9 +111,7 @@ export default function BikeView() {
     if (response.ok) {
       setResult(`Deleted bike with id: ${bikeId}`);
       setResultType("success");
-
-      // update bikes
-      await getData();
+      await callMethodByFilterStatus();
       return;
     }
     setResult(response.error);
@@ -101,8 +141,7 @@ export default function BikeView() {
     if (response.id) {
       setResult("Successfully created a new bike!");
       setResultType("success");
-      // update bikes
-      await getData();
+      await callMethodByFilterStatus();
       return;
     }
     setResult(response.error);
@@ -111,36 +150,20 @@ export default function BikeView() {
   }
 
   /**
-   * Filter bikes in table based on chosen City
-   */
-  async function filterBikes(value) {
-    const previousFilter = bikeFilter;
-    const filteredBikes = bikes.filter((bike) => bike.city_id === value);
-    const cityObject = await cityService.getCityDetailsById(value);
-    if (filteredBikes.length > 0) {
-      setBikeFilter(filteredBikes);
-      setResult(`Filter by: ${cityObject.name}`);
-      setResultType("success");
-    } else {
-      setBikeFilter(previousFilter);
-      setResult(`No bikes in: ${cityObject.name}`);
-      setResultType("error");
-    }
-  }
-
-  /**
    * Reset filter
    */
-  function clearFilter() {
-    setBikeFilter(bikes);
+  async function clearFilter() {
+    setPage(1);
+    setFilterIsActive(false);
     setResult(`Filter cleared`);
-    setResultType("info");
+    await getData();
   }
 
   /**
    * Increment page by 1 if max is false
    */
   function increasePage() {
+    setResult("");
     if (!max) {
       setPage((page) => page + 1);
     }
@@ -151,8 +174,9 @@ export default function BikeView() {
    * Only reduce if page is > 1
    */
   function reducePage() {
+    setResult("");
     if (page === 1) return;
-    setPage(page => page - 1)
+    setPage((page) => page - 1);
   }
 
   if (loading) return <p>loading..</p>;
@@ -161,7 +185,7 @@ export default function BikeView() {
     <>
       <div className="wrapper">
         <div className="card">
-          <h1>BikeView</h1>
+          <h1>Elsparkcyklar</h1>
           <p>I följande vy kan du hantera elscyklar.</p>
           <p>Du kan skapa och ta bort cyklar, samt filtrera cyklar per stad.</p>
           <p>
@@ -180,7 +204,7 @@ export default function BikeView() {
           {/* {FILTER BIKES BY CITY} */}
           <div className="card">
             <h2>Filter by city</h2>
-            <CityDropDown action={filterBikes} />
+            <CityDropDown action={setFilter} />
             <button type="button" onClick={clearFilter}>
               Clear filter
             </button>
@@ -192,6 +216,19 @@ export default function BikeView() {
         <div className="card">
           <p className={resultClass}>{result}</p>
           {/* Display bikes based on filter */}
+          {/* <div className="pagination-btn-wrapper">
+            <button onClick={reducePage}>
+              Prev page: {page !== 1 ? page - 1 : page}
+            </button>
+            <p>Current page {page}</p>
+            <button onClick={increasePage}>Next page: {page + 1}</button>
+          </div> */}
+          {/* <BikesTable
+            data={bikeFilter}
+            action={deleteBike}
+            inspect={inspectBike}
+          /> */}
+          {/* ======= */}
           <div className="pagination-btn-wrapper">
             <button onClick={reducePage}>
               Prev page: {page !== 1 ? page - 1 : page}
@@ -199,11 +236,8 @@ export default function BikeView() {
             <p>Current page {page}</p>
             <button onClick={increasePage}>Next page: {page + 1}</button>
           </div>
-          <BikesTable
-            data={bikeFilter}
-            action={deleteBike}
-            inspect={inspectBike}
-          />
+          <BikesTable data={bikes} action={deleteBike} inspect={inspectBike} />
+          {/* >>>>>>> origin/main */}
         </div>
       </div>
     </>

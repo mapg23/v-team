@@ -42,8 +42,8 @@ function HomeView() {
       setCities(cities.length);
       const users = await userService.getAllUsers({ limit: 0 }); // get all users
       setUsers(users.users.length);
-      const bikes = await bikeService.getAllBikes({ limit: 0 }); // get all bikes
-      setBikes(bikes.bikes.length);
+      const bikes = await bikeService.countAllBikes(); // get all bikes
+      setBikes(bikes.total);
       const pZOnes = await parkingService.getAllParkingZones();
       setPZones(pZOnes.length);
       const cZones = await stationService.getAllStations();

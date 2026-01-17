@@ -16,6 +16,7 @@ const TripsModel = {
             });
 
             if (!response.ok) {
+                throw new Error(response);
                 throw new Error(
                     `(${response.status}) Response not ok url: ${API}${url}`
                 );
@@ -96,28 +97,26 @@ const TripsModel = {
     },
 
     startTrip: async function startTrip(userId, bikeId) {
-        return await this.basicPOST(`/trips`, {
+        let res = await this.basicPOST(`/trips/start`, {
             "userId": userId,
             "bikeId": bikeId
         });
+
+        console.log(res);
+
+        return res;
     },
 
     getBikeInfo: async function getBikeInfo(bikeId) {
         return await this.basicGet(`/bikes/${bikeId}`);
     },
 
-    endTrip: async function endTrip(tripId) {
-        let trip = await this.getTripsByTripsID(tripId);
-        let bike = await this.getBikeInfo(trip[0]['scooter_id']);
+    endTrip: async function endTrip(bikeId) {
+        return await this.basicPOST(`/trips/bike/${bikeId}/end`, {});
+    },
 
-        return await this.basicPUT(`/trips/${tripId}`, {
-            "userId": trip[0]['user_id'],
-            "bikeId": trip[0]['scooter_id'],
-            "location": {
-                "latitude": bike['latitude'],
-                "longitude": bike['longitude']
-            }
-        });
+    getCurrentCost: async function getCurrentCost(bikeId) {
+        return await this.basicGet(`/trips/bike/${bikeId}/current-cost`);
     }
 }
 

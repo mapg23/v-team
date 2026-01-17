@@ -120,6 +120,10 @@ export default function MapComponent({
     bikes.forEach((bike) => {
       if (bikeMarkersRef.current.has(bike.id)) return;
 
+      if (bike.occupied === 1 || bike.current_zone_type === 'charging') {
+        return;
+      }
+
       const customScooterIcon = L.divIcon({
         html: scooterIcon,
         className:
@@ -131,7 +135,7 @@ export default function MapComponent({
         icon: customScooterIcon,
       })
         .bindPopup(`
-          <table>
+          <table class="bike-table">
             <tr><th>Bike Id:</th><td>${bike.id}</td></tr>
             <tr><th>Status:</th><td>${bike.status}</td></tr>
             <tr><th>Occupied:</th><td>${bike.occupied}</td></tr>
