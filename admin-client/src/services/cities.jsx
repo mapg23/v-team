@@ -160,11 +160,11 @@ const cityService = {
       { id: 2, cityId: 1, status: 400, battery: 60, lat: 59.35, lng: 18.08 },
     ];
    */
-  getAllBikesInCity: async function getAllBikesInCity(cityId, limit, page) {
+  getAllBikesInCity: async function getAllBikesInCity({cityId, limit, page}) {
     const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(
-        `${API}/cities/${cityId}/bikes?limit=${limit}&page=${page}`,
+        `${API}/cities/${cityId}/bikes?page=${page}&limit=${limit}`,
         {
           method: "GET",
           headers: {
