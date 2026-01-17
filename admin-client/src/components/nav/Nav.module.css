@@ -1,15 +1,16 @@
 .navList {
-    height: 100%;
+    height: calc(100% - 115px);
     list-style-type: none;
     font-size: 1.2rem;
     margin: 0;
     padding: 0;
-    /* background: #1e1e1e; */
+    width: 250px;
     background-color: var(--col-bg);
     border-radius: 8px;
     padding: var(--space-m) var(--space-s);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); */
     text-align: left;
+    border-right: 5px solid var(--col-bg-muted);
 
     li {
         margin: var(--space-s) var(--space-m);
@@ -74,5 +75,5 @@
     border: 2px solid var(--col-green);
     /* color: blue; */
     /* background-color: rgba(96, 162, 141, 0.14); */
-    background-color: var(--col-green-light);
+    /* background-color: var(--col-green-light); */
 }

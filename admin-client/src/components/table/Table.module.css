@@ -117,10 +117,12 @@ tbody:hover {
 }
 
 tbody>tr:hover {
-    /* background-color: #2a2a2a; */
     color: var(--col-text);
     background-color: var(--col-bg);
-    /* ljusgrå hover */
+}
+
+tbody:has(tr:hover) tr:not(:hover) {
+    opacity: 0.9;
 }
 
 /* CELLS */

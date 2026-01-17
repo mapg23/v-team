@@ -17,6 +17,7 @@
     button:hover {
         background-color: var(--col-green);
         color: var(--col-bg);
+        border-color: transparent;
     }
 
     button:active {
