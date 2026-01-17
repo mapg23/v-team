@@ -17,7 +17,7 @@ const cityService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -46,7 +46,7 @@ const cityService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -72,7 +72,7 @@ const cityService = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -95,7 +95,7 @@ const cityService = {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -118,7 +118,7 @@ const cityService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -141,7 +141,7 @@ const cityService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -160,16 +160,19 @@ const cityService = {
       { id: 2, cityId: 1, status: 400, battery: 60, lat: 59.35, lng: 18.08 },
     ];
    */
-  getAllBikesInCity: async function getAllBikesInCity(id) {
+  getAllBikesInCity: async function getAllBikesInCity(cityId, limit, page) {
     const token = sessionStorage.getItem("jwt");
     try {
-      const response = await fetch(`${API}/cities/${id}/bikes`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${API}/cities/${cityId}/bikes?limit=${limit}&page=${page}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       return await response.json();
     } catch (error) {
@@ -193,7 +196,7 @@ const cityService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -222,7 +225,7 @@ const cityService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -241,7 +244,7 @@ const cityService = {
     data
   ) {
     const token = sessionStorage.getItem("jwt");
-    
+
     // Map dataObj to match price sevice in API
     const dataObj = {
       city_id: cityId,
@@ -249,14 +252,14 @@ const cityService = {
       minute_fee: data.minuteFee,
       parking_fee: data.parkingFee,
       discount_multiplier: data.discountMultiplier,
-    }
+    };
     try {
       const response = await fetch(`${API}/prices/${cityId}`, {
         body: JSON.stringify(dataObj),
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
