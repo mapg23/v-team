@@ -15,7 +15,7 @@ export default function BikeView() {
   const [loading, setLoading] = useState(true);
   const [bikes, setBikes] = useState([]);
   const [result, setResult] = useState(null);
-  const [resultType, setResultType] = useState("error");
+  const [resultType, setResultType] = useState("success");
   // Pagination
   const [page, setPage] = useState(1);
   const [max, setMax] = useState(false);
