@@ -4,7 +4,7 @@ INSERT INTO `users` (`username`, `password`, `email`, `oauth`) VALUES
 ('charlie', 'hashed_pw_3', 'charlie@example.com', '0');
 
 INSERT INTO `wallets` (`user_id`, `balance`) VALUES 
-(1, 57860000),
+(1, 250),
 (2, 57),
 (3, 0);
 
@@ -69,6 +69,7 @@ INSERT INTO trips (
   start_longitude,
   end_latitude,
   end_longitude,
+  end_zone_type,
   start_time,
   end_time
 )
@@ -81,6 +82,7 @@ VALUES
   14.128900,
   57.862100,
   14.129800,
+  'paring',
   '2025-01-10 08:15:00',
   '2025-01-10 08:32:00'
 ),
@@ -92,6 +94,7 @@ VALUES
   14.127500,
   57.861900,
   14.128300,
+  'paring',
   '2025-01-11 14:05:00',
   '2025-01-11 14:18:00'
 ),
@@ -103,6 +106,7 @@ VALUES
   14.129200,
   57.863400,
   14.130100,
+  'paring',
   '2025-01-12 19:40:00',
   '2025-01-12 20:05:00'
 );
