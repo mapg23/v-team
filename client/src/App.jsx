@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
-import {Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import { BrowserView, MobileView } from "react-device-detect";
 
@@ -67,7 +67,7 @@ function App() {
               </MobileView>
 
               <BrowserView>
-                <WebAccountView logoutcallback={logout}/>
+                <WebAccountView logoutcallback={logout} />
               </BrowserView>
             </>
           ) : (
@@ -80,7 +80,7 @@ function App() {
         path="/account"
         element={
           isLoggedIn
-            ? <MobileView><AccountView /> </MobileView>
+            ? <MobileView><AccountView logoutcallback={logout} /> </MobileView>
             : <Navigate to="/login" replace />
         }
       />
@@ -105,20 +105,20 @@ function App() {
 
       <Route path="/bike/:id" element={
         isLoggedIn
-          ? <MobileView> <BikeView/> </MobileView>
+          ? <MobileView> <BikeView /> </MobileView>
           : <Navigate to="/login" replace />
       } />
 
       <Route path="/pay" element={
         isLoggedIn
-        ? <PaymentView />
-        : <Navigate to="/login" replace />
+          ? <PaymentView />
+          : <Navigate to="/login" replace />
       } />
 
       <Route path="/payment/complete" element={
-        isLoggedIn 
-        ? <PaymentSuccessView />
-        : <Navigate to="/login" replace />
+        isLoggedIn
+          ? <PaymentSuccessView />
+          : <Navigate to="/login" replace />
       } />
 
       {/* FALLBACK */}

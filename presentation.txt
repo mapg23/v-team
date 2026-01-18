@@ -1,0 +1,47 @@
+
+1. Introduktion
+    - Berätta om projektet
+    - Vad vi har valt, Städer
+    - Vilka extra krav vi har uppfylt
+
+2. Projekt struktur
+    - Visa .env fil
+    - Docker layout
+    
+    - CI integrerat (SonarQube)
+    - Github Actions, (test, linters, artillery test)
+
+    - Prata om val av teknik. (mariadb, phpmyadmin osv)
+
+3. Starta allt
+    - köra dml filerna (inte simulator dml)
+
+4. Admin client features (ej simulerat)
+    - Visa Cykel management
+        - Stoppa
+        - Flytta
+
+    - Visa zone management
+        - Skapa
+
+5. Starta simulation
+    - Vänta in att allt laddas
+
+    - Visa admin klient vid simulation
+
+6. Kund klient (APP)
+    - Visa IOS
+    - Visa Android
+
+    - Hyra cykel
+    - Kolla historik
+
+    - logga ut
+
+7. Kund klient (WEB)
+    - Visa vyn
+    - Lägg till pengar
+
+8. Visa Databas
+    - Simulering av users och cykler (att dem finns)
+

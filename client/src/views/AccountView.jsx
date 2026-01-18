@@ -11,7 +11,9 @@ import UserModel from "../models/UserModel";
 
 import "../assets/accountView.css";
 
-export default function AccountView() {
+export default function AccountView({
+  logoutcallback
+}) {
   const navigate = useNavigate();
 
   const userId = Number(sessionStorage.getItem("userid"));
@@ -31,8 +33,8 @@ export default function AccountView() {
   }
 
   const handleLogout = () => {
-    logout();
-    navigate('/login', { replace: true });
+    sessionStorage.clear();
+    logoutcallback();
   }
 
   useEffect(() => {
