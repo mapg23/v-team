@@ -1,0 +1,13 @@
+INSERT INTO `user` (
+    username,
+    password,
+    email,
+    verified,
+    role
+) VALUES (
+    'simulator_user',
+    '$2a$10$ope4.kYVmxgp4gSzFuBYuebdRDmtDR8Yr/qQzdLYQeN...',
+    'simulator_email@email.com',
+    0,
+    'user'
+);
