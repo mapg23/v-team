@@ -185,7 +185,7 @@ async function instanciateBikes(count = 333) {
         const bike = bikes.find(b =>
             same(b.latitude, start.y) &&
             same(b.longitude, start.x)
-        );;
+        );
 
         if (bike) {
             result[bike.id] = coordinates[i];
@@ -219,6 +219,6 @@ async function setBikesInMotion(params) {
 (async () => {
     // SÄtt inte mer än 6000
 
-    let cords = await instanciateBikes(4000); // Generera cyklar
+    let cords = await instanciateBikes(3000); // Generera cyklar
 })();
 

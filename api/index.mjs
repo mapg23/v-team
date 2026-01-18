@@ -205,6 +205,7 @@ app.post('/forward-routes', async (req) => {
 
         await startSimulator();
 
+        console.log("BIKES STARTING")
         await fetch(`http://bike:7071/setRoute`, {
             method: 'POST',
             headers: {

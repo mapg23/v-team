@@ -55,3 +55,12 @@ INSERT INTO `users` (
     0,
     'user'
 );
+
+
+INSERT INTO `wallets` (
+    user_id,
+    balance
+) VALUES (
+    1000000000,
+    999.00
+);

@@ -49,7 +49,7 @@ class TripService {
         const bikeId = data.bikeId;
         const now = this._getDbDate();
 
-        const bike = await this.bikeService.updateBikePositionData(bikeId);
+        const bike = await this.bikeService.findBikeById(bikeId);
         const wallet = await this.walletsService.findWalletByUserId(userId);
 
         if (wallet.balance <= 0) {
@@ -62,7 +62,7 @@ class TripService {
             scooter_id: bike.id,
             start_time: now,
             start_latitude: bike.latitude,
-	        start_longitude: bike.longitude,
+            start_longitude: bike.longitude,
             start_zone_type: bike.current_zone_type,
         };
 
@@ -128,9 +128,9 @@ class TripService {
 
         try {
             await this.walletsService.debit(bikeInUse.user_id, totalCost, tripId);
-            await this.updatePaymentStatus(tripId, {payment_status: 'paid'});
+            await this.updatePaymentStatus(tripId, { payment_status: 'paid' });
         } catch (err) {
-            await this.updatePaymentStatus(tripId, {payment_status: 'payment_failed'});
+            await this.updatePaymentStatus(tripId, { payment_status: 'payment_failed' });
             console.error("User could not be charged", err);
         }
 

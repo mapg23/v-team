@@ -198,12 +198,7 @@ class Simulator {
     setRoute(payload) {
         try {
             for (let key in payload) {
-                let index = this.bikes.findIndex(function (device) {
-                    return device.getId() === Number(key);
-                });
-
-                // this.cordinates[Number(key)] = payload[key];
-                this.cordinates[Number(index)] = payload[key];
+                this.cordinates[Number(key)] = payload[key];
             }
 
             return { event: 'Succesfully added routes', data: payload };
