@@ -219,6 +219,6 @@ async function setBikesInMotion(params) {
 (async () => {
     // SÄtt inte mer än 6000
 
-    let cords = await instanciateBikes(3000); // Generera cyklar
+    let cords = await instanciateBikes(4000); // Generera cyklar
 })();
 
