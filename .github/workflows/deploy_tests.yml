@@ -10,6 +10,53 @@ permissions:
   contents: write
 
 jobs:
+
+  artilery:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        folder: ['bike']
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+
+      - name: Install
+        run: npm ci
+        working-directory: ${{ matrix.folder }}
+
+      - name: Run Artillery Tests
+        run: |
+          npm run artillery-test
+        working-directory: ${{ matrix.folder }}
+
+
+  clean:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        folder: ['bike', 'api', 'admin-client', 'client']
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+
+      - name: Install
+        run: npm ci
+        working-directory: ${{ matrix.folder }}
+
+      - name: Run eslint
+        run: npm run eslint || true
+        working-directory: ${{ matrix.folder }}
+
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -30,11 +77,6 @@ jobs:
       - name: Run Jest Tests
         run: npm run test:raw -- --ci --coverage
         working-directory: ${{ matrix.folder }}
-
-      # - name: Run Artillery Tests
-      #   run: |
-      #     npm run artillery-test
-      #   working-directory: bike
 
       - name: Debug coverage folder
         run: |
