@@ -49,13 +49,13 @@ class TripService {
         const bikeId = data.bikeId;
         const now = this._getDbDate();
 
-        const bike = await this.bikeService.findBikeById(bikeId);
+        const bike = await this.bikeService.updateBikePositionData(bikeId);
         const wallet = await this.walletsService.findWalletByUserId(userId);
 
         if (wallet.balance <= 0) {
             throw new Error(`Users wallet with id ${wallet.id} has insufficiant funds`);
         }
-        await this.bikeService.updateBikeZone(bikeId, bike);
+        // await this.bikeService.updateBikeZone(bikeId, bike);
 
         const bikeData = {
             user_id: userId,
@@ -93,9 +93,7 @@ class TripService {
      */
     async endTrip(bikeId) {
         const bikeInUse = await this.bikeService.findBikeInUseByBikeId(bikeId);
-        const bike = await this.bikeService.findBikeById(bikeInUse.scooter_id);
-
-        await this.bikeService.updateBikeZone(bikeId, bike);
+        const bike = await this.bikeService.updateBikePositionData(bikeId);
 
         const parkedOk =
             bike.current_zone_type === "parking" ||

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { MdArrowBackIosNew } from "react-icons/md";
-
+import logo from "../assets/rull_light.png";
 
 export default function TopBar({
   title,
@@ -34,7 +34,9 @@ export default function TopBar({
 
         <h1 className="top-bar-title">{title}</h1>
         <div className="top-bar-spacer" />
-        <div className="top-bar-spacer" />
+        <div className="top-bar-spacer">
+          <img className="top-logo" src={logo} />
+        </div>
       </div>
 
     </>
