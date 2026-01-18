@@ -178,7 +178,7 @@ app.post("/simulate-bikes-create", async (req, res) => {
         for (let i = 0; i < bikesWithIds.length; i++) {
             try {
                 let data = {
-                    userId: 7,
+                    userId: 1000000000,
                     bikeId: bikesWithIds[i].id
                 };
 

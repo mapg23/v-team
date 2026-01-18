@@ -1,20 +1,57 @@
-INSERT INTO `user` (
+DELETE FROM `users`;
+ALTER TABLE `users` AUTO_INCREMENT = 1;
+
+
+INSERT INTO `users` (
     username,
     password,
     email,
-    verified,
+    oauth,
     role
 ) VALUES (
-    'simulator_user',
-    '$2a$10$ope4.kYVmxgp4gSzFuBYuebdRDmtDR8Yr/qQzdLYQeN...',
-    'simulator_email@email.com',
+    'marcus',
+    '$2a$10$aX/1ei.K.dX6NjwEpFn3j.cWZSHqIdzdAcse/8HH2ftu1fY.6EG7a',
+    'mackan1@gmail.com',
     0,
     'user'
 );
 
+INSERT INTO `wallets` (
+    user_id,
+    balance
+) VALUES (
+    1,
+    999.00
+);
 
-INSERT INTO `scooters` (
-    status,
-    battery
-    latitude
-)
+INSERT INTO users (username, password, email, oauth, role)
+SELECT
+    CONCAT('user_', n),
+    '$2a$10$rk0wsyMg.GCApGAYWecRMu4fNj91w215hoKrG.t7tCmo9Z.vO/jXi',
+    CONCAT('user_', n, '@example.com'),
+    0,
+    'user'
+FROM (
+    SELECT @row := @row + 1 AS n
+    FROM information_schema.tables t1,
+         information_schema.tables t2,
+         (SELECT @row := 0) r
+    LIMIT 1000
+) nums;
+
+
+INSERT INTO `users` (
+    id,
+    username,
+    password,
+    email,
+    oauth,
+    role
+) VALUES (
+    1000000000,
+    'simulator_user',
+    '$2a$10$aX/1ei.K.dX6NjwEpFn3j.cWZSHqIdzdAcse/8HH2ftu1fY.6EG7a',
+    'simulator_email@email.com',
+    0,
+    'user'
+);
