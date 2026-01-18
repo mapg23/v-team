@@ -165,6 +165,8 @@ app.post("/simulate-bikes-create", async (req, res) => {
 
         let creation = await bikeModel.createBikeSimulator(bikes);
 
+        console.log("Created bikes in DB");
+
         const firstId = Number(creation.insertId);
         // const count = Number(creation.affectedRows);
 
@@ -214,6 +216,59 @@ app.post('/forward-routes', async (req) => {
         console.error(err);
     }
 });
+
+app.post('/generate-normal-bikes', async (req, res) => {
+    try {
+        const coordinates = req.body;
+
+        if (!coordinates) {
+            throw new Error("Missing coordinates");
+        }
+        let bikeModel = createBikes();
+
+        let bikes = [];
+
+        for (let i = 0; i < coordinates.length; i++) {
+            let first = { "latitude": coordinates[i].y, "longitude": coordinates[i].x };
+
+            let cityID = 1;
+            const sectionOne = Math.floor(coordinates.length / 3);
+            const sectionTwo = Math.floor((coordinates.length * 2) / 3);
+
+            if (i < sectionOne) {
+                cityID = 1;
+            } else if (i < sectionTwo) {
+                cityID = 2;
+            } else {
+                cityID = 3;
+            }
+
+            bikes[i] = {
+                'status': 100,
+                'battery': 100,
+                'latitude': first.latitude,
+                'longitude': first.longitude,
+                'occupied': 0,
+                'city_id': cityID
+            };
+        }
+
+        let creation = await bikeModel.createBikeSimulator(bikes);
+
+        const firstId = Number(creation.insertId);
+        // const count = Number(creation.affectedRows);
+
+        const bikesWithIds = bikes.map((bike, i) => ({
+            id: firstId + i,
+            ...bike
+        }));
+
+        return res.json(bikesWithIds);
+    } catch (err) {
+        console.error(err);
+        return res.json(err);
+    }
+})
 
 // ------------------------------
 // ----------- Routes -----------
