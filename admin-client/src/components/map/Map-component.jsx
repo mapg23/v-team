@@ -81,7 +81,7 @@ export default function MapComponent({
    * A circle represents the bounds of where a bike is alaod to run
    */
   useEffect(() => {
-     // Skapa Cirkel lager en gång
+    // Skapa Cirkel lager en gång
     if (!circleLayerRef.current) {
       circleLayerRef.current = L.layerGroup().addTo(mapRef.current);
     }
@@ -91,9 +91,12 @@ export default function MapComponent({
     // Töm lager för att undvika att cirklar ritas om och om igen
     layer.clearLayers();
 
-    L.circle([Number(coords.latitude), Number(coords.longitude)], {radius: 3000})
-    .bindPopup("Cirkeln representerar zonen som en cykel får köras i").openPopup()
-    .addTo(layer);
+    L.circle([Number(coords.latitude), Number(coords.longitude)], {
+      radius: 3000,
+      fillOpacity: 0,
+    })
+      .bindPopup("Cirkeln representerar zonen som en cykel får köras i").openPopup()
+      .addTo(layer);
   }, [coords])
 
   /**

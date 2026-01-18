@@ -1,0 +1,39 @@
+    button {
+        cursor: pointer;
+        /* width: 100%; */
+        border: 2px solid var(--col-text);
+        border-radius: var(--radius-md);
+        /* box-shadow: 2px 2px 0 var(--col-border); */
+        padding: var(--space-s);
+        margin: var(--space-s);
+
+        svg {
+            display: inline;
+            vertical-align: bottom;
+            margin: 0 var(--space-xs);
+        }
+    }
+
+    button:hover {
+        background-color: var(--col-green);
+        color: var(--col-bg);
+        border-color: transparent;
+    }
+
+    button:active {
+        cursor: pointer;
+        /* width: 100%; */
+        border: 2px solid var(--col-pop);
+        /* box-shadow: 0px 0px 0 var(--col-border); */
+    }
+
+    .btn-pill {
+        min-width: 5rem;
+        border-radius: 999px;
+        border: 2px solid var(--col-text);
+    }
+
+    .btn-delete:hover {
+        background-color: var(--col-pop);
+        border: 2px solid var(--col-pop)
+    }

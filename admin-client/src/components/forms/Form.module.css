@@ -1,34 +1,36 @@
 .form {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  gap: 0.5rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap: 0.5rem;
+    width: fit-content;
 }
 
 .success {
-  color: green
+    color: green
 }
 
 .error {
-  color: red
+    color: red
 }
 
 .info {
-  color: lightskyblue
+    color: lightskyblue
 }
 
 .errorDiv {
-  background-color: rgba(247, 90, 90, 0.998);
-  width: 100%;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 10px;
+    background-color: rgba(247, 90, 90, 0.998);
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 10px;
 }
 
 .successDiv {
-  background-color: rgb(78, 152, 78);
-  width: 100%;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 10px;
+    background-color: rgb(78, 152, 78);
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 10px;
 }

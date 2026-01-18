@@ -1,0 +1,70 @@
+:root {
+    /* --- COLORS -- */
+
+    --col-bg: #f7f8f9;
+    --col-bg-muted: #f0f0f0;
+
+    --col-text: #213547;
+    --col-text-muted: #6f8084;
+
+    --col-pop: #f4574f;
+    --col-border: #d5dde0;
+
+    --col-blue: #2c3e88;
+    --col-green: #21652e;
+    --col-green: #46a257;
+    --col-green-light: #e4f8e0;
+
+    /* 
+    --- SPACING ---
+     - 4px base -
+     */
+
+    --space-xs: 0.25rem;
+    /* 4px */
+    --space-s: 0.5rem;
+    /* 8px */
+    --space-m: 1rem;
+    /* 16px */
+    --space-l: 1.5rem;
+    /* 24px */
+    --space-xl: 2.5rem;
+    /* 40px */
+    --space-xxl: 3.2rem;
+    /* big */
+
+    /*
+     -- TYPOGRAPHY SCALE ---
+     */
+
+    --font-family-base: system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    --font-family-base: inter;
+
+    --font-size-sm: 0.875rem;
+    /* 14px */
+    --font-size-md: 1rem;
+    /* 16px */
+    --font-size-lg: 1.618rem;
+    /* golden */
+    --font-size-xl: 2.618rem;
+    /* golden² */
+
+    --line-height-tight: 1.2;
+    --line-height-normal: 1.6;
+    --line-height-loose: 1.8;
+
+    /* =========================
+     RADIUS
+     ========================= */
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+
+    /* =========================
+     TRANSITIONS
+     ========================= */
+
+    --transition-fast: 0.2s cubic-bezier(0.37, 0, 0.63, 1);
+    --transition-slow: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}

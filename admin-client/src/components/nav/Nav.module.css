@@ -1,33 +1,78 @@
 .navList {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  background: #1e1e1e;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  text-align: left;
-}
+    height: calc(100% - 115px);
+    list-style-type: none;
+    font-size: 1.2rem;
+    margin: 0;
+    padding: 0;
+    width: 250px;
+    background-color: var(--col-bg);
+    border-radius: 8px;
+    padding: var(--space-m) var(--space-s);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: left;
 
-.navList a {
-  display: block;
-  color: white;
-  padding: 8px 16px;
-  text-decoration: none;
-}
+    li {
+        margin: var(--space-s) var(--space-m);
+    }
 
-/* Change the link and background color on hover */
-.navList a:hover {
-  background-color: #555555;
-  color: white;
-}
+    button {
+        width: 100%;
+        margin: 0;
+        margin-top: var(--space-l);
+    }
 
-.active {
-  border-bottom: 2px solid grey;
+    button:hover {
+        background: var(--col-pop);
+        border: 2px solid var(--col-pop);
+    }
+
+    svg {
+        display: inline-block;
+        vertical-align: sub;
+        margin-right: var(--space-s)
+    }
 }
 
 .navDiv {
-  display: flex;
-  justify-content: left;
-  align-items: center;
+    a {
+        width: 100%;
+        height: 100%;
+        padding: var(--space-s);
+        /* margin-left: var(--space-s); */
+    }
+
+    display: block;
+    width: 100%;
+    /* display: block; */
+    /* color: white; */
+    color: var(--col-text);
+    /* padding: 8px 4px; */
+    text-decoration: none;
+    /* white-space: nowrap; */
+    border: 2px solid var(--col-border);
+    border-radius: var(--radius-md);
+    /* border-radius: 3rem; */
+    transition: all 0.5s cubic-bezier(0.215, 0.610, 0.355, 1);
+}
+
+/* Change the link and background color on hover */
+.navDiv:hover {
+    /* background-color: #555555; */
+    border: 2px solid var(--col-text);
+}
+
+.navDiv {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.navDiv.active {
+    /* background-color: #04AA6D; */
+    border: 2px solid var(--col-green);
+    /* color: blue; */
+    /* background-color: rgba(96, 162, 141, 0.14); */
+    /* background-color: var(--col-green-light); */
 }

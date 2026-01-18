@@ -1,0 +1,17 @@
+/* Base form styles */
+
+input {
+    height: 2.5rem;
+
+}
+
+select {
+    height: 2.5rem;
+    width: 300px;
+    padding: var(--space-s) var(--space-s);
+    border: 2px solid var(--col-text);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-align: left;
+    margin: var(--space-s) var(--space-s) var(--space-m);
+}

@@ -60,7 +60,9 @@ export default function BikesTable({ data, action, inspect }) {
             <td>{obj.city_id}</td>
             <td>{obj.current_zone_type ? obj.current_zone_type : "none"}</td>
             <td key={obj.id}>
-              <button onClick={() => handleAction(obj.id)}>Delete Bike</button>
+              <button onClick={() => handleAction(obj.id)} className="btn-delete btn-pill">
+                Delete Bike
+              </button>
             </td>
           </tr>
         ))}

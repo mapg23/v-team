@@ -59,7 +59,7 @@ export default function CitiesTable({ data, action, inspect }) {
             <td>{obj.stationCount}</td>
             {action ? (
               <td>
-                <button onClick={() => handleAction(obj.id)}>
+                <button onClick={() => handleAction(obj.id)} className="btn-delete btn-pill">
                   Delete City
                 </button>
               </td>

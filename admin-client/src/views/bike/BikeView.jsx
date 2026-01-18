@@ -197,16 +197,16 @@ export default function BikeView() {
         <div className="cardWrapper">
           {/* {CREATE BIKES} */}
           <div className="card">
-            <h2>Chose a city and create a new bike</h2>
+            <h2>Välj stad att lägga till en cykel i</h2>
             <CreateBikeForm action={createNewBike}></CreateBikeForm>
           </div>
 
           {/* {FILTER BIKES BY CITY} */}
           <div className="card">
-            <h2>Filter by city</h2>
+            <h2>Filtrera på stad</h2>
             <CityDropDown action={setFilter} />
             <button type="button" onClick={clearFilter}>
-              Clear filter
+              Rensa filter
             </button>
           </div>
         </div>
@@ -216,12 +216,28 @@ export default function BikeView() {
         <div className="card">
           <p className={resultClass}>{result}</p>
           {/* Display bikes based on filter */}
-          <p>Current page {page}</p>
-          <button onClick={reducePage}>
-            Prev page: {page !== 1 ? page - 1 : page}
-          </button>
-          <button onClick={increasePage}>Next page: {page + 1}</button>
+          {/* <div className="pagination-btn-wrapper">
+            <button onClick={reducePage}>
+              Prev page: {page !== 1 ? page - 1 : page}
+            </button>
+            <p>Current page {page}</p>
+            <button onClick={increasePage}>Next page: {page + 1}</button>
+          </div> */}
+          {/* <BikesTable
+            data={bikeFilter}
+            action={deleteBike}
+            inspect={inspectBike}
+          /> */}
+          {/* ======= */}
+          <div className="pagination-btn-wrapper">
+            <button onClick={reducePage}>
+              Prev page: {page !== 1 ? page - 1 : page}
+            </button>
+            <p>Current page {page}</p>
+            <button onClick={increasePage}>Next page: {page + 1}</button>
+          </div>
           <BikesTable data={bikes} action={deleteBike} inspect={inspectBike} />
+          {/* >>>>>>> origin/main */}
         </div>
       </div>
     </>

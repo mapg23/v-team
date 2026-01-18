@@ -1,6 +1,6 @@
 import styles from "./Table.module.css";
 import { Link } from "react-router-dom";
-import {CgProfileIcon} from "../icons/react-icons"
+import { CgProfileIcon } from "../icons/react-icons"
 
 
 export default function UsersTable({ data }) {
@@ -26,9 +26,11 @@ export default function UsersTable({ data }) {
               <td key={obj.id + "-" + key}>{obj[key]}</td>
             ))}
             <td>
-              <Link to={`/user/${obj.id}`}>
-                <CgProfileIcon />
-              </Link>
+              <button className="btn-pill">
+                <Link to={`/user/${obj.id}`}>
+                  <CgProfileIcon />
+                </Link>
+              </button>
             </td>
           </tr>
         ))}

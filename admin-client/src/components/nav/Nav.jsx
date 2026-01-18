@@ -23,76 +23,66 @@ function Navigation({ logout }) {
   }
   return (
     <>
+      <div className="logo-wrapper">
+        <img src="/images/rull.png" alt="RULL" aria-description="logo" className="logo-small" />
+      </div>
       <ul className={navStyles.navList}>
         <li>
           <div
-            className={`${navStyles.navDiv} ${
-              pathname === "/home" ? navStyles.active : ""
-            }`}
+            className={`${navStyles.navDiv} ${pathname === "/home" ? navStyles.active : ""
+              }`}
           >
-            <HomeIcon />
-            <a href="/home">Hem</a>
+
+            <a href="/home"><span className="nav-icon"><HomeIcon /></span> <span className="nav-text">Hem</span></a>
           </div>
         </li>
         <li>
           <div
-            className={`${navStyles.navDiv} ${
-              pathname.includes("cities") || pathname.includes("city") ? navStyles.active : ""
-            }`}
+            className={`${navStyles.navDiv} ${pathname.includes("cities") || pathname.includes("city") ? navStyles.active : ""
+              }`}
           >
-            <CityIcon></CityIcon>
-            <a href="/cities">Städer</a>
+            <a href="/cities"><span className="nav-icon"><CityIcon /></span> <span className="nav-text">Städer</span></a>
           </div>
         </li>
 
         <li>
           <div
-            className={`${navStyles.navDiv} ${
-              pathname === "/cost" ? navStyles.active : ""
-            }`}
+            className={`${navStyles.navDiv} ${pathname === "/cost" ? navStyles.active : ""
+              }`}
           >
-            <CostIcon></CostIcon>
-            <a href="/cost">Prissättning</a>
+            <a href="/cost"><CostIcon /> Prissättning</a>
           </div>
         </li>
         <li>
           <div
-            className={`${navStyles.navDiv} ${
-              pathname === "/stations" ? navStyles.active : ""
-            }`}
+            className={`${navStyles.navDiv} ${pathname === "/stations" ? navStyles.active : ""
+              }`}
           >
-            <StaticChargeIcon></StaticChargeIcon>
-            <a href="/stations">Laddstationer</a>
+            <a href="/stations"><StaticChargeIcon /> Laddstationer</a>
           </div>
         </li>
         <li>
           <div
-            className={`${navStyles.navDiv} ${
-              pathname === "/parkings" ? navStyles.active : ""
-            }`}
+            className={`${navStyles.navDiv} ${pathname === "/parkings" ? navStyles.active : ""
+              }`}
           >
-            <StaticParkIcon></StaticParkIcon>
-            <a href="/parkings">Parkeringar</a>
+            <a href="/parkings"><StaticParkIcon /> Parkeringar</a>
           </div>
         </li>
         <li>
           <div
-            className={`${navStyles.navDiv} ${
-              pathname.includes("/user") ? navStyles.active : ""
-            }`}
+            className={`${navStyles.navDiv} ${pathname.includes("/user") ? navStyles.active : ""
+              }`}
           >
-            <CgProfileIcon></CgProfileIcon>
-            <a href="/users">Användare</a>
+            <a href="/users"><CgProfileIcon /> Användare</a>
           </div>
         </li>
         <li>
           <div
-            className={`${navStyles.navDiv} ${
-              pathname.includes("/bikes") ? navStyles.active : ""
-            }`}
+            className={`${navStyles.navDiv} ${pathname.includes("/bikes") ? navStyles.active : ""
+              }`}
           >
-            <StaticBikeIcon></StaticBikeIcon>
-            <a href="/bikes">Elsparkcyklar</a>
+            <a href="/bikes"><StaticBikeIcon /> Elsparkcyklar</a>
           </div>
         </li>
         <li>
