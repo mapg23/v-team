@@ -119,9 +119,9 @@ export default function BikeView() {
         />
 
         <div className="map-wrapper">
-          <h1>Cykel #{bike}</h1>
+          {/* <h1>Cykel #{bike}</h1> */}
           {/* INFO OM CYKEL, BATTERI */}
-          <PowerIndicator />
+          {/* <PowerIndicator /> */}
           {inProgress ? (
             <>
               <div className="bike-in-progress">
