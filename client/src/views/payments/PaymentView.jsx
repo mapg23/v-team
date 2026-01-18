@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import { useAuth } from "../../components/AuthProvider";
 
 import TopBar from "../../components/TopBar";
 
@@ -22,7 +21,7 @@ import { getApiBase } from "../../apiUrl";
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC);
 
 export default function PaymentView() {
-  const { userId } = useAuth();
+  const userId = Number(sessionStorage.getItem("userid"));
 
   const navigate = useNavigate();
   const handleTopBarCallback = () => {

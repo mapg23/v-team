@@ -10,12 +10,6 @@ export default function BikeMarkers({ bikes }) {
   const navigate = useNavigate();
   const bikeIcons = BikeIcon();
   const map = useMap();
-  
-
-  useEffect(() => {
-    // console.log(mapBounds.contains([bikes[0].cords.y, bikes[0].cords.x]))
-    console.log(bikes)
-  },[bikes])
 
   /**
    * Redirect to bike/:id

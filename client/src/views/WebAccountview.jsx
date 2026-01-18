@@ -3,21 +3,23 @@ import avatar from "../assets/avatar.png";
 
 import TopBar from "../components/TopBar";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../components/AuthProvider";
 import { use, useEffect, useState } from "react";
 
 import UserModel from "../models/UserModel";
 
-export default function WebAccountView() {
+export default function WebAccountView({
+    logoutcallback
+}) {
     const navigate = useNavigate();
-    const { logout, userId, checkLoggedin, isLoggedIn } = useAuth();
     const [loading, setLoading] = useState(true);
-
+    
+    const userId = Number(sessionStorage.getItem("userid"));
+    
     const [user, setUser] = useState({});
-
+    
     const [balance, setBalance] = useState(0);
     const [trips, setTrips] = useState([]);
-
+    
     function calcDuration(startTime, endTime) {
         const start = new Date(startTime);
         const end = new Date(endTime);
@@ -33,12 +35,6 @@ export default function WebAccountView() {
     }
 
     useEffect(() => {
-        if (localStorage.getItem("isLoggedIn") != "true") {
-            logout();
-            navigate('/login', { replace: true });
-            return;
-        }
-
         const fetchData = async () => {
             try {
                 let userFetch = await UserModel.getUserById(userId);
@@ -57,9 +53,10 @@ export default function WebAccountView() {
         fetchData();
     }, [userId]);
 
+
     const handleLogout = () => {
-        logout();
-        navigate('/login', { replace: true });
+        sessionStorage.clear();
+        logoutcallback();
     }
 
     const handlePayment = () => {
@@ -68,8 +65,6 @@ export default function WebAccountView() {
 
     const handleRemoveAccount = async () => {
         await UserModel.removeAccount(userId);
-        logout();
-        navigate('/login');
     }
 
     if (loading) return (
