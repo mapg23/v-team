@@ -5,6 +5,7 @@ import createCities from "../models/cities.mjs";
 import createBikes from "../models/bikes.mjs";
 import createStations from "../models/stations.mjs";
 import createParkings from "../models/parkings.mjs";
+import { calculatePagination } from '../helpers/pagination.mjs';
 
 
 export default function createCityRouter(
@@ -205,28 +206,36 @@ export default function createCityRouter(
 
     /**
      * GET /cities/:id/bikes
-     * Fetches all bikes in a specific city by city ID.
+     * Fetches bikes in a specific city by city ID, with optional pagination.
+     *
+     * Query Parameters:
+     *  page?: number - Page number (default 1)
+     *  limit?: number - Max bikes per page (default 50)
      *
      * Returns:
-     * 200: list of bikes
+     * 200: list of bikes with pagination info
      * 404: city not found
      * 500: server error
      */
+
     route.get(`/cities/:id/bikes`, async (req, res) => {
         try {
             const cityId = Number(req.params.id);
+            const { page, limit, offset } = calculatePagination(req.query);
 
-            // Kollar att staden finns
             const city = await cities.getCityById(cityId);
 
-            if (!city[0]) {
-                return res.status(404).json({ error: "City not found" });
-            }
+            if (!city[0]) {return res.status(404).json({ error: "City not found" });}
 
-            // Hämtar cyklar i staden
-            const bikesList = await bikes.getBikesByCityId(cityId);
+            const bikesList = await bikes.getBikesByCityId(cityId, { limit, offset });
+            const total = await bikes.countBikesInCity(cityId);
 
-            return res.status(200).json(bikesList);
+            return res.status(200).json({
+                page,
+                limit,
+                total,
+                bikes: bikesList
+            });
         } catch (err) {
             console.error(err);
             return res.status(500).json({ error: "Could not fetch bikes for city" });

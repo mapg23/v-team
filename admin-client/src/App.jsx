@@ -1,10 +1,5 @@
 import "./App.css";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import LoginView from "./views/auth/LoginView";
 import HomeView from "./views/home/HomeView";
 import CityView from "./views/city/CityView";
@@ -35,46 +30,46 @@ function App() {
     setIsLoggedIn(false);
   }
 
+  // --------------------------------------------
+  // NOT LOGGED IN
+  // --------------------------------------------
+  if (!isLoggedin) {
+    return (
+      <Routes>
+        <Route path="/" element={<LoginView />} />
+        <Route
+          path="/login/github/callback"
+          element={<GithubCallback onLogin={login} />}
+        />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    );
+  }
+
+  // --------------------------------------------
+  // LOGGED IN
+  // --------------------------------------------
   return (
-    <Router>
-      {!isLoggedin ? (
-        // --------------------------------------------
-        // NOT LOGGED IN
-        // --------------------------------------------
+    <div className="app-layout">
+      <div className="navContainer">
+        <Navbar logout={logout} />
+      </div>
+      <div className="app-content">
         <Routes>
-          <Route path="/" element={<LoginView />} />
-          <Route
-            path="/login/github/callback"
-            element={<GithubCallback onLogin={login} />}
-          />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/home" element={<HomeView />} />
+          <Route path="/user/:id" element={<ProfileView />} />
+          <Route path="/users" element={<UsersView />} />
+          <Route path="/city/:id" element={<InspectCityView />} />
+          <Route path="/cities" element={<CityView />} />
+          <Route path="/bikes/:id" element={<InspectBikeView />} />
+          <Route path="/bikes" element={<BikeView />} />
+          <Route path="/parkings" element={<ParkingView />} />
+          <Route path="/stations" element={<ChargingView />} />
+          <Route path="/cost" element={<CostView />} />
+          <Route path="*" element={<Navigate to="/home" />} />
         </Routes>
-      ) : (
-        // --------------------------------------------
-        // LOGGED IN
-        // --------------------------------------------
-        <div className="app-layout">
-          <div className="navContainer">
-            <Navbar logout={logout} />
-          </div>
-          <div className="app-content">
-            <Routes>
-              <Route path="/welcome" element={<HomeView />} />
-              <Route path="/user/:id" element={<ProfileView />} />
-              <Route path="/users" element={<UsersView />} />
-              <Route path="/city/:id" element={<InspectCityView />} />
-              <Route path="/cities" element={<CityView />} />
-              <Route path="/bikes/:id" element={<InspectBikeView />} />
-              <Route path="/bikes" element={<BikeView />} />
-              <Route path="/parkings" element={<ParkingView />} />
-              <Route path="/stations" element={<ChargingView />} />
-              <Route path="/cost" element={<CostView />} />
-              <Route path="*" element={<Navigate to="/welcome" />} />
-            </Routes>
-          </div>
-        </div>
-      )}
-    </Router>
+      </div>
+    </div>
   );
 }
 

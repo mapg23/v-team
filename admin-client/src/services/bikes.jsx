@@ -9,10 +9,10 @@ const bikeService = {
    * Get All bikes
    * @returns {JSON}
    */
-  getAllBikes: async function getAllBikes() {
+  getAllBikes: async function getAllBikes({limit, page}) {
     const token = sessionStorage.getItem("jwt");
     try {
-      const response = await fetch(`${API}/bikes`, {
+      const response = await fetch(`${API}/bikes?page=${page}&limit=${limit}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -80,7 +80,7 @@ const bikeService = {
   },
 
   /**
-   * Delete bike with ID
+   * Create a new bike
    * @returns {JSON}
    */
   createNewBike: async function createNewBike(bike) {
@@ -107,7 +107,7 @@ const bikeService = {
 
 
   /**
-   * Start sync for bikes
+   * Start socket sync for bikes
    * @returns {JSON}
    */
   startBikeSync: async function startBikeSync() {
@@ -215,6 +215,27 @@ const bikeService = {
       return [];
     }
   },
+
+  /**
+   * Get number of bikes in db
+   * NO ROUTE IMPLEMENTED
+   */
+  countAllBikes: async function countAllBikes() {
+    const token = sessionStorage.getItem("jwt");
+    try {
+      const response = await fetch(`${API}/bikes/count`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("Get countAllBikes:", error);
+      return [];
+    }
+  }
 };
 
 export default bikeService;

@@ -3,25 +3,32 @@ import dbDefault from "../database.mjs";
 export default function createBikes(db = dbDefault) {
     const bikes = {
         /**
-         * Get all bikes.
+         * Get bikes with pagination.
+         * @param {number} limit=50 - Max number of bikes to return.
+         * @param {number} offset=0 - Number of bikes to skip.
          * @returns {Promise<Array>} List of bikes.
          */
-        getBikes: async function getBikes() {
+        getBikes: async function getBikes({ limit = 50, offset = 0 } = {}) {
             return await db.select(
                 'scooters',
                 [
-                    'id',
-                    'status',
-                    'battery',
-                    'latitude',
-                    'longitude',
-                    'occupied',
-                    'city_id',
-                    'current_zone_type',
-                    'current_zone_id'
-                ]
+                    'id', 'status', 'battery', 'latitude', 'longitude',
+                    'occupied', 'city_id', 'current_zone_type', 'current_zone_id'
+                ],
+                null,
+                [],
+                limit,
+                offset
             );
         },
+        /**
+         * Count total number of bikes.
+         * @returns {Promise<number>} Total number of bikes in the database.
+         */
+        countBikes: async function countBikes() {
+            return await this.countRows('scooters');
+        },
+
 
         /**
          * Create a new bike.
@@ -66,12 +73,18 @@ export default function createBikes(db = dbDefault) {
         },
 
         /**
-         * Get all bikes in a specific city.
+         * Get all bikes in a specific city, with optional pagination.
          *
          * @param {number} cityId - The city's ID.
+         * @param {number} limit=50 - Max number of bikes to return.
+         * @param {number} offset=0 - Number of bikes to skip.
          * @returns {Promise<Array>} List of bikes.
          */
-        getBikesByCityId: async function getBikesByCityId(cityId) {
+
+        getBikesByCityId: async function getBikesByCityId(
+            cityId,
+            { limit = 50, offset = 0 } = {}
+        ) {
             return await db.select(
                 'scooters',
                 [
@@ -86,9 +99,22 @@ export default function createBikes(db = dbDefault) {
                     'current_zone_id'
                 ],
                 'city_id = ?',
-                [cityId]
+                [cityId],
+                limit,
+                offset
             );
         },
+
+        /**
+         * Count total number of bikes in a specific city.
+         *
+         * @param {number} cityId - ID of the city.
+         * @returns {Promise<number>} Total number of bikes in the specified city.
+         */
+        countBikesInCity: async function(cityId) {
+            return await this.countRows('scooters', 'city_id = ?', [cityId]);
+        },
+
 
         /**
          * Update a bike.
@@ -111,10 +137,24 @@ export default function createBikes(db = dbDefault) {
             return await db.remove('scooters', 'id = ?', [id]);
         },
 
+        /**
+         * Count total number of rows in a given table.
+         *
+         * @param {string} table - Name of the table to count rows from.
+         * @returns {Promise<number>} Total number of rows in the table.
+         */
+        countRows: async function countRows(table) {
+            const result = await db.select(table, ['COUNT(*) as total']);
+
+            return Number(result[0].total);
+        }
+
     };
 
     return bikes;
 }
+
+
 
 /**
  * Validates if a given zone ID exists for the specified type and city.

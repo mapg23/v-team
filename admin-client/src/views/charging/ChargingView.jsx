@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import MapDrawComponent from "../../components/map/react-draw/MapDrawComponent";
 import CityDropDown from "../../components/input/CityDropDown";
 import CityService from "../../services/cities";
@@ -7,6 +5,7 @@ import { useEffect, useState } from "react";
 import stationService from "../../services/stations";
 import CreateChargingZoneForm from "../../components/forms/CreateChargingZoneForm";
 import ChargingTable from "../../components/table/ChargingTable";
+import style from "../../components/forms/Form.module.css";
 
 export default function ChargingView() {
   // render map based on city coordinates
@@ -23,6 +22,26 @@ export default function ChargingView() {
   const [chargingZoneCoords, setChargingZoneCoords] = useState(null);
   const [renderChargingZoneForm, setRenderChargingZoneForm] = useState(false);
 
+  // layer - remove when new zone is created
+  const [layer, setLayer] = useState(null);
+
+  // Results from create / delete
+  const [result, setResult] = useState(null);
+  const [resultType, setResultType] = useState("error");
+
+  /**
+   * Styles for create / delete result
+   */
+  const resultClassMap = {
+    success: style.success,
+    error: style.error,
+    warning: style.warning,
+    info: style.info,
+  };
+
+  // Get current result
+  const resultClass = resultClassMap[resultType] || "";
+
   /**
    * fetchData manually
    * @returns
@@ -38,7 +57,7 @@ export default function ChargingView() {
       setCityCoordinates(coords);
       // Get parking zones
       const cZones = await CityService.getChargingStationsInCity(cityId);
-      if (Array.isArray(cZones) && cZones.length > 0) {
+      if (Array.isArray(cZones)) {
         setChargingZones(cZones);
       }
     }
@@ -50,7 +69,12 @@ export default function ChargingView() {
    */
   useEffect(() => {
     if (!cityId) return;
-    fetchData();
+    // reset result
+    async function getData() {
+      await fetchData();
+      setResult(null);
+    }
+    getData();
   }, [cityId]);
 
   /**
@@ -68,8 +92,11 @@ export default function ChargingView() {
    */
   async function initChargingZoneCreation(layer) {
     const chargingZoneCoords = layer.getLatLng();
-    if (chargingZoneCoords.lat && chargingZoneCoords.lng)
+    if (chargingZoneCoords.lat && chargingZoneCoords.lng) {
       setChargingZoneCoords(chargingZoneCoords);
+      setRenderChargingZoneForm(true);
+      setLayer(layer);
+    }
   }
 
   /**
@@ -86,18 +113,17 @@ export default function ChargingView() {
     };
 
     const created = await stationService.createNewChargingStation(cZone);
-    if (created.id) fetchData();
-  }
-
-  /**
-   * Show form for creating a charing zone
-   * Only renders if coordinates for a charging zone are set
-   */
-  useEffect(() => {
-    if (chargingZoneCoords) {
-      setRenderChargingZoneForm(true);
+    if (created.id) {
+      fetchData();
+      setRenderChargingZoneForm(false);
+      // clear layer
+      layer.remove();
+      setLayer(false);
+      // show result
+      setResult(`Ny laddstation: ${cZone.name}`);
+      setResultType("success");
     }
-  }, [chargingZoneCoords]);
+  }
 
   /**
    * Delete zone and re-fetch data
@@ -107,6 +133,8 @@ export default function ChargingView() {
     if (zoneId) {
       const response = await stationService.deleteChargingZone(zoneId);
       if (response.ok) {
+        setResult(`Laddstation raderad`);
+        setResultType("success");
         fetchData();
       }
     }
@@ -126,10 +154,17 @@ export default function ChargingView() {
 
   return (
     <div className="wrapper">
-      <h1>Laddstationer</h1>
+      <div className="card">
+        <h1>Laddstationer</h1>
+        <p>
+          I följande vy kan du inspektera samt ta bort befintliga stationer.
+        </p>
+        <p>Vill du skapa en ny station använder verktyget i kartan.</p>
+      </div>
       <div className="card">
         <div className="card">
           <CityDropDown action={initCityid} />
+          <p className={resultClass}>{result}</p>
           {cityCoordinates.latitude && cityCoordinates.longitude ? (
             <ChargingTable data={chargingZones} action={deleteZone} />
           ) : (

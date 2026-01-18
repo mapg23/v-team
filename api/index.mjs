@@ -14,15 +14,15 @@ import createBikeRouter from "./src/routes/bikeRoutes.mjs";
 import createStationRouter from "./src/routes/stationRoutes.mjs";
 import createParkingRouter from "./src/routes/parkingRoutes.mjs";
 import startSimulator from "./src/systemSimulation/startSimulator.mjs";
-import stopSimulator from "./src/systemSimulation/stopSimulator.mjs";
 import tripRoutes from "./src/routes/tripRoutes.mjs";
 import paymentRoutes from "./src/routes/paymentRoutes.mjs";
 import priceRoutes from "./src/routes/priceRoutes.mjs";
 import walletRoutes from "./src/routes/walletRoutes.mjs";
 import routingService from "./src/services/routingService.mjs";
 
+import tripService from "./src/services/tripService.mjs";
+
 import createBikes from "./src/models/bikes.mjs";
-import { json } from "stream/consumers";
 
 const app = express();
 const port = process.env.API_PORT || 9091;
@@ -116,6 +116,7 @@ app.post("/mega-routing-machine", async (req, res) => {
         }
 
         const result = await routingService.generateManyRoutes(coordsArray);
+
         return res.json(result);
     } catch (err) {
         console.error(err);
@@ -133,11 +134,24 @@ app.post("/simulate-bikes-create", async (req, res) => {
             throw new Error("Missing coordinates");
         }
         let bikeModel = createBikes();
+
         await bikeModel.deleteAllBikes();
         let bikes = [];
-        for (let i = 0; i < coordinates.length; i++) {
 
-            let first = { "latitude": coordinates[i][0].y, "longitude": coordinates[i][0].x }
+        for (let i = 0; i < coordinates.length; i++) {
+            let first = { "latitude": coordinates[i][0].y, "longitude": coordinates[i][0].x };
+
+            let cityID = 1;
+            const sectionOne = Math.floor(coordinates.length / 3);
+            const sectionTwo = Math.floor((coordinates.length * 2) / 3);
+
+            if (i < sectionOne) {
+                cityID = 1;
+            } else if (i < sectionTwo) {
+                cityID = 2;
+            } else {
+                cityID = 3;
+            }
 
             bikes[i] = {
                 'status': 100,
@@ -145,30 +159,43 @@ app.post("/simulate-bikes-create", async (req, res) => {
                 'latitude': first.latitude,
                 'longitude': first.longitude,
                 'occupied': 1,
-                'city_id': 1
-            }
+                'city_id': cityID
+            };
         }
 
         let creation = await bikeModel.createBikeSimulator(bikes);
-        console.log(creation);
+
+        console.log("Created bikes in DB");
 
         const firstId = Number(creation.insertId);
-        const count = Number(creation.affectedRows);
+        // const count = Number(creation.affectedRows);
 
         const bikesWithIds = bikes.map((bike, i) => ({
             id: firstId + i,
             ...bike
         }));
 
-        return res.json(bikesWithIds);
+        for (let i = 0; i < bikesWithIds.length; i++) {
+            try {
+                let data = {
+                    userId: 1000000000,
+                    bikeId: bikesWithIds[i].id
+                };
 
+                await tripService.startTrip(data);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        return res.json(bikesWithIds);
     } catch (err) {
         console.error(err);
         return res.json(err);
     }
 });
 
-app.post('/forward-routes', async (req, res) => {
+app.post('/forward-routes', async (req) => {
     try {
         let coordinates = req.body;
 
@@ -178,22 +205,70 @@ app.post('/forward-routes', async (req, res) => {
 
         await startSimulator();
 
-        console.log(coordinates);
-
-        let setRes = await fetch(`http://bike:7071/setRoute`, {
+        await fetch(`http://bike:7071/setRoute`, {
             method: 'POST',
             headers: {
                 'Content-Type': "application/json"
             },
             body: JSON.stringify(coordinates)
         });
-
-        // console.log(await setRes.json());
-
     } catch (err) {
         console.error(err);
     }
 });
+
+app.post('/generate-normal-bikes', async (req, res) => {
+    try {
+        const coordinates = req.body;
+
+        if (!coordinates) {
+            throw new Error("Missing coordinates");
+        }
+        let bikeModel = createBikes();
+
+        let bikes = [];
+
+        for (let i = 0; i < coordinates.length; i++) {
+            let first = { "latitude": coordinates[i].y, "longitude": coordinates[i].x };
+
+            let cityID = 1;
+            const sectionOne = Math.floor(coordinates.length / 3);
+            const sectionTwo = Math.floor((coordinates.length * 2) / 3);
+
+            if (i < sectionOne) {
+                cityID = 1;
+            } else if (i < sectionTwo) {
+                cityID = 2;
+            } else {
+                cityID = 3;
+            }
+
+            bikes[i] = {
+                'status': 100,
+                'battery': 100,
+                'latitude': first.latitude,
+                'longitude': first.longitude,
+                'occupied': 0,
+                'city_id': cityID
+            };
+        }
+
+        let creation = await bikeModel.createBikeSimulator(bikes);
+
+        const firstId = Number(creation.insertId);
+        // const count = Number(creation.affectedRows);
+
+        const bikesWithIds = bikes.map((bike, i) => ({
+            id: firstId + i,
+            ...bike
+        }));
+
+        return res.json(bikesWithIds);
+    } catch (err) {
+        console.error(err);
+        return res.json(err);
+    }
+})
 
 // ------------------------------
 // ----------- Routes -----------
@@ -229,12 +304,3 @@ server.listen(port, "0.0.0.0", async () => {
     // Här startas simulatorn direkt när servern är igång.
     await startSimulator();
 });
-
-// Här stoppas simulatorn direkt när servern stängs ner.
-const serverShutDown = async () => {
-    // Anropar funktionen som sparar cyklarna i databasen.
-    await stopSimulator();
-};
-
-// Stoppar simulatorn vid docker-compose down
-process.on('SIGTERM', serverShutDown);

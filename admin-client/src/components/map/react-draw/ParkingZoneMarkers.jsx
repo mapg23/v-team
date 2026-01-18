@@ -1,6 +1,5 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { Rectangle, Popup, Marker } from "react-leaflet";
-import { useParkingIcon } from "../../icons/react-icons";
+import { ParkingIcon } from "../../icons/react-icons";
 
 /**
  * This component is rendering parkingZones
@@ -9,7 +8,7 @@ export default function ParkingZoneMarkers({ zones }) {
   if (!zones) return <p>No parking zones</p>;
 
   // PARKING ICON
-  const icon = useParkingIcon();
+  const icon = ParkingIcon();
 
   return (
     <>

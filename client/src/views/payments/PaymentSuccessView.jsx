@@ -66,7 +66,7 @@ function sendSuccessInfo(intentId, status, userId) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "authorization": `bearer ${token}`,
+      "Authorization": `Bearer ${token}`,
     },
     body: JSON.stringify({
       intentId,
@@ -74,10 +74,6 @@ function sendSuccessInfo(intentId, status, userId) {
       userId,
     }),
   })
-    .then(res => res.json())
-    .then(data => {
-      console.log("Backend responded: ", data);
-    })
     .then(res => res.json())
     .then(data => {
       console.log("Backend responded: ", data);

@@ -35,6 +35,7 @@ export default function History({ tripHistory }) {
               <th>Travel Id</th>
               <th>Start position</th>
               <th>End position</th>
+              <th>End Zone Type</th>
               <th>Travel time</th>
               <th>Total cost</th>
             </tr>
@@ -52,6 +53,7 @@ export default function History({ tripHistory }) {
                   <td>
                     {story.endAdress ? story.endAdress : story.end_latitude}
                   </td>
+                  <td>{story.end_zone_type ? story.end_zone_type : ""}</td>
                   <td>
                     {calculateTime(story.start_time, story.end_time)}
                   </td>

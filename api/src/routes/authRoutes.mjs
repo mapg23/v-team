@@ -85,10 +85,8 @@ router.post(
     async (req, res) => {
         const clientId = req.body.client_id;
 
-        console.log("STATE:(app id) ", clientId);
         const {challenge, verifier} = await createPKCE();
 
-        console.log("2. CHALLANGE/VERIFIER: ", challenge, verifier);
         const encryptedState = await jwtService.createToken({ clientId, verifier }, 10);
 
         return res.json({ encryptedState: encryptedState, challenge });

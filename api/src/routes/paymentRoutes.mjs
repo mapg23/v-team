@@ -56,7 +56,6 @@ router.post(`/payment-success`,
     // validation.payment,
     // validation.checkValidationResult,
     async (req, res) => {
-        // req.body.userId = 3;
         const { userId, intentId, status } = req.body;
 
         console.log("Status: ", status, ". For: ", intentId);
@@ -74,7 +73,7 @@ router.post(`/payment-success`,
                 return res.json({ status: status, message: "Payment was not successfull." });
             }
 
-            const newBalance = walletService.credit(userId, amountInKrona, intentId);
+            const newBalance = await walletService.credit(userId, amountInKrona, intentId);
 
             // console.log("SUCCESS for INTENT : ", intentId);
             return res.json({ added: amountInKrona, balance: newBalance });

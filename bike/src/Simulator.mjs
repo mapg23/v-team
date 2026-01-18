@@ -73,17 +73,6 @@ class Simulator {
                 continue;
             }
 
-            // if (this.cordinates[key].length === 0) {
-            //     console.log(`Bike: ${key} has no cordinates left ${this.cordinates[key].length}`)
-            //     this.bikes[index].status = 40;
-            //     this.cordinates[key] = [];
-            //     continue;
-            // }
-
-            /////// J
-            // Jag la till '!this.cordinates[key]' eftersom den annars kraschade
-            // när jag testade i Postman.
-            // Gamla versionen är den utkommenterade koden ovan.
             if (!this.cordinates[key] || this.cordinates[key].length === 0) {
                 console.log(`Bike: ${key} has no cordinates left`);
                 this.bikes[index].status = 40;
@@ -129,7 +118,6 @@ class Simulator {
         // Retrives all bikes from db
         // Start bike movement
 
-        console.log(payload);
         this.bikes = [];
         for (let bike of payload) {
             let parsedCords = { x: Number(bike.longitude), y: Number(bike.latitude) };
@@ -147,7 +135,6 @@ class Simulator {
             }));
         }
 
-        console.log(this.bikes);
         this.startMovement();
         return { event: `Bikes: ${this.bikes.length}`, data: this.bikes };
     }
@@ -176,9 +163,10 @@ class Simulator {
      */
     end() {
         this.stopMovement();
-        // Save all bike positions to database
+        let exportArray = this.bikes;
+
         this.bikes = [];
-        return { event: 'stopping worker' };
+        return { event: 'stopping worker', data: exportArray };
     }
 
     /**
@@ -195,7 +183,11 @@ class Simulator {
      * @returns {Array} - Device
      */
     getBike(payload) {
-        return { event: 'Retriving bike', data: this.bikes[payload.id] };
+        let index = this.bikes.findIndex(function (device) {
+            return device.getId() === Number(payload.id);
+        });
+
+        return { event: 'Retriving bike', data: this.bikes[index] };
     }
 
     /**
@@ -206,13 +198,12 @@ class Simulator {
     setRoute(payload) {
         try {
             for (let key in payload) {
-
                 let index = this.bikes.findIndex(function (device) {
-                    return device.getId() === Number(key)
+                    return device.getId() === Number(key);
                 });
 
-                this.cordinates[Number(key)] = payload[key];
-                // this.cordinates[Number(index)] = payload[key];
+                // this.cordinates[Number(key)] = payload[key];
+                this.cordinates[Number(index)] = payload[key];
             }
 
             return { event: 'Succesfully added routes', data: payload };
@@ -224,7 +215,7 @@ class Simulator {
 
     getBikeStatus(payload) {
         let index = this.bikes.findIndex(function (device) {
-            return device.getId() === Number(payload.id)
+            return device.getId() === Number(payload.id);
         });
 
 
@@ -236,8 +227,9 @@ class Simulator {
 
     setBikeStatus(payload) {
         let index = this.bikes.findIndex(function (device) {
-            return device.getId() === Number(payload.id)
+            return device.getId() === Number(payload.id);
         });
+
         this.bikes[Number(index)].setStatus(payload.status);
         this.bikes[Number(index)].setOccupied(payload.occupied);
         return { event: `id for bike ${payload.id} set to status ${payload.status}` };
@@ -254,7 +246,7 @@ class Simulator {
             this.cordinates[Number(payload.id)] = payload.cords;
             return { event: 'succesfully Moved a bike', data: payload };
         } catch (error) {
-            console.error('Invalid Payload');
+            console.error(`Invalid Payload: ${error.message}`);
             return { event: 'Invalid Payload' };
         }
     }
@@ -265,7 +257,7 @@ class Simulator {
      * @returns {Object} - Event with result and updated bike data if
      * successful, or error message if not
      */
-    updateBike(payload) { ///// J
+    updateBike(payload) {
         try {
             const bike = this.bikes.find(b => b.id === Number(payload.bikeId));
 
@@ -316,7 +308,7 @@ export async function handleWorkerMessage(msg, simm) {
         'move-specific': () => simm.moveSpecific(payload),
 
         'get-bike': () => simm.getBike(payload),
-        'update-bike': () => simm.updateBike(payload), ///// J
+        'update-bike': () => simm.updateBike(payload),
         'get-bike-status': () => simm.getBikeStatus(payload),
         'set-bike-status': () => simm.setBikeStatus(payload),
         'heartbeat': () => simm.heartbeat(),

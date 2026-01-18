@@ -57,6 +57,7 @@ class BikeService {
      */
     async _updateBikeStatus(bikeId, status, occupied) {
         const noccupied = occupied ? 1 : 0;
+
         await this.findBikeById(bikeId);
         const apiRes = await this.bikesModel.updateBike(
             bikeId,
@@ -71,22 +72,84 @@ class BikeService {
         }
 
         const bikeRes = await fetch("http://bike:7071/bike/setStatus", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: bikeId,
-            status: status,
-            occupied: noccupied,
-          }),
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                id: bikeId,
+                status: status,
+                occupied: noccupied,
+            }),
         });
 
         if (bikeRes.status != 200) {
-            throw new Error("Could not set new status in bike brain");
+            throw new Error(`Could not set new status in bike hardware with id ${bikeId}`);
         }
 
         return apiRes;
+    }
+
+    /**
+     * Gets a bikes position from hardware bike.
+     * @param {string} bikeId A srting representin a bikes ID.
+     * @returns {object} lat/long position
+     */
+    async getBikeLivePosition(bikeId) {
+        const bikeRes = await fetch(`http://bike:7071/bike/${bikeId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+
+        if (!bikeRes.ok) {
+            throw new Error(
+                `Could not get bike coordinates from hardware bike ${bikeId}.
+                Status: ${bikeRes.status}`
+            );
+        }
+        console.log(bikeRes);
+        const bike = await bikeRes.json();
+
+        console.log(
+            bike,
+            bike.cords.y,
+            bike.cords.x
+        );
+
+        return {
+            latitude: bike.cords.y,
+            longitude: bike.cords.x
+        };
+    };
+
+    /**
+     * Gets position from bike hardware, calculates what zone it is in,
+     * updates the bike in the database.
+     * @param {string} bikeId The bike ID
+     * @returns {object} The updated bike
+     */
+    async updateBikePositionData(bikeId) {
+        const coords = await this.getBikeLivePosition(bikeId);
+        const zone = await this.locationService.determineZone(
+            coords.latitude,
+            coords.longitude
+        );
+
+        if (!zone) {throw new Error(`Could not determine bike with id ${bikeId}s zone.`);};
+
+        const updateData = {
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            current_zone_type: zone.type,
+            current_zone_id: zone.id,
+        };
+
+        await this.bikesModel.updateBike(bikeId, updateData);
+        const bike = await this.findBikeById(bikeId);
+
+        return bike;
     }
 
     /**
@@ -125,18 +188,18 @@ class BikeService {
     }
 
     // Can be called from bikeRoute and start/end trip.
-    async updateBikeZone(bikeId, data) {
-        const zone = await this.locationService.determineZone(data.latitude, data.longitude);
+    // async updateBikeZone(bikeId, data) {
+    //     const zone = await this.locationService.determineZone(data.latitude, data.longitude);
 
-        if (!zone) {throw new Error("Could not determine bikes zone.");};
+    //     if (!zone) {throw new Error("Could not determine bikes zone.");};
 
-        data.current_zone_type = zone.type,
-        data.current_zone_id = zone.id;
+    //     data.current_zone_type = zone.type,
+    //     data.current_zone_id = zone.id;
 
-        const res = await this.bikesModel.updateBike(bikeId, data);
+    //     const res = await this.bikesModel.updateBike(bikeId, data);
 
-        return res;
-    }
+    //     return res;
+    // }
 
 
     async createBikeInUse(data) {

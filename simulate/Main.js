@@ -2,6 +2,11 @@ import fs from "fs";
 import { writeFile } from "fs/promises";
 import { constrainedMemory } from "process";
 
+import pLimit from "p-limit";
+
+
+const limit = pLimit(5); // 5 is safe for local OSRM
+
 const cityLimits = [
     {
         name: "Habo",
@@ -75,21 +80,24 @@ function randomPoint(bounds) {
 }
 
 async function snapToRoad({ lat, lon }) {
-    const url = `${OSRM_URL}/nearest/v1/driving/${lon},${lat}`;
-    const res = await fetch(url);
-    const data = await res.json();
+    return limit(async () => {
 
-    if (!data.waypoints || !data.waypoints.length) return null;
+        const url = `${OSRM_URL}/nearest/v1/driving/${lon},${lat}`;
+        const res = await fetch(url);
+        const data = await res.json();
 
-    const wp = data.waypoints[0];
+        if (!data.waypoints || !data.waypoints.length) return null;
 
-    // Reject bad snaps (not actually on a road/sidewalk)
-    if (wp.distance > 8) return null;
+        const wp = data.waypoints[0];
 
-    return {
-        y: Number(wp.location[1].toFixed(6)),
-        x: Number(wp.location[0].toFixed(6)),
-    };
+        // Reject bad snaps (not actually on a road/sidewalk)
+        if (wp.distance > 8) return null;
+
+        return {
+            y: Number(wp.location[1].toFixed(6)),
+            x: Number(wp.location[0].toFixed(6)),
+        };
+    });
 }
 
 
@@ -121,8 +129,34 @@ async function generateJSON(scooters) {
 }
 
 async function instanciateBikes(count = 333) {
-    const city = cityLimits.find(c => c.name === "Jönköping");
-    const scooters = await generatePoints(city, count);
+    let city1 = cityLimits.find(c => c.name === "Jönköping");
+    let city2 = cityLimits.find(c => c.name === "Habo");
+    let city3 = cityLimits.find(c => c.name === "Bankeryd");
+
+    // const [n1, n2, n3] = await Promise.all([
+    //     generatePoints(city3, (count / 2) / 3),
+    //     generatePoints(city2, (count / 2) / 3),
+    //     generatePoints(city1, (count / 2) / 3),
+    // ])
+
+    // const [c1, c2, c3] = await Promise.all([
+    //     generatePoints(city3, count / 3),
+    //     generatePoints(city2, count / 3),
+    //     generatePoints(city1, count / 3),
+    // ]);
+
+    const c1 = await generatePoints(city3, count / 3);
+    const c2 = await generatePoints(city2, count / 3);
+    const c3 = await generatePoints(city1, count / 3);
+
+    const n1 = await generatePoints(city3, (count / 2) / 3);
+    const n2 = await generatePoints(city2, (count / 2) / 3);
+    const n3 = await generatePoints(city1, (count / 2) / 3);
+
+
+    let scooters = [...c1, ...c2, ...c3];
+
+    let free_scooters = [...n1, ...n2, ...n3];
 
     let res = await fetch(`http://localhost:9091/mega-routing-machine`, {
         method: 'POST',
@@ -158,6 +192,14 @@ async function instanciateBikes(count = 333) {
         }
     }
 
+    await fetch('http://localhost:9091/generate-normal-bikes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': "application/json"
+        },
+        body: JSON.stringify(free_scooters)
+    });
+
     await fetch('http://localhost:9091/forward-routes', {
         method: 'POST',
         headers: {
@@ -177,6 +219,6 @@ async function setBikesInMotion(params) {
 (async () => {
     // SÄtt inte mer än 6000
 
-    let cords = await instanciateBikes(6000); // Generera cyklar
+    let cords = await instanciateBikes(4000); // Generera cyklar
 })();
 

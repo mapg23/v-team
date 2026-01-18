@@ -22,6 +22,7 @@ html,
 body,
 #root {
     height: 100%;
+    color: #121212;
 }
 
 .page {
@@ -32,4 +33,25 @@ body,
 
 nav {
     padding-bottom: env(safe-area-inset-bottom);
+}
+
+@keyframes rotateBounceBack {
+    0% {
+        transform: rotate(120deg);
+    }
+
+    60% {
+        transform: rotate(410deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.top-logo {
+    /* display: flex; */
+    height: 42px;
+    width: 42px;
+    animation: rotateBounceBack .5s ease-out forwards;
 }

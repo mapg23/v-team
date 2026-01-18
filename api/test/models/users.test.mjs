@@ -30,7 +30,11 @@ describe("users model", () => {
 
         expect(mockDb.select).toHaveBeenCalledWith(
             "users",
-            ["id", "username", "email"]
+            ["id", "username", "email"],
+            null,
+            [],
+            50,
+            0
         );
     });
 
