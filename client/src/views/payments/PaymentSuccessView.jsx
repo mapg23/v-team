@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TopBar from "../../components/TopBar";
-import { useAuth } from "../../components/AuthProvider";
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -89,7 +88,8 @@ function sendSuccessInfo(intentId, status, userId) {
 };
 
 function SuccessContent() {
-  const { userId } = useAuth();
+  const userId = Number(sessionStorage.getItem("userid"));
+
   const stripe = useStripe();
 
   const [status, setStatus] = useState("default");

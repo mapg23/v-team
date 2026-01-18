@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from "react";
-import { AuthProvider, MiddleWare, useAuth } from "./components/AuthProvider";
+import { useEffect, useState } from "react";
+import {Navigate } from "react-router-dom";
 
 import { BrowserView, MobileView } from "react-device-detect";
 
@@ -24,94 +24,110 @@ import PaymentSuccessView from "./views/payments/PaymentSuccessView";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/all.css";
 
-import { jwtDecode } from "jwt-decode";
-
 function App() {
-  const { login, logout } = useAuth();
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    Boolean(sessionStorage.getItem("jwt"))
+  );
 
-  const handleLogin = () => {
-    const jwt = sessionStorage.getItem("jwt") ? true : false;
-
-    if (jwt) {
-      const token = sessionStorage.getItem("jwt");
-      const payload = jwtDecode(token);
-      const userId = payload.sub.userId;
-      login(userId);
-    }
+  function login() {
+    setIsLoggedIn(true);
   }
 
-  // LÄGG TILL ROUTE FÖR PAYMENT/COMPLETE
+  function logout() {
+    sessionStorage.clear();
+    setIsLoggedIn(false);
+  }
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={
-          <MiddleWare>
+    <Routes>
 
-            <MobileView>
-              <HomeView />
-            </MobileView>
+      {/* LOGIN */}
+      <Route
+        path="/login"
+        element={
+          isLoggedIn
+            ? <Navigate to="/" replace />
+            : <LoginView loginCallback={login} />
+        }
+      />
 
-            <BrowserView>
-              <WebAccountView />
-            </BrowserView>
+      <Route
+        path="/login/github/callback"
+        element={<GithubCallback onLogin={login} />}
+      />
 
-          </MiddleWare>
-        } />
+      {/* APP */}
+      <Route
+        path="/"
+        element={
+          isLoggedIn ? (
+            <>
+              <MobileView>
+                <HomeView />
+              </MobileView>
 
-        <Route path="/account" element={
-          <MiddleWare>
-            <MobileView>
-              <AccountView />
-            </MobileView>
-          </MiddleWare>
-        } />
+              <BrowserView>
+                <WebAccountView logoutcallback={logout}/>
+              </BrowserView>
+            </>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
 
-        <Route path="/history" element={
-          <MiddleWare>
-            <MobileView>
-              <HistoryView />
-            </MobileView>
+      <Route
+        path="/account"
+        element={
+          isLoggedIn
+            ? <MobileView><AccountView /> </MobileView>
+            : <Navigate to="/login" replace />
+        }
+      />
 
-            <BrowserView>
-              <HistoryView />
-            </BrowserView>
-          </MiddleWare>
-        } />
+      <Route
+        path="/history"
+        element={
+          isLoggedIn
+            ? <MobileView> <HistoryView /> </MobileView>
+            : <Navigate to="/login" replace />
+        }
+      />
 
-        <Route path="/transactions" element={
-          <MiddleWare>
-            <MobileView>
-              <TransactionsView />
-            </MobileView>
-          </MiddleWare>
-        } />
+      <Route
+        path="/transactions"
+        element={
+          isLoggedIn
+            ? <MobileView><TransactionsView /></MobileView>
+            : <Navigate to="/login" replace />
+        }
+      />
 
-        <Route path="/pay" element={
-          <MiddleWare>
-            <PaymentView />
-          </MiddleWare>
-        } />
+      <Route path="/bike/:id" element={
+        isLoggedIn
+          ? <MobileView> <BikeView/> </MobileView>
+          : <Navigate to="/login" replace />
+      } />
 
-        <Route path="/payment/complete" element={
-          <MiddleWare>
-            <PaymentSuccessView />
-          </MiddleWare>
-        } />
+      <Route path="/pay" element={
+        isLoggedIn
+        ? <PaymentView />
+        : <Navigate to="/login" replace />
+      } />
 
-        <Route path="/bike/:id" element={
-          <MiddleWare>
-            <BikeView />
-          </MiddleWare>
-        } />
+      <Route path="/payment/complete" element={
+        isLoggedIn 
+        ? <PaymentSuccessView />
+        : <Navigate to="/login" replace />
+      } />
 
-        <Route path="/login" element={<LoginView />} />
+      {/* FALLBACK */}
+      <Route
+        path="*"
+        element={<Navigate to={isLoggedIn ? "/" : "/login"} replace />}
+      />
 
-        <Route
-          path="/login/github/callback"
-          element={<GithubCallback onLogin={handleLogin} />}
-        />
-      </Routes>
-    </Router>
+    </Routes>
   );
 }
 

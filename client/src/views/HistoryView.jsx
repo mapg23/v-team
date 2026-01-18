@@ -7,7 +7,6 @@ import Navigation from "../components/NavigationBar";
 
 import TripsModel from "../models/TripsModel";
 
-import { useAuth } from "../components/AuthProvider";
 
 
 import "../assets/historyView.css";
@@ -18,7 +17,7 @@ export default function HistoryView() {
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasInit, setHasInit] = useState(false);
-  const { userId } = useAuth();
+  const userId = Number(sessionStorage.getItem("userid"));
 
 
   const topBarCallback = () => {
