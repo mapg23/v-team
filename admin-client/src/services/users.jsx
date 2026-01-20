@@ -9,7 +9,7 @@ const userService = {
    * Get all users
    * @returns {JSON}
    */
-  getAllUsers: async function getAllUsers({limit, page}) {
+  getAllUsers: async function getAllUsers({ limit, page }) {
     const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`${API}/users?page=${page}&limit=${limit}`, {
@@ -22,7 +22,36 @@ const userService = {
 
       if (!response.ok) {
         throw new Error(
-          `HTTP error on getAllUsers! Status: ${response.status}`
+          `HTTP error on getAllUsers! Status: ${response.status}`,
+        );
+      }
+
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  },
+
+  /**
+   * Count all users
+   * Returns total amount of users
+   */
+  countAllUsers: async function countAllUsers() {
+    const token = sessionStorage.getItem("jwt");
+    try {
+      const response = await fetch(`${API}/users/count`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error on countAllUsers! Status: ${response.status}`,
         );
       }
 
@@ -50,13 +79,13 @@ const userService = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
         throw new Error(
-          `HTTP error on createNewUser! Status: ${response.status}`
+          `HTTP error on createNewUser! Status: ${response.status}`,
         );
       }
 
@@ -79,13 +108,13 @@ const userService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
         throw new Error(
-          `HTTP error on getUserDetails! Status: ${response.status}`
+          `HTTP error on getUserDetails! Status: ${response.status}`,
         );
       }
 
@@ -113,7 +142,7 @@ const userService = {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -145,7 +174,7 @@ const userService = {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -172,7 +201,7 @@ const userService = {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -184,8 +213,7 @@ const userService = {
       if (response.status === 204) {
         return true;
       }
-      return false
-
+      return false;
     } catch (error) {
       console.error(error);
       return [];
@@ -203,13 +231,13 @@ const userService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
         throw new Error(
-          `HTTP error on getUserRentalDetails! Status: ${response.status}`
+          `HTTP error on getUserRentalDetails! Status: ${response.status}`,
         );
       }
 
@@ -232,13 +260,13 @@ const userService = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
         throw new Error(
-          `HTTP error on getUserBalanceDetails! Status: ${response.status}`
+          `HTTP error on getUserBalanceDetails! Status: ${response.status}`,
         );
       }
 
