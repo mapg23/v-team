@@ -45,3 +45,30 @@ nohup bash -c "cd admin-client && npm install && npm run dev" >/dev/null 2>&1 &
 ```
 pkill -f "npm run start|npm run dev"
 ```
+
+
+### Usage of simulation
+In order to fully simulate the system, both user and bike simulations is required
+
+#### User Simulation
+( Use phpmyamdin to insert the dml files)
+1. Navigate to http://url:8081
+2. Once in phpmyadmin select the database and press insert.
+3. Use the tree different sql files located in the project root:
+```
+vteam.sql, vteam.dml, simulate.dml
+```
+3. Import the files in the order shown above
+4. User simulation is done
+
+#### Bike simulation
+( requires node version >= 18 )
+
+1. navigate to /simulate
+2. execute the command below:
+```
+    npm install && node Main.js
+```
+3. Await the simulation so it properly populate the database
+4. Optional: if you want to watch while it populate, use the ** docker compose logs -f api ** command to watch.
+5. Once the database has been populated the bikes has began the simulation
