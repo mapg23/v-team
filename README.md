@@ -30,7 +30,7 @@ docker compose up -d --build
 docker compose down -v
 ```
 
-## Initialization ( local )
+## Initialization ( local, database need to be self-provided )
 
 ### To Start the system, stand in root and execute the command below:
 
@@ -52,7 +52,7 @@ In order to fully simulate the system, both user and bike simulations is require
 
 #### User Simulation
 ( Use phpmyamdin to insert the dml files)
-1. Navigate to http://url:8081
+1. Navigate to http://localhost:8081
 2. Once in phpmyadmin select the database and press insert.
 3. Use the tree different sql files located in the project root:
 ```
